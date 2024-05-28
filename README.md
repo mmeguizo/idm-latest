@@ -1,20 +1,48 @@
-modified Sakai for CHMSU project
-This project was generated with Angular CLI version 13.0.4.
+## Institutional Dashboard Monitoring Project
 
-Development server
-Run ng serve for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+**A web-based platform for monitoring and managing institutional requests.**
 
-Code scaffolding
-Run ng generate component component-name to generate a new component. You can also use ng generate directive|pipe|service|class|guard|interface|enum|module.
+### What it does
 
-Build
-Run ng build to build the project. The build artifacts will be stored in the dist/ directory.
+This project creates a web-based dashboard that provides a central hub for managing and monitoring various requests within an institution. It offers functionalities for both:
 
-Running unit tests
-Run ng test to execute the unit tests via Karma.
+- **School Administration:** Gain insights into request trends, monitor workloads, and make data-driven decisions.
+- **Users (Faculty, Staff, Students):** Submit requests electronically, track their progress, and improve communication with relevant departments.
 
-Running end-to-end tests
-Run ng e2e to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Key Features
 
-Further help
-To get more help on the Angular CLI use ng help or go check out the Angular CLI Overview and Command Reference page.
+- **Request Monitoring:** Submit and track requests electronically (e.g., equipment requests, IT support, leave applications).
+- **Management Tools:** Administrators can view all requests, user details, request types, and real-time status updates.
+- **Data Visualization:** Charts and graphs provide insights for improved decision-making.
+
+### Benefits
+
+- **Increased Efficiency:** Streamlined request handling eliminates paperwork and manual tracking.
+- **Improved Communication:** Real-time updates enhance transparency and communication.
+- **Data-Driven Decisions:** Administrators can utilize visualized data for informed choices.
+- **Enhanced User Experience:** Convenient user interface simplifies request management.
+
+### Target Audience
+
+- School Administration (e.g., department heads, principals)
+- Users within the Institution (e.g., faculty, staff, students)
+
+### Considerations
+
+- **Security:** Robust security measures to safeguard user data and prevent unauthorized access.
+- **Scalability:** Designed to accommodate a growing user base and future features.
+- **Customization:** Adaptable to display relevant data and functionalities specific to the institution's needs.
+
+### Getting Started
+
+**Prerequisites:**
+
+- Node.js and npm (Node Package Manager) installed on your system.
+
+**Instructions:**
+
+1. **Clone or download the project repository.**
+2. **Navigate to the project directory:**
+   ```bash
+   cd app  # Assuming the project directory is named "app"
+   ```
