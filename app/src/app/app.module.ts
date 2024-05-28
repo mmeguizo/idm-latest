@@ -1,0 +1,75 @@
+import { NgModule } from '@angular/core';
+import {
+    HashLocationStrategy,
+    LocationStrategy,
+    PathLocationStrategy,
+} from '@angular/common';
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+import { AppLayoutModule } from './layout/app.layout.module';
+import { NotfoundComponent } from './demo/components/notfound/notfound.component';
+import { ProductService } from './demo/service/product.service';
+import { CountryService } from './demo/service/country.service';
+import { CustomerService } from './demo/service/customer.service';
+import { EventService } from './demo/service/event.service';
+import { IconService } from './demo/service/icon.service';
+import { NodeService } from './demo/service/node.service';
+import { PhotoService } from './demo/service/photo.service';
+import { AuthService } from './demo/service/auth.service';
+import { ConnectionService } from './demo/service/connection.service';
+import { DepartmentService } from './demo/service/department.service';
+import { FileService } from './demo/service/file.service';
+import { GoalService } from './demo/service/goal.service';
+import { ObjectiveService } from './demo/service/objective.service';
+import { UserService } from './demo/service/user.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { JwtModule } from '@auth0/angular-jwt';
+import { HttpClientModule } from '@angular/common/http';
+import { AuthGuard } from './guard/auth.guard';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { AuthInterceptor } from './auth.interceptor';
+
+export function tokenGetter() {
+    return localStorage.getItem('access_token');
+}
+
+@NgModule({
+    declarations: [AppComponent, NotfoundComponent],
+    imports: [
+        AppRoutingModule,
+        AppLayoutModule,
+        HttpClientModule,
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: tokenGetter,
+                // allowedDomains: ['example.com'],
+                // disallowedRoutes: ['http://example.com/examplebadroute/'],
+            },
+        }),
+        SplitButtonModule,
+    ],
+    providers: [
+        { provide: LocationStrategy, useClass: PathLocationStrategy },
+        CountryService,
+        CustomerService,
+        EventService,
+        IconService,
+        NodeService,
+        PhotoService,
+        ProductService,
+        AuthService,
+        ConnectionService,
+        DepartmentService,
+        FileService,
+        GoalService,
+        ObjectiveService,
+        UserService,
+        MessageService,
+        ConfirmationService,
+        AuthGuard,
+        AuthInterceptor,
+    ],
+
+    bootstrap: [AppComponent],
+})
+export class AppModule {}

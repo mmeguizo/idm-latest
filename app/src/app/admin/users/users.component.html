@@ -1,0 +1,454 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="add-user-heading">
+                <span class="text-xl font-medium mt-2 text-slate-950"
+                    >Filter Menu</span
+                >
+                <button
+                    (click)="addUserDialogCard = true"
+                    pButton
+                    icon="pi pi-user-plus"
+                    label="Add User"
+                ></button>
+
+                <!-- add user dialog -->
+            </div>
+            <p-table
+                #dt1
+                [value]="users"
+                dataKey="id"
+                [rows]="10"
+                [loading]="loading"
+                [rowHover]="true"
+                styleClass="p-datatable-gridlines"
+                [paginator]="true"
+                [globalFilterFields]="[
+                    'username',
+                    'email',
+                    'department',
+                    'role',
+                    'status',
+                    'options'
+                ]"
+                responsiveLayout="scroll"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex justify-content-between flex-column sm:flex-row"
+                    >
+                        <button
+                            pButton
+                            label="Clear"
+                            class="p-button-outlined mb-2"
+                            icon="pi pi-filter-slash"
+                            (click)="clear(dt1)"
+                        ></button>
+                        <span class="p-input-icon-left mb-2">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                #filter
+                                (input)="onGlobalFilter(dt1, $event)"
+                                placeholder="Search Keyword"
+                                class="p-inputtext p-component p-element w-full"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Username
+                                <p-columnFilter
+                                    type="text"
+                                    field="username"
+                                    display="menu"
+                                    placeholder="Search by Username"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Email
+                                <p-columnFilter
+                                    type="text"
+                                    field="email"
+                                    display="menu"
+                                    placeholder="Search by Email"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Department
+                                <p-columnFilter
+                                    type="text"
+                                    field="department"
+                                    display="menu"
+                                    placeholder="Search by Department"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Role
+                                <p-columnFilter
+                                    type="text"
+                                    field="role"
+                                    display="menu"
+                                    placeholder="Search by Role"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Status
+                                <p-columnFilter
+                                    type="text"
+                                    field="status"
+                                    display="menu"
+                                    placeholder="Search by Status"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Options
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-user>
+                    <tr>
+                        <td>
+                            {{ user.username | titlecase }}
+                        </td>
+                        <td>
+                            {{ user.email }}
+                        </td>
+                        <td>
+                            {{ user.department | titlecase }}
+                        </td>
+                        <td>
+                            {{ user.role | titlecase }}
+                        </td>
+                        <td>
+                            <span
+                                (click)="changeUserStatus(user.id)"
+                                [class]="
+                                    'cursor-pointer  customer-badge status-' +
+                                    user.status
+                                "
+                                >{{ user.status }}</span
+                            >
+                        </td>
+                        <td>
+                            <div class="options-users">
+                                <i
+                                    (click)="updateUser(user)"
+                                    class="pi pi-user-edit text-xl"
+                                    style="color: #0ea5e9; cursor: pointer"
+                                ></i>
+                                <i
+                                    (click)="deleteUser(user.id)"
+                                    class="pi pi-trash text-xl"
+                                    style="color: #ef4444; cursor: pointer"
+                                ></i>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">No Users found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="loadingbody">
+                    <tr>
+                        <td colspan="8">Loading Users data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<!-- change status dialog-->
+
+<p-dialog
+    header="Dialog"
+    id="tester"
+    [(visible)]="changeStatusCard"
+    [modal]="true"
+    showEffect="fade"
+    [style]="{ width: '20vw' }"
+    [breakpoints]="{ '960px': '50vw' }"
+>
+    <p class="line-height-3 m-0">Change Users Status</p>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            icon="pi pi-check"
+            (click)="changeUserStatuExecution()"
+            label="Ok"
+            class="p-button-outlined"
+        ></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog
+    header="Dialog"
+    id="tester"
+    [(visible)]="deleteUserCard"
+    [modal]="true"
+    showEffect="fade"
+    [style]="{ width: '20vw' }"
+    [breakpoints]="{ '960px': '50vw' }"
+>
+    <p class="line-height-3 m-0">Delete User?</p>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            icon="pi pi-check"
+            (click)="deleteUserExec()"
+            label="Ok"
+            class="p-button-outlined"
+        ></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog
+    header="Edit User"
+    [(visible)]="updateUserCard"
+    [style]="{ width: '25rem' }"
+    position="top"
+>
+    <form *ngIf="updateUserCard" [formGroup]="form">
+        <div class="flex align-items-center gap-3">
+            <div class="p-fluid">
+                <div class="field col-10 md:col-10">
+                    <label for="username">Username</label>
+                    <input
+                        pInputText
+                        id="username"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            form?.get('username').touched &&
+                            form?.controls['username'].errors?.required
+                                ? 'ng-invalid'
+                                : ''
+                        "
+                        formControlName="username"
+                    />
+                </div>
+                <div class="flex align-items-center gap-3">
+                    <div class="field col-10 md:col-10">
+                        <label for="email">Email</label>
+                        <input
+                            pInputText
+                            id="email"
+                            class="flex-auto"
+                            [ngClass]="
+                                form?.get('email').touched &&
+                                form?.controls['email'].errors?.required
+                                    ? 'ng-invalid'
+                                    : ''
+                            "
+                            formControlName="email"
+                            autocomplete="off"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex align-items-center gap-3">
+            <div class="p-fluid">
+                <div class="field col-10 md:col-10">
+                    <label htmlFor="department">Department</label>
+                    <p-dropdown
+                        formControlName="department"
+                        [options]="AllDepartments"
+                        optionLabel="department"
+                        dataKey="id"
+                    ></p-dropdown>
+                </div>
+                <div class="field col-12 md:col-10">
+                    <label htmlFor="role">Role</label>
+                    <p-dropdown
+                        formControlName="role"
+                        [options]="roles"
+                        optionLabel="name"
+                    ></p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div class="flex footer-button">
+            <p-button
+                label="Cancel"
+                severity="secondary"
+                (click)="updateUserCard = false"
+            />
+            <p-button label="Save" (click)="updateUserExecution(form)" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- add user dialog -->
+
+<p-dialog
+    header="Add User"
+    id="tester"
+    [(visible)]="addUserDialogCard"
+    [modal]="true"
+    showEffect="fade"
+    [style]="{ width: '30vw' }"
+>
+    <!-- <span class="p-text-secondary block mb-5"
+    >Update your information.</span
+>  -->
+
+    <form [formGroup]="Addform">
+        <div class="flex align-items-center gap-3">
+            <div class="p-fluid">
+                <div class="field col-10 md:col-10">
+                    <label for="username">Username</label>
+                    <input
+                        pInputText
+                        id="username"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            Addform?.get('username').touched &&
+                            Addform?.controls['username'].errors?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="username"
+                        required
+                    />
+                </div>
+                <div class="flex align-items-center gap-3">
+                    <div class="field col-10 md:col-10">
+                        <label for="email">Email</label>
+                        <input
+                            pInputText
+                            id="email"
+                            class="flex-auto"
+                            [ngClass]="
+                                Addform?.get('email').touched &&
+                                Addform?.controls['email'].errors?.required
+                                    ? 'ng-invalid ng-dirty'
+                                    : ''
+                            "
+                            formControlName="email"
+                            autocomplete="off"
+                            required
+                        />
+                        <div
+                            *ngIf="
+                                (Addform.get('email').hasError('required') &&
+                                    Addform.get('email').touched) ||
+                                Addform.get('email').hasError('email') ||
+                                Addform.get('email').hasError('pattern')
+                            "
+                            class="bg-red-500 text-white p-2 rounded"
+                        >
+                            <span
+                                *ngIf="
+                                    Addform.get('email').touched &&
+                                    form.get('email').hasError('required')
+                                "
+                            >
+                                You must enter an email address.
+                            </span>
+                            <span *ngIf="Addform.get('email').hasError('email')"
+                                >Please enter a valid email address.</span
+                            >
+                            <span
+                                *ngIf="Addform.get('email').hasError('pattern')"
+                                >Only Chmsu addresses (chmsu.edu.ph) are
+                                accepted.</span
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex align-items-center gap-3">
+            <div class="p-fluid">
+                <div class="field col-10 md:col-10">
+                    <label for="password">Password</label>
+                    <input
+                        pInputText
+                        id="password"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            Addform?.get('password').touched &&
+                            Addform?.controls['password'].errors?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="password"
+                        required
+                    />
+                </div>
+                <div class="flex align-items-center gap-3">
+                    <div class="field col-10 md:col-10">
+                        <label for="confirm">Confirm Password</label>
+                        <input
+                            pInputText
+                            id="confirm"
+                            class="flex-auto"
+                            [ngClass]="
+                                Addform?.get('confirm').touched &&
+                                Addform?.controls['confirm'].errors?.required
+                                    ? 'ng-invalid ng-dirty'
+                                    : ''
+                            "
+                            formControlName="confirm"
+                            autocomplete="off"
+                            required
+                        />
+                    </div>
+                </div>
+                <div class="flex align-items-center gap-3">
+                    <div class="field col-10 md:col-10">
+                        <label htmlFor="department">Department</label>
+                        <p-dropdown
+                            formControlName="department"
+                            [options]="AllDepartments"
+                            optionLabel="department"
+                            dataKey="id"
+                        ></p-dropdown>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex" style="gap: 13rem">
+            <p-button
+                label="Cancel"
+                severity="secondary"
+                (click)="addUserDialogCard = false"
+            />
+            <p-button label="Save" (click)="addUser(Addform)" />
+        </div>
+    </form>
+</p-dialog>

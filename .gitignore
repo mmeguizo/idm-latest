@@ -1,0 +1,46 @@
+# Dependencies
+api/node_modules/
+app/node_modules/
+
+# Build Output
+/dist/  # Angular build output
+/coverage/  # Test coverage reports
+/out-tsc/  # TypeScript compilation output (if using Bazel)
+
+# IDE and Editor Specific Files
+/.idea/
+.project
+.classpath
+.vscode/*  # Exclude all VS Code files except settings
+!*.vscode/settings.json  # Include VS Code settings
+
+# OS Specific Files
+.DS_Store  # macOS
+Thumbs.db  # Windows
+
+# Temporary Files
+npm-debug.log
+yarn-error.log
+*.log
+
+# Testing Tools
+/cypress/screenshots/  # Cypress screenshots
+/cypress/videos/  # Cypress videos
+
+# Frontend Optimizations
+/browserlist  # Configuration for browserslist
+
+# API Documentation (if using tools like Swagger)
+/api-docs/
+
+# Compiled Node.js Code (if using tools like Babel)
+/build/
+
+# Local Environment Variables
+.env
+
+# Exclude specific files or directories (adjust as needed)
+!src/assets  # Include all assets in the src/assets directory
+
+# Generated type definitions (if using tools like `@types/`)
+/types/
