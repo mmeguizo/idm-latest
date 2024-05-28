@@ -155,7 +155,7 @@
                             <div class="options-users">
                                 <i
                                     (click)="updateGoal(goal)"
-                                    class="pi pi-user-edit text-xl"
+                                    class="pi pi-file-edit text-xl"
                                     style="color: #0ea5e9; cursor: pointer"
                                 ></i>
                                 <i
@@ -191,12 +191,14 @@
     [style]="{ width: '60rem' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     [maximizable]="true"
+    (onHide)="closeSubGoalTable()"
+    responsiveLayout="stack"
 >
     <div class="grid">
         <div class="col-12">
             <p-table
                 #dt1
-                [value]="goals"
+                [value]="objectiveDatas"
                 dataKey="id"
                 [rows]="10"
                 [loading]="loading"
@@ -204,9 +206,19 @@
                 styleClass="p-datatable-gridlines"
                 [paginator]="true"
                 [globalFilterFields]="[
-                    'goals',
+                    '',
+                    'functional_objective',
+                    'performance_indicator',
+                    'target',
+                    'formula',
+                    'programs',
+                    'department',
+                    'responsible_persons',
+                    'clients',
+                    'timetable',
+                    'frequency_monitoring',
+                    'data_source',
                     'budget',
-                    'createdBy',
                     'createdAt',
                     'options'
                 ]"
@@ -223,6 +235,16 @@
                             icon="pi pi-filter-slash"
                             (click)="clear(dt1)"
                         ></button>
+
+                        <p-button
+                            icon="pi pi-plus"
+                            (click)="addSubGoal()"
+                            severity="success"
+                            [outlined]="true"
+                            pTooltip="Add Objectives"
+                            tooltipPosition="top"
+                        />
+
                         <span class="p-input-icon-left mb-2">
                             <i class="pi pi-search"></i>
                             <input
@@ -242,12 +264,129 @@
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
-                                Goals
+                                Functional Objective
                                 <p-columnFilter
                                     type="text"
-                                    field="goals"
+                                    field="functional_objective"
                                     display="menu"
-                                    placeholder="Search by Goals"
+                                    placeholder="Search by Functional Objective"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Performance Indicator
+                                <p-columnFilter
+                                    type="text"
+                                    field="performance_indicator"
+                                    display="menu"
+                                    placeholder="Search by Performance Indicator"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Target
+                                <p-columnFilter
+                                    type="text"
+                                    field="target"
+                                    display="menu"
+                                    placeholder="Search by Target"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Programs
+                                <p-columnFilter
+                                    type="text"
+                                    field="programs"
+                                    display="menu"
+                                    placeholder="Search by Programs"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Department
+                                <p-columnFilter
+                                    type="text"
+                                    field="department"
+                                    display="menu"
+                                    placeholder="Search by Department"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Responsible Persons
+                                <p-columnFilter
+                                    type="text"
+                                    field="responsible_persons"
+                                    display="menu"
+                                    placeholder="Search by Responsible Persons"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Clients
+                                <p-columnFilter
+                                    type="text"
+                                    field="clients"
+                                    display="menu"
+                                    placeholder="Search by Clients"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Timetable
+                                <p-columnFilter
+                                    type="text"
+                                    field="timetable"
+                                    display="menu"
+                                    placeholder="Search by Timetable"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Frequency Monitoring
+                                <p-columnFilter
+                                    type="text"
+                                    field="frequency_monitoring"
+                                    display="menu"
+                                    placeholder="Search by Frequency Monitoring"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Data Source
+                                <p-columnFilter
+                                    type="text"
+                                    field="data_source"
+                                    display="menu"
+                                    placeholder="Search by Data Source"
                                 ></p-columnFilter>
                             </div>
                         </th>
@@ -268,25 +407,12 @@
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
-                                Created By
-                                <p-columnFilter
-                                    type="text"
-                                    field="createdBy"
-                                    display="menu"
-                                    placeholder="Search by Created By"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Created Date
+                                Created At
                                 <p-columnFilter
                                     type="text"
                                     field="createdAt"
                                     display="menu"
-                                    placeholder="Search by Created Date"
+                                    placeholder="Search by Created At"
                                 ></p-columnFilter>
                             </div>
                         </th>
@@ -299,45 +425,55 @@
                         </th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-goal>
+                <ng-template pTemplate="body" let-objectiveData>
                     <tr>
                         <td>
-                            <!-- {{ goal.goals | titlecase }} -->
-                            <!-- <span
-                                pButton
-                                pRipple
-                                type="button"
-                                class="p-button-help cursor-pointer"
-                                >{{ goal.goals | titlecase }}</span
-                            > -->
-                            <button
-                                (click)="getObjectives(goal.id)"
-                                pButton
-                                pRipple
-                                type="button"
-                                class="p-button-help p-button-text"
-                            >
-                                {{ goal.goals | titlecase }}
-                            </button>
+                            {{ objectiveData.functional_objective | titlecase }}
                         </td>
                         <td>
-                            {{ goal.budget | peso }}
+                            {{
+                                objectiveData.performance_indicator | titlecase
+                            }}
                         </td>
                         <td>
-                            {{ goal.users.username | titlecase }}
+                            {{ objectiveData.target | titlecase }}
                         </td>
                         <td>
-                            {{ goal.createdAt | date : "mediumDate" }}
+                            {{ objectiveData.formula | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.department | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.responsible_persons | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.clients | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.timetable | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.frequency_monitoring | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.data_source | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.budget | peso }}
+                        </td>
+                        <td>
+                            {{ objectiveData.createdAt | date : "mediumDate" }}
                         </td>
                         <td>
                             <div class="options-users">
                                 <i
-                                    (click)="updateGoal(goal)"
-                                    class="pi pi-user-edit text-xl"
+                                    (click)="updateSubGoal(objectiveData)"
+                                    class="pi pi-file-edit text-xl"
                                     style="color: #0ea5e9; cursor: pointer"
                                 ></i>
                                 <i
-                                    (click)="deleteGoal(goal.id)"
+                                    (click)="deleteSubGoal(objectiveData.id)"
                                     class="pi pi-trash text-xl"
                                     style="color: #ef4444; cursor: pointer"
                                 ></i>
@@ -345,14 +481,17 @@
                         </td>
                     </tr>
                 </ng-template>
+
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="8">No Goals found.</td>
+                        <td colspan="8">No Objectives found.</td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="loadingbody">
                     <tr>
-                        <td colspan="8">Loading Goals data. Please wait.</td>
+                        <td colspan="8">
+                            Loading Objectives data. Please wait.
+                        </td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -485,5 +624,221 @@
             (click)="updateGoalDialogCard = false"
         />
         <p-button label="Save" (click)="updateGoalDialogExec(updateGoalform)" />
+    </div>
+</p-dialog>
+
+<p-dialog
+    styleClass="addObjective"
+    header="Add Objectives"
+    [(visible)]="addObjectiveGoalDialogCard"
+    [style]="{ width: '50rem' }"
+    [modal]="true"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    position="top"
+>
+    <div class="p-fluid">
+        <div class="field col-10 md:col-10">
+            <form [formGroup]="addObjectiveGoalform">
+                <div class="field">
+                    <label htmlFor="department">Department</label>
+                    <p-dropdown
+                        formControlName="department"
+                        [options]="deptDropdownValue"
+                        optionLabel="name"
+                        dataKey="id"
+                    ></p-dropdown>
+                </div>
+                <div class="field">
+                    <label htmlFor="name1">Functional Objective</label>
+                    <input
+                        pInputText
+                        id="functional_objective"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('functional_objective')
+                                .touched &&
+                            addObjectiveGoalform?.controls[
+                                'functional_objective'
+                            ].errors?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="functional_objective"
+                        required
+                    />
+                </div>
+                <div class="field">
+                    <label htmlFor="name1">Performance Indicator</label>
+                    <input
+                        pInputText
+                        id="performance_indicator"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('performance_indicator')
+                                .touched &&
+                            addObjectiveGoalform?.controls[
+                                'performance_indicator'
+                            ].errors?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="performance_indicator"
+                        required
+                    />
+                </div>
+                <div class="field">
+                    <label htmlFor="name1">Target</label>
+                    <input
+                        pInputText
+                        id="target"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('target').touched &&
+                            addObjectiveGoalform?.controls['target'].errors
+                                ?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="target"
+                        required
+                    />
+                </div>
+                <div class="field">
+                    <label htmlFor="name1">Formula</label>
+                    <input
+                        pInputText
+                        id="formula"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('formula').touched &&
+                            addObjectiveGoalform?.controls['formula'].errors
+                                ?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="formula"
+                        required
+                    />
+                </div>
+                <div class="field">
+                    <label htmlFor="name1">Programs</label>
+                    <input
+                        pInputText
+                        id="programs"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('programs').touched &&
+                            addObjectiveGoalform?.controls['programs'].errors
+                                ?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="programs"
+                        required
+                    />
+                </div>
+                <div class="field">
+                    <label htmlFor="name1">Responsible Persons</label>
+                    <input
+                        pInputText
+                        id="responsible_persons"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('responsible_persons')
+                                .touched &&
+                            addObjectiveGoalform?.controls[
+                                'responsible_persons'
+                            ].errors?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="responsible_persons"
+                        required
+                    />
+                </div>
+                <div class="field">
+                    <label htmlFor="name1">Clients</label>
+                    <input
+                        pInputText
+                        id="clients"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('clients').touched &&
+                            addObjectiveGoalform?.controls['clients'].errors
+                                ?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="clients"
+                        required
+                    />
+                </div>
+                <div class="field">
+                    <label htmlFor="name1">Timetable</label>
+                    <p-calendar
+                        formControlName="timetable"
+                        selectionMode="range"
+                        [readonlyInput]="true"
+                    />
+                </div>
+                <div class="field">
+                    <label htmlFor="department">Frequency Monitoring</label>
+                    <p-dropdown
+                        formControlName="frequency_monitoring"
+                        [options]="frequency"
+                        optionLabel="name"
+                        dataKey="id"
+                    ></p-dropdown>
+                </div>
+                <div class="field">
+                    <label htmlFor="name1"
+                        >Means of Verification(Data Source)</label
+                    >
+                    <input
+                        pInputText
+                        id="data_source"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('data_source').touched &&
+                            addObjectiveGoalform?.controls['data_source'].errors
+                                ?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="data_source"
+                        required
+                    />
+                </div>
+                <div class="field">
+                    <label htmlFor="name1">Budget</label>
+                    <p-inputNumber
+                        mode="decimal"
+                        [showButtons]="true"
+                        [min]="0"
+                        formControlName="budget"
+                    >
+                    </p-inputNumber>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="flex justify-space-between gap-2">
+        <p-button
+            label="Cancel"
+            severity="secondary"
+            (click)="addObjectiveGoalDialogCard = false"
+        />
+        <p-button
+            label="Save"
+            (click)="addSubObjectiveGoalDialogExec(addObjectiveGoalform)"
+        />
     </div>
 </p-dialog>

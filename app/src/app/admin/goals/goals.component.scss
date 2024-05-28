@@ -37,3 +37,7 @@
 ::ng-deep .footer-button {
     gap: 8rem !important;
 }
+
+::ng-deep .addObjective {
+    overflow-y: auto;
+}

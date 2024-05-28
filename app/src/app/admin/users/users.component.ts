@@ -32,6 +32,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     data: any;
     users: any[] = [];
     statuses: any[] = [];
+    deptDropdownValue: any[] = [];
     cols!: any;
     loading = true;
     changeStatusCard: boolean = false;
@@ -90,7 +91,7 @@ export class UsersComponent implements OnInit, OnDestroy {
             username: ['', [Validators.required]],
             email: ['', [Validators.required]],
             department: ['', [Validators.required]],
-            role: ['', [Validators.required]],
+            // role: ['', [Validators.required]],
         });
     }
 
@@ -105,7 +106,7 @@ export class UsersComponent implements OnInit, OnDestroy {
                     Validators.pattern('^.+@chmsu.edu.ph$'),
                 ],
             ],
-            department: ['', [Validators.required]],
+            department: new FormControl(),
             password: ['', [Validators.required]],
             confirm: ['', [Validators.required]],
         });
@@ -140,22 +141,30 @@ export class UsersComponent implements OnInit, OnDestroy {
     }
 
     updateUser(data) {
+        console.log(this.AllDepartments);
+
         this.selectedDept = data.department;
         console.log({ updateUser: data });
         this.selectedRole = data.role;
-        this.form = this.formBuilder.group({
-            username: [data.username, [Validators.required]],
-            email: [data.email, [Validators.required]],
-            department: [data.department, [Validators.required]],
-            role: [data.role, [Validators.required]],
+        // this.form = this.formBuilder.group({
+        //     username: [data.username, [Validators.required]],
+        //     email: [data.email, [Validators.required]],
+        //     // department: [data.department, [Validators.required]],
+        //     // role: [data.role, [Validators.required]],
+        // });
+        this.form.setValue({
+            username: data.username,
+            email: data.email,
+            department: data.department,
+            // role : data.role
         });
 
-        let selected = this.AllDepartments.find(
-            (dept) => dept.department === data.department
-        );
-        let selectedRol = this.roles.find((role) => role.name === data.role);
-        this.form.get('department').setValue(selected);
-        this.form.get('role').setValue(selectedRol);
+        // let selected = this.AllDepartments.find(
+        //     (dept) => dept.department === data.department
+        // );
+        // let selectedRol = this.roles.find((role) => role.name === data.role);
+        // this.form.get('department').setValue(data.department);
+        // this.form.get('role').setValue(selectedRol);
 
         // this.form.get('department').setValue(data.department);
         this.updateUserCard = true;
@@ -167,10 +176,9 @@ export class UsersComponent implements OnInit, OnDestroy {
             id: this.updateUserId,
             username: form.value.username,
             email: form.value.email,
-            department: form.value.department.department,
-            role: form.value.role.name,
+            department: form.value.department.name,
+            // role: form.value.role.name,
         };
-        console.log({ updateUserExecution: form.value });
         console.log({ updateUserExecution_data: data });
 
         this.user
@@ -261,30 +269,42 @@ export class UsersComponent implements OnInit, OnDestroy {
             .getRoute('get', 'department', 'getAllDepartment')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllDept: data });
+                let map = data.departments.map((e) => ({
+                    name: e.department,
+                    code: e.department,
+                }));
+                this.deptDropdownValue.push(...map);
+
                 this.AllDepartments = data.department;
             });
     }
 
     addUser(form: any) {
+        console.log('addUser', form.value);
+
         let data = {
             username: form.value.username,
             email: form.value.email,
-            department: form.value.department.department,
+            department: form.value.department.name,
             password: form.value.password,
             confirm: form.value.confirm,
         };
 
         console.log(data);
 
-        //if username || email || password || confirm is empty
-        if (!data.username || !data.email || !data.password || !data.confirm) {
-            this.messageService.add({
+        // if username || email || password || confirm is empty
+        if (
+            !data.username ||
+            !data.email ||
+            !data.password ||
+            !data.confirm ||
+            !data.department
+        ) {
+            return this.messageService.add({
                 severity: 'error  ',
                 summary: 'Error',
                 detail: 'Please fill in all required fields.',
             });
-            return;
         }
 
         this.user
@@ -308,6 +328,10 @@ export class UsersComponent implements OnInit, OnDestroy {
                     });
                 }
             });
+    }
+
+    addUserDialogButton() {
+        this.addUserDialogCard = true;
     }
 
     getErrorMessage(formControlName: string) {

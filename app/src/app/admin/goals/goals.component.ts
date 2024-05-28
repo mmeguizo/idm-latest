@@ -12,6 +12,7 @@ import { GoalService } from 'src/app/demo/service/goal.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/demo/service/auth.service';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
+import { DepartmentService } from 'src/app/demo/service/department.service';
 
 AuthService;
 @Component({
@@ -23,6 +24,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     private getGoalSubscription = new Subject<void>();
     @ViewChild('filter') filter!: ElementRef;
     goals: any[] = [];
+    Alldepts: any[] = [];
     cols!: any;
     loading = true;
 
@@ -33,11 +35,17 @@ export class GoalsComponent implements OnInit, OnDestroy {
     subGoalObjective: boolean = false;
 
     addGoalDialogCard: boolean = false;
+    addObjectiveGoalDialogCard: boolean = false;
     updateGoalDialogCard: boolean = false;
 
     public addGoalform: any;
     public updateGoalform: any;
-    objectiveData: any;
+    public addObjectiveGoalform: any;
+
+    frequency: any;
+
+    objectiveDatas: any;
+    deptDropdownValue: any[] = [];
 
     constructor(
         private messageService: MessageService,
@@ -45,12 +53,23 @@ export class GoalsComponent implements OnInit, OnDestroy {
         private confirmationService: ConfirmationService,
         private goal: GoalService,
         private auth: AuthService,
-        private obj: ObjectiveService
+        private obj: ObjectiveService,
+        private dept: DepartmentService
     ) {}
 
     ngOnInit() {
+        this.getAllDept();
         console.log('GoalsComponent');
         this.getGoals();
+
+        this.frequency = [
+            { name: 'daily', code: 'Daily' },
+            { name: 'weekly', code: 'Weekly' },
+            { name: 'monthly', code: 'Monthly' },
+            { name: 'yearly', code: 'Yearly' },
+            { name: 'quarterly', code: 'Quarterly' },
+            { name: 'biannually', code: 'Biannually' },
+        ];
 
         this.cols = [
             { field: 'goals', header: 'Goals' },
@@ -62,6 +81,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
         this.createAddGoalForm();
         this.createUpdateGoalForm();
+        this.createAddObjectiveGoalform();
     }
 
     ngOnDestroy(): void {
@@ -72,6 +92,24 @@ export class GoalsComponent implements OnInit, OnDestroy {
     createAddGoalForm() {
         this.addGoalform = this.formBuilder.group({
             goals: ['', [Validators.required]],
+            budget: ['', [Validators.required]],
+        });
+    }
+    createAddObjectiveGoalform() {
+        this.addObjectiveGoalform = this.formBuilder.group({
+            department: ['', [Validators.required]],
+            userId: ['', [Validators.required]],
+            goalId: ['', [Validators.required]],
+            functional_objective: ['', [Validators.required]],
+            performance_indicator: ['', [Validators.required]],
+            target: ['', [Validators.required]],
+            formula: ['', [Validators.required]],
+            programs: ['', [Validators.required]],
+            responsible_persons: ['', [Validators.required]],
+            clients: ['', [Validators.required]],
+            timetable: ['', [Validators.required]],
+            frequency_monitoring: ['', [Validators.required]],
+            data_source: ['', [Validators.required]],
             budget: ['', [Validators.required]],
         });
     }
@@ -91,6 +129,18 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 this.goals = data.goals;
                 this.loading = false;
                 console.log(this.goals);
+            });
+    }
+    getAllDept() {
+        this.dept
+            .getRoute('get', 'department', 'getAllDepartment')
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                let map = data.departments.map((e) => ({
+                    name: e.department,
+                    code: e.department,
+                }));
+                this.deptDropdownValue.push(...map);
             });
     }
 
@@ -116,9 +166,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
-                this.objectiveData = data.Objectives;
+                this.objectiveDatas = data.Objectives;
                 this.loading = false;
-                console.log(this.objectiveData);
+                console.log(this.objectiveDatas);
             });
     }
 
@@ -227,10 +277,34 @@ export class GoalsComponent implements OnInit, OnDestroy {
         });
     }
 
-    getAllSubObjectivesForGoal(id: string) {}
+    updateSubGoal(id: string) {
+        console.log('updateSubGoal', id);
+    }
+
+    deleteSubGoal(id: string) {
+        console.log('deleteSubGoal', id);
+    }
 
     clear(table: Table) {
         table.clear();
         this.filter.nativeElement.value = '';
+    }
+
+    closeSubGoalTable() {
+        console.log('closeSubGoalTable');
+
+        this.subGoalObjective = false;
+        this.objectiveDatas = [];
+    }
+
+    addSubGoal() {
+        console.log('addSubGoal', this.subObjectiveGoalID);
+        this.addObjectiveGoalDialogCard = true;
+    }
+
+    addSubObjectiveGoalDialogExec(e) {
+        e.value.userId = this.auth.getTokenUserID();
+        e.value.goalId = this.subObjectiveGoalID;
+        console.log('addSubObjectiveGoalDialogExec', e.value);
     }
 }

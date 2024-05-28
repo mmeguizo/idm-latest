@@ -209,11 +209,9 @@ module.exports = (router) => {
   });
 
   router.put("/updateObjectives", async (req, res) => {
-    let { id, Objectives } = req.body;
+    let { id, ...ObjectivesData } = req.body;
 
-    let ObjectivesData = {
-      Objectives: Objectives,
-    };
+    console.log("ObjectivesData", ObjectivesData);
 
     Objectives.findOneAndUpdate(
       { id: id },
