@@ -23,17 +23,13 @@
     overflow-y: visible !important;
 }
 
-::ng-deep .footer-button {
-    display: flex;
-    justify-content: space-evenly;
-}
-
 .add-user-heading {
     display: flex;
     justify-content: space-between;
     margin: 0 0 1.5rem 0;
 }
-
-::ng-deep .footer-button {
-    gap: 8rem !important;
+@media screen and (max-width: 757px) {
+    .footer-button-adduser {
+        flex-direction: column !important;
+    }
 }

@@ -1,3 +1,4 @@
+<!-- main goal table  -->
 <div class="grid">
     <div class="col-12">
         <div class="card">
@@ -165,7 +166,7 @@
                                 ></i>
                             </div>
                             <p-toast></p-toast>
-                            <p-confirmPopup key="confirm2"></p-confirmPopup>
+                            <p-confirmPopup key="deleteGoal"></p-confirmPopup>
                         </td>
                     </tr>
                 </ng-template>
@@ -183,322 +184,6 @@
         </div>
     </div>
 </div>
-
-<p-dialog
-    header="Objectives"
-    [modal]="true"
-    [(visible)]="subGoalObjective"
-    [style]="{ width: '60rem' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-    [maximizable]="true"
-    (onHide)="closeSubGoalTable()"
-    responsiveLayout="stack"
->
-    <div class="grid">
-        <div class="col-12">
-            <p-table
-                #dt1
-                [value]="objectiveDatas"
-                dataKey="id"
-                [rows]="10"
-                [loading]="loading"
-                [rowHover]="true"
-                styleClass="p-datatable-gridlines"
-                [paginator]="true"
-                [globalFilterFields]="[
-                    '',
-                    'functional_objective',
-                    'performance_indicator',
-                    'target',
-                    'formula',
-                    'programs',
-                    'department',
-                    'responsible_persons',
-                    'clients',
-                    'timetable',
-                    'frequency_monitoring',
-                    'data_source',
-                    'budget',
-                    'createdAt',
-                    'options'
-                ]"
-                responsiveLayout="scroll"
-            >
-                <ng-template pTemplate="caption">
-                    <div
-                        class="flex justify-content-between flex-column sm:flex-row"
-                    >
-                        <button
-                            pButton
-                            label="Clear"
-                            class="p-button-outlined mb-2"
-                            icon="pi pi-filter-slash"
-                            (click)="clear(dt1)"
-                        ></button>
-
-                        <p-button
-                            icon="pi pi-plus"
-                            (click)="addSubGoal()"
-                            severity="success"
-                            [outlined]="true"
-                            pTooltip="Add Objectives"
-                            tooltipPosition="top"
-                        />
-
-                        <span class="p-input-icon-left mb-2">
-                            <i class="pi pi-search"></i>
-                            <input
-                                pInputText
-                                type="text"
-                                #filter
-                                (input)="onGlobalFilter(dt1, $event)"
-                                placeholder="Search Keyword"
-                                class="p-inputtext p-component p-element w-full"
-                            />
-                        </span>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Functional Objective
-                                <p-columnFilter
-                                    type="text"
-                                    field="functional_objective"
-                                    display="menu"
-                                    placeholder="Search by Functional Objective"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Performance Indicator
-                                <p-columnFilter
-                                    type="text"
-                                    field="performance_indicator"
-                                    display="menu"
-                                    placeholder="Search by Performance Indicator"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Target
-                                <p-columnFilter
-                                    type="text"
-                                    field="target"
-                                    display="menu"
-                                    placeholder="Search by Target"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Programs
-                                <p-columnFilter
-                                    type="text"
-                                    field="programs"
-                                    display="menu"
-                                    placeholder="Search by Programs"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Department
-                                <p-columnFilter
-                                    type="text"
-                                    field="department"
-                                    display="menu"
-                                    placeholder="Search by Department"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Responsible Persons
-                                <p-columnFilter
-                                    type="text"
-                                    field="responsible_persons"
-                                    display="menu"
-                                    placeholder="Search by Responsible Persons"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Clients
-                                <p-columnFilter
-                                    type="text"
-                                    field="clients"
-                                    display="menu"
-                                    placeholder="Search by Clients"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Timetable
-                                <p-columnFilter
-                                    type="text"
-                                    field="timetable"
-                                    display="menu"
-                                    placeholder="Search by Timetable"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Frequency Monitoring
-                                <p-columnFilter
-                                    type="text"
-                                    field="frequency_monitoring"
-                                    display="menu"
-                                    placeholder="Search by Frequency Monitoring"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Data Source
-                                <p-columnFilter
-                                    type="text"
-                                    field="data_source"
-                                    display="menu"
-                                    placeholder="Search by Data Source"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Budget
-                                <p-columnFilter
-                                    type="text"
-                                    field="budget"
-                                    display="menu"
-                                    placeholder="Search by Budget"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Created At
-                                <p-columnFilter
-                                    type="text"
-                                    field="createdAt"
-                                    display="menu"
-                                    placeholder="Search by Created At"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Options
-                            </div>
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-objectiveData>
-                    <tr>
-                        <td>
-                            {{ objectiveData.functional_objective | titlecase }}
-                        </td>
-                        <td>
-                            {{
-                                objectiveData.performance_indicator | titlecase
-                            }}
-                        </td>
-                        <td>
-                            {{ objectiveData.target | titlecase }}
-                        </td>
-                        <td>
-                            {{ objectiveData.formula | titlecase }}
-                        </td>
-                        <td>
-                            {{ objectiveData.department | titlecase }}
-                        </td>
-                        <td>
-                            {{ objectiveData.responsible_persons | titlecase }}
-                        </td>
-                        <td>
-                            {{ objectiveData.clients | titlecase }}
-                        </td>
-                        <td>
-                            {{ objectiveData.timetable | titlecase }}
-                        </td>
-                        <td>
-                            {{ objectiveData.frequency_monitoring | titlecase }}
-                        </td>
-                        <td>
-                            {{ objectiveData.data_source | titlecase }}
-                        </td>
-                        <td>
-                            {{ objectiveData.budget | peso }}
-                        </td>
-                        <td>
-                            {{ objectiveData.createdAt | date : "mediumDate" }}
-                        </td>
-                        <td>
-                            <div class="options-users">
-                                <i
-                                    (click)="updateSubGoal(objectiveData)"
-                                    class="pi pi-file-edit text-xl"
-                                    style="color: #0ea5e9; cursor: pointer"
-                                ></i>
-                                <i
-                                    (click)="deleteSubGoal(objectiveData.id)"
-                                    class="pi pi-trash text-xl"
-                                    style="color: #ef4444; cursor: pointer"
-                                ></i>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="8">No Objectives found.</td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="loadingbody">
-                    <tr>
-                        <td colspan="8">
-                            Loading Objectives data. Please wait.
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-    </div>
-</p-dialog>
-
 <!-- add goal dialog -->
 
 <p-dialog
@@ -627,19 +312,355 @@
     </div>
 </p-dialog>
 
+<!-- main objective table  -->
+<p-dialog
+    header="Objectives"
+    [modal]="true"
+    [(visible)]="subGoalObjective"
+    [style]="{ width: '60rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true"
+    (onHide)="closeSubGoalTable()"
+    responsiveLayout="stack"
+>
+    <div class="grid">
+        <div class="col-12">
+            <p-table
+                #dt2
+                [value]="objectiveDatas"
+                dataKey="id"
+                [rows]="10"
+                [loading]="loading"
+                [rowHover]="true"
+                styleClass="p-datatable-gridlines"
+                [paginator]="true"
+                [globalFilterFields]="[
+                    '',
+                    'functional_objective',
+                    'performance_indicator',
+                    'target',
+                    'formula',
+                    'programs',
+                    'department',
+                    'responsible_persons',
+                    'clients',
+                    'timetable',
+                    'frequency_monitoring',
+                    'data_source',
+                    'budget',
+                    'createdAt',
+                    'options'
+                ]"
+                responsiveLayout="scroll"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex justify-content-between flex-column sm:flex-row"
+                    >
+                        <button
+                            pButton
+                            label="Clear"
+                            class="p-button-outlined mb-2"
+                            icon="pi pi-filter-slash"
+                            (click)="clear(dt2)"
+                        ></button>
+
+                        <p-button
+                            icon="pi pi-plus"
+                            (click)="addSubGoal()"
+                            severity="success"
+                            [outlined]="true"
+                            pTooltip="Add Objectives"
+                            tooltipPosition="top"
+                        />
+
+                        <span class="p-input-icon-left mb-2">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                #filter
+                                (input)="onGlobalFilter(dt2, $event)"
+                                placeholder="Search Keyword"
+                                class="p-inputtext p-component p-element w-full"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Functional Objective
+                                <p-columnFilter
+                                    type="text"
+                                    field="functional_objective"
+                                    display="menu"
+                                    placeholder="Search by Functional Objective"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Performance Indicator
+                                <p-columnFilter
+                                    type="text"
+                                    field="performance_indicator"
+                                    display="menu"
+                                    placeholder="Search by Performance Indicator"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Target
+                                <p-columnFilter
+                                    type="text"
+                                    field="target"
+                                    display="menu"
+                                    placeholder="Search by Target"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Programs
+                                <p-columnFilter
+                                    type="text"
+                                    field="programs"
+                                    display="menu"
+                                    placeholder="Search by Programs"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <!-- <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Department
+                                <p-columnFilter
+                                    type="text"
+                                    field="department"
+                                    display="menu"
+                                    placeholder="Search by Department"
+                                ></p-columnFilter>
+                            </div>
+                        </th> -->
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Responsible Persons
+                                <p-columnFilter
+                                    type="text"
+                                    field="responsible_persons"
+                                    display="menu"
+                                    placeholder="Search by Responsible Persons"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Clients
+                                <p-columnFilter
+                                    type="text"
+                                    field="clients"
+                                    display="menu"
+                                    placeholder="Search by Clients"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Timetable
+                                <p-columnFilter
+                                    type="text"
+                                    field="timetable"
+                                    display="menu"
+                                    placeholder="Search by Timetable"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Frequency Monitoring
+                                <p-columnFilter
+                                    type="text"
+                                    field="frequency_monitoring"
+                                    display="menu"
+                                    placeholder="Search by Frequency Monitoring"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Data Source
+                                <p-columnFilter
+                                    type="text"
+                                    field="data_source"
+                                    display="menu"
+                                    placeholder="Search by Data Source"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Budget
+                                <p-columnFilter
+                                    type="text"
+                                    field="budget"
+                                    display="menu"
+                                    placeholder="Search by Budget"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Created At
+                                <p-columnFilter
+                                    type="text"
+                                    field="createdAt"
+                                    display="menu"
+                                    placeholder="Search by Created At"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Options
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-objectiveData>
+                    <tr>
+                        <td>
+                            {{ objectiveData.functional_objective | titlecase }}
+                        </td>
+                        <td>
+                            {{
+                                objectiveData.performance_indicator | titlecase
+                            }}
+                        </td>
+                        <td>
+                            {{ objectiveData.target | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.formula | titlecase }}
+                        </td>
+                        <!-- <td>
+                            {{ objectiveData.department | titlecase }}
+                        </td> -->
+                        <td>
+                            {{ objectiveData.responsible_persons | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.clients | titlecase }}
+                        </td>
+                        <td>
+                            {{
+                                objectiveData.timetable[0] | date : "shortDate"
+                            }}
+                            -
+                            {{
+                                objectiveData.timetable[1] | date : "shortDate"
+                            }}
+                        </td>
+                        <td>
+                            {{ objectiveData.frequency_monitoring | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.data_source | titlecase }}
+                        </td>
+                        <td>
+                            {{ objectiveData.budget | peso }}
+                        </td>
+                        <td>
+                            {{ objectiveData.createdAt | date : "mediumDate" }}
+                        </td>
+                        <td>
+                            <div class="options-users">
+                                <i
+                                    (click)="updateSubGoal(objectiveData)"
+                                    class="pi pi-file-edit text-xl"
+                                    style="color: #0ea5e9; cursor: pointer"
+                                ></i>
+                                <i
+                                    (click)="
+                                        deleteSubGoal(
+                                            objectiveData.id,
+                                            objectiveData.goalId
+                                        )
+                                    "
+                                    class="pi pi-trash text-xl"
+                                    style="color: #ef4444; cursor: pointer"
+                                ></i>
+                                <p-toast></p-toast>
+                                <p-confirmPopup
+                                    key="deleteSubGoal"
+                                ></p-confirmPopup>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">No Objectives found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="loadingbody">
+                    <tr>
+                        <td colspan="8">
+                            Loading Objectives data. Please wait.
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- add objective dialog card -->
 <p-dialog
     styleClass="addObjective"
-    header="Add Objectives"
+    [header]="updateObjectiveGoalFlag ? 'Update' : 'Add' + ' Objectives'"
     [(visible)]="addObjectiveGoalDialogCard"
     [style]="{ width: '50rem' }"
     [modal]="true"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     position="top"
+    (onHide)="clearAddObjectiveGoalDialogCardDatas()"
 >
+    <!--  (onHide)="clearForms([addObjectiveGoalform, formGroupDropdown])"
+
+     (onHide)="clearForms(addObjectiveGoalform, formGroupDropdown)"-->
     <div class="p-fluid">
         <div class="field col-10 md:col-10">
             <form [formGroup]="addObjectiveGoalform">
-                <div class="field">
+                <!-- <div class="field">
                     <label htmlFor="department">Department</label>
                     <p-dropdown
                         formControlName="department"
@@ -647,7 +668,7 @@
                         optionLabel="name"
                         dataKey="id"
                     ></p-dropdown>
-                </div>
+                </div> -->
                 <div class="field">
                     <label htmlFor="name1">Functional Objective</label>
                     <input
@@ -790,12 +811,20 @@
                 </div>
                 <div class="field">
                     <label htmlFor="department">Frequency Monitoring</label>
-                    <p-dropdown
+                    <form [formGroup]="formGroupDropdown">
+                        <p-dropdown
+                            formControlName="selectedDropdown"
+                            [options]="dropdwonSelection"
+                            optionLabel="name"
+                            placeholder="Select a Frequency"
+                        />
+                    </form>
+                    <!-- <p-dropdown
                         formControlName="frequency_monitoring"
                         [options]="frequency"
                         optionLabel="name"
                         dataKey="id"
-                    ></p-dropdown>
+                    ></p-dropdown> -->
                 </div>
                 <div class="field">
                     <label htmlFor="name1"
@@ -834,11 +863,18 @@
         <p-button
             label="Cancel"
             severity="secondary"
-            (click)="addObjectiveGoalDialogCard = false"
+            (click)="clearAddObjectiveGoalDialogCardDatas()"
         />
+        <!--  (click)="addObjectiveGoalDialogCard = false"
+         (click)="clearForms(addObjectiveGoalform, formGroupDropdown)"
+        -->
         <p-button
-            label="Save"
-            (click)="addSubObjectiveGoalDialogExec(addObjectiveGoalform)"
+            [label]="updateObjectiveGoalFlag ? 'Update' : 'Save'"
+            (click)="
+                updateObjectiveGoalFlag
+                    ? updateSubObjectiveGoalDialogExec(addObjectiveGoalform)
+                    : addSubObjectiveGoalDialogExec(addObjectiveGoalform)
+            "
         />
     </div>
 </p-dialog>

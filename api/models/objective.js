@@ -4,11 +4,11 @@ const { Schema } = mongoose;
 
 const objectivesSchema = new Schema({
   id: { type: String, required: true, unique: true },
-  department: {
-    type: String,
-    required: true,
-    lowercase: true,
-  },
+  // department: {
+  //   type: String,
+  //   required: true,
+  //   lowercase: true,
+  // },
   userId: {
     type: String,
     required: true,
@@ -22,7 +22,7 @@ const objectivesSchema = new Schema({
   programs: { type: String },
   responsible_persons: { type: String, required: true },
   clients: { type: String },
-  timetable: { type: String },
+  timetable: [],
   frequency_monitoring: { type: String },
   data_source: { type: String },
   budget: { type: String, required: true },

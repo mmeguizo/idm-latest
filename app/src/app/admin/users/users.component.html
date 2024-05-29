@@ -191,7 +191,7 @@
 <!-- change status dialog-->
 
 <p-dialog
-    header="Dialog"
+    header="Change User"
     id="tester"
     [(visible)]="changeStatusCard"
     [modal]="true"
@@ -232,13 +232,27 @@
     </ng-template>
 </p-dialog>
 
+<!-- edit user card -->
 <p-dialog
     header="Edit User"
     [(visible)]="updateUserCard"
-    [style]="{ width: '25rem' }"
     position="top"
+    [style]="{ width: '23vw' }"
+    [breakpoints]="{ '1199px': '23vw', '575px': '23vw' }"
+    [draggable]="false"
+    [resizable]="false"
 >
-    <form *ngIf="updateUserCard" [formGroup]="form">
+    <form
+        *ngIf="updateUserCard"
+        [formGroup]="form"
+        [style]="{
+            flexWrap: 'wrap',
+            flexDirection: 'column',
+            gap: '1rem',
+            width: '100%',
+            maxWidth: '100vw'
+        }"
+    >
         <div class="flex align-items-center gap-3">
             <div class="p-fluid">
                 <div class="field col-10 md:col-10">
@@ -281,12 +295,20 @@
             <div class="p-fluid">
                 <div class="field col-10 md:col-10">
                     <label htmlFor="department">Department</label>
-                    <p-dropdown
+                    <form [formGroup]="formGroupDemo">
+                        <p-dropdown
+                            formControlName="selectedCity"
+                            [options]="deptDropdownValue"
+                            optionLabel="name"
+                            placeholder="Select a Department"
+                        />
+                    </form>
+                    <!-- <p-dropdown
                         formControlName="department"
                         [options]="deptDropdownValue"
                         optionLabel="name"
                         dataKey="id"
-                    ></p-dropdown>
+                    ></p-dropdown> -->
                 </div>
                 <!-- <div class="field col-12 md:col-10">
                     <label htmlFor="role">Role</label>
@@ -304,6 +326,7 @@
                 severity="secondary"
                 (click)="updateUserCard = false"
             />
+            &nbsp;&nbsp;
             <p-button label="Save" (click)="updateUserExecution(form)" />
         </div>
     </form>
@@ -317,7 +340,10 @@
     [(visible)]="addUserDialogCard"
     [modal]="true"
     showEffect="fade"
-    [style]="{ width: '30vw' }"
+    [style]="{ width: '23vw' }"
+    [breakpoints]="{ '1199px': '23vw', '575px': '23vw' }"
+    [draggable]="false"
+    [resizable]="false"
 >
     <!-- <span class="p-text-secondary block mb-5"
     >Update your information.</span
@@ -388,15 +414,14 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                <!-- </div>
         </div>
 
         <div class="flex align-items-center gap-3">
-            <div class="p-fluid">
+            <div class="p-fluid"> -->
                 <div class="field col-10 md:col-10">
                     <label for="password">Password</label>
-                    <input
-                        pInputText
+                    <p-password
                         id="password"
                         class="flex-auto"
                         autocomplete="off"
@@ -413,8 +438,7 @@
                 <div class="flex align-items-center gap-3">
                     <div class="field col-10 md:col-10">
                         <label for="confirm">Confirm Password</label>
-                        <input
-                            pInputText
+                        <p-password
                             id="confirm"
                             class="flex-auto"
                             [ngClass]="
@@ -429,7 +453,7 @@
                         />
                     </div>
                 </div>
-                <div class="flex align-items-center gap-3">
+                <!-- <div class="flex align-items-center gap-3">
                     <div class="field col-10 md:col-10">
                         <label htmlFor="department">Department</label>
                         <p-dropdown
@@ -439,15 +463,28 @@
                             dataKey="id"
                         ></p-dropdown>
                     </div>
+                </div> -->
+                <div class="flex align-items-center gap-3">
+                    <div class="field col-10 md:col-10">
+                        <form [formGroup]="formGroupDemo">
+                            <p-dropdown
+                                formControlName="selectedCity"
+                                [options]="deptDropdownValue"
+                                optionLabel="name"
+                                placeholder="Select a Department"
+                            />
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="flex" style="gap: 13rem">
+        <div class="flex footer-button-adduser">
             <p-button
                 label="Cancel"
                 severity="secondary"
                 (click)="addUserDialogCard = false"
             />
+            &nbsp;&nbsp;
             <p-button label="Save" (click)="addUser(Addform)" />
         </div>
     </form>

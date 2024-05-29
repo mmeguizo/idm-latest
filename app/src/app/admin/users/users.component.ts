@@ -10,9 +10,14 @@ import { AuthService } from 'src/app/demo/service/auth.service';
 import { UserService } from 'src/app/demo/service/user.service';
 import { Table } from 'primeng/table';
 import { MessageService } from 'primeng/api';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    Validators,
+    ValidatorFn,
+} from '@angular/forms';
 import { DepartmentService } from 'src/app/demo/service/department.service';
-
 export interface UsersElement {
     _id: string;
     id: string;
@@ -56,6 +61,8 @@ export class UsersComponent implements OnInit, OnDestroy {
     AllDepartments: any;
     deleteUserCard: boolean;
     deleteUserId: string;
+    citiesDemo: { name: string; code: string }[];
+    formGroupDemo: any;
     constructor(
         private user: UserService,
         public auth: AuthService,
@@ -81,9 +88,35 @@ export class UsersComponent implements OnInit, OnDestroy {
             { label: 'Active', value: 'qualified' },
             { label: 'Pending', value: 'proposal' },
         ];
+        this.deptDropdownValue = [
+            {
+                name: 'office of the secretary',
+                code: 'office of the secretary',
+            },
+            {
+                name: 'office of the vice-president',
+                code: 'office of the vice-president',
+            },
+            {
+                name: 'office of the president',
+                code: 'office of the president',
+            },
+            {
+                name: 'information and communications technology',
+                code: 'information and communications technology',
+            },
+            {
+                name: 'department of finance',
+                code: 'department of finance',
+            },
+        ];
 
         this.createForm();
         this.createFormAddUser();
+
+        this.formGroupDemo = new FormGroup({
+            selectedCity: new FormControl(),
+        });
     }
 
     createForm() {
@@ -91,7 +124,6 @@ export class UsersComponent implements OnInit, OnDestroy {
             username: ['', [Validators.required]],
             email: ['', [Validators.required]],
             department: ['', [Validators.required]],
-            // role: ['', [Validators.required]],
         });
     }
 
@@ -142,31 +174,23 @@ export class UsersComponent implements OnInit, OnDestroy {
 
     updateUser(data) {
         console.log(this.AllDepartments);
+        console.log(this.deptDropdownValue);
 
         this.selectedDept = data.department;
         console.log({ updateUser: data });
         this.selectedRole = data.role;
-        // this.form = this.formBuilder.group({
-        //     username: [data.username, [Validators.required]],
-        //     email: [data.email, [Validators.required]],
-        //     // department: [data.department, [Validators.required]],
-        //     // role: [data.role, [Validators.required]],
-        // });
+
+        this.formGroupDemo.setValue({
+            selectedCity: this.deptDropdownValue.find(
+                (dept) => dept.name === data.department
+            ),
+        });
         this.form.setValue({
             username: data.username,
             email: data.email,
             department: data.department,
-            // role : data.role
         });
 
-        // let selected = this.AllDepartments.find(
-        //     (dept) => dept.department === data.department
-        // );
-        // let selectedRol = this.roles.find((role) => role.name === data.role);
-        // this.form.get('department').setValue(data.department);
-        // this.form.get('role').setValue(selectedRol);
-
-        // this.form.get('department').setValue(data.department);
         this.updateUserCard = true;
         this.updateUserId = data.id;
     }
@@ -176,7 +200,7 @@ export class UsersComponent implements OnInit, OnDestroy {
             id: this.updateUserId,
             username: form.value.username,
             email: form.value.email,
-            department: form.value.department.name,
+            department: this.formGroupDemo.value.selectedCity.name,
             // role: form.value.role.name,
         };
         console.log({ updateUserExecution_data: data });
@@ -269,23 +293,18 @@ export class UsersComponent implements OnInit, OnDestroy {
             .getRoute('get', 'department', 'getAllDepartment')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
-                let map = data.departments.map((e) => ({
-                    name: e.department,
-                    code: e.department,
-                }));
-                this.deptDropdownValue.push(...map);
-
                 this.AllDepartments = data.department;
             });
     }
 
     addUser(form: any) {
         console.log('addUser', form.value);
+        console.log('addUser', this.formGroupDemo.value);
 
         let data = {
             username: form.value.username,
             email: form.value.email,
-            department: form.value.department.name,
+            department: this.formGroupDemo.value.selectedCity.name,
             password: form.value.password,
             confirm: form.value.confirm,
         };

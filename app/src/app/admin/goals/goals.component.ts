@@ -5,11 +5,16 @@ import {
     ElementRef,
     ViewChild,
 } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, pipe, takeUntil } from 'rxjs';
 import { Table } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { GoalService } from 'src/app/demo/service/goal.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import {
+    FormBuilder,
+    Validators,
+    FormControl,
+    FormGroup,
+} from '@angular/forms';
 import { AuthService } from 'src/app/demo/service/auth.service';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { DepartmentService } from 'src/app/demo/service/department.service';
@@ -41,11 +46,14 @@ export class GoalsComponent implements OnInit, OnDestroy {
     public addGoalform: any;
     public updateGoalform: any;
     public addObjectiveGoalform: any;
-
+    formGroupDropdown: any;
     frequency: any;
 
     objectiveDatas: any;
     deptDropdownValue: any[] = [];
+    dropdwonSelection: { name: string; code: string }[];
+    updateObjectiveGoalFlag: boolean;
+    tobeUpdatedSubGoal: any;
 
     constructor(
         private messageService: MessageService,
@@ -71,6 +79,15 @@ export class GoalsComponent implements OnInit, OnDestroy {
             { name: 'biannually', code: 'Biannually' },
         ];
 
+        this.dropdwonSelection = [
+            { name: 'daily', code: 'Daily' },
+            { name: 'weekly', code: 'Weekly' },
+            { name: 'monthly', code: 'Monthly' },
+            { name: 'yearly', code: 'Yearly' },
+            { name: 'quarterly', code: 'Quarterly' },
+            { name: 'biannually', code: 'Biannually' },
+        ];
+
         this.cols = [
             { field: 'goals', header: 'Goals' },
             { field: 'budget', header: 'Budget' },
@@ -82,6 +99,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.createAddGoalForm();
         this.createUpdateGoalForm();
         this.createAddObjectiveGoalform();
+
+        this.formGroupDropdown = new FormGroup({
+            selectedDropdown: new FormControl(),
+        });
     }
 
     ngOnDestroy(): void {
@@ -97,7 +118,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
     createAddObjectiveGoalform() {
         this.addObjectiveGoalform = this.formBuilder.group({
-            department: ['', [Validators.required]],
+            // department: ['', [Validators.required]],
             userId: ['', [Validators.required]],
             goalId: ['', [Validators.required]],
             functional_objective: ['', [Validators.required]],
@@ -247,9 +268,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     deleteGoalDialog(event: Event, id: any) {
         this.confirmationService.confirm({
-            key: 'confirm2',
+            key: 'deleteGoal',
             target: event.target || new EventTarget(),
-            message: 'Are you sure that you want to delete this goal?',
+            message:
+                'Stop! Deleting this goal will delete all objectives under it?',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.goal
@@ -277,12 +299,81 @@ export class GoalsComponent implements OnInit, OnDestroy {
         });
     }
 
-    updateSubGoal(id: string) {
-        console.log('updateSubGoal', id);
+    updateSubGoal(data: any) {
+        console.log({ updateSubGoal: data });
+        this.tobeUpdatedSubGoal = data.id;
+        //reset every after click
+        this.addObjectiveGoalform.reset();
+        // this.formGroupDropdown.reset();
+
+        this.updateObjectiveGoalFlag = true;
+        this.addObjectiveGoalDialogCard = true;
+        this.formGroupDropdown.setValue({
+            selectedDropdown: this.dropdwonSelection.find(
+                (dept) => dept.name === data.frequency_monitoring
+            ) || { name: 'daily', code: 'Daily' },
+        });
+
+        this.addObjectiveGoalform.patchValue({
+            // department: ['', [Validators.required]],
+            userId: data.userId,
+            goalId: data.goalId,
+            functional_objective: data.functional_objective,
+            performance_indicator: data.performance_indicator,
+            target: data.target,
+            formula: data.formula,
+            programs: data.programs,
+            responsible_persons: data.responsible_persons,
+            clients: data.clients,
+            timetable: [
+                new Date(data.timetable[0]),
+                new Date(data.timetable[1]),
+            ],
+            frequency_monitoring: data.frequency_monitoring,
+            data_source: data.data_source,
+            budget: data.budget,
+        });
     }
 
-    deleteSubGoal(id: string) {
+    clearAddObjectiveGoalDialogCardDatas() {
+        this.addObjectiveGoalDialogCard = false;
+        this.tobeUpdatedSubGoal = null;
+    }
+
+    deleteSubGoal(id: string, goalId: string) {
         console.log('deleteSubGoal', id);
+
+        this.confirmationService.confirm({
+            key: 'deleteSubGoal',
+            target: event.target || new EventTarget(),
+            message: 'Are you sure that you want to delete this Objectives?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.goal
+                    .getRoute('put', 'objectives', 'setInactiveObjectives', {
+                        id: id,
+                    })
+                    .pipe(takeUntil(this.getGoalSubscription))
+                    .subscribe((data: any) => {
+                        if (data.success) {
+                            this.getObjectives(goalId);
+                            this.messageService.add({
+                                severity: 'success  ',
+                                summary: 'Done',
+                                detail: data.message,
+                            });
+                            this.updateGoalDialogCard = false;
+                            this.updateGoalform.reset();
+                        } else {
+                            this.messageService.add({
+                                severity: 'error  ',
+                                summary: 'Error',
+                                detail: data.message,
+                            });
+                        }
+                    });
+            },
+        });
     }
 
     clear(table: Table) {
@@ -305,6 +396,58 @@ export class GoalsComponent implements OnInit, OnDestroy {
     addSubObjectiveGoalDialogExec(e) {
         e.value.userId = this.auth.getTokenUserID();
         e.value.goalId = this.subObjectiveGoalID;
-        console.log('addSubObjectiveGoalDialogExec', e.value);
+        e.value.frequency_monitoring =
+            this.formGroupDropdown.value.selectedDropdown.name;
+        e.value.createdBy = this.auth.getTokenUserID();
+        console.log(e.value);
+
+        this.obj
+            .getRoute('post', 'objectives', 'addObjectives', e.value)
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                if (data.success) {
+                    this.getObjectives(this.subObjectiveGoalID);
+                    this.addObjectiveGoalDialogCard = false;
+                    this.messageService.add({
+                        severity: 'success  ',
+                        summary: 'Done',
+                        detail: data.message,
+                    });
+                } else {
+                    this.messageService.add({
+                        severity: 'error  ',
+                        summary: 'Error',
+                        detail: data.message,
+                    });
+                }
+            });
+    }
+
+    updateSubObjectiveGoalDialogExec(form: any) {
+        form.value.id = this.tobeUpdatedSubGoal;
+        form.value.frequency_monitoring =
+            this.formGroupDropdown.value.selectedDropdown.name;
+        console.log(form.value);
+        console.log(this.formGroupDropdown.value.selectedDropdown.name);
+        this.obj
+            .getRoute('put', 'objectives', 'updateObjectives', form.value)
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                if (data.success) {
+                    this.getObjectives(this.subObjectiveGoalID);
+                    this.addObjectiveGoalDialogCard = false;
+                    this.messageService.add({
+                        severity: 'success  ',
+                        summary: 'Done',
+                        detail: data.message,
+                    });
+                } else {
+                    this.messageService.add({
+                        severity: 'error  ',
+                        summary: 'Error',
+                        detail: data.message,
+                    });
+                }
+            });
     }
 }
