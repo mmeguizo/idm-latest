@@ -132,7 +132,7 @@
                                 >{{ goal.goals | titlecase }}</span
                             > -->
                             <button
-                                (click)="getObjectives(goal.id)"
+                                (click)="getObjectives(goal.id, goal._id)"
                                 pButton
                                 pRipple
                                 type="button"
@@ -160,7 +160,7 @@
                                     style="color: #0ea5e9; cursor: pointer"
                                 ></i>
                                 <i
-                                    (click)="deleteGoalDialog($event, goal.id)"
+                                    (click)="deleteGoalDialog($event, goal._id)"
                                     class="pi pi-trash text-xl"
                                     style="color: #ef4444; cursor: pointer"
                                 ></i>

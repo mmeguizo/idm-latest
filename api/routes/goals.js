@@ -1,6 +1,8 @@
 const Goals = require("../models/goals");
 const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
+const Objectives = require("../models/objective");
 
 module.exports = (router) => {
   router.get("/getAllGoals", (req, res) => {
@@ -24,6 +26,7 @@ module.exports = (router) => {
             date_added: 1,
             goals: 1,
             id: 1,
+            _id: 1,
             objectives: 1,
             updateDate: 1,
             "users.id": 1,
@@ -51,37 +54,6 @@ module.exports = (router) => {
       }
     ).sort({ _id: -1 });
 
-    // Search database for all blog posts
-    // Goals.find(
-    //   { deleted: false },
-    //   {
-    //     id: 1,
-    //     goals: 1,
-    //     budget: 1,
-    //     objectives: 1,
-    //     date_added: 1,
-    //     createdBy: 1,
-    //     updatedBy: 1,
-    //     createdAt: 1,
-    //     deleted: 1,
-    //   },
-    //   (err, Goals) => {
-    //     // Check if error was found or not
-    //     if (err) {
-    //       res.json({ success: false, message: err }); // Return error message
-    //     } else {
-    //       // Check if blogs were found in database
-    //       if (!Goals || Goals.length === 0) {
-    //         res.json({
-    //           success: false,
-    //           message: "No Goals found.",
-    //           Goals: [],
-    //         }); // Return error of no blogs found
-    //       } else {
-    //         res.json({ success: true, goals: Goals }); // Return success and blogs array
-    //       }
-    //     }
-    //   }
     // ).sort({ _id: -1 }); // Sort blogs from newest to oldest
   });
 
@@ -146,53 +118,60 @@ module.exports = (router) => {
 
   router.put("/deleteGoals", (req, res) => {
     let data = req.body;
+    let ObjectivesArray = [];
 
-    Goals.updateOne({ id: data.id }, { deleted: true }, (err, response) => {
-      if (err) return res.json({ success: false, message: err.message });
-
-      if (response) {
-        res.json({
-          success: true,
-          message: " Successfully Delete Goals",
-          data: response,
-        });
-      } else {
-        res.json({
+    Goals.find({ _id: ObjectId(data._id) }, (err, GoalsFindRes) => {
+      ObjectivesArray = GoalsFindRes.map((e) => e.objectives);
+      if (err) {
+        return res.json({ success: false, message: err.message });
+      }
+      if (!GoalsFindRes || GoalsFindRes.length === 0) {
+        return res.json({
           success: false,
-          message: "Could Delete Goals" + err,
-        });
+          message: "No Goals found.",
+          GoalsFindRes: [],
+        }); // Return error of no blogs found
+      } else {
+        Goals.updateOne(
+          { _id: ObjectId(data._id) },
+          { deleted: true },
+          (err, response) => {
+            if (err) {
+              return res.json({ success: false, message: err.message });
+            }
+
+            if (response.modifiedCount > 0) {
+              Objectives.updateMany(
+                {
+                  id: {
+                    // use the [0] instead of objectivesarray
+                    $in: ObjectivesArray[0],
+                  },
+                },
+                { $set: { deleted: true } },
+                (err, response) => {
+                  if (err) {
+                    return res.json({ success: false, message: err.message });
+                  }
+                  if (response.acknowledged) {
+                    res.json({
+                      success: true,
+                      message: "Successfully Delete Goals",
+                      data: response,
+                    });
+                  }
+                }
+              );
+            } else {
+              res.json({
+                success: false,
+                message: "Could Delete Goals" + err,
+              });
+            }
+          }
+        );
       }
     });
-
-    // Goals.findOne(
-    //   {
-    //     id: data.id,
-    //   },
-    //   (err, goals) => {
-    //     if (err) throw err;
-
-    //   }
-    // );
-    // Goals.deleteOne(
-    //   {
-    //     id: data.id,
-    //   },
-    //   (err, results) => {
-    //     console.log(results);
-    //     if (err) {
-    //       res.json({
-    //         success: false,
-    //         message: "Could not Delete Goals" + err,
-    //       });
-    //     } else {
-    //       res.json({
-    //         success: true,
-    //         message: " Successfully Deleted the Goals",
-    //         data: results,
-    //       });
-    //     }
-    //   }
-    // );
   });
 
   router.put("/setInactiveGoals", (req, res) => {
@@ -237,7 +216,6 @@ module.exports = (router) => {
       { new: true },
       (err, response) => {
         if (err) return res.json({ success: false, message: err.message });
-        console.log("updateGoals", response);
         if (response) {
           res.json({
             success: true,
@@ -255,36 +233,5 @@ module.exports = (router) => {
     );
   });
 
-  // router.put("/changeGoalsStatus", (req, res) => {
-  //   let data = req.body;
-  //   Goals.findOne(
-  //     {
-  //       id: data.id,
-  //     },
-  //     (err, Goals) => {
-  //       if (err) throw err;
-  //       Goals.findOneAndUpdate(
-  //         { id: data.id },
-  //         { status: Goals.status === "active" ? "inactive" : "active" },
-  //         { upsert: true, select: "-__v" },
-  //         (err, response) => {
-  //           if (err) return res.json({ success: false, message: err.message });
-  //           if (response) {
-  //             res.json({
-  //               success: false,
-  //               message: response,
-  //             });
-  //           } else {
-  //             res.json({
-  //               success: true,
-  //               message: " Successfully Goals set Status",
-  //               data: response,
-  //             });
-  //           }
-  //         }
-  //       );
-  //     }
-  //   );
-  // });
   return router;
 };

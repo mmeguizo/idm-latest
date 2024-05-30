@@ -1,14 +1,14 @@
 const Objectives = require("../models/objective");
 const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
-const objective = require("../models/objective");
+const Goals = require("../models/goals");
+const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = (router) => {
   router.get("/getAllObjectives", (req, res) => {
     // Search database for all blog posts
     Objectives.find({ deleted: false }, (err, Objectives) => {
       // Check if error was found or not
-      console.log("getAllObjectives", Objectives);
 
       if (err) {
         return res.status(500).json({ success: false, message: err });
@@ -31,8 +31,6 @@ module.exports = (router) => {
       { deleted: false, goalId: req.params.id },
       (err, Objectives) => {
         // Check if error was found or not
-        console.log("getAllObjectives", Objectives);
-
         if (err) {
           return res.status(500).json({ success: false, message: err });
         }
@@ -69,9 +67,9 @@ module.exports = (router) => {
   });
 
   router.post("/addObjectives", (req, res) => {
-    console.log("addObjectives", req.body);
-
     const objectivesData = req.body;
+
+    console.log({ addObjectives: objectivesData });
 
     if (!objectivesData) {
       return res.json({
@@ -84,19 +82,8 @@ module.exports = (router) => {
       id: uuidv4(),
       ...objectivesData,
     };
-
-    // console.log("ObjectivesDataRequest", ObjectivesDataRequest);
-    // res.json({ success: true, ObjectivesDataRequest });
-    Objectives.create(ObjectivesDataRequest)
-      .then((data) =>
-        res.json({
-          success: true,
-          message:
-            "This  Objectives and Action Plan Objectives is successfully Added ",
-          data: { Objectives: data.Objectives },
-        })
-      )
-      .catch((err) => {
+    Objectives.create(ObjectivesDataRequest, function (err, data) {
+      if (err) {
         if (err.code === 11000) {
           res.json({
             success: false,
@@ -115,7 +102,56 @@ module.exports = (router) => {
               err.message,
           });
         }
-      });
+      } else {
+        Goals.updateOne(
+          { id: req.body.goalId },
+          { $push: { objectives: data.id } },
+          function (err, datas) {
+            if (err) {
+              res.json({ success: false, message: "Could not add Objectives" });
+            } else {
+              res.json({
+                success: true,
+                message:
+                  "This  Objectives and Action Plan Objectives is successfully Added ",
+                data: { Objectives: data, Goals: datas },
+              });
+            }
+          }
+        );
+      }
+    });
+    // console.log("ObjectivesDataRequest", ObjectivesDataRequest);
+    // res.json({ success: true, ObjectivesDataRequest });
+    // Objectives.create(ObjectivesDataRequest)
+    //   .then((data) =>
+    //     res.json({
+    //       success: true,
+    //       message:
+    //         "This  Objectives and Action Plan Objectives is successfully Added ",
+    //       data: { Objectives: data.Objectives },
+    //     })
+    //   )
+    //   .catch((err) => {
+    //     if (err.code === 11000) {
+    //       res.json({
+    //         success: false,
+    //         message:
+    //           " Objectives and Action Plan Objectives Name already exists ",
+    //         err: err.message,
+    //       });
+    //     } else if (err.errors) {
+    //       const errors = Object.keys(err.errors);
+    //       res.json({ success: false, message: err.errors[errors[0]].message });
+    //     } else {
+    //       res.json({
+    //         success: false,
+    //         message:
+    //           "Could not add  Objectives and Action Plan Error : " +
+    //           err.message,
+    //       });
+    //     }
+    //   });
   });
 
   router.put("/deleteObjectives", (req, res) => {
@@ -126,7 +162,6 @@ module.exports = (router) => {
         id: data.id,
       },
       (err, results) => {
-        console.log(results);
         if (err) {
           res.json({
             success: false,
@@ -210,8 +245,6 @@ module.exports = (router) => {
 
   router.put("/updateObjectives", async (req, res) => {
     let { id, ...ObjectivesData } = req.body;
-
-    console.log("ObjectivesData", ObjectivesData);
 
     Objectives.findOneAndUpdate(
       { id: id },

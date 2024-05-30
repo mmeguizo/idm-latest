@@ -54,6 +54,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     dropdwonSelection: { name: string; code: string }[];
     updateObjectiveGoalFlag: boolean;
     tobeUpdatedSubGoal: any;
+    goal_ObjectId: string;
 
     constructor(
         private messageService: MessageService,
@@ -177,10 +178,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
         console.log('deleteGoal', id);
     }
 
-    getObjectives(id: string) {
+    getObjectives(id: string, objectId?: string) {
         console.log('getObjectives', id);
+        console.log('getObjectives', objectId);
 
         this.subObjectiveGoalID = id;
+        this.goal_ObjectId = objectId;
         this.subGoalObjective = true;
 
         this.obj
@@ -266,7 +269,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             });
     }
 
-    deleteGoalDialog(event: Event, id: any) {
+    deleteGoalDialog(event: Event, _id: any) {
         this.confirmationService.confirm({
             key: 'deleteGoal',
             target: event.target || new EventTarget(),
@@ -275,7 +278,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.goal
-                    .getRoute('put', 'goals', 'deleteGoals', { id: id })
+                    .getRoute('put', 'goals', 'deleteGoals', { _id: _id })
                     .pipe(takeUntil(this.getGoalSubscription))
                     .subscribe((data: any) => {
                         if (data.success) {
@@ -394,8 +397,11 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     addSubObjectiveGoalDialogExec(e) {
+        console.log({ goal_ObjectId: this.goal_ObjectId });
+
         e.value.userId = this.auth.getTokenUserID();
         e.value.goalId = this.subObjectiveGoalID;
+        e.value.goal_Id = this.goal_ObjectId;
         e.value.frequency_monitoring =
             this.formGroupDropdown.value.selectedDropdown.name;
         e.value.createdBy = this.auth.getTokenUserID();
@@ -405,6 +411,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .getRoute('post', 'objectives', 'addObjectives', e.value)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
+                console.log(data.data.Objectives.goal_Id);
+                console.log({ 'this.goal_ObjectId': this.goal_ObjectId });
+
                 if (data.success) {
                     this.getObjectives(this.subObjectiveGoalID);
                     this.addObjectiveGoalDialogCard = false;
@@ -413,6 +422,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
                         summary: 'Done',
                         detail: data.message,
                     });
+                    //fix the error becomes null after adding new objective
+                    this.goal_ObjectId = data.data.Objectives.goal_Id;
+                    console.log({ 'this.goal_ObjectId': this.goal_ObjectId });
+
+                    this.addObjectiveGoalform.reset();
+                    this.formGroupDropdown.reset();
                 } else {
                     this.messageService.add({
                         severity: 'error  ',
