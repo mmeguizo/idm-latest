@@ -18,6 +18,7 @@ import {
 import { AuthService } from 'src/app/demo/service/auth.service';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { DepartmentService } from 'src/app/demo/service/department.service';
+import { FileService } from 'src/app/demo/service/file.service';
 
 AuthService;
 @Component({
@@ -28,33 +29,49 @@ AuthService;
 export class GoalsComponent implements OnInit, OnDestroy {
     private getGoalSubscription = new Subject<void>();
     @ViewChild('filter') filter!: ElementRef;
+
+    //table data
     goals: any[] = [];
     Alldepts: any[] = [];
+
+    //table columns
     cols!: any;
     loading = true;
 
+    //variables used in the component
     userID: string;
     updateGoalID: string;
     subObjectiveGoalID: string;
+    subObjectiveHeaders: string;
+    uploadedFiles: any[] = [];
+    objectiveDatas: any;
+    deptDropdownValue: any[] = [];
 
+    //variables used in the table
+    tobeUpdatedSubGoal: any;
+    goal_ObjectId: string;
+    frequencys: { name: string; code: string }[];
+
+    //cards dialog
     subGoalObjective: boolean = false;
-
     addGoalDialogCard: boolean = false;
     addObjectiveGoalDialogCard: boolean = false;
     updateGoalDialogCard: boolean = false;
+    viewObjectiveFileDialogCard: boolean = false;
+    addObjectiveFileDialogCard: boolean;
+    updateObjectiveGoalFlag: boolean;
 
+    //forms
     public addGoalform: any;
     public updateGoalform: any;
     public addObjectiveGoalform: any;
-    formGroupDropdown: any;
-    frequency: any;
+    public addFileForm: any;
 
-    objectiveDatas: any;
-    deptDropdownValue: any[] = [];
+    //dropdowns
+    formGroupDropdown: any;
+    frequency: { name: string; code: string }[];
     dropdwonSelection: { name: string; code: string }[];
-    updateObjectiveGoalFlag: boolean;
-    tobeUpdatedSubGoal: any;
-    goal_ObjectId: string;
+    objectiveIDforFile: any;
 
     constructor(
         private messageService: MessageService,
@@ -63,7 +80,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
         private goal: GoalService,
         private auth: AuthService,
         private obj: ObjectiveService,
-        private dept: DepartmentService
+        private dept: DepartmentService,
+        private fileService: FileService
     ) {}
 
     ngOnInit() {
@@ -72,6 +90,14 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.getGoals();
 
         this.frequency = [
+            { name: 'daily', code: 'Daily' },
+            { name: 'weekly', code: 'Weekly' },
+            { name: 'monthly', code: 'Monthly' },
+            { name: 'yearly', code: 'Yearly' },
+            { name: 'quarterly', code: 'Quarterly' },
+            { name: 'biannually', code: 'Biannually' },
+        ];
+        this.frequencys = [
             { name: 'daily', code: 'Daily' },
             { name: 'weekly', code: 'Weekly' },
             { name: 'monthly', code: 'Monthly' },
@@ -100,6 +126,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.createAddGoalForm();
         this.createUpdateGoalForm();
         this.createAddObjectiveGoalform();
+        this.addFileForm();
 
         this.formGroupDropdown = new FormGroup({
             selectedDropdown: new FormControl(),
@@ -115,6 +142,11 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.addGoalform = this.formBuilder.group({
             goals: ['', [Validators.required]],
             budget: ['', [Validators.required]],
+        });
+    }
+    createaddFileForm() {
+        this.addFileForm = this.formBuilder.group({
+            file: ['', [Validators.required]],
         });
     }
     createAddObjectiveGoalform() {
@@ -178,13 +210,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
         console.log('deleteGoal', id);
     }
 
-    getObjectives(id: string, objectId?: string) {
-        console.log('getObjectives', id);
-        console.log('getObjectives', objectId);
-
+    getObjectives(id: string, objectId?: string, subHeader?: string) {
+        //passed data needed for the subgoal table
         this.subObjectiveGoalID = id;
         this.goal_ObjectId = objectId;
         this.subGoalObjective = true;
+        this.subObjectiveHeaders = this.customTitleCase(subHeader);
 
         this.obj
             .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
@@ -464,5 +495,93 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     });
                 }
             });
+    }
+
+    viewFiles(objectiveData: any) {
+        // alert(objectiveID);
+        this.viewObjectiveFileDialogCard = true;
+        // alert(JSON.stringify(objectiveData));
+    }
+
+    addFiles(objectiveData: any) {
+        // alert(objectiveID);
+        this.addObjectiveFileDialogCard = true;
+        this.objectiveIDforFile = objectiveData.id;
+        // alert(JSON.stringify(objectiveData));
+    }
+
+    onUpload(event: any) {
+        for (const file of event.files) {
+            this.uploadedFiles.push(file);
+        }
+
+        if (!this.validateFileType(this.uploadedFiles)) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'File Unsupported',
+                detail: 'Unsupported file type! Please select only images, documents, or spreadsheets',
+            });
+            event.preventDefault();
+        }
+
+        this.fileService
+            .addMultipleFiles(
+                this.auth.getTokenUserID(),
+                this.objectiveIDforFile,
+                this.uploadedFiles
+            )
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                console.log({ UploadFilesResponse: data });
+
+                if (data.success) {
+                    this.messageService.add({
+                        severity: 'success  ',
+                        summary: 'Done',
+                        detail: data.message,
+                    });
+                    this.addObjectiveFileDialogCard = false;
+                    this.addFileForm.reset();
+                    this.uploadedFiles = [];
+                } else {
+                    this.messageService.add({
+                        severity: 'error  ',
+                        summary: 'Error',
+                        detail: data.message,
+                    });
+                }
+            });
+    }
+
+    customTitleCase(str: string): string {
+        // Split the string into words
+        const words = str.split(/\s+/);
+        const formattedWords = words.map(
+            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        );
+        // Join the formatted words back into a string
+        return formattedWords.join(' ');
+    }
+
+    //validate file type
+    validateFileType(files: any) {
+        const allowedTypes = [
+            'image/jpeg',
+            'image/png',
+            'image/svg+xml',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/rtf',
+            'application/pdf',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ];
+        for (const file of files) {
+            if (!allowedTypes.includes(file.type)) {
+                return false; // Return false if any file has an unsupported type
+            }
+        }
+
+        return true; // Return true if all files have allowed types
     }
 }

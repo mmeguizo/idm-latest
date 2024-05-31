@@ -41,3 +41,16 @@
 ::ng-deep .addObjective {
     overflow-y: auto;
 }
+
+::ng-deep .pi-folder:hover {
+    transform: scale(1.2);
+}
+
+::ng-deep .hover\:pi-folder-open:hover:before {
+    content: "📂";
+}
+// content: "\e91f";
+
+::ng-deep .p-fileupload-row > div:first-child {
+    display: none !important;
+}

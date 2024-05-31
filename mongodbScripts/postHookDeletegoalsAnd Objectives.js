@@ -16,13 +16,17 @@ db.getCollection("objectives").updateMany({
 */
 db.getCollection("objectives").updateMany({
   _id: {
-    $in: [
-      ObjectId("6656de2617b129ce226e6ed1"), // Use string representation of ObjectId
-      ObjectId("6656e01717b129ce226e6ee4"),
-      ObjectId("6656e0b417b129ce226e6ef3"),
-       ObjectId("66568ff140d6b955f93af5c8"),
-        ObjectId("6657ea83316f2624b03090e0")
-    ]
+    $in: 
+     [
+    ObjectId("66583879bfe061e8f0fdb6cd") ,
+     ObjectId("665838b3bfe061e8f0fdb6d8") ,
+     ObjectId("6658393bbfe061e8f0fdb6e8") ,
+    ObjectId("66583966bfe061e8f0fdb6f5") ,
+   ObjectId("665839acbfe061e8f0fdb703") ,
+   ObjectId("66583a03bfe061e8f0fdb712") ,
+   ObjectId("66583a33bfe061e8f0fdb71e") 
+]
+    
   }
 },
 { $set: { deleted: true } }

@@ -132,7 +132,9 @@
                                 >{{ goal.goals | titlecase }}</span
                             > -->
                             <button
-                                (click)="getObjectives(goal.id, goal._id)"
+                                (click)="
+                                    getObjectives(goal.id, goal._id, goal.goals)
+                                "
                                 pButton
                                 pRipple
                                 type="button"
@@ -314,7 +316,7 @@
 
 <!-- main objective table  -->
 <p-dialog
-    header="Objectives"
+    [header]="subObjectiveHeaders"
     [modal]="true"
     [(visible)]="subGoalObjective"
     [style]="{ width: '60rem' }"
@@ -349,9 +351,11 @@
                     'data_source',
                     'budget',
                     'createdAt',
+                    'Files',
                     'options'
                 ]"
                 responsiveLayout="scroll"
+                [tableStyle]="{ 'min-width': '50rem' }"
             >
                 <ng-template pTemplate="caption">
                     <div
@@ -493,7 +497,7 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-                        <th style="min-width: 12rem">
+                        <th style="min-width: 4rem">
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
@@ -545,7 +549,20 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-                        <th style="min-width: 12rem">
+                        <th style="min-width: 6rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Files
+                                <p-columnFilter
+                                    type="text"
+                                    field="createdAt"
+                                    display="menu"
+                                    placeholder="Search by Files"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 9rem">
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
@@ -599,6 +616,19 @@
                         </td>
                         <td>
                             {{ objectiveData.createdAt | date : "mediumDate" }}
+                        </td>
+                        <td>
+                            <!-- <div class="flex flex-column align-items-center">
+                                <i
+                                    class="pi pi-folder-open text-2xl hover:text-4xl hover:text-yellow-400 cursor-pointer"
+                                ></i>
+                            </div> -->
+                            <div class="flex flex-column align-items-center">
+                                <i
+                                    (click)="viewFiles(objectiveData)"
+                                    class="pi pi-folder text-2xl hover:text-4xl text-yellow-400 transition ease-in-out duration-200 hover:pi-folder-open cursor-pointer"
+                                ></i>
+                            </div>
                         </td>
                         <td>
                             <div class="options-users">
@@ -876,5 +906,200 @@
                     : addSubObjectiveGoalDialogExec(addObjectiveGoalform)
             "
         />
+    </div>
+</p-dialog>
+
+<!-- view file table list -->
+
+<p-dialog
+    header="Files List"
+    [modal]="true"
+    [(visible)]="viewObjectiveFileDialogCard"
+    [style]="{ width: '60rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true"
+    responsiveLayout="stack"
+>
+    <div class="grid">
+        <div class="col-12">
+            <p-table
+                #dt3
+                [value]="frequencys"
+                dataKey="id"
+                [rows]="10"
+                [loading]="loading"
+                [rowHover]="true"
+                styleClass="p-datatable-gridlines"
+                [paginator]="true"
+                [globalFilterFields]="['name', 'code', 'options']"
+                responsiveLayout="scroll"
+                [tableStyle]="{ 'min-width': '50rem' }"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex justify-content-between flex-column sm:flex-row"
+                    >
+                        <button
+                            pButton
+                            label="Clear"
+                            class="p-button-outlined mb-2"
+                            icon="pi pi-filter-slash"
+                            (click)="clear(dt3)"
+                        ></button>
+
+                        <p-button
+                            icon="pi pi-upload"
+                            (click)="addFiles()"
+                            severity="success"
+                            [outlined]="true"
+                            pTooltip="Add Objectives"
+                            tooltipPosition="top"
+                        />
+
+                        <span class="p-input-icon-left mb-2">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                #filter
+                                (input)="onGlobalFilter(dt3, $event)"
+                                placeholder="Search Keyword"
+                                class="p-inputtext p-component p-element w-full"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Name
+                                <p-columnFilter
+                                    type="text"
+                                    field="name"
+                                    display="menu"
+                                    placeholder="Search Name"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Code
+                                <p-columnFilter
+                                    type="text"
+                                    field="code"
+                                    display="menu"
+                                    placeholder="Search by Code"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+
+                        <th style="min-width: 9rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Options
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-frequency>
+                    <tr>
+                        <td>
+                            {{ frequency.name }}
+                        </td>
+                        <td>
+                            {{ frequency.code }}
+                        </td>
+
+                        <td>
+                            <div class="options-users">
+                                <i
+                                    (click)="updateSubGoal(frequency)"
+                                    class="pi pi-file-edit text-xl"
+                                    style="color: #0ea5e9; cursor: pointer"
+                                ></i>
+                                <i
+                                    (click)="
+                                        deleteSubGoal(
+                                            frequency.name,
+                                            frequency.code
+                                        )
+                                    "
+                                    class="pi pi-trash text-xl"
+                                    style="color: #ef4444; cursor: pointer"
+                                ></i>
+                                <p-toast></p-toast>
+                                <p-confirmPopup
+                                    key="deleteSubGoal"
+                                ></p-confirmPopup>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">No Files found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="loadingbody">
+                    <tr>
+                        <td colspan="8">Loading Files data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- add files form dialog -->
+
+<p-dialog
+    styleClass="addObjective"
+    header="Add Files"
+    [(visible)]="addObjectiveFileDialogCard"
+    [style]="{ width: '50rem' }"
+    [modal]="true"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    position="top"
+>
+    <div class="p-fluid">
+        <form [formGroup]="addFileForm">
+            <p-fileUpload
+                name="demo[]"
+                (onUpload)="onUpload($event)"
+                multiple="true"
+                accept="image/jpeg,image/png,image/svg+xml,
+                   application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+                   application/rtf,application/pdf,
+                   application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                maxFileSize="2000000"
+                formControlName="file"
+            >
+                <ng-template pTemplate="content">
+                    <ul *ngIf="uploadedFiles.length">
+                        <li *ngFor="let file of uploadedFiles">
+                            {{ file.name }} - {{ file.size }} bytes
+                        </li>
+                    </ul>
+                </ng-template>
+            </p-fileUpload>
+        </form>
+    </div>
+    &nbsp;&nbsp;
+    <div class="flex justify-space-between gap-2">
+        <p-button
+            label="Cancel"
+            severity="secondary"
+            (click)="addObjectiveFileDialogCard = false"
+        />
+        <!--  (click)="addObjectiveGoalDialogCard = false"
+         (click)="clearForms(addObjectiveGoalform, formGroupDropdown)"
+        -->
     </div>
 </p-dialog>

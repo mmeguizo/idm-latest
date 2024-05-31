@@ -24,7 +24,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
 import { GoalsComponent } from './goals/goals.component';
-
+import { SelectButtonModule } from 'primeng/selectbutton';
 import {
     dataFilterPipe,
     NumberWithCommas,
@@ -41,6 +41,7 @@ import {
 import { DepartmentsComponent } from './departments/departments.component';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { FileUploadModule } from 'primeng/fileupload';
 
 const pipes = [
     dataFilterPipe,
@@ -82,6 +83,8 @@ const pipes = [
         InputTextModule,
         ToastModule,
         ConfirmPopupModule,
+        SelectButtonModule,
+        FileUploadModule,
     ],
     declarations: [
         AdminComponent,

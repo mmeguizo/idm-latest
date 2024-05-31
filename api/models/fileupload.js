@@ -12,13 +12,11 @@ const fileUpload = new Schema({
   for: { type: String, maxlength: 50, required: true },
   date_added: {
     type: Date,
-    required: true,
-    required: true,
     default: new Date(),
   },
   status: { type: Boolean, default: true },
   filetype: { type: String, default: "" },
-  objectives: { type: String, default: "" },
+  objective_id: { type: String, required: true },
   // added_by:           { type:Number, maxlength:7, required:true },
 });
 

@@ -8,8 +8,154 @@ const path = require("path");
 const ObjectId = mongoose.Types.ObjectId;
 let fs = require("fs");
 const { fail } = require("assert");
-
+let md5 = require("md5");
 module.exports = (router) => {
+  router.post("/addMultipleFiles/:user_id/:objective_id", async (req, res) => {
+    let ReturnData = [];
+    let useFor = "files";
+    let form = new formidable.IncomingForm({ multiples: true });
+    form.maxFileSize = 2500 * 1024 * 1024; // Adjust max file size as needed
+    form.uploadDir = path.join(__dirname, "..", "images/files");
+
+    const uploadedFiles = []; // Array to store uploaded file details
+
+    form.on("file", async (field, file) => {
+      const newFileName = [
+        useFor,
+        Math.random(),
+        Math.random(),
+        Math.random(),
+      ].join("");
+      const ext = file.originalFilename.split(".").pop();
+      const finalFileName = `${md5(newFileName)}${ext ? `.${ext}` : ""}`;
+
+      try {
+        const filePath = file.filepath; // Assuming `filepath` property exists
+        const readStream = fs.createReadStream(filePath);
+
+        await new Promise((resolve, reject) => {
+          const fileStream = fs.createWriteStream(
+            path.join(form.uploadDir, finalFileName)
+          );
+          fileStream.on("error", (err) => reject(err));
+          fileStream.on("finish", () => resolve());
+          readStream.pipe(fileStream); // Pipe the read stream to the write stream
+        });
+
+        uploadedFiles.push(
+          new File({
+            id: uuidv4(),
+            user_id: req.params.user_id,
+            objective_id: req.params.objective_id,
+            source: finalFileName,
+            for: "files",
+            filetype: file.mimetype.split("/")[0],
+          })
+        );
+
+        // async function saveFiles(uploadedFiles) {
+        //   console.log("Saving files...");
+        //   try {
+        //     const data = await Promise.all(
+        //       uploadedFiles.map(
+        //         (file) =>
+        //           new Promise((resolve, reject) =>
+        //             file.save((err, data) => {
+        //               if (err) {
+        //                 reject(err);
+        //               }
+        //               resolve(data);
+        //             })
+        //           )
+        //       )
+        //     );
+        //     ReturnData.push(data);
+        //   } catch (err) {
+        //     console.error("Error saving files:", err);
+        //     res.json({
+        //       success: false,
+        //       message: "Error, could not save files: " + err,
+        //     });
+        //   }
+        // }
+
+        // saveFiles(uploadedFiles);
+
+        // console.log(
+        //   "Files saved successfully!XXX",
+        //   uploadedFiles.length === ReturnData.length
+        // );
+        // console.log("ReturnData:", ReturnData.length);
+        // console.log("uploadedFiles:", uploadedFiles.length);
+        // console.log({
+        //   "Files saved": uploadedFiles.length === ReturnData.length,
+        // });
+        // //check the legnth of the array and the saved before sending response
+        // if (uploadedFiles.length === ReturnData.length) {
+        //   // res.json({
+        //   //   success: true,
+        //   //   message: "All files saved successfully",
+        //   //   data,
+        //   // });
+        // }
+
+        let savePromises = uploadedFiles.map((file) => {
+          return new Promise((resolve, reject) => {
+            file.save((err, data) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(data);
+              }
+            });
+          });
+        });
+
+        Promise.all(savePromises)
+          .then((data) => {
+            console.log("Files Saving success....:", data);
+          })
+          .catch((err) => {
+            res.json({
+              success: false,
+              message: "Error, could not save files : " + err,
+            });
+          });
+      } catch (err) {
+        console.error("Error uploading file:", err);
+        // Handle upload errors appropriately (e.g., send error response to client)
+      }
+    });
+
+    form.on("progress", (bytesReceived, bytesExpected) => {
+      // Handle upload progress if needed
+    });
+
+    form.on("error", (err) => {
+      console.error("An error occurred:", err);
+      res.status(500).json({ message: "Error uploading files" }); // Handle errors gracefully
+    });
+
+    form.on("end", async () => {
+      console.log("Finished uploading files");
+
+      try {
+        await res.json({
+          success: true,
+          message: "Files uploaded successfully!",
+          data: uploadedFiles,
+        });
+      } catch (err) {
+        console.error("Error saving uploaded files:", err);
+        res
+          .status(500)
+          .json({ success: false, message: "Error saving uploaded files" }); // Handle errors gracefully
+      }
+    });
+
+    form.parse(req);
+  });
+
   router.post("/addFile/:user_id", async (req, res) => {
     let useFor = "files";
     let formidable = require("formidable");
@@ -200,3 +346,71 @@ module.exports = (router) => {
 
   return router;
 };
+
+// router.post("/addMultipleFile/:user_id", async (req, res) => {
+//   let useFor = "files";
+//   let formidable = require("formidable");
+//   let fs = require("fs");
+//   let path = require("path");
+//   let md5 = require("md5");
+
+//   let returnMe = [];
+
+//   let form = new formidable.IncomingForm();
+
+//   form.maxFileSize = 2500 * 1024 * 1024;
+//   form.multiples = true;
+
+//   form.uploadDir = path.join(__dirname, "..", "images/files");
+
+//   form.onPart = async function (part) {
+//     if (!part.filename) {
+//       return;
+//     }
+
+//     let newFileName = [useFor, Math.random(), Math.random(), Math.random()];
+
+//     newFileName = `${md5(newFileName.join(""))}.${part.filename
+//       .split(".")
+//       .pop()}`;
+
+//     let uploadPath = path.join(form.uploadDir, newFileName);
+
+//     const writeStream = fs.createWriteStream(uploadPath);
+//     part.pipe(writeStream);
+
+//     let uploadData = new File({
+//       id: uuidv4(),
+//       user_id: req.params.user_id,
+//       source: newFileName,
+//       for: "files",
+//       filetype: part.mime.substring(0, part.mime.indexOf("/")),
+//     });
+
+//     await uploadData.save();
+
+//     returnMe.push({
+//       fields: part.headers["content-disposition"],
+//       file: newFileName,
+//     });
+//   };
+
+//   form.on("progress", (bytesReceived, bytesExpected) => {});
+
+//   form.on("error", function (err) {
+//     console.log("An error has occured: \n" + err);
+//     res.eventEmitter("error");
+//   });
+
+//   // once all the files have been uploaded, send a response to the client
+//   form.on("end", function () {
+//     console.log("finished uploading");
+//     res.json({
+//       success: true,
+//       message: "Files uploaded successfully ",
+//       data: returnMe,
+//     });
+//   });
+
+//   form.parse(req);
+// });
