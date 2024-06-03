@@ -20,6 +20,8 @@ module.exports = (router) => {
     const uploadedFiles = []; // Array to store uploaded file details
 
     form.on("file", async (field, file) => {
+      // console.log({ FILEEEEE: file, field, form });
+
       const newFileName = [
         useFor,
         Math.random(),
@@ -53,52 +55,6 @@ module.exports = (router) => {
           })
         );
 
-        // async function saveFiles(uploadedFiles) {
-        //   console.log("Saving files...");
-        //   try {
-        //     const data = await Promise.all(
-        //       uploadedFiles.map(
-        //         (file) =>
-        //           new Promise((resolve, reject) =>
-        //             file.save((err, data) => {
-        //               if (err) {
-        //                 reject(err);
-        //               }
-        //               resolve(data);
-        //             })
-        //           )
-        //       )
-        //     );
-        //     ReturnData.push(data);
-        //   } catch (err) {
-        //     console.error("Error saving files:", err);
-        //     res.json({
-        //       success: false,
-        //       message: "Error, could not save files: " + err,
-        //     });
-        //   }
-        // }
-
-        // saveFiles(uploadedFiles);
-
-        // console.log(
-        //   "Files saved successfully!XXX",
-        //   uploadedFiles.length === ReturnData.length
-        // );
-        // console.log("ReturnData:", ReturnData.length);
-        // console.log("uploadedFiles:", uploadedFiles.length);
-        // console.log({
-        //   "Files saved": uploadedFiles.length === ReturnData.length,
-        // });
-        // //check the legnth of the array and the saved before sending response
-        // if (uploadedFiles.length === ReturnData.length) {
-        //   // res.json({
-        //   //   success: true,
-        //   //   message: "All files saved successfully",
-        //   //   data,
-        //   // });
-        // }
-
         let savePromises = uploadedFiles.map((file) => {
           return new Promise((resolve, reject) => {
             file.save((err, data) => {
@@ -116,10 +72,11 @@ module.exports = (router) => {
             console.log("Files Saving success....:", data);
           })
           .catch((err) => {
-            res.json({
-              success: false,
-              message: "Error, could not save files : " + err,
-            });
+            // res.json({
+            //   success: false,
+            //   message: "Error, could not save files : " + err,
+            // });
+            console.error("Error uploading file:", err);
           });
       } catch (err) {
         console.error("Error uploading file:", err);
@@ -342,6 +299,38 @@ module.exports = (router) => {
         return res.json({ success: true, message: "Files", data: files });
       }
     });
+  });
+
+  router.get("/getAllFilesFromObjective/:user_id/:objective_id", (req, res) => {
+    const { user_id, objective_id } = req.params;
+
+    File.find(
+      {
+        user_id: user_id,
+        objective_id: objective_id,
+        for: "files",
+      },
+      {
+        __v: 0.0,
+      },
+      (err, files) => {
+        if (err) {
+          return res.json({ success: false, message: err.message });
+        } else {
+          return res.json({ success: true, message: "Files", data: files });
+        }
+      }
+    ).sort({
+      _id: 1.0,
+    });
+
+    // File.find(query, (err, files) => {
+    //   if (err) {
+    //     return res.json({ success: false, message: err.message });
+    //   } else {
+    //     return res.json({ success: true, message: "Files", data: files });
+    //   }
+    // });
   });
 
   return router;

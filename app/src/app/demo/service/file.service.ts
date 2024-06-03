@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConnectionService } from './connection.service';
 import { AuthService } from './auth.service';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
     providedIn: 'root',
@@ -70,10 +71,26 @@ export class FileService {
 
     addMultipleFiles(id: string, objectiveIDforFile: string, files?: any) {
         this.createAuthenticationHeaders();
+        console.log({ addMultipleFiles: files });
+        const formData: FormData = new FormData();
+
+        for (let file of files) {
+            formData.append('files', file, file.name);
+        }
+
         return this.http.post(
             this.cs.domain +
                 `/fileupload/addMultipleFiles/${id}/${objectiveIDforFile}`,
-            files,
+            formData,
+            { headers: this.options, responseType: 'json' }
+        );
+    }
+
+    getAllFilesFromObjective(id: string, objectId: string) {
+        this.createAuthenticationHeaders();
+        return this.http.get(
+            this.cs.domain +
+                `/fileupload/getAllFilesFromObjective/${id}/${objectId}`,
             { headers: this.options, responseType: 'json' }
         );
     }

@@ -33,6 +33,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     //table data
     goals: any[] = [];
     Alldepts: any[] = [];
+    AllObjectivesFiles: any[] = [];
 
     //table columns
     cols!: any;
@@ -126,7 +127,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.createAddGoalForm();
         this.createUpdateGoalForm();
         this.createAddObjectiveGoalform();
-        this.addFileForm();
+        this.createaddFileForm();
 
         this.formGroupDropdown = new FormGroup({
             selectedDropdown: new FormControl(),
@@ -146,7 +147,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
     createaddFileForm() {
         this.addFileForm = this.formBuilder.group({
-            file: ['', [Validators.required]],
+            files: ['', [Validators.required]],
         });
     }
     createAddObjectiveGoalform() {
@@ -500,13 +501,28 @@ export class GoalsComponent implements OnInit, OnDestroy {
     viewFiles(objectiveData: any) {
         // alert(objectiveID);
         this.viewObjectiveFileDialogCard = true;
+        this.objectiveIDforFile = objectiveData.id;
         // alert(JSON.stringify(objectiveData));
+
+        this.getAllFilesFromObjectiveLoad(
+            this.auth.getTokenUserID(),
+            objectiveData.id
+        );
+    }
+
+    getAllFilesFromObjectiveLoad(id: string, objectiveID: string) {
+        this.fileService
+            .getAllFilesFromObjective(id, objectiveID)
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                this.AllObjectivesFiles = data.data;
+                console.log(this.AllObjectivesFiles);
+            });
     }
 
     addFiles(objectiveData: any) {
         // alert(objectiveID);
         this.addObjectiveFileDialogCard = true;
-        this.objectiveIDforFile = objectiveData.id;
         // alert(JSON.stringify(objectiveData));
     }
 
@@ -543,6 +559,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     this.addObjectiveFileDialogCard = false;
                     this.addFileForm.reset();
                     this.uploadedFiles = [];
+                    this.getAllFilesFromObjectiveLoad(
+                        this.auth.getTokenUserID(),
+                        this.objectiveIDforFile
+                    );
                 } else {
                     this.messageService.add({
                         severity: 'error  ',
@@ -583,5 +603,31 @@ export class GoalsComponent implements OnInit, OnDestroy {
         }
 
         return true; // Return true if all files have allowed types
+    }
+
+    getIcon(name: string) {
+        const fileExtension = name.split('.').pop();
+        switch (fileExtension) {
+            case 'jpg':
+            case 'jpeg':
+            case 'png':
+            case 'svg':
+                return 'pi pi-image';
+            case 'doc':
+            case 'docx':
+            case 'rtf':
+                return 'pi pi-file';
+            case 'pdf':
+                return 'pi pi-file-pdf';
+            case 'xls':
+            case 'xlsx':
+                return 'pi pi-file-excel';
+            default:
+                return 'pi pi-file';
+        }
+    }
+
+    deleteSubGoalFile(id: string) {
+        alert('delete sub goal file' + id);
     }
 }
