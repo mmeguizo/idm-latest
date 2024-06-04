@@ -18,6 +18,7 @@ const goalsSchema = new Schema(
     createdAt: { type: Date, default: Date.now }, // The date the goal was created
     updatedBy: { type: String }, // The ID of the user who last updated the goal
     updateDate: { type: Date }, // The date the goal was created
+    complete: { type: Boolean, default: false },
     deleted: { type: Boolean, default: false }, // Indicates if the goal is deleted
   },
   {

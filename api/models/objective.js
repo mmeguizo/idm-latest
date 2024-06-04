@@ -21,6 +21,7 @@ const objectivesSchema = new mongoose.Schema({
   clients: { type: String },
   timetable: [],
   frequency_monitoring: { type: String },
+  complete: { type: Boolean, default: false },
   data_source: { type: String },
   budget: { type: String, required: true },
   date_added: { type: Date, required: true, default: Date.now },

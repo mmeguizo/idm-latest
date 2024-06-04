@@ -74,6 +74,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
     dropdwonSelection: { name: string; code: string }[];
     objectiveIDforFile: any;
 
+    valSwitch: boolean = false;
+    USERID: string;
+    hideviewObjectiveFileDialogCardID: any;
+
     constructor(
         private messageService: MessageService,
         private formBuilder: FormBuilder,
@@ -83,11 +87,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
         private obj: ObjectiveService,
         private dept: DepartmentService,
         private fileService: FileService
-    ) {}
+    ) {
+        this.USERID = this.auth.getTokenUserID();
+    }
 
     ngOnInit() {
         this.getAllDept();
-        console.log('GoalsComponent');
         this.getGoals();
 
         this.frequency = [
@@ -183,7 +188,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .subscribe((data: any) => {
                 this.goals = data.goals;
                 this.loading = false;
-                console.log(this.goals);
             });
     }
     getAllDept() {
@@ -211,20 +215,19 @@ export class GoalsComponent implements OnInit, OnDestroy {
         console.log('deleteGoal', id);
     }
 
-    getObjectives(id: string, objectId?: string, subHeader?: string) {
+    async getObjectives(id: string, objectId?: string, subHeader?: string) {
         //passed data needed for the subgoal table
         this.subObjectiveGoalID = id;
         this.goal_ObjectId = objectId;
         this.subGoalObjective = true;
         this.subObjectiveHeaders = this.customTitleCase(subHeader);
 
-        this.obj
+        await this.obj
             .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.objectiveDatas = data.Objectives;
                 this.loading = false;
-                console.log(this.objectiveDatas);
             });
     }
 
@@ -237,11 +240,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     addGoal() {
         this.addGoalDialogCard = true;
-        console.log('addGoal');
     }
 
     addGoalDialogExec(form: any) {
-        this.userID = this.auth.getTokenUserID();
+        this.userID = this.USERID;
 
         let data = {
             goals: form.value.goals,
@@ -335,7 +337,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     updateSubGoal(data: any) {
-        console.log({ updateSubGoal: data });
         this.tobeUpdatedSubGoal = data.id;
         //reset every after click
         this.addObjectiveGoalform.reset();
@@ -376,8 +377,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     deleteSubGoal(id: string, goalId: string) {
-        console.log('deleteSubGoal', id);
-
         this.confirmationService.confirm({
             key: 'deleteSubGoal',
             target: event.target || new EventTarget(),
@@ -417,35 +416,26 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     closeSubGoalTable() {
-        console.log('closeSubGoalTable');
-
         this.subGoalObjective = false;
         this.objectiveDatas = [];
     }
 
     addSubGoal() {
-        console.log('addSubGoal', this.subObjectiveGoalID);
         this.addObjectiveGoalDialogCard = true;
     }
 
     addSubObjectiveGoalDialogExec(e) {
-        console.log({ goal_ObjectId: this.goal_ObjectId });
-
-        e.value.userId = this.auth.getTokenUserID();
+        e.value.userId = this.USERID;
         e.value.goalId = this.subObjectiveGoalID;
         e.value.goal_Id = this.goal_ObjectId;
         e.value.frequency_monitoring =
             this.formGroupDropdown.value.selectedDropdown.name;
-        e.value.createdBy = this.auth.getTokenUserID();
-        console.log(e.value);
+        e.value.createdBy = this.USERID;
 
         this.obj
             .getRoute('post', 'objectives', 'addObjectives', e.value)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
-                console.log(data.data.Objectives.goal_Id);
-                console.log({ 'this.goal_ObjectId': this.goal_ObjectId });
-
                 if (data.success) {
                     this.getObjectives(this.subObjectiveGoalID);
                     this.addObjectiveGoalDialogCard = false;
@@ -456,7 +446,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     });
                     //fix the error becomes null after adding new objective
                     this.goal_ObjectId = data.data.Objectives.goal_Id;
-                    console.log({ 'this.goal_ObjectId': this.goal_ObjectId });
 
                     this.addObjectiveGoalform.reset();
                     this.formGroupDropdown.reset();
@@ -474,8 +463,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         form.value.id = this.tobeUpdatedSubGoal;
         form.value.frequency_monitoring =
             this.formGroupDropdown.value.selectedDropdown.name;
-        console.log(form.value);
-        console.log(this.formGroupDropdown.value.selectedDropdown.name);
         this.obj
             .getRoute('put', 'objectives', 'updateObjectives', form.value)
             .pipe(takeUntil(this.getGoalSubscription))
@@ -504,10 +491,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.objectiveIDforFile = objectiveData.id;
         // alert(JSON.stringify(objectiveData));
 
-        this.getAllFilesFromObjectiveLoad(
-            this.auth.getTokenUserID(),
-            objectiveData.id
-        );
+        this.getAllFilesFromObjectiveLoad(this.USERID, objectiveData.id);
     }
 
     getAllFilesFromObjectiveLoad(id: string, objectiveID: string) {
@@ -516,7 +500,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.AllObjectivesFiles = data.data;
-                console.log(this.AllObjectivesFiles);
             });
     }
 
@@ -542,14 +525,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
         this.fileService
             .addMultipleFiles(
-                this.auth.getTokenUserID(),
+                this.USERID,
                 this.objectiveIDforFile,
                 this.uploadedFiles
             )
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
-                console.log({ UploadFilesResponse: data });
-
                 if (data.success) {
                     this.messageService.add({
                         severity: 'success  ',
@@ -560,7 +541,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     this.addFileForm.reset();
                     this.uploadedFiles = [];
                     this.getAllFilesFromObjectiveLoad(
-                        this.auth.getTokenUserID(),
+                        this.USERID,
                         this.objectiveIDforFile
                     );
                 } else {
@@ -589,20 +570,34 @@ export class GoalsComponent implements OnInit, OnDestroy {
             'image/jpeg',
             'image/png',
             'image/svg+xml',
+            'image/gif',
+            'image/x-jif',
+            'image/x-jiff',
             'application/msword',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'application/rtf',
             'application/pdf',
             'application/vnd.ms-excel',
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/csv',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'text/plain',
+            'application/zip',
+            'image/x-photoshop',
+            'image/vnd.dxf',
+            'audio/mpeg',
+            'audio/wav',
+            'audio/aac',
         ];
         for (const file of files) {
             if (!allowedTypes.includes(file.type)) {
-                return false; // Return false if any file has an unsupported type
+                console.log(`Invalid file type: ${file.type}`); // Log the type of any file that fails validation
+                return false;
             }
         }
 
-        return true; // Return true if all files have allowed types
+        return true;
     }
 
     getIcon(name: string) {
@@ -611,17 +606,35 @@ export class GoalsComponent implements OnInit, OnDestroy {
             case 'jpg':
             case 'jpeg':
             case 'png':
+            case 'gif':
             case 'svg':
                 return 'pi pi-image';
             case 'doc':
             case 'docx':
             case 'rtf':
-                return 'pi pi-file';
+                return 'pi pi-file-word';
             case 'pdf':
                 return 'pi pi-file-pdf';
             case 'xls':
             case 'xlsx':
                 return 'pi pi-file-excel';
+            case 'csv':
+                return 'pi pi-file-csv';
+            case 'ppt':
+            case 'pptx':
+                return 'pi pi-file-powerpoint';
+            case 'txt':
+                return 'pi pi-file-o';
+            case 'zip':
+                return 'pi pi-file-zip';
+            case 'psd':
+                return 'pi pi-image';
+            case 'dxf':
+                return 'pi pi-image';
+            case 'mp3':
+            case 'wav':
+            case 'aac':
+                return 'pi pi-volume-up';
             default:
                 return 'pi pi-file';
         }
@@ -630,4 +643,56 @@ export class GoalsComponent implements OnInit, OnDestroy {
     deleteSubGoalFile(id: string) {
         alert('delete sub goal file' + id);
     }
+
+    updateObjectiveComplete(event: any, data: any) {
+        let goalIDs = data.goalId;
+        this.obj
+            .getRoute('put', 'objectives', 'updateobjectivecompletion', {
+                id: data.id,
+            })
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe(async (results: any) => {
+                if (results.success) {
+                    this.getGoals();
+                    this.messageService.add({
+                        severity: 'success  ',
+                        summary: 'Done',
+                        detail: results.message,
+                    });
+                    // this saves the objectid instead of refetch by closing the dialog it will run hideview to refetch
+                    this.hideviewObjectiveFileDialogCardID = goalIDs;
+                    // this.hideviewObjectiveFileDialogCard(goalIDs);
+                } else {
+                    this.messageService.add({
+                        severity: 'error  ',
+                        summary: 'Error',
+                        detail: results.message,
+                    });
+                }
+            });
+    }
+
+    hideviewObjectiveFileDialogCard(id?: string) {
+        this.subGoalObjective = false;
+        this.objectiveDatas = [];
+        console.log(
+            'hide view objective file dialog card',
+            this.viewObjectiveFileDialogCard
+        );
+        //after they click the switch it and close the dialog will refetch
+
+        this.obj
+            .getRoute(
+                'get',
+                'objectives',
+                `getAllByIdObjectives/${this.hideviewObjectiveFileDialogCardID}`
+            )
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                this.objectiveDatas = data.Objectives;
+                this.loading = false;
+            });
+    }
+
+    // end of class
 }

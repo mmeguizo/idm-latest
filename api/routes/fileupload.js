@@ -303,7 +303,7 @@ module.exports = (router) => {
 
   router.get("/getAllFilesFromObjective/:user_id/:objective_id", (req, res) => {
     const { user_id, objective_id } = req.params;
-
+    console.log({ user_id, objective_id });
     File.find(
       {
         user_id: user_id,
@@ -314,6 +314,8 @@ module.exports = (router) => {
         __v: 0.0,
       },
       (err, files) => {
+        console.log({ files });
+
         if (err) {
           return res.json({ success: false, message: err.message });
         } else {

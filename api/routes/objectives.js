@@ -25,6 +25,38 @@ module.exports = (router) => {
     }).sort({ _id: -1 }); // Sort blogs from newest to oldest
   });
 
+  router.put("/updateobjectivecompletion", (req, res) => {
+    let data = req.body;
+    Objectives.findOne(
+      {
+        id: data.id,
+      },
+      (err, ObjectivesResults) => {
+        if (err) throw err;
+        Objectives.findOneAndUpdate(
+          { id: data.id },
+          { complete: !ObjectivesResults.complete },
+          { upsert: true, select: "-__v" },
+          (err, response) => {
+            if (err) return res.json({ success: false, message: err.message });
+            if (response) {
+              res.json({
+                success: true,
+                message: " Successfully Objectives set",
+                data: response,
+              });
+            } else {
+              res.json({
+                success: false,
+                message: "Error Occured",
+              });
+            }
+          }
+        );
+      }
+    );
+  });
+
   router.get("/getAllByIdObjectives/:id", (req, res) => {
     // Search database for all blog posts
     Objectives.find(
@@ -68,8 +100,6 @@ module.exports = (router) => {
 
   router.post("/addObjectives", (req, res) => {
     const objectivesData = req.body;
-
-    console.log({ addObjectives: objectivesData });
 
     if (!objectivesData) {
       return res.json({
@@ -121,37 +151,6 @@ module.exports = (router) => {
         );
       }
     });
-    // console.log("ObjectivesDataRequest", ObjectivesDataRequest);
-    // res.json({ success: true, ObjectivesDataRequest });
-    // Objectives.create(ObjectivesDataRequest)
-    //   .then((data) =>
-    //     res.json({
-    //       success: true,
-    //       message:
-    //         "This  Objectives and Action Plan Objectives is successfully Added ",
-    //       data: { Objectives: data.Objectives },
-    //     })
-    //   )
-    //   .catch((err) => {
-    //     if (err.code === 11000) {
-    //       res.json({
-    //         success: false,
-    //         message:
-    //           " Objectives and Action Plan Objectives Name already exists ",
-    //         err: err.message,
-    //       });
-    //     } else if (err.errors) {
-    //       const errors = Object.keys(err.errors);
-    //       res.json({ success: false, message: err.errors[errors[0]].message });
-    //     } else {
-    //       res.json({
-    //         success: false,
-    //         message:
-    //           "Could not add  Objectives and Action Plan Error : " +
-    //           err.message,
-    //       });
-    //     }
-    //   });
   });
 
   router.put("/deleteObjectives", (req, res) => {

@@ -42,7 +42,7 @@ import { DepartmentsComponent } from './departments/departments.component';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { FileUploadModule } from 'primeng/fileupload';
-
+import { InputSwitchModule } from 'primeng/inputswitch';
 const pipes = [
     dataFilterPipe,
     NumberWithCommas,
@@ -85,6 +85,7 @@ const pipes = [
         ConfirmPopupModule,
         SelectButtonModule,
         FileUploadModule,
+        InputSwitchModule,
     ],
     declarations: [
         AdminComponent,
