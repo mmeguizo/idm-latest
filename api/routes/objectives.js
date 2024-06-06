@@ -68,7 +68,7 @@ module.exports = (router) => {
         }
 
         if (!Objectives || Objectives.length === 0) {
-          return res.status(404).json({
+          return res.json({
             success: false,
             message: "No Objectives found.",
             Objectives: [],

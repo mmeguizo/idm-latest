@@ -90,27 +90,19 @@ module.exports = (router) => {
 
     form.on("error", (err) => {
       console.error("An error occurred:", err);
-      res.status(500).json({ message: "Error uploading files" }); // Handle errors gracefully
+      // res.status(500).json({ message: "Error uploading files" }); // Handle errors gracefully
     });
 
     form.on("end", async () => {
       console.log("Finished uploading files");
-
-      try {
-        await res.json({
-          success: true,
-          message: "Files uploaded successfully!",
-          data: uploadedFiles,
-        });
-      } catch (err) {
-        console.error("Error saving uploaded files:", err);
-        res
-          .status(500)
-          .json({ success: false, message: "Error saving uploaded files" }); // Handle errors gracefully
-      }
     });
 
     form.parse(req);
+
+    res.json({
+      success: true,
+      message: "Files uploaded successfully!",
+    });
   });
 
   router.post("/addFile/:user_id", async (req, res) => {
@@ -162,13 +154,9 @@ module.exports = (router) => {
       res.eventEmitter("error");
     });
 
-    // once all the files have been uploaded, send a response to the client
     form.on("end", function () {
       console.log("finished uploading");
     });
-
-    // parse the incoming request containing the form data
-    // form.parse(req);
 
     form.parse(req, async (err, fields, files) => {
       let returnMe = [];
@@ -264,6 +252,7 @@ module.exports = (router) => {
     let file = req.body.link.source;
     let id = req.body.link.id;
 
+    // res.json({ success: true, message: "The file has been remove." });
     let fs = require("fs");
     fs.unlink(
       `${path.join(__dirname, "..", "images/files")}/${file}`,
@@ -288,6 +277,32 @@ module.exports = (router) => {
       }
     );
   });
+  router.put("/deleteFileObjective", (req, res) => {
+    let file = req.body.source;
+    let id = req.body.id;
+    let fs = require("fs");
+    fs.unlink(
+      `${path.join(__dirname, "..", "images/files")}/${file}`,
+      (err) => {
+        if (err) {
+          return res.json({
+            success: false,
+            message: "The server cant find the file.",
+          });
+        }
+        File.deleteOne({ id: id }, (err, results) => {
+          if (err) {
+            return res.json({ success: false, message: err.message });
+          } else {
+            return res.json({
+              success: true,
+              message: "The file has been remove.",
+            });
+          }
+        });
+      }
+    );
+  });
 
   router.get("/getAllFiles/:user_id", (req, res) => {
     let query = req.params;
@@ -302,8 +317,9 @@ module.exports = (router) => {
   });
 
   router.get("/getAllFilesFromObjective/:user_id/:objective_id", (req, res) => {
+    console.log("getAllFilesFromObjective", req.params);
+
     const { user_id, objective_id } = req.params;
-    console.log({ user_id, objective_id });
     File.find(
       {
         user_id: user_id,
@@ -314,8 +330,6 @@ module.exports = (router) => {
         __v: 0.0,
       },
       (err, files) => {
-        console.log({ files });
-
         if (err) {
           return res.json({ success: false, message: err.message });
         } else {
@@ -323,7 +337,7 @@ module.exports = (router) => {
         }
       }
     ).sort({
-      _id: 1.0,
+      date_added: 1,
     });
 
     // File.find(query, (err, files) => {
@@ -405,3 +419,16 @@ module.exports = (router) => {
 
 //   form.parse(req);
 // });
+
+// try {
+//   await res.json({
+//     success: true,
+//     message: "Files uploaded successfully!",
+//     data: uploadedFiles,
+//   });
+// } catch (err) {
+//   console.error("Error saving uploaded files:", err);
+//   res
+//     .status(500)
+//     .json({ success: false, message: "Error saving uploaded files" }); // Handle errors gracefully
+// }

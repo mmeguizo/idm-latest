@@ -19,8 +19,8 @@ import { AuthService } from 'src/app/demo/service/auth.service';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { DepartmentService } from 'src/app/demo/service/department.service';
 import { FileService } from 'src/app/demo/service/file.service';
+import { FileUpload } from 'primeng/fileupload';
 
-AuthService;
 @Component({
     selector: 'app-goals',
     templateUrl: './goals.component.html',
@@ -78,6 +78,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
     USERID: string;
     hideviewObjectiveFileDialogCardID: any;
 
+    // progress bar
+    value = 0;
+    interval: any;
+
     constructor(
         private messageService: MessageService,
         private formBuilder: FormBuilder,
@@ -86,7 +90,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
         private auth: AuthService,
         private obj: ObjectiveService,
         private dept: DepartmentService,
-        private fileService: FileService
+        private fileService: FileService,
+        private fileUpload: FileUpload
     ) {
         this.USERID = this.auth.getTokenUserID();
     }
@@ -94,23 +99,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.getAllDept();
         this.getGoals();
-
-        this.frequency = [
-            { name: 'daily', code: 'Daily' },
-            { name: 'weekly', code: 'Weekly' },
-            { name: 'monthly', code: 'Monthly' },
-            { name: 'yearly', code: 'Yearly' },
-            { name: 'quarterly', code: 'Quarterly' },
-            { name: 'biannually', code: 'Biannually' },
-        ];
-        this.frequencys = [
-            { name: 'daily', code: 'Daily' },
-            { name: 'weekly', code: 'Weekly' },
-            { name: 'monthly', code: 'Monthly' },
-            { name: 'yearly', code: 'Yearly' },
-            { name: 'quarterly', code: 'Quarterly' },
-            { name: 'biannually', code: 'Biannually' },
-        ];
 
         this.dropdwonSelection = [
             { name: 'daily', code: 'Daily' },
@@ -137,6 +125,15 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.formGroupDropdown = new FormGroup({
             selectedDropdown: new FormControl(),
         });
+
+        // progress bar
+        this.interval = setInterval(() => {
+            this.value = this.value + Math.floor(Math.random() * 10) + 1;
+            if (this.value >= 100) {
+                this.value = 100;
+                clearInterval(this.interval);
+            }
+        }, 2000);
     }
 
     ngOnDestroy(): void {
@@ -211,24 +208,27 @@ export class GoalsComponent implements OnInit, OnDestroy {
             budget: [goal.budget || 0, [Validators.required]],
         });
     }
-    deleteGoal(id: string) {
-        console.log('deleteGoal', id);
-    }
+    // deleteGoal(id: string) {
+    //     console.log('deleteGoal', id);
+    // }
 
     async getObjectives(id: string, objectId?: string, subHeader?: string) {
         //passed data needed for the subgoal table
         this.subObjectiveGoalID = id;
         this.goal_ObjectId = objectId;
         this.subGoalObjective = true;
-        this.subObjectiveHeaders = this.customTitleCase(subHeader);
-
-        await this.obj
-            .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                this.objectiveDatas = data.Objectives;
-                this.loading = false;
-            });
+        this.subObjectiveHeaders = this.customTitleCase(
+            subHeader || this.subObjectiveHeaders
+        );
+        if (id) {
+            this.obj
+                .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
+                .pipe(takeUntil(this.getGoalSubscription))
+                .subscribe((data: any) => {
+                    this.objectiveDatas = data.Objectives;
+                    this.loading = false;
+                });
+        }
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -431,7 +431,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         e.value.frequency_monitoring =
             this.formGroupDropdown.value.selectedDropdown.name;
         e.value.createdBy = this.USERID;
-
         this.obj
             .getRoute('post', 'objectives', 'addObjectives', e.value)
             .pipe(takeUntil(this.getGoalSubscription))
@@ -446,7 +445,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     });
                     //fix the error becomes null after adding new objective
                     this.goal_ObjectId = data.data.Objectives.goal_Id;
-
                     this.addObjectiveGoalform.reset();
                     this.formGroupDropdown.reset();
                 } else {
@@ -494,13 +492,19 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.getAllFilesFromObjectiveLoad(this.USERID, objectiveData.id);
     }
 
-    getAllFilesFromObjectiveLoad(id: string, objectiveID: string) {
+    async getAllFilesFromObjectiveLoad(
+        id: string,
+        objectiveID: string
+    ): Promise<Boolean> {
+        this.loading = true;
         this.fileService
             .getAllFilesFromObjective(id, objectiveID)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.AllObjectivesFiles = data.data;
+                this.loading = false;
             });
+        return true;
     }
 
     addFiles(objectiveData: any) {
@@ -531,19 +535,22 @@ export class GoalsComponent implements OnInit, OnDestroy {
             )
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
+                // after adding files it did not add the new files just reload, clear the data to fix the issue
+                this.AllObjectivesFiles = [];
+                this.getAllFilesFromObjectiveLoad(
+                    this.USERID,
+                    this.objectiveIDforFile
+                );
                 if (data.success) {
                     this.messageService.add({
                         severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
+                        summary: 'View the files',
+                        detail: 'Files added successfully',
                     });
                     this.addObjectiveFileDialogCard = false;
                     this.addFileForm.reset();
                     this.uploadedFiles = [];
-                    this.getAllFilesFromObjectiveLoad(
-                        this.USERID,
-                        this.objectiveIDforFile
-                    );
+                    this.viewObjectiveFileDialogCard = false;
                 } else {
                     this.messageService.add({
                         severity: 'error  ',
@@ -640,8 +647,41 @@ export class GoalsComponent implements OnInit, OnDestroy {
         }
     }
 
-    deleteSubGoalFile(id: string) {
-        alert('delete sub goal file' + id);
+    deleteSubGoalFile(id: string, source: string) {
+        // alert(`delete sub goal file ${id} ${source}`);
+        this.confirmationService.confirm({
+            key: 'deleteSubGoalFile',
+            target: event.target || new EventTarget(),
+            message: 'Delete File',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.fileService
+                    .deleteFileObjective({
+                        id: id,
+                        source: source,
+                    })
+                    .pipe(takeUntil(this.getGoalSubscription))
+                    .subscribe((data: any) => {
+                        if (data.success) {
+                            this.getAllFilesFromObjectiveLoad(
+                                this.USERID,
+                                this.objectiveIDforFile
+                            );
+                            this.messageService.add({
+                                severity: 'success  ',
+                                summary: 'Done',
+                                detail: data.message,
+                            });
+                        } else {
+                            this.messageService.add({
+                                severity: 'error  ',
+                                summary: 'Error',
+                                detail: data.message,
+                            });
+                        }
+                    });
+            },
+        });
     }
 
     updateObjectiveComplete(event: any, data: any) {
@@ -672,27 +712,38 @@ export class GoalsComponent implements OnInit, OnDestroy {
             });
     }
 
-    hideviewObjectiveFileDialogCard(id?: string) {
+    hideViewObjectiveTable(id?: string) {
         this.subGoalObjective = false;
+        this.subObjectiveGoalID = null;
         this.objectiveDatas = [];
-        console.log(
-            'hide view objective file dialog card',
-            this.viewObjectiveFileDialogCard
-        );
         //after they click the switch it and close the dialog will refetch
+        if (id) {
+            this.hidviewObjectRefetch(id);
+        }
+    }
 
-        this.obj
-            .getRoute(
-                'get',
-                'objectives',
-                `getAllByIdObjectives/${this.hideviewObjectiveFileDialogCardID}`
-            )
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                this.objectiveDatas = data.Objectives;
-                this.loading = false;
-            });
+    hideViewFileDialogCard() {
+        // destroy the data needed on that dialo
+        this.objectiveIDforFile = null;
+    }
+
+    clearUploadFiles(event: Event) {
+        console.log({ clearUploadFiles: event });
     }
 
     // end of class
+
+    // run after update or changes
+
+    hidviewObjectRefetch(id) {
+        this.obj
+            .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                this.objectiveDatas = data.Objectives;
+                // remove the data
+                this.hideviewObjectiveFileDialogCardID = null;
+                this.loading = false;
+            });
+    }
 }

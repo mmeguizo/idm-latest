@@ -55,10 +55,21 @@ export class FileService {
 
     deleteFile(data) {
         this.createAuthenticationHeaders();
-        return this.http.post(this.cs.domain + '/fileupload/deleteFile', data, {
+        return this.http.put(this.cs.domain + '/fileupload/deleteFile', data, {
             headers: this.options,
             responseType: 'json',
         });
+    }
+    deleteFileObjective(data) {
+        this.createAuthenticationHeaders();
+        return this.http.put(
+            this.cs.domain + '/fileupload/deleteFileObjective',
+            data,
+            {
+                headers: this.options,
+                responseType: 'json',
+            }
+        );
     }
 
     getAllFiles(id) {
