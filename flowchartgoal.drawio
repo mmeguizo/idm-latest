@@ -1,0 +1,130 @@
+<mxfile host="app.diagrams.net" modified="2024-06-07T03:45:04.356Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36" etag="3RC16qgPGz1guqpXkJqJ" version="24.5.1" type="device">
+  <diagram name="Page-1" id="5ZvVgIEy0vnxopvxJI_a">
+    <mxGraphModel dx="989" dy="509" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-1" value="User Goal completion flow" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="330" y="20" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-2" target="vPZN9cPnIaJCVJR7DuUc-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-2" value="User click complete button" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="70" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-5" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="vPZN9cPnIaJCVJR7DuUc-4">
+          <mxGeometry x="-0.1674" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="370" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-7" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="vPZN9cPnIaJCVJR7DuUc-6">
+          <mxGeometry x="-0.0653" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-3" value="is there a file&lt;div&gt;existing?&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="115" y="160" width="110" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-8">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-8" value="Pop up a file is needed to complete" style="whiteSpace=wrap;html=1;shape=mxgraph.basic.rectCallout;dx=30;dy=15;boundedLbl=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="170" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-9" target="vPZN9cPnIaJCVJR7DuUc-11">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="175" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-9" value="Pop up message&amp;nbsp;&lt;div&gt;confirming this action will marked the object complete&lt;/div&gt;" style="whiteSpace=wrap;html=1;shape=mxgraph.basic.rectCallout;dx=30;dy=15;boundedLbl=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="350" width="130" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-11" value="Lock View files" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
+          <mxGeometry x="115" y="520" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.008;entryY=0.883;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-13" target="vPZN9cPnIaJCVJR7DuUc-15">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-13" value="Logs files record&lt;div&gt;type date added / change or deleted&lt;/div&gt;" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="280" width="110" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-15" target="vPZN9cPnIaJCVJR7DuUc-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-15" value="User submit a file" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-21">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-16" value="user click complete button" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-16" target="vPZN9cPnIaJCVJR7DuUc-21">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="360" as="sourcePoint" />
+            <mxPoint x="610" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-21" value="Pop up message&amp;nbsp;&lt;div&gt;confirming this action will marked the object complete&lt;/div&gt;" style="whiteSpace=wrap;html=1;shape=mxgraph.basic.rectCallout;dx=30;dy=15;boundedLbl=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="410" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-23" value="Lock View files" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="540" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-26">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-26" value="Users Decided to&lt;div&gt;change files&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="620" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-30" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-28" target="vPZN9cPnIaJCVJR7DuUc-29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-28" value="user click complete button off" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="750" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-29" target="vPZN9cPnIaJCVJR7DuUc-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-29" value="user submit new files" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="960" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-31" value="Pop up message&amp;nbsp;&lt;div&gt;confirming this action will marked the object incomplete&lt;/div&gt;" style="whiteSpace=wrap;html=1;shape=mxgraph.basic.rectCallout;dx=30;dy=15;boundedLbl=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="840" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-13" target="vPZN9cPnIaJCVJR7DuUc-29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-36" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="vPZN9cPnIaJCVJR7DuUc-33" target="vPZN9cPnIaJCVJR7DuUc-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-33" value="user clicks the button on" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="1100" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vPZN9cPnIaJCVJR7DuUc-35" value="Lock the file view" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1100" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

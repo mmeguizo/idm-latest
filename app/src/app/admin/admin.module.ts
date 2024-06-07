@@ -44,6 +44,11 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { FileUploadModule, FileUpload } from 'primeng/fileupload';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { ChipModule } from 'primeng/chip';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { CardModule } from 'primeng/card';
+import { TagModule } from 'primeng/tag';
+import { BlockUIModule } from 'primeng/blockui';
 
 const pipes = [
     dataFilterPipe,
@@ -89,6 +94,11 @@ const pipes = [
         FileUploadModule,
         InputSwitchModule,
         ProgressBarModule,
+        ChipModule,
+        OverlayPanelModule,
+        CardModule,
+        TagModule,
+        BlockUIModule,
     ],
     declarations: [
         AdminComponent,

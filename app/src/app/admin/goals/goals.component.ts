@@ -34,6 +34,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     goals: any[] = [];
     Alldepts: any[] = [];
     AllObjectivesFiles: any[] = [];
+    ViewBudget: any[] = [];
 
     //table columns
     cols!: any;
@@ -47,6 +48,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     uploadedFiles: any[] = [];
     objectiveDatas: any;
     deptDropdownValue: any[] = [];
+    ObjectivesGoals: any[] = [];
 
     //variables used in the table
     tobeUpdatedSubGoal: any;
@@ -81,6 +83,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
     // progress bar
     value = 0;
     interval: any;
+    goalDataRemainingBudget: number = 0;
+    // set initial value
+    onclickCompletionButton = [];
+    blockedPanel: boolean = false;
 
     constructor(
         private messageService: MessageService,
@@ -97,8 +103,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.getAllObjectivesWithObjectives();
         this.getAllDept();
-        this.getGoals();
 
         this.dropdwonSelection = [
             { name: 'daily', code: 'Daily' },
@@ -178,12 +184,14 @@ export class GoalsComponent implements OnInit, OnDestroy {
         });
     }
 
-    getGoals() {
+    getAllObjectivesWithObjectives() {
         this.goal
-            .getRoute('get', 'goals', 'getAllGoals')
+            .getRoute('get', 'goals', 'getAllObjectivesWithObjectives')
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
+                // this.ObjectivesGoals = data.goals;
                 this.goals = data.goals;
+                console.log(this.goals);
                 this.loading = false;
             });
     }
@@ -208,24 +216,54 @@ export class GoalsComponent implements OnInit, OnDestroy {
             budget: [goal.budget || 0, [Validators.required]],
         });
     }
-    // deleteGoal(id: string) {
-    //     console.log('deleteGoal', id);
-    // }
 
-    async getObjectives(id: string, objectId?: string, subHeader?: string) {
-        //passed data needed for the subgoal table
+    async getObjectives(
+        id: string,
+        objectId?: string,
+        subHeader?: string,
+        goalDataRemainingBudget?: number
+    ) {
+        console.log(
+            'getObjectives',
+            {
+                id,
+                objectId,
+                subHeader,
+                goalDataRemainingBudget,
+            },
+            typeof goalDataRemainingBudget
+        );
+
+        //passed data needed for the subgoal table or adding table modal
         this.subObjectiveGoalID = id;
         this.goal_ObjectId = objectId;
+        //open the objective modal
         this.subGoalObjective = true;
+        //remaining budget needed in adding objective input
+        this.goalDataRemainingBudget = goalDataRemainingBudget;
+        //headers in objective table
         this.subObjectiveHeaders = this.customTitleCase(
             subHeader || this.subObjectiveHeaders
         );
+
+        //get all objectives with subobjective
         if (id) {
             this.obj
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
                     this.objectiveDatas = data.Objectives;
+                    console.log(this.objectiveDatas.length);
+
+                    //initialize completion button
+                    for (
+                        let i = 0;
+                        i < this.objectiveDatas.length.length;
+                        i++
+                    ) {
+                        this.onclickCompletionButton[i] = false;
+                    }
+
                     this.loading = false;
                 });
         }
@@ -256,7 +294,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
-                    this.getGoals();
+                    this.getAllObjectivesWithObjectives();
                     this.messageService.add({
                         severity: 'success  ',
                         summary: 'Done',
@@ -285,7 +323,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
-                    this.getGoals();
+                    this.getAllObjectivesWithObjectives();
                     this.messageService.add({
                         severity: 'success  ',
                         summary: 'Done',
@@ -316,7 +354,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     .pipe(takeUntil(this.getGoalSubscription))
                     .subscribe((data: any) => {
                         if (data.success) {
-                            this.getGoals();
+                            this.getAllObjectivesWithObjectives();
                             this.messageService.add({
                                 severity: 'success  ',
                                 summary: 'Done',
@@ -380,9 +418,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.confirmationService.confirm({
             key: 'deleteSubGoal',
             target: event.target || new EventTarget(),
-            message: 'Are you sure that you want to delete this Objectives?',
+            message: 'Deleting Objectives Will Delete All Files. Continue?',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
+                this.loading = true;
                 this.goal
                     .getRoute('put', 'objectives', 'setInactiveObjectives', {
                         id: id,
@@ -391,13 +430,14 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     .subscribe((data: any) => {
                         if (data.success) {
                             this.getObjectives(goalId);
+                            this.loading = false;
                             this.messageService.add({
                                 severity: 'success  ',
                                 summary: 'Done',
                                 detail: data.message,
                             });
-                            this.updateGoalDialogCard = false;
-                            this.updateGoalform.reset();
+                            // this.updateGoalDialogCard = false;
+                            // this.updateGoalform.reset();
                         } else {
                             this.messageService.add({
                                 severity: 'error  ',
@@ -424,7 +464,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.addObjectiveGoalDialogCard = true;
     }
 
-    addSubObjectiveGoalDialogExec(e) {
+    addSubObjectiveGoalDialogExec(e: any) {
+        console.log({ addSubObjectiveGoalDialogExec: e.value });
+
         e.value.userId = this.USERID;
         e.value.goalId = this.subObjectiveGoalID;
         e.value.goal_Id = this.goal_ObjectId;
@@ -437,7 +479,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .subscribe((data: any) => {
                 if (data.success) {
                     this.getObjectives(this.subObjectiveGoalID);
-                    this.addObjectiveGoalDialogCard = false;
                     this.messageService.add({
                         severity: 'success  ',
                         summary: 'Done',
@@ -445,8 +486,11 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     });
                     //fix the error becomes null after adding new objective
                     this.goal_ObjectId = data.data.Objectives.goal_Id;
+                    // clear the data
+                    this.addObjectiveGoalDialogCard = false;
                     this.addObjectiveGoalform.reset();
                     this.formGroupDropdown.reset();
+                    this.goalDataRemainingBudget = 0;
                 } else {
                     this.messageService.add({
                         severity: 'error  ',
@@ -484,9 +528,18 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     viewFiles(objectiveData: any) {
+        //block view files if complete
+
+        if (objectiveData.isComplete) {
+            this.blockedPanel = true;
+        }
+
+        console.log({ objectiveData: objectiveData });
+
         // alert(objectiveID);
         this.viewObjectiveFileDialogCard = true;
         this.objectiveIDforFile = objectiveData.id;
+
         // alert(JSON.stringify(objectiveData));
 
         this.getAllFilesFromObjectiveLoad(this.USERID, objectiveData.id);
@@ -684,32 +737,72 @@ export class GoalsComponent implements OnInit, OnDestroy {
         });
     }
 
-    updateObjectiveComplete(event: any, data: any) {
+    updateObjectiveComplete(event: Event, data: any, index = 0) {
+        this.onclickCompletionButton[index] = true;
         let goalIDs = data.goalId;
-        this.obj
-            .getRoute('put', 'objectives', 'updateobjectivecompletion', {
-                id: data.id,
-            })
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe(async (results: any) => {
-                if (results.success) {
-                    this.getGoals();
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: results.message,
+
+        console.log(this.onclickCompletionButton[index]);
+
+        //create an index of boolean to match the button on the table
+        // if not all buttons will load too
+
+        console.log('updateObjectiveComplete', index);
+
+        this.confirmationService.confirm({
+            key: 'updateObjectiveComplete',
+            target: event.target as EventTarget,
+            message:
+                'Marking Complete Will Lock File Submissions, Are You Sure?',
+            header: 'Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            acceptIcon: 'none',
+            rejectIcon: 'none',
+            rejectButtonStyleClass: 'p-button-text',
+            accept: () => {
+                this.obj
+                    .getRoute(
+                        'put',
+                        'objectives',
+                        'updateobjectivecompletion',
+                        {
+                            id: data.id,
+                        }
+                    )
+                    .pipe(takeUntil(this.getGoalSubscription))
+                    .subscribe(async (results: any) => {
+                        if (results.success) {
+                            this.getAllObjectivesWithObjectives();
+                            this.getObjectives(goalIDs);
+                            this.messageService.add({
+                                severity: 'success  ',
+                                summary: 'Done',
+                                detail: results.message,
+                            });
+                            // this saves the objectid instead of refetch by closing the dialog it will run hideview to refetch
+                            this.hideviewObjectiveFileDialogCardID = goalIDs;
+                            // this.hideviewObjectiveFileDialogCard(goalIDs);
+                        } else {
+                            this.messageService.add({
+                                severity: 'error  ',
+                                summary: 'Error',
+                                detail: results.message,
+                            });
+                        }
                     });
-                    // this saves the objectid instead of refetch by closing the dialog it will run hideview to refetch
-                    this.hideviewObjectiveFileDialogCardID = goalIDs;
-                    // this.hideviewObjectiveFileDialogCard(goalIDs);
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: results.message,
-                    });
-                }
-            });
+                // this.onclickCompletionButton = false;
+                this.onclickCompletionButton[index] = false;
+            },
+            reject: () => {
+                console.log('reject');
+                this.onclickCompletionButton[index] = false;
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Rejected',
+                    detail: 'You have rejected',
+                    life: 3000,
+                });
+            },
+        });
     }
 
     hideViewObjectiveTable(id?: string) {

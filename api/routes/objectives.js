@@ -2,9 +2,51 @@ const Objectives = require("../models/objective");
 const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const Goals = require("../models/goals");
-const ObjectId = mongoose.Types.ObjectId;
-
+const Files = require("../models/fileupload");
 module.exports = (router) => {
+  // router.get("/getAllObjectivesWithObjectives", (req, res) => {
+  //   // Search database for all blog posts
+  //   Objectives.aggregate(
+  //     [
+  //       {
+  //         $lookup: {
+  //           from: "goals",
+  //           localField: "goalId",
+  //           foreignField: "id",
+  //           as: "goal",
+  //         },
+  //       },
+  //       {
+  //         $match: {
+  //           deleted: false,
+  //           "goal.deleted": false,
+  //         },
+  //       },
+  //     ],
+  //     {
+  //       allowDiskUse: false,
+  //     },
+  //     (err, ObjectivesWithGoals) => {
+  //       // Check if error was found or not
+
+  //       if (err) {
+  //         return res.status(500).json({ success: false, message: err });
+  //       }
+
+  //       if (!ObjectivesWithGoals || ObjectivesWithGoals.length === 0) {
+  //         return res.status(404).json({
+  //           success: false,
+  //           message: "No Objectives and Goals found.",
+  //           data: [],
+  //         });
+  //       }
+  //       return res
+  //         .status(200)
+  //         .json({ success: true, data: ObjectivesWithGoals });
+  //     }
+  //   ).sort({ _id: -1 });
+  // });
+
   router.get("/getAllObjectives", (req, res) => {
     // Search database for all blog posts
     Objectives.find({ deleted: false }, (err, Objectives) => {
@@ -177,38 +219,107 @@ module.exports = (router) => {
     );
   });
 
-  router.put("/setInactiveObjectives", (req, res) => {
-    let data = req.body;
+  router.put("/setInactiveObjectives", async (req, res) => {
+    console.log("setInactiveObjectives", req.body);
 
-    Objectives.findOne(
-      {
-        id: data.id,
-      },
-      (err) => {
-        if (err) throw err;
-        Objectives.findOneAndUpdate(
-          { id: data.id },
-          { deleted: true, status: "inactive" },
-          { upsert: true, select: "-__v" },
-          (err, response) => {
-            if (err) return res.json({ success: false, message: err.message });
-            if (response) {
-              res.json({
-                success: true,
-                message: " Successfully Delete Objectives",
-                data: response,
-              });
-            } else {
-              res.json({
-                success: false,
-                message: "Could Delete Objectives" + err,
-              });
-            }
-          }
-        );
+    const data = req.body;
+
+    try {
+      // Find the objective
+      const objective = await Objectives.findOne({ id: data.id });
+      if (!objective) {
+        return res.json({ success: false, message: "Objective not found" });
       }
-    );
+
+      // Update the objective
+      const updatedObjective = await Objectives.findOneAndUpdate(
+        { id: data.id },
+        { deleted: true, status: "inactive" },
+        { new: true, upsert: true, select: "-__v" } // Use { new: true } to return the updated document
+      );
+
+      if (!updatedObjective) {
+        return res.json({
+          success: false,
+          message: "Could not update objective",
+        });
+      }
+
+      console.log("setInactiveObjectives", updatedObjective);
+
+      // Update the files
+      const updateFilesResult = await Files.updateMany(
+        { for: "files", status: true, objective_id: data.id },
+        { $set: { status: false } }
+      );
+
+      console.log("setInactiveObjectives", updateFilesResult);
+
+      if (updateFilesResult.acknowledged) {
+        return res.json({
+          success: true,
+          message: "Successfully deleted objectives including its files...",
+          data: updatedObjective,
+        });
+      } else {
+        return res.json({
+          success: false,
+          message: "Nothing were updated",
+        });
+      }
+    } catch (err) {
+      return res.json({ success: false, message: err.message });
+    }
   });
+
+  // router.put("/setInactiveObjectives", (req, res) => {
+  //   console.log("setInactiveObjectives", req.body);
+  //   let data = req.body;
+  //   Objectives.findOne(
+  //     {
+  //       id: data.id,
+  //     },
+  //     (err) => {
+  //       if (err) throw err;
+  //       Objectives.findOneAndUpdate(
+  //         { id: data.id },
+  //         { deleted: true, status: "inactive" },
+  //         { upsert: true, select: "-__v" },
+  //         (err, response) => {
+  //           if (err) return res.json({ success: false, message: err.message });
+  //           if (response) {
+  //             console.log("setInactiveObjectives", response);
+
+  //             Files.updateMany(
+  //               { for: "files", status: true, objective_id: data.id },
+  //               {
+  //                 status: false,
+  //               },
+  //               (err, files) => {
+  //                 console.log("setInactiveObjectives", files);
+  //                 if (err)
+  //                   return res.json({ success: false, message: err.message });
+  //                 if (files.nModified) {
+  //                   res.json({
+  //                     success: true,
+  //                     message:
+  //                       " Successfully Delete Objectives Including its files...",
+  //                     data: response,
+  //                   });
+  //                 }
+  //               }
+  //             );
+  //           } else {
+  //             res.json({
+  //               success: false,
+  //               message: "Could Delete Objectives" + err,
+  //             });
+  //           }
+  //         }
+  //       );
+  //     }
+  //   );
+  // });
 
   router.put("/changeObjectivesStatus", (req, res) => {
     let data = req.body;

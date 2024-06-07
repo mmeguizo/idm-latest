@@ -77,7 +77,7 @@
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
-                                Budget
+                                Budget Utilization
                                 <p-columnFilter
                                     type="text"
                                     field="budget"
@@ -116,7 +116,7 @@
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
-                                Progress
+                                Progress Completion
                             </div>
                         </th>
                         <th style="min-width: 12rem">
@@ -133,7 +133,12 @@
                         <td>
                             <button
                                 (click)="
-                                    getObjectives(goal.id, goal._id, goal.goals)
+                                    getObjectives(
+                                        goal.id,
+                                        goal._id,
+                                        goal.goals,
+                                        goal.remainingBudget
+                                    )
                                 "
                                 pButton
                                 pRipple
@@ -146,8 +151,63 @@
                             </button>
                         </td>
                         <td>
-                            {{ goal.budget | peso }}
+                            <p-chip
+                                label="View Budget"
+                                icon="pi pi-wallet "
+                                styleClass="m-1 cursor-pointer bg-teal-200 "
+                                (click)="op.toggle($event)"
+                            ></p-chip>
+                            <p-overlayPanel #op>
+                                <p-card
+                                    [header]="goal.budget | peso"
+                                    [subheader]="
+                                        'Budget Utilization:  ' +
+                                        (goal.remainingPercentage || 0) +
+                                        '%' +
+                                        ' | ' +
+                                        ' Remaining: ' +
+                                        (goal.remainingBudget || '0' | peso)
+                                    "
+                                    [style]="{ width: '400px' }"
+                                >
+                                    <div
+                                        *ngFor="
+                                            let obj of goal.objectivesDetails
+                                        "
+                                    >
+                                        <span>
+                                            <i
+                                                class="pi pi-money-bill bg-green-400"
+                                            ></i>
+                                            {{ obj.clients | titlecase }} :
+                                        </span>
+                                        &nbsp;
+                                        <span
+                                            >{{ obj.budget | peso }} -
+                                            <p-tag
+                                                [severity]="
+                                                    obj.complete
+                                                        ? 'success'
+                                                        : 'warning'
+                                                "
+                                                [value]="
+                                                    obj.complete
+                                                        ? 'Completed'
+                                                        : 'Not yet Completed'
+                                                "
+                                            ></p-tag
+                                        ></span>
+                                    </div>
+                                    <div *ngIf="!goal.objectivesDetails">
+                                        <span
+                                            >No Project Yet :
+                                            <i class="pi pi-wrench"></i>
+                                        </span>
+                                    </div>
+                                </p-card>
+                            </p-overlayPanel>
                         </td>
+
                         <td>
                             {{ goal.users.username | titlecase }}
                         </td>
@@ -157,12 +217,21 @@
                         <td>
                             <div class="col">
                                 <p-progressBar
-                                    color="#1da750"
-                                    [value]="value"
+                                    [color]="
+                                        goal.CompletePercentage
+                                            ? '#1da750'
+                                            : '#ef4444'
+                                    "
+                                    [value]="
+                                        goal.CompletePercentage
+                                            ? goal.CompletePercentage
+                                            : 100
+                                    "
                                     [showValue]="true"
                                 ></p-progressBar>
                             </div>
                         </td>
+                        <!-- #1da750 -->
                         <td>
                             <div class="options-users">
                                 <i
@@ -195,6 +264,7 @@
         </div>
     </div>
 </div>
+
 <!-- add goal dialog -->
 
 <p-dialog
@@ -454,19 +524,6 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-                        <!-- <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Department
-                                <p-columnFilter
-                                    type="text"
-                                    field="department"
-                                    display="menu"
-                                    placeholder="Search by Department"
-                                ></p-columnFilter>
-                            </div>
-                        </th> -->
                         <th style="min-width: 12rem">
                             <div
                                 class="flex justify-content-between align-items-center"
@@ -563,7 +620,7 @@
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
-                                Complete
+                                Submitted
                                 <p-columnFilter
                                     type="text"
                                     field="complete"
@@ -594,7 +651,11 @@
                         </th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-objectiveData>
+                <ng-template
+                    pTemplate="body"
+                    let-objectiveData
+                    let-rowIndex="rowIndex"
+                >
                     <tr>
                         <td>
                             {{ objectiveData.functional_objective | titlecase }}
@@ -641,27 +702,35 @@
                             {{ objectiveData.createdAt | date : "mediumDate" }}
                         </td>
                         <td>
-                            <p-inputSwitch
-                                class="flex justify-content-center"
-                                [(ngModel)]="objectiveData.complete"
-                                (onChange)="
+                            <p-button
+                                [text]="true"
+                                [raised]="true"
+                                [severity]="
+                                    objectiveData.complete
+                                        ? 'success'
+                                        : 'warning'
+                                "
+                                [icon]="
+                                    objectiveData.complete
+                                        ? 'pi pi-check'
+                                        : 'pi pi-times'
+                                "
+                                [label]="objectiveData.complete ? 'Yes' : 'No'"
+                                [(loading)]="onclickCompletionButton[rowIndex]"
+                                (click)="
                                     updateObjectiveComplete(
                                         $event,
-                                        objectiveData
+                                        objectiveData,
+                                        rowIndex
                                     )
                                 "
-                            ></p-inputSwitch>
-                            <!-- <p-toast></p-toast>
+                            ></p-button>
                             <p-confirmPopup
+                                #confirmPopupRef
                                 key="updateObjectiveComplete"
-                            ></p-confirmPopup> -->
+                            ></p-confirmPopup>
                         </td>
                         <td>
-                            <!-- <div class="flex flex-column align-items-center">
-                                <i
-                                    class="pi pi-folder-open text-2xl hover:text-4xl hover:text-yellow-400 cursor-pointer"
-                                ></i>
-                            </div> -->
                             <div class="flex flex-column align-items-center">
                                 <i
                                     (click)="viewFiles(objectiveData)"
@@ -888,12 +957,6 @@
                             placeholder="Select a Frequency"
                         />
                     </form>
-                    <!-- <p-dropdown
-                        formControlName="frequency_monitoring"
-                        [options]="frequency"
-                        optionLabel="name"
-                        dataKey="id"
-                    ></p-dropdown> -->
                 </div>
                 <div class="field">
                     <label htmlFor="name1"
@@ -916,12 +979,16 @@
                     />
                 </div>
                 <div class="field">
-                    <label htmlFor="name1">Budget</label>
+                    <label htmlFor="name1">
+                        Budget will not exceeed Remaining
+                        {{ goalDataRemainingBudget | peso }}
+                    </label>
                     <p-inputNumber
                         mode="decimal"
-                        [showButtons]="true"
                         [min]="0"
+                        [max]="goalDataRemainingBudget"
                         formControlName="budget"
+                        [showButtons]="true"
                     >
                     </p-inputNumber>
                 </div>
@@ -949,8 +1016,11 @@
 </p-dialog>
 
 <!-- view file table list -->
-
+<p-blockUI [target]="pnl" [blocked]="blockedPanel">
+    <i class="pi pi-lock" style="font-size: 3rem"></i>
+</p-blockUI>
 <p-dialog
+    #pnl
     header="Files List"
     [modal]="true"
     [(visible)]="viewObjectiveFileDialogCard"

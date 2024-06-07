@@ -5,6 +5,180 @@ const ObjectId = mongoose.Types.ObjectId;
 const Objectives = require("../models/objective");
 
 module.exports = (router) => {
+  router.get("/getAllObjectivesWithObjectives", (req, res) => {
+    Goals.aggregate(
+      [
+        {
+          $match: {
+            deleted: false,
+          },
+        },
+        {
+          $lookup: {
+            from: "objectives",
+            let: { objectiveIds: "$objectives" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $in: ["$id", "$$objectiveIds"] },
+                      { $eq: ["$deleted", false] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "objectivesDetails",
+          },
+        },
+        {
+          $lookup: {
+            as: "users",
+            from: "users",
+            foreignField: "id",
+            localField: "createdBy",
+          },
+        },
+        { $unwind: { path: "$users" } },
+        {
+          $addFields: {
+            objectivesDetails: {
+              $cond: {
+                if: { $eq: ["$objectivesDetails", []] },
+                then: null,
+                else: "$objectivesDetails",
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            id: 1,
+            goals: 1,
+            budget: 1,
+            createdBy: 1,
+            deleted: 1,
+            date_added: 1,
+            createdAt: 1,
+            __v: 1,
+            updatedAt: 1,
+            complete: 1,
+            "users.id": 1,
+            "users.username": 1,
+            objectivesDetails: {
+              $cond: {
+                if: { $eq: ["$objectivesDetails", null] },
+                then: null,
+                else: {
+                  $map: {
+                    input: "$objectivesDetails",
+                    as: "od",
+                    in: {
+                      id: "$$od.id",
+                      functional_objective: "$$od.functional_objective",
+                      performance_indicator: "$$od.performance_indicator",
+                      target: "$$od.target",
+                      formula: "$$od.formula",
+                      programs: "$$od.programs",
+                      responsible_persons: "$$od.responsible_persons",
+                      clients: "$$od.clients",
+                      timetable: "$$od.timetable",
+                      frequency_monitoring: "$$od.frequency_monitoring",
+                      data_source: "$$od.data_source",
+                      budget: "$$od.budget",
+                      createdBy: "$$od.createdBy",
+                      deleted: "$$od.deleted",
+                      date_added: "$$od.date_added",
+                      createdAt: "$$od.createdAt",
+                      __v: "$$od.__v",
+                      complete: "$$od.complete",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      ],
+
+      { allowDiskUse: true },
+      async (err, Goals) => {
+        // Check if error was found or not
+        if (err) {
+          res.json({ success: false, message: err }); // Return error message
+        } else {
+          // Check if blogs were found in database
+          if (!Goals || Goals.length === 0) {
+            res.json({
+              success: false,
+              message: "No Goals found.",
+              Goals: [],
+            }); // Return error of no blogs found
+          } else {
+            /*
+            let newGoals = Goals.map((goal) => {
+              let subBudget = 0;
+              goal.subBudget = subBudget;
+              if (goal.objectivesDetails !== null) {
+                returnData = goal.objectivesDetails.map((e) => {
+                  subBudget = subBudget + e.budget;
+                });
+              }
+            });
+            */
+
+            let returnedData = await Promise.all(
+              await CalculateBudgetAndCompletion(Goals)
+            );
+
+            res.json({ success: true, goals: returnedData }); // Return success and blogs array
+          }
+        }
+      }
+    ).sort({ _id: -1 });
+
+    // ).sort({ _id: -1 }); // Sort blogs from newest to oldest
+  });
+
+  async function CalculateBudgetAndCompletion(data) {
+    return await data.map(async (goal) => {
+      //calculate percentage and remaining
+      let totalObjectiveBudget = 0;
+      goal.remainingBudget = goal.budget;
+
+      //calculate completed goals percentage
+      let completionCounterArray = [];
+
+      if (goal.objectivesDetails !== null) {
+        for (let e of goal.objectivesDetails) {
+          //calculate percentage and remaining
+          goal.remainingBudget -= e.budget;
+          totalObjectiveBudget += e.budget;
+          completionCounterArray.push(e.complete);
+          //calculate completed goals percentage
+        }
+
+        //calculate percentage and remaining
+        goal.budgetMinusAllObjectiveBudget = totalObjectiveBudget;
+        goal.remainingPercentage = (
+          (goal.budgetMinusAllObjectiveBudget / goal.budget) *
+          100
+        ).toFixed(2);
+
+        //calculate completed goals percentage
+        let numberOfTrueValues = completionCounterArray.filter(
+          (value) => value === true
+        ).length; // Count the number of true values in the array
+        let totalValues = completionCounterArray.length; // Count the total number of values in the array
+        let percentage = Math.round((numberOfTrueValues / totalValues) * 100); // Calculate the percentage
+        goal.CompletePercentage = percentage; // Assign the percentage to the goal object
+      }
+      return goal;
+    });
+  }
+
   router.get("/getAllGoals", (req, res) => {
     Goals.aggregate(
       [

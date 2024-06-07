@@ -23,7 +23,7 @@ const objectivesSchema = new mongoose.Schema({
   frequency_monitoring: { type: String },
   complete: { type: Boolean, default: false },
   data_source: { type: String },
-  budget: { type: String, required: true },
+  budget: { type: Number, required: true },
   date_added: { type: Date, required: true, default: Date.now },
   createdBy: { type: String, required: true },
   updateby: { type: String },

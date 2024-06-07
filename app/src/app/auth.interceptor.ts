@@ -11,10 +11,15 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from './demo/service/auth.service';
+import { MessageService } from 'primeng/api';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    constructor(private router: Router, private authService: AuthService) {}
+    constructor(
+        private router: Router,
+        private authService: AuthService,
+        private messageService: MessageService
+    ) {}
 
     intercept(
         req: HttpRequest<any>,
@@ -32,6 +37,11 @@ export class AuthInterceptor implements HttpInterceptor {
                     error.error?.message ===
                     'Token invalid :TokenExpiredError: jwt expired'
                 ) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    });
                     this.authService.logout();
                     this.router.navigate(['/login']);
                 }
