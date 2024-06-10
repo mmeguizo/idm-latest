@@ -49,6 +49,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { BlockUIModule } from 'primeng/blockui';
+import { PanelModule } from 'primeng/panel';
 
 const pipes = [
     dataFilterPipe,
@@ -99,6 +100,7 @@ const pipes = [
         CardModule,
         TagModule,
         BlockUIModule,
+        PanelModule,
     ],
     declarations: [
         AdminComponent,
