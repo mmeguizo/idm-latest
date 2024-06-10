@@ -277,31 +277,61 @@ module.exports = (router) => {
       }
     );
   });
+
   router.put("/deleteFileObjective", (req, res) => {
     let file = req.body.source;
     let id = req.body.id;
     let fs = require("fs");
-    fs.unlink(
-      `${path.join(__dirname, "..", "images/files")}/${file}`,
+
+    File.findOne(
+      {
+        id: id,
+      },
       (err) => {
-        if (err) {
-          return res.json({
-            success: false,
-            message: "The server cant find the file.",
-          });
-        }
-        File.deleteOne({ id: id }, (err, results) => {
-          if (err) {
-            return res.json({ success: false, message: err.message });
-          } else {
-            return res.json({
-              success: true,
-              message: "The file has been remove.",
-            });
+        if (err) throw err;
+        File.findOneAndUpdate(
+          { id: id },
+          { status: false },
+          { upsert: true, select: "-__v" },
+          (err, response) => {
+            if (err) return res.json({ success: false, message: err.message });
+            if (response) {
+              res.json({
+                success: true,
+                message: "File Deleted",
+                data: response,
+              });
+            } else {
+              res.json({
+                success: false,
+                message: "Error Occured",
+              });
+            }
           }
-        });
+        ).sort({ date_added: 1 });
       }
     );
+    // fs.unlink(
+    //   `${path.join(__dirname, "..", "images/files")}/${file}`,
+    //   (err) => {
+    //     if (err) {
+    //       return res.json({
+    //         success: false,
+    //         message: "The server cant find the file.",
+    //       });
+    //     }
+    //     // File.deleteOne({ id: id }, (err, results) => {
+    //     //   if (err) {
+    //     //     return res.json({ success: false, message: err.message });
+    //     //   } else {
+    //     //     return res.json({
+    //     //       success: true,
+    //     //       message: "The file has been remove.",
+    //     //     });
+    //     //   }
+    //     // });
+    //   }
+    // );
   });
 
   router.get("/getAllFiles/:user_id", (req, res) => {
@@ -317,14 +347,13 @@ module.exports = (router) => {
   });
 
   router.get("/getAllFilesFromObjective/:user_id/:objective_id", (req, res) => {
-    console.log("getAllFilesFromObjective", req.params);
-
     const { user_id, objective_id } = req.params;
     File.find(
       {
         user_id: user_id,
         objective_id: objective_id,
         for: "files",
+        status: true,
       },
       {
         __v: 0.0,
@@ -337,7 +366,7 @@ module.exports = (router) => {
         }
       }
     ).sort({
-      date_added: 1,
+      date_added: -1,
     });
 
     // File.find(query, (err, files) => {
@@ -348,6 +377,43 @@ module.exports = (router) => {
     //   }
     // });
   });
+  router.get(
+    "/getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id",
+    (req, res) => {
+      console.log("getAllFilesHistoryFromObjectiveLoad", req.params);
+
+      const { user_id, objective_id } = req.params;
+      File.find(
+        {
+          user_id: user_id,
+          objective_id: objective_id,
+          for: "files",
+        },
+        {
+          __v: 0.0,
+        },
+        (err, files) => {
+          console.log("getAllFilesHistoryFromObjectiveLoad", files);
+
+          if (err) {
+            return res.json({ success: false, message: err.message });
+          } else {
+            return res.json({ success: true, message: "Files", data: files });
+          }
+        }
+      ).sort({
+        createdAt: -1,
+      });
+
+      // File.find(query, (err, files) => {
+      //   if (err) {
+      //     return res.json({ success: false, message: err.message });
+      //   } else {
+      //     return res.json({ success: true, message: "Files", data: files });
+      //   }
+      // });
+    }
+  );
 
   return router;
 };

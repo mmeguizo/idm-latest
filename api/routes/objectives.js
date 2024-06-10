@@ -84,7 +84,7 @@ module.exports = (router) => {
             if (response) {
               res.json({
                 success: true,
-                message: " Successfully Objectives set",
+                message: " Successfully Changed",
                 data: response,
               });
             } else {
@@ -220,8 +220,6 @@ module.exports = (router) => {
   });
 
   router.put("/setInactiveObjectives", async (req, res) => {
-    console.log("setInactiveObjectives", req.body);
-
     const data = req.body;
 
     try {
@@ -245,15 +243,11 @@ module.exports = (router) => {
         });
       }
 
-      console.log("setInactiveObjectives", updatedObjective);
-
       // Update the files
       const updateFilesResult = await Files.updateMany(
         { for: "files", status: true, objective_id: data.id },
         { $set: { status: false } }
       );
-
-      console.log("setInactiveObjectives", updateFilesResult);
 
       if (updateFilesResult.acknowledged) {
         return res.json({
@@ -271,55 +265,6 @@ module.exports = (router) => {
       return res.json({ success: false, message: err.message });
     }
   });
-
-  // router.put("/setInactiveObjectives", (req, res) => {
-  //   console.log("setInactiveObjectives", req.body);
-  //   let data = req.body;
-  //   Objectives.findOne(
-  //     {
-  //       id: data.id,
-  //     },
-  //     (err) => {
-  //       if (err) throw err;
-  //       Objectives.findOneAndUpdate(
-  //         { id: data.id },
-  //         { deleted: true, status: "inactive" },
-  //         { upsert: true, select: "-__v" },
-  //         (err, response) => {
-  //           if (err) return res.json({ success: false, message: err.message });
-  //           if (response) {
-  //             console.log("setInactiveObjectives", response);
-
-  //             Files.updateMany(
-  //               { for: "files", status: true, objective_id: data.id },
-  //               {
-  //                 status: false,
-  //               },
-  //               (err, files) => {
-  //                 console.log("setInactiveObjectives", files);
-  //                 if (err)
-  //                   return res.json({ success: false, message: err.message });
-  //                 if (files.nModified) {
-  //                   res.json({
-  //                     success: true,
-  //                     message:
-  //                       " Successfully Delete Objectives Including its files...",
-  //                     data: response,
-  //                   });
-  //                 }
-  //               }
-  //             );
-  //           } else {
-  //             res.json({
-  //               success: false,
-  //               message: "Could Delete Objectives" + err,
-  //             });
-  //           }
-  //         }
-  //       );
-  //     }
-  //   );
-  // });
 
   router.put("/changeObjectivesStatus", (req, res) => {
     let data = req.body;

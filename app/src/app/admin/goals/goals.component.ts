@@ -35,6 +35,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     goals: any[] = [];
     Alldepts: any[] = [];
     AllObjectivesFiles: any[] = [];
+    AllObjectivesHistoryFiles: any[] = [];
     ViewBudget: any[] = [];
 
     //table columns
@@ -62,6 +63,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     addObjectiveGoalDialogCard: boolean = false;
     updateGoalDialogCard: boolean = false;
     viewObjectiveFileDialogCard: boolean = false;
+    viewObjectiveFileHistoryDialogCard: boolean = false;
     addObjectiveFileDialogCard: boolean;
     updateObjectiveGoalFlag: boolean;
 
@@ -192,8 +194,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .subscribe((data: any) => {
                 // this.ObjectivesGoals = data.goals;
                 this.goals = data.goals;
-
-                console.log(this.goals);
                 this.loading = false;
             });
     }
@@ -216,17 +216,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         subHeader?: string,
         goalDataRemainingBudget?: number
     ) {
-        console.log(
-            'getObjectives',
-            {
-                id,
-                objectId,
-                subHeader,
-                goalDataRemainingBudget,
-            },
-            typeof goalDataRemainingBudget
-        );
-
         //passed data needed for the subgoal table or adding table modal
         this.subObjectiveGoalID = id;
         this.goal_ObjectId = objectId;
@@ -246,8 +235,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
                     this.objectiveDatas = data.Objectives;
-                    console.log(this.objectiveDatas.length);
-
                     //initialize completion button
                     for (
                         let i = 0;
@@ -276,6 +263,24 @@ export class GoalsComponent implements OnInit, OnDestroy {
             });
         return true;
     }
+    async getAllFilesHistoryFromObjectiveLoad(
+        id: string,
+        objectiveID: string
+    ): Promise<Boolean> {
+        this.loading = true;
+        this.fileService
+            .getAllFilesHistoryFromObjectiveLoad(id, objectiveID)
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                this.AllObjectivesHistoryFiles = data.data;
+                console.log({
+                    AllObjectivesHistoryFiles: this.AllObjectivesHistoryFiles,
+                });
+
+                this.loading = false;
+            });
+        return true;
+    }
 
     addSubGoal() {
         this.addObjectiveGoalDialogCard = true;
@@ -283,6 +288,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     addGoal() {
         this.addGoalDialogCard = true;
+    }
+
+    addFiles(objectiveData: any) {
+        // alert(objectiveID);
+        this.addObjectiveFileDialogCard = true;
+        // alert(JSON.stringify(objectiveData));
     }
 
     addGoalDialogExec(form: any) {
@@ -307,6 +318,41 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     });
                     this.addGoalDialogCard = false;
                     this.addGoalform.reset();
+                } else {
+                    this.messageService.add({
+                        severity: 'error  ',
+                        summary: 'Error',
+                        detail: data.message,
+                    });
+                }
+            });
+    }
+
+    addSubObjectiveGoalDialogExec(e: any) {
+        e.value.userId = this.USERID;
+        e.value.goalId = this.subObjectiveGoalID;
+        e.value.goal_Id = this.goal_ObjectId;
+        e.value.frequency_monitoring =
+            this.formGroupDropdown.value.selectedDropdown.name;
+        e.value.createdBy = this.USERID;
+        this.obj
+            .getRoute('post', 'objectives', 'addObjectives', e.value)
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                if (data.success) {
+                    this.getObjectives(this.subObjectiveGoalID);
+                    this.messageService.add({
+                        severity: 'success  ',
+                        summary: 'Done',
+                        detail: data.message,
+                    });
+                    //fix the error becomes null after adding new objective
+                    this.goal_ObjectId = data.data.Objectives.goal_Id;
+                    // clear the data
+                    this.addObjectiveGoalDialogCard = false;
+                    this.addObjectiveGoalform.reset();
+                    this.formGroupDropdown.reset();
+                    this.goalDataRemainingBudget = 0;
                 } else {
                     this.messageService.add({
                         severity: 'error  ',
@@ -390,22 +436,26 @@ export class GoalsComponent implements OnInit, OnDestroy {
         });
     }
 
-    updateObjectiveComplete(event: Event, data: any, index = 0) {
+    updateObjectiveComplete(
+        event: Event,
+        data: any,
+        index = 0,
+        completeStatus: any
+    ) {
         this.onclickCompletionButton[index] = true;
         let goalIDs = data.goalId;
-
-        console.log(this.onclickCompletionButton[index]);
 
         //create an index of boolean to match the button on the table
         // if not all buttons will load too
 
-        console.log('updateObjectiveComplete', index);
-
         this.confirmationService.confirm({
             key: 'updateObjectiveComplete',
             target: event.target as EventTarget,
-            message:
-                'Marking Complete Will Lock File Submissions, Are You Sure?',
+            message: `Marking Objective ${
+                completeStatus
+                    ? 'as Incomplete'
+                    : ' as Complete? Will Lock Files'
+            }, Are You Sure?`,
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             acceptIcon: 'none',
@@ -430,6 +480,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                                 severity: 'success  ',
                                 summary: 'Done',
                                 detail: results.message,
+                                life: 5000,
                             });
                             // this saves the objectid instead of refetch by closing the dialog it will run hideview to refetch
                             this.hideviewObjectiveFileDialogCardID = goalIDs;
@@ -446,16 +497,41 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 this.onclickCompletionButton[index] = false;
             },
             reject: () => {
-                console.log('reject');
                 this.onclickCompletionButton[index] = false;
                 this.messageService.add({
-                    severity: 'error',
-                    summary: 'Rejected',
-                    detail: 'You have rejected',
+                    severity: 'info',
+                    summary: 'Done',
+                    detail: 'Nothing happens',
                     life: 3000,
                 });
             },
         });
+    }
+
+    updateSubObjectiveGoalDialogExec(form: any) {
+        form.value.id = this.tobeUpdatedSubGoal;
+        form.value.frequency_monitoring =
+            this.formGroupDropdown.value.selectedDropdown.name;
+        this.obj
+            .getRoute('put', 'objectives', 'updateObjectives', form.value)
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                if (data.success) {
+                    this.getObjectives(this.subObjectiveGoalID);
+                    this.addObjectiveGoalDialogCard = false;
+                    this.messageService.add({
+                        severity: 'success  ',
+                        summary: 'Done',
+                        detail: data.message,
+                    });
+                } else {
+                    this.messageService.add({
+                        severity: 'error  ',
+                        summary: 'Error',
+                        detail: data.message,
+                    });
+                }
+            });
     }
 
     deleteGoalDialog(event: Event, _id: any) {
@@ -527,90 +603,58 @@ export class GoalsComponent implements OnInit, OnDestroy {
         });
     }
 
-    addSubObjectiveGoalDialogExec(e: any) {
-        console.log({ addSubObjectiveGoalDialogExec: e.value });
-
-        e.value.userId = this.USERID;
-        e.value.goalId = this.subObjectiveGoalID;
-        e.value.goal_Id = this.goal_ObjectId;
-        e.value.frequency_monitoring =
-            this.formGroupDropdown.value.selectedDropdown.name;
-        e.value.createdBy = this.USERID;
-        this.obj
-            .getRoute('post', 'objectives', 'addObjectives', e.value)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    this.getObjectives(this.subObjectiveGoalID);
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
+    deleteSubGoalFile(id: string, source: string) {
+        // alert(`delete sub goal file ${id} ${source}`);
+        this.confirmationService.confirm({
+            key: 'deleteSubGoalFile',
+            target: event.target || new EventTarget(),
+            message: 'Delete File',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.fileService
+                    .deleteFileObjective({
+                        id: id,
+                        source: source,
+                    })
+                    .pipe(takeUntil(this.getGoalSubscription))
+                    .subscribe((data: any) => {
+                        if (data.success) {
+                            this.getAllFilesFromObjectiveLoad(
+                                this.USERID,
+                                this.objectiveIDforFile
+                            );
+                            this.messageService.add({
+                                severity: 'success  ',
+                                summary: 'Done',
+                                detail: data.message,
+                            });
+                        } else {
+                            this.messageService.add({
+                                severity: 'error  ',
+                                summary: 'Error',
+                                detail: data.message,
+                            });
+                        }
                     });
-                    //fix the error becomes null after adding new objective
-                    this.goal_ObjectId = data.data.Objectives.goal_Id;
-                    // clear the data
-                    this.addObjectiveGoalDialogCard = false;
-                    this.addObjectiveGoalform.reset();
-                    this.formGroupDropdown.reset();
-                    this.goalDataRemainingBudget = 0;
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
-    }
-
-    updateSubObjectiveGoalDialogExec(form: any) {
-        form.value.id = this.tobeUpdatedSubGoal;
-        form.value.frequency_monitoring =
-            this.formGroupDropdown.value.selectedDropdown.name;
-        this.obj
-            .getRoute('put', 'objectives', 'updateObjectives', form.value)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    this.getObjectives(this.subObjectiveGoalID);
-                    this.addObjectiveGoalDialogCard = false;
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
+            },
+        });
     }
 
     viewFiles(objectiveData: any) {
         //block view files if complete
-        console.log(this.blockedPanel);
         this.blockedPanel = objectiveData.complete;
-
-        console.log(this.blockedPanel);
-        console.log({ objectiveData: objectiveData });
-
         // alert(objectiveID);
         this.viewObjectiveFileDialogCard = true;
         this.objectiveIDforFile = objectiveData.id;
 
         // alert(JSON.stringify(objectiveData));
-
         this.getAllFilesFromObjectiveLoad(this.USERID, objectiveData.id);
     }
 
-    addFiles(objectiveData: any) {
-        // alert(objectiveID);
-        this.addObjectiveFileDialogCard = true;
-        // alert(JSON.stringify(objectiveData));
+    viewFilesHistory(objectiveData: any) {
+        console.log(objectiveData);
+        this.viewObjectiveFileHistoryDialogCard = true;
+        this.getAllFilesHistoryFromObjectiveLoad(this.USERID, objectiveData.id);
     }
 
     onUpload(event: any) {
@@ -661,55 +705,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
             });
     }
 
-    deleteSubGoalFile(id: string, source: string) {
-        // alert(`delete sub goal file ${id} ${source}`);
-        this.confirmationService.confirm({
-            key: 'deleteSubGoalFile',
-            target: event.target || new EventTarget(),
-            message: 'Delete File',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.fileService
-                    .deleteFileObjective({
-                        id: id,
-                        source: source,
-                    })
-                    .pipe(takeUntil(this.getGoalSubscription))
-                    .subscribe((data: any) => {
-                        if (data.success) {
-                            this.getAllFilesFromObjectiveLoad(
-                                this.USERID,
-                                this.objectiveIDforFile
-                            );
-                            this.messageService.add({
-                                severity: 'success  ',
-                                summary: 'Done',
-                                detail: data.message,
-                            });
-                        } else {
-                            this.messageService.add({
-                                severity: 'error  ',
-                                summary: 'Error',
-                                detail: data.message,
-                            });
-                        }
-                    });
-            },
-        });
-    }
-
-    clearUploadFiles(event: Event) {
-        console.log({ clearUploadFiles: event });
-    }
-
     clearAddObjectiveGoalDialogCardDatas() {
         this.addObjectiveGoalDialogCard = false;
         this.tobeUpdatedSubGoal = null;
     }
-
-    // end of class
-
-    // run after update or changes
 
     hidviewObjectRefetch(id) {
         this.obj
@@ -738,6 +737,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.objectiveIDforFile = null;
         this.viewObjectiveFileDialogCard = false;
     }
+    hideViewFileHistoryDialogCard() {
+        this.viewObjectiveFileHistoryDialogCard = false;
+    }
+    // viewObjectiveFileHistoryDialogCard
 
     getIcon(name: string) {
         const fileExtension = name.split('.').pop();
@@ -763,7 +766,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             case 'pptx':
                 return 'pi pi-file-powerpoint';
             case 'txt':
-                return 'pi pi-file-o';
+                return 'pi pi-ticket';
             case 'zip':
                 return 'pi pi-file-zip';
             case 'psd':

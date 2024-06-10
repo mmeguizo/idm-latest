@@ -105,6 +105,14 @@ export class FileService {
             { headers: this.options, responseType: 'json' }
         );
     }
+    getAllFilesHistoryFromObjectiveLoad(id: string, objectId: string) {
+        this.createAuthenticationHeaders();
+        return this.http.get(
+            this.cs.domain +
+                `/fileupload/getAllFilesHistoryFromObjectiveLoad/${id}/${objectId}`,
+            { headers: this.options, responseType: 'json' }
+        );
+    }
 
     getRoute(endpoint, apiName, data) {
         this.createAuthenticationHeaders();

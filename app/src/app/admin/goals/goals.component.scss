@@ -49,6 +49,9 @@
 ::ng-deep .hover\:pi-folder-open:hover:before {
     content: "📂";
 }
+::ng-deep .hover\:pi-cog:hover:before {
+    content: "⚙️";
+}
 // content: "\e91f";
 
 ::ng-deep .p-fileupload-row > div:first-child {
@@ -61,4 +64,31 @@
 
 ::ng-deep .p-overlaypanel .p-overlaypanel-content {
     padding: 0 !important;
+}
+
+::ng-deep p-panel {
+    width: 100% !important;
+    z-index: 9999999999;
+}
+
+::ng-deep .p-blockui.p-component-overlay {
+    position: absolute;
+    display: flex;
+}
+
+::ng-deep .p-blockui {
+    z-index: 9999999999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    transition-property: background-color;
+    align-items: center;
+    justify-content: center;
+}
+
+::ng-deep .p-blockui.p-component-overlay {
+    position: absolute;
+    display: flex;
 }

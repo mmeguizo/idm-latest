@@ -1,4 +1,4 @@
-<p-toast autoZIndex="true"></p-toast>
+<p-toast [autoZIndex]="true"></p-toast>
 <!-- main goal table  -->
 <div class="grid">
     <div class="col-12">
@@ -180,7 +180,11 @@
                                             <i
                                                 class="pi pi-money-bill bg-green-400"
                                             ></i>
-                                            {{ obj.clients | titlecase }} :
+                                            {{
+                                                obj.clients.substring(0, 12) +
+                                                    "...." | titlecase
+                                            }}
+                                            :
                                         </span>
                                         <span
                                             >{{ obj.budget | peso }} -
@@ -193,10 +197,11 @@
                                                 [value]="
                                                     obj.complete
                                                         ? 'Completed'
-                                                        : 'Not yet Completed'
+                                                        : 'In Progress'
                                                 "
                                             ></p-tag
                                         ></span>
+                                        <hr />
                                     </div>
                                     &nbsp; &nbsp;
                                     <div *ngIf="!goal.objectivesDetails">
@@ -708,7 +713,8 @@
                                     updateObjectiveComplete(
                                         $event,
                                         objectiveData,
-                                        rowIndex
+                                        rowIndex,
+                                        objectiveData.complete
                                     )
                                 "
                             ></p-button>
@@ -718,10 +724,19 @@
                             ></p-confirmPopup>
                         </td>
                         <td>
-                            <div class="flex flex-column align-items-center">
+                            <div class="flex flex-row align-items-center">
                                 <i
+                                    pTooltip="File List"
+                                    tooltipPosition="top"
                                     (click)="viewFiles(objectiveData)"
                                     class="pi pi-folder text-2xl hover:text-4xl text-yellow-400 transition ease-in-out duration-200 hover:pi-folder-open cursor-pointer"
+                                ></i>
+                                &nbsp; &nbsp;
+                                <i
+                                    pTooltip="File History"
+                                    tooltipPosition="top"
+                                    (click)="viewFilesHistory(objectiveData)"
+                                    class="pi pi-cog text-2xl hover:text-4xl text-yellow-400 transition ease-in-out duration-200 hover:pi-cog cursor-pointer"
                                 ></i>
                             </div>
                         </td>
@@ -779,21 +794,9 @@
     position="top"
     (onHide)="clearAddObjectiveGoalDialogCardDatas()"
 >
-    <!--  (onHide)="clearForms([addObjectiveGoalform, formGroupDropdown])"
-
-     (onHide)="clearForms(addObjectiveGoalform, formGroupDropdown)"-->
     <div class="p-fluid">
         <div class="field col-10 md:col-10">
             <form [formGroup]="addObjectiveGoalform">
-                <!-- <div class="field">
-                    <label htmlFor="department">Department</label>
-                    <p-dropdown
-                        formControlName="department"
-                        [options]="deptDropdownValue"
-                        optionLabel="name"
-                        dataKey="id"
-                    ></p-dropdown>
-                </div> -->
                 <div class="field">
                     <label htmlFor="name1">Functional Objective</label>
                     <input
@@ -1003,9 +1006,10 @@
 </p-dialog>
 
 <!-- view file table list -->
-
 <p-dialog
-    header="File List"
+    [header]="
+        blockedPanel ? 'Files Locked: Objective Marked Complete' : 'File List'
+    "
     [modal]="true"
     [(visible)]="viewObjectiveFileDialogCard"
     [style]="{ width: '60rem' }"
@@ -1015,161 +1019,158 @@
     [closable]="false"
     position="top"
 >
-    <p-blockUI
-        [baseZIndex]="999999999999"
-        [target]="pnl"
-        [blocked]="blockedPanel"
-    >
-        <i class="pi pi-lock" style="font-size: 3rem"></i>
-    </p-blockUI>
-    <p-panel #pnl>
-        <div class="grid">
-            <div class="col-12">
-                <p-table
-                    #dt3
-                    [value]="AllObjectivesFiles"
-                    dataKey="id"
-                    [rows]="5"
-                    [loading]="loading"
-                    [rowHover]="true"
-                    styleClass="p-datatable-gridlines"
-                    [paginator]="true"
-                    [globalFilterFields]="['name', 'code', 'options']"
-                    responsiveLayout="scroll"
-                    [tableStyle]="{ 'min-width': '50rem' }"
-                >
-                    <ng-template pTemplate="caption">
-                        <div
-                            class="flex justify-content-between flex-column sm:flex-row"
-                        >
-                            <button
-                                [disabled]="blockedPanel"
-                                pButton
-                                label="Clear"
-                                class="p-button-outlined mb-2"
-                                icon="pi pi-filter-slash"
-                                (click)="clear(dt3)"
-                            ></button>
+    <div class="grid">
+        <div class="col-12">
+            <p-table
+                #dt3
+                [value]="AllObjectivesFiles"
+                dataKey="id"
+                [rows]="5"
+                [loading]="loading"
+                [rowHover]="true"
+                styleClass="p-datatable-gridlines"
+                [paginator]="true"
+                [globalFilterFields]="['name', 'code', 'options']"
+                responsiveLayout="scroll"
+                [tableStyle]="{ 'min-width': '50rem' }"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex justify-content-between flex-column sm:flex-row"
+                    >
+                        <button
+                            [disabled]="blockedPanel"
+                            pButton
+                            label="Clear"
+                            class="p-button-outlined mb-2"
+                            icon="pi pi-filter-slash"
+                            (click)="clear(dt3)"
+                        ></button>
 
-                            <p-button
+                        <p-button
+                            [disabled]="blockedPanel"
+                            icon="pi pi-upload"
+                            (click)="addFiles()"
+                            severity="success"
+                            [outlined]="true"
+                            pTooltip="Add Objectives"
+                            tooltipPosition="top"
+                        />
+
+                        <span class="p-input-icon-left mb-2">
+                            <i class="pi pi-search"></i>
+                            <input
                                 [disabled]="blockedPanel"
-                                icon="pi pi-upload"
-                                (click)="addFiles()"
-                                severity="success"
-                                [outlined]="true"
-                                pTooltip="Add Objectives"
-                                tooltipPosition="top"
+                                pInputText
+                                type="text"
+                                #filter
+                                (input)="onGlobalFilter(dt3, $event)"
+                                placeholder="Search Keyword"
+                                class="p-inputtext p-component p-element w-full"
                             />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                File
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Date Added
+                            </div>
+                        </th>
 
-                            <span class="p-input-icon-left mb-2">
-                                <i class="pi pi-search"></i>
-                                <input
-                                    [disabled]="blockedPanel"
-                                    pInputText
-                                    type="text"
-                                    #filter
-                                    (input)="onGlobalFilter(dt3, $event)"
-                                    placeholder="Search Keyword"
-                                    class="p-inputtext p-component p-element w-full"
-                                />
-                            </span>
-                        </div>
-                    </ng-template>
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th style="min-width: 12rem">
-                                <div
-                                    class="flex justify-content-between align-items-center"
-                                >
-                                    File
-                                </div>
-                            </th>
-                            <th style="min-width: 12rem">
-                                <div
-                                    class="flex justify-content-between align-items-center"
-                                >
-                                    Date Added
-                                </div>
-                            </th>
-
-                            <th style="min-width: 9rem">
-                                <div
-                                    class="flex justify-content-between align-items-center"
-                                >
-                                    Options
-                                </div>
-                            </th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-AllObjectivesFile>
-                        <tr>
-                            <td>
-                                <a
-                                    [href]="
-                                        this.auth.domain +
-                                        '/images/files/' +
-                                        AllObjectivesFile.source
+                        <th style="min-width: 9rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Options
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-AllObjectivesFile>
+                    <tr>
+                        <td>
+                            <a
+                                [href]="
+                                    this.auth.domain +
+                                    '/images/files/' +
+                                    AllObjectivesFile.source
+                                "
+                                target="_blank"
+                            >
+                                <i
+                                    class="text-4xl"
+                                    [ngClass]="
+                                        getIcon(
+                                            AllObjectivesFile.source
+                                                .split('.')
+                                                .pop()
+                                                .toLowerCase()
+                                        )
                                     "
-                                    target="_blank"
-                                >
-                                    <i
-                                        class="text-4xl"
-                                        [ngClass]="
-                                            getIcon(
-                                                AllObjectivesFile.source
-                                                    .split('.')
-                                                    .pop()
-                                                    .toLowerCase()
-                                            )
-                                        "
-                                    ></i>
-                                </a>
-                            </td>
-                            <td>
-                                {{
-                                    AllObjectivesFile.date_added
-                                        | date : "mediumDate"
-                                }}
-                                {{ blockedPanel }}
-                            </td>
+                                ></i>
+                            </a>
+                        </td>
+                        <td>
+                            {{
+                                AllObjectivesFile.date_added
+                                    | date : "mediumDate"
+                            }}
+                        </td>
 
-                            <td>
-                                <div class="options-users">
-                                    <i
-                                        [disabled]="blockedPanel"
-                                        (click)="
-                                            deleteSubGoalFile(
-                                                AllObjectivesFile.id,
-                                                AllObjectivesFile.source
-                                            )
-                                        "
-                                        class="pi pi-trash text-xl"
-                                        style="color: #ef4444; cursor: pointer"
-                                    ></i>
-                                    <p-confirmPopup
-                                        key="deleteSubGoalFile"
-                                    ></p-confirmPopup>
-                                </div>
-                            </td>
-                        </tr>
-                    </ng-template>
+                        <td>
+                            <div class="options-users">
+                                @if(blockedPanel){
+                                <i
+                                    class="pi pi-trash text-xl"
+                                    style="color: #868585"
+                                ></i>
 
-                    <ng-template pTemplate="emptymessage">
-                        <tr>
-                            <td colspan="8">No Files found.</td>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="loadingbody">
-                        <tr>
-                            <td colspan="8">
-                                Loading Files data. Please wait.
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-            </div>
+                                } @else {
+                                <i
+                                    (click)="
+                                        deleteSubGoalFile(
+                                            AllObjectivesFile.id,
+                                            AllObjectivesFile.source
+                                        )
+                                    "
+                                    class="pi pi-trash text-xl"
+                                    style="color: #ef4444; cursor: pointer"
+                                ></i>
+                                }
+
+                                <p-confirmPopup
+                                    key="deleteSubGoalFile"
+                                ></p-confirmPopup>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">No Files found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="loadingbody">
+                    <tr>
+                        <td colspan="8">Loading Files data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
-    </p-panel>
+    </div>
+
     <ng-template pTemplate="footer">
         <p-button
             label="Cancel"
@@ -1179,7 +1180,6 @@
         />
     </ng-template>
 </p-dialog>
-
 <!-- add files form dialog -->
 
 <p-dialog
@@ -1190,8 +1190,6 @@
     [modal]="true"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     position="top"
-    (onRemove)="clearUploadFiles($event)"
-    (onClear)="clearUploadFiles($event)"
 >
     <div class="p-fluid">
         <form [formGroup]="addFileForm">
@@ -1209,4 +1207,225 @@
         </form>
     </div>
     &nbsp;&nbsp;
+</p-dialog>
+
+<!-- view file History table list -->
+<p-dialog
+    [header]="'File HistoryList'"
+    [modal]="true"
+    [(visible)]="viewObjectiveFileHistoryDialogCard"
+    [style]="{ width: '60rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true"
+    responsiveLayout="stack"
+    [closable]="false"
+    position="top"
+>
+    <div class="grid">
+        <div class="col-12">
+            <p-table
+                #dt3
+                [value]="AllObjectivesHistoryFiles"
+                dataKey="id"
+                [rows]="5"
+                [loading]="loading"
+                [rowHover]="true"
+                styleClass="p-datatable-gridlines"
+                [paginator]="true"
+                [globalFilterFields]="['name', 'code', 'options']"
+                responsiveLayout="scroll"
+                [tableStyle]="{ 'min-width': '50rem' }"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex justify-content-between flex-column sm:flex-row"
+                    >
+                        <button
+                            pButton
+                            label="Clear"
+                            class="p-button-outlined mb-2"
+                            icon="pi pi-filter-slash"
+                            (click)="clear(dt3)"
+                        ></button>
+
+                        <!-- <p-button
+                            [disabled]="blockedPanel"
+                            icon="pi pi-upload"
+                            (click)="addFiles()"
+                            severity="success"
+                            [outlined]="true"
+                            pTooltip="Add Objectives"
+                            tooltipPosition="top"
+                        /> -->
+
+                        <span class="p-input-icon-left mb-2">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                #filter
+                                (input)="onGlobalFilter(dt3, $event)"
+                                placeholder="Search Keyword"
+                                class="p-inputtext p-component p-element w-full"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                File
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Date Added
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Date Deleted
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Status
+                            </div>
+                        </th>
+                        <!--
+                        <th style="min-width: 9rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Options
+                            </div>
+                        </th> -->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-AllObjectivesHistoryFiles>
+                    <tr>
+                        <td>
+                            <a
+                                [href]="
+                                    this.auth.domain +
+                                    '/images/files/' +
+                                    AllObjectivesHistoryFiles.source
+                                "
+                                target="_blank"
+                            >
+                                <i
+                                    class="text-4xl"
+                                    [ngClass]="
+                                        getIcon(
+                                            AllObjectivesHistoryFiles.source
+                                                .split('.')
+                                                .pop()
+                                                .toLowerCase()
+                                        )
+                                    "
+                                ></i>
+                            </a>
+                        </td>
+                        <td>
+                            {{
+                                AllObjectivesHistoryFiles.date_added
+                                    | date : "medium"
+                            }}
+                        </td>
+                        <td>
+                            <!-- {{
+                                AllObjectivesHistoryFiles.date_added
+                                    | date : "mediumDate"
+                            }} -->
+
+                            <span
+                                [class]="
+                                    'cursor-pointer  customer-badge status-' +
+                                    (AllObjectivesHistoryFiles.status
+                                        ? 'active'
+                                        : 'inactive')
+                                "
+                            >
+                                {{
+                                    AllObjectivesHistoryFiles.updatedAt
+                                        | date : "medium"
+                                }}</span
+                            >
+                        </td>
+                        <td>
+                            <span
+                                [class]="
+                                    'cursor-pointer  customer-badge status-' +
+                                    (AllObjectivesHistoryFiles.status
+                                        ? 'active'
+                                        : 'inactive')
+                                "
+                                >{{
+                                    AllObjectivesHistoryFiles.status
+                                        ? "Active"
+                                        : "Deleted"
+                                }}</span
+                            >
+                        </td>
+                        <!--
+                        <td>
+                            <div class="options-users">
+                                @if(blockedPanel){
+                                <i
+                                    class="pi pi-trash text-xl"
+                                    style="color: #868585"
+                                ></i>
+
+                                } @else {
+                                <i
+                                    (click)="
+                                        deleteSubGoalFile(
+                                            AllObjectivesHistoryFiles.id,
+                                            AllObjectivesHistoryFiles.source
+                                        )
+                                    "
+                                    class="pi pi-trash text-xl"
+                                    style="color: #ef4444; cursor: pointer"
+                                ></i>
+                                }
+
+                                <p-confirmPopup
+                                    key="deleteSubGoalFile"
+                                ></p-confirmPopup>
+                            </div>
+                        </td> -->
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">No Files found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="loadingbody">
+                    <tr>
+                        <td colspan="8">Loading Files data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button
+            label="Cancel"
+            [text]="true"
+            severity="secondary"
+            (click)="hideViewFileHistoryDialogCard()"
+        />
+    </ng-template>
 </p-dialog>
