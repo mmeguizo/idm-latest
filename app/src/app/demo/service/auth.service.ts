@@ -134,20 +134,25 @@ export class AuthService {
         return jwtDecode<UserToken>(token);
     }
     getTokenUsername() {
-        return jwtDecode<UserToken>(localStorage.getItem('token')).username;
+        return (
+            jwtDecode<UserToken>(localStorage.getItem('token')).username || ''
+        );
     }
     getTokenUserID() {
-        return jwtDecode<UserToken>(localStorage.getItem('token')).id;
+        return jwtDecode<UserToken>(localStorage.getItem('token')).id || '';
     }
     getUserProfilePic() {
-        return jwtDecode<UserToken>(localStorage.getItem('token')).profile_pic;
+        return (
+            jwtDecode<UserToken>(localStorage.getItem('token')).profile_pic ||
+            ''
+        );
     }
 
     getUserRole() {
-        return jwtDecode<UserToken>(localStorage.getItem('token')).role;
+        return jwtDecode<UserToken>(localStorage.getItem('token')).role || '';
     }
     getUserTokenExp() {
-        return jwtDecode<UserToken>(localStorage.getItem('token')).exp;
+        return jwtDecode<UserToken>(localStorage.getItem('token')).exp || 0;
     }
 
     getProfile() {

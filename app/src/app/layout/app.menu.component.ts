@@ -18,7 +18,6 @@ export class AppMenuComponent implements OnInit {
 
     ngOnInit() {
         this.role = this.auth.getUserRole();
-        console.log({ RoleMenu: this.auth.getUserRole() });
         //custom menu
         if (this.role === 'admin') {
             this.model = [

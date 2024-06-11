@@ -8,7 +8,6 @@ const mongoose = require("mongoose");
 const PORT = process.env.PORT || 3000;
 const path = require("path");
 const http = require("http").Server(app);
-
 //path routes
 //onst customer = require('./routes/customers')(router);
 const authentication = require("./routes/authentication")(router);
@@ -50,7 +49,7 @@ app.use(express.urlencoded({ limit: "20mb", extended: false }));
 app.use(allowCrossDomain);
 
 //for deployment on hosting and build
-app.use(express.static(__dirname + "/app/dist/"));
+app.use(express.static(__dirname + "/dist/"));
 app.use("/images", express.static(path.join(__dirname, "./images")));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads/files")));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads/images")));
@@ -69,8 +68,7 @@ app.use(
 );
 
 app.get("*", (req, res) => {
-  //   res.sendFile(path.join(__dirname + "/app/dist/index.html"));
-  // res.sendFile('Adik SALA!!!')
+  res.sendFile(path.join(__dirname + "/dist/index.html"));
 });
 
 const servers = app.listen(PORT || 52847, () => {

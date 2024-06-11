@@ -67,10 +67,6 @@ import { FormBuilder, Validators } from '@angular/forms';
    justify-content: center;
 }
 
-.p-menubar {
-    padding: 0 !important;
-}
-
  ::ng-deep .p-menuitem-link {
     padding: 10% !important;
 }
@@ -81,13 +77,13 @@ import { FormBuilder, Validators } from '@angular/forms';
 .p-element{
     margin-top: 3px;
 }
-// .ng-invalid {
-//     border-color: red !important;
-// }
+.rounded-full {
+    height: 38px;
+}
 
-// .ng-valid {
-//     border-color: green !important;
-// }
+::ng-deep .p-menubar {
+    padding: 0rem !important;
+}
 
     `,
 })
@@ -130,38 +126,33 @@ export class AppTopBarComponent implements OnInit {
         public user: UserService,
         public formBuilder: FormBuilder
     ) {
-        this.id = this.auth.getTokenUserID();
-        this.name = this.auth.getTokenUsername();
-        this.profile_pic = this.auth.getUserProfilePic();
+        this.id = this.auth.getTokenUserID() || '';
+        this.name = this.auth.getTokenUsername() || '';
+        this.profile_pic = this.auth.getUserProfilePic() || 'no-photo.png';
     }
 
     ngOnInit() {
         this.Listitems = [
             {
-                icon: 'pi pi-fw pi-cog',
+                // icon: 'pi pi-fw pi-cog',
                 items: [
                     {
                         label: 'Update',
                         icon: 'pi pi-user-edit',
                         command: () => {
-                            console.log('update');
                             this.visible = true;
-
-                            // this.update();
                         },
                     },
                     {
                         label: 'Logout',
                         icon: 'pi pi-fw pi-sign-in',
                         command: () => {
-                            // this.confirm2(event);
                             this.logout = true;
-                            // this.auth.logout();
                         },
                     },
                 ],
             },
-            { separator: true },
+            // { separator: true },
         ];
 
         this.getUserData();
@@ -190,8 +181,6 @@ export class AppTopBarComponent implements OnInit {
             .getRoute('get', 'users', 'profile', this.id)
             .pipe(takeUntil(this.getSubscription))
             .subscribe((data: any) => {
-                console.log({ userdata: data });
-
                 this.form = this.formBuilder.group({
                     username: [data.user.username, [Validators.required]],
                     email: [data.user.email, [Validators.required]],
@@ -224,12 +213,9 @@ export class AppTopBarComponent implements OnInit {
     updates(form: any) {
         // this.confirmationService.
 
-        console.log('update send to backend');
-
         form.value.id = this.id;
         form.value.profile_pic = this.profile_pic;
         let data = form.value;
-        console.log(form.value);
 
         if (form.value.confirmPassword !== form.value.password) {
             this.passwordNotMatch = true;

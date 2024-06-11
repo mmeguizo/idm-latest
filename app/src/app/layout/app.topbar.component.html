@@ -33,53 +33,28 @@
                 layoutService.state.profileSidebarVisible
         }"
     >
-        <!-- <button class="p-link layout-topbar-button">
-            <i class="pi pi-calendar"></i>
-            <span>Calendar</span>
-        </button> -->
-
-        <!-- <p-splitButton
-            icon="pi pi-cog"
-            [model]="Listitems"
-            styleClass="p-button-secondary"
-        ></p-splitButton> -->
-
         <p-menubar #avatarMenu [model]="Listitems">
-            <ng-template pTemplate="end"> </ng-template>
+            <ng-template pTemplate="end">
+                <button class="p-link layout-topbar-button">
+                    <img
+                        [(src)]="this.dangerousUrl"
+                        alt="Image"
+                        class="rounded-full"
+                        height="30px"
+                        (click)="avatarMenu.toggle($event)"
+                    />
+                    <span>Profile</span>
+                </button>
+            </ng-template>
         </p-menubar>
         <p-toast></p-toast>
-        <button class="p-link layout-topbar-button">
-            <img
-                [(src)]="this.dangerousUrl"
-                alt="Image"
-                class="rounded-full"
-                height="40"
-                (click)="avatarMenu.toggle($event)"
-            />
-            <!-- <i class="pi pi-user"></i> -->
-            <span>Profile</span>
-        </button>
-
-        <!-- <button
-            class="p-link layout-topbar-button"
-            [routerLink]="'/documentation'"
-        >
-            <i class="pi pi-cog"></i>
-            <span>Settings</span>
-        </button> -->
     </div>
-
-    <!-- <p-tieredMenu #avatarMenu [model]="Listitems" [popup]="true"></p-tieredMenu> -->
     <p-dialog
         header="Edit Profile"
         [(visible)]="visible"
         [style]="{ width: '25rem' }"
         position="top"
     >
-        <!-- <span class="p-text-secondary block mb-5"
-            >Update your information.</span
-        >  -->
-
         <form [formGroup]="form">
             <div class="flex align-items-center gap-3 mb-3">
                 <label for="username" class="font-semibold w-6rem"
@@ -204,4 +179,3 @@
         ></button>
     </ng-template>
 </p-dialog>
-<!-- <p-confirmPopup style="top: 6%; left: 43%" key="confirm2"></p-confirmPopup> -->

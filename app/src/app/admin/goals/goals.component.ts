@@ -273,10 +273,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.AllObjectivesHistoryFiles = data.data;
-                console.log({
-                    AllObjectivesHistoryFiles: this.AllObjectivesHistoryFiles,
-                });
-
                 this.loading = false;
             });
         return true;
@@ -652,7 +648,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     viewFilesHistory(objectiveData: any) {
-        console.log(objectiveData);
         this.viewObjectiveFileHistoryDialogCard = true;
         this.getAllFilesHistoryFromObjectiveLoad(this.USERID, objectiveData.id);
     }

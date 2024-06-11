@@ -173,11 +173,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     }
 
     updateUser(data) {
-        console.log(this.AllDepartments);
-        console.log(this.deptDropdownValue);
-
         this.selectedDept = data.department;
-        console.log({ updateUser: data });
         this.selectedRole = data.role;
 
         this.formGroupDemo.setValue({
@@ -203,7 +199,6 @@ export class UsersComponent implements OnInit, OnDestroy {
             department: this.formGroupDemo.value.selectedCity.name,
             // role: form.value.role.name,
         };
-        console.log({ updateUserExecution_data: data });
 
         this.user
             .getRoute('put', 'users', 'updateUser', data)
@@ -229,7 +224,6 @@ export class UsersComponent implements OnInit, OnDestroy {
 
     deleteUser(id: string) {
         this.deleteUserCard = true;
-        console.log({ deleteUser: id });
         this.deleteUserId = id;
     }
     deleteUserExec() {
@@ -298,9 +292,6 @@ export class UsersComponent implements OnInit, OnDestroy {
     }
 
     addUser(form: any) {
-        console.log('addUser', form.value);
-        console.log('addUser', this.formGroupDemo.value);
-
         let data = {
             username: form.value.username,
             email: form.value.email,
@@ -308,8 +299,6 @@ export class UsersComponent implements OnInit, OnDestroy {
             password: form.value.password,
             confirm: form.value.confirm,
         };
-
-        console.log(data);
 
         // if username || email || password || confirm is empty
         if (

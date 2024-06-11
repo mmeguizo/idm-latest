@@ -1,0 +1,120 @@
+[{
+  "_id": {
+    "$oid": "66385670ebc7d84cc1505d50"
+  },
+  "id": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
+  "email": "mark.meguizo@chmsu.edu.ph",
+  "username": "mark",
+  "role": "admin",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$l6HmndpVHX6Ry4czNTrEKuo66LPXUjigewqYINIk5VS.mhwSQENcu",
+  "profile_pic": "756b0f301b51526940b608bc0871360e.png",
+  "department": "information and communications technology",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "663ddab4a6204b62c1d2662a"
+  },
+  "id": "710ee9b1-9746-4946-8138-cb8dc79ac72c",
+  "email": "tester@chmsu.edu.ph",
+  "username": "tester",
+  "department": "information and communications technology",
+  "role": "admin",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$KE.PhJEP0GD50ip1WQb9FeBKmz7jTH5TcjXZ2EqpvMxsbQM91iWAq",
+  "profile_pic": "a5de7b7c68c518b4e5265fa535b82e32.jpg",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "663ddb86eacffba99a7bbcef"
+  },
+  "id": "1d7b75dd-3a4a-4127-838e-102e5caa989f",
+  "email": "test@chmsu.edu.ph",
+  "username": "test",
+  "department": "information and communications technology",
+  "role": "user",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$y6.4QkMdcR7y9AthIH/skuiVtXsOSyciWtcp3WtXl2wH8tDjDkJ6C",
+  "profile_pic": "3a880afe6b1ea1805eda6e200bbcc989.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6653e11b7270e96edebf953b"
+  },
+  "id": "f888b09c-7372-45bd-afbc-bc8fa233d9f9",
+  "email": "supertest@chmsu.edu.ph",
+  "username": "supertest",
+  "department": "information and communications technology",
+  "role": "user",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$qFZjrpT.a5qfBjpq8jnfAONuPdYUwEBXS8FNySMd.Ifvf20zzDkVS",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6653e3f17270e96edebf954a"
+  },
+  "id": "a5917c6d-5a7d-47a1-978a-ce0c6f7c1cbd",
+  "email": "qatester@chmsu.edu.ph",
+  "username": "qatester",
+  "department": "information and communications technology",
+  "role": "user",
+  "status": "inactive",
+  "deleted": true,
+  "password": "$2a$10$nW1.Pn0sETQ0D0HQ/xXIc.MeZnV11ke6PyOO/frjje6xLo0/2cbsG",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6655972e071c782317ce8d46"
+  },
+  "id": "82482c49-a92b-4bbb-b4d3-9dca15fbe279",
+  "email": "lowertest@chmsu.edu.ph",
+  "username": "lowertest",
+  "department": "information and communications technology",
+  "role": "user",
+  "status": "inactive",
+  "deleted": true,
+  "password": "$2a$10$/esJhI3zBlLHAX7hwcxctu..2sTgkYTuGldcxsb6VM7HGkkramba6",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6656ca9a0581b056d00f8d5b"
+  },
+  "id": "3029a826-68f1-43d4-bb11-a379a9affc7f",
+  "email": "xtester@chmsu.edu.ph",
+  "username": "xtester",
+  "department": "department of finance",
+  "role": "user",
+  "status": "inactive",
+  "deleted": true,
+  "password": "$2a$10$tI/F27qbQFXqdcArSZpdauRZwtBha./p34TVHbWRWYjXeV63hIJ3S",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6656cc880581b056d00f8d6d"
+  },
+  "id": "dc65c4c3-b77a-4777-b75b-44da2f78e57f",
+  "email": "xxtester@chmsu.edu.ph",
+  "username": "xxtester",
+  "department": "information and communications technology",
+  "role": "user",
+  "status": "inactive",
+  "deleted": true,
+  "password": "$2a$10$QM1X3fHw4RqSt/LdX39dpuWEt.ObQjv7AVCpvHguCkpWjC.LAxHs6",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+}]

@@ -7,7 +7,7 @@ import {
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './layout/app.layout.module';
-import { NotfoundComponent } from './demo/components/notfound/notfound.component';
+// import { NotfoundComponent } from './demo/components/notfound/notfound.component';
 import { ProductService } from './demo/service/product.service';
 import { CountryService } from './demo/service/country.service';
 import { CustomerService } from './demo/service/customer.service';
@@ -28,6 +28,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { AuthGuard } from './guard/auth.guard';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { AuthInterceptor } from './auth.interceptor';
+import { NotAuthGuard } from './guard/notAuth.guard';
+import { NotfoundComponent } from './notfound/notfound.component';
 
 export function tokenGetter() {
     return localStorage.getItem('access_token');
@@ -67,6 +69,7 @@ export function tokenGetter() {
         MessageService,
         ConfirmationService,
         AuthGuard,
+        NotAuthGuard,
         AuthInterceptor,
     ],
 

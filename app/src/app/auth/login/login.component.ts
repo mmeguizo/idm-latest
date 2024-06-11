@@ -43,7 +43,6 @@ export class LoginComponent implements OnDestroy {
             .subscribe((data: any) => {
                 if (data.success) {
                     let decoded = this.auth.decoded(data.token);
-                    console.log(decoded);
 
                     this.auth.storeUserData(data.token, decoded);
                     if (this.auth.CurrentlyloggedIn()) {
@@ -52,7 +51,6 @@ export class LoginComponent implements OnDestroy {
                             summary: 'Success',
                             detail: 'Login Successful',
                         });
-                        console.log(decoded.role);
                         this.auth.loggingIn(decoded.role);
                     }
                 } else {

@@ -50,7 +50,6 @@ export class LoginComponent implements OnDestroy {
                         detail: 'Successfully Login',
                         life: 3000,
                     });
-                    console.log(this.auth.CurrentlyloggedIn());
                 }
             });
     }

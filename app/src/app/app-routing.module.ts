@@ -1,15 +1,17 @@
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { NotfoundComponent } from './demo/components/notfound/notfound.component';
+// import { NotfoundComponent } from './demo/components/notfound/notfound.component';
 import { AppLayoutComponent } from './layout/app.layout.component';
 import { AuthGuard } from './guard/auth.guard';
-
+import { NotAuthGuard } from './guard/notAuth.guard';
+import { NotfoundComponent } from './notfound/notfound.component';
+// import { DashboardModule } from './demo/components/dashboard/dashboard.module';
 @NgModule({
     imports: [
         RouterModule.forRoot(
             [
                 {
-                    path: '',
+                    path: 'template',
                     component: AppLayoutComponent,
                     children: [
                         {
@@ -98,16 +100,18 @@ import { AuthGuard } from './guard/auth.guard';
                         ),
                 },
                 { path: 'notfound', component: NotfoundComponent },
-                // { path: '**', redirectTo: '/login' },
-                // { path: '', redirectTo: 'login', pathMatch: 'full' },
-                // { path: '', redirectTo: 'login', pathMatch: 'full' },
-                // { path: '**', redirectTo: 'login' },
-            ]
-            // {
-            //     scrollPositionRestoration: 'enabled',
-            //     anchorScrolling: 'enabled',
-            //     onSameUrlNavigation: 'reload',
-            // }
+                {
+                    path: '',
+                    redirectTo: 'login',
+                    pathMatch: 'full',
+                },
+                { path: '**', redirectTo: 'notfound' },
+            ],
+            {
+                scrollPositionRestoration: 'enabled',
+                anchorScrolling: 'enabled',
+                onSameUrlNavigation: 'reload',
+            }
         ),
     ],
     exports: [RouterModule],

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { Table } from 'primeng/table';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DepartmentService } from 'src/app/demo/service/department.service';
 
@@ -23,14 +23,19 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
     cols!: any;
     loading = true;
     changeStatusCard: boolean = false;
+    cardCrudDialog: boolean = false;
+    departmentName: string = '';
+    updatingDept: boolean;
+    updateDepartmentId: any;
+
     constructor(
         private messageService: MessageService,
         public formBuilder: FormBuilder,
-        public department: DepartmentService
+        public department: DepartmentService,
+        private confirmationService: ConfirmationService
     ) {}
 
     ngOnInit() {
-        console.log('DepartmentComponent');
         this.getDepartments();
 
         this.cols = [
@@ -52,19 +57,122 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
             .subscribe((data: any) => {
                 this.depts = data.departments;
                 this.loading = false;
-                console.log(this.depts);
             });
     }
 
-    updateDept(goal) {
-        console.log('updateDept', goal);
-    }
-    deleteDept(id: string) {
-        console.log('deleteDept', id);
+    addDept() {
+        this.cardCrudDialog = true;
     }
 
-    changeDeptStatus(id: string) {
-        console.log('changeDeptStatus', id);
+    updateDept(dept: any) {
+        this.departmentName = dept.department;
+        this.updateDepartmentId = dept.id;
+        this.updatingDept = true;
+        this.cardCrudDialog = true;
+    }
+
+    updateDepartmentExec() {
+        if (this.departmentName == '') {
+            return this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Please provide Department Name',
+            });
+        }
+        this.loading = true;
+
+        this.department
+            .getRoute('put', 'department', 'updateDepartment', {
+                id: this.updateDepartmentId,
+                department: this.departmentName,
+            })
+            .pipe(takeUntil(this.getdepartmenttSubscription))
+            .subscribe((data: any) => {
+                this.cardCrudDialog = false;
+                this.getDepartments();
+                this.loading = false;
+                this.messageService.add({
+                    severity: 'success  ',
+                    summary: 'Done',
+                    detail: data.message,
+                    life: 5000,
+                });
+                this.departmentName = '';
+                this.updateDepartmentId = '';
+            });
+    }
+    deleteDept(id: string) {
+        this.confirmationService.confirm({
+            key: 'updateDepartment',
+            target: event.target as EventTarget,
+            message: `This will remove completely on the database?`,
+            header: 'Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            acceptIcon: 'none',
+            rejectIcon: 'none',
+            rejectButtonStyleClass: 'p-button-text',
+            accept: () => {
+                this.department
+                    .getRoute('put', 'department', 'deleteDepartment', {
+                        id: id,
+                    })
+                    .pipe(takeUntil(this.getdepartmenttSubscription))
+                    .subscribe((data: any) => {
+                        this.getDepartments();
+                        this.messageService.add({
+                            severity: 'success  ',
+                            summary: 'Done',
+                            detail: data.message,
+                            life: 5000,
+                        });
+                    });
+            },
+            reject: () => {
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Done',
+                    detail: 'Got it...',
+                    life: 3000,
+                });
+            },
+        });
+    }
+
+    changeDeptStatus(event: Event, id: string) {
+        this.confirmationService.confirm({
+            key: 'updateDepartment',
+            target: event.target as EventTarget,
+            message: `Change Status?`,
+            header: 'Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            acceptIcon: 'none',
+            rejectIcon: 'none',
+            rejectButtonStyleClass: 'p-button-text',
+            accept: () => {
+                this.department
+                    .getRoute('put', 'department', 'changeDepartmentStatus', {
+                        id: id,
+                    })
+                    .pipe(takeUntil(this.getdepartmenttSubscription))
+                    .subscribe((data: any) => {
+                        this.getDepartments();
+                        this.messageService.add({
+                            severity: 'success  ',
+                            summary: 'Done',
+                            detail: data.message,
+                            life: 5000,
+                        });
+                    });
+            },
+            reject: () => {
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Done',
+                    detail: 'Nothing happens',
+                    life: 3000,
+                });
+            },
+        });
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -72,6 +180,34 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
             (event.target as HTMLInputElement).value,
             'contains'
         );
+    }
+
+    addDeptDialogExec() {
+        if (this.departmentName == '') {
+            return this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Please provide Department Name',
+            });
+        }
+        this.loading = true;
+
+        this.department
+            .getRoute('post', 'department', 'addDepartment', {
+                department: this.departmentName,
+            })
+            .pipe(takeUntil(this.getdepartmenttSubscription))
+            .subscribe((data: any) => {
+                this.cardCrudDialog = false;
+                this.getDepartments();
+                this.loading = false;
+                this.messageService.add({
+                    severity: 'success  ',
+                    summary: 'Done',
+                    detail: data.message,
+                    life: 5000,
+                });
+            });
     }
 
     clear(table: Table) {

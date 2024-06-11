@@ -96,7 +96,6 @@ module.exports = (router) => {
         id: data.id,
       },
       (err, results) => {
-        console.log(results);
         if (err) {
           res.json({
             success: false,
@@ -160,15 +159,15 @@ module.exports = (router) => {
           { upsert: true, select: "-__v" },
           (err, response) => {
             if (err) return res.json({ success: false, message: err.message });
-            if (response) {
+            if (!response) {
               res.json({
                 success: false,
-                message: response,
+                message: " Something wrong setting Status" + err,
               });
             } else {
               res.json({
                 success: true,
-                message: " Successfully Department set Status",
+                message: " Successfully set Status",
                 data: response,
               });
             }

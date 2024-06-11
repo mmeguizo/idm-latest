@@ -1,3 +1,5 @@
+<!-- main table department -->
+
 <div class="grid">
     <div class="col-12">
         <div class="card">
@@ -5,14 +7,6 @@
                 <span class="text-xl font-medium mt-2 text-slate-950"
                     >Filter Menu</span
                 >
-                <!-- <button
-                    (click)="addUserDialogCard = true"
-                    pButton
-                    icon="pi pi-user-plus"
-                    label="Add User"
-                ></button> -->
-
-                <!-- add user dialog -->
             </div>
             <p-table
                 #dt1
@@ -37,6 +31,16 @@
                             icon="pi pi-filter-slash"
                             (click)="clear(dt1)"
                         ></button>
+
+                        <p-button
+                            icon="pi pi-plus"
+                            (click)="addDept()"
+                            severity="success"
+                            [outlined]="true"
+                            pTooltip="Add Objectives"
+                            tooltipPosition="top"
+                        />
+
                         <span class="p-input-icon-left mb-2">
                             <i class="pi pi-search"></i>
                             <input
@@ -98,23 +102,27 @@
                         </td> -->
                         <td>
                             <span
-                                (click)="changeDeptStatus(dept.id)"
+                                (click)="changeDeptStatus($event, dept.id)"
                                 [class]="
                                     'cursor-pointer  customer-badge status-' +
                                     dept.status
                                 "
                                 >{{ dept.status }}</span
                             >
+                            <p-confirmPopup
+                                #confirmPopupRef
+                                key="updateDepartment"
+                            ></p-confirmPopup>
                         </td>
                         <td>
                             <div class="options-users">
                                 <i
-                                    (click)="updateGoal(goal)"
+                                    (click)="updateDept(dept)"
                                     class="pi pi-file-edit text-xl"
                                     style="color: #0ea5e9; cursor: pointer"
                                 ></i>
                                 <i
-                                    (click)="deleteGoal(goal.id)"
+                                    (click)="deleteDept(dept.id)"
                                     class="pi pi-trash text-xl"
                                     style="color: #ef4444; cursor: pointer"
                                 ></i>
@@ -139,6 +147,8 @@
     </div>
 </div>
 
+<!-- change status of department -->
+
 <p-dialog
     header="Dialog"
     id="tester"
@@ -158,4 +168,38 @@
             class="p-button-outlined"
         ></button>
     </ng-template>
+</p-dialog>
+
+<!-- add department card dialog -->
+
+<p-dialog
+    [header]="!updatingDept ? 'Add Department' : 'Update' + departmentName"
+    [modal]="true"
+    [(visible)]="cardCrudDialog"
+    [style]="{ width: '25rem' }"
+>
+    <div class="flex align-items-center gap-3 mb-5">
+        <input
+            pInputText
+            id="deparment_name"
+            [(ngModel)]="departmentName"
+            class="flex-auto"
+            autocomplete="off"
+            placeholder="Department Name"
+        />
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancel"
+            severity="secondary"
+            (click)="cardCrudDialog = false"
+        />
+        <p-button
+            label="Save"
+            [disabled]="departmentName === ''"
+            (click)="
+                !updatingDept ? addDeptDialogExec() : updateDepartmentExec()
+            "
+        />
+    </div>
 </p-dialog>
