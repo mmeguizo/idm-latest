@@ -62,6 +62,7 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
 
     addDept() {
         this.cardCrudDialog = true;
+        this.updatingDept = false;
     }
 
     updateDept(dept: any) {
@@ -99,6 +100,7 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
                 });
                 this.departmentName = '';
                 this.updateDepartmentId = '';
+                this.updatingDept = false;
             });
     }
     deleteDept(id: string) {
@@ -207,6 +209,7 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
                     detail: data.message,
                     life: 5000,
                 });
+                this.departmentName = '';
             });
     }
 

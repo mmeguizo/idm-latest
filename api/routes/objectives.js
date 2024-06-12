@@ -4,54 +4,29 @@ const mongoose = require("mongoose");
 const Goals = require("../models/goals");
 const Files = require("../models/fileupload");
 module.exports = (router) => {
-  // router.get("/getAllObjectivesWithObjectives", (req, res) => {
-  //   // Search database for all blog posts
-  //   Objectives.aggregate(
-  //     [
-  //       {
-  //         $lookup: {
-  //           from: "goals",
-  //           localField: "goalId",
-  //           foreignField: "id",
-  //           as: "goal",
-  //         },
-  //       },
-  //       {
-  //         $match: {
-  //           deleted: false,
-  //           "goal.deleted": false,
-  //         },
-  //       },
-  //     ],
-  //     {
-  //       allowDiskUse: false,
-  //     },
-  //     (err, ObjectivesWithGoals) => {
-  //       // Check if error was found or not
-
-  //       if (err) {
-  //         return res.status(500).json({ success: false, message: err });
-  //       }
-
-  //       if (!ObjectivesWithGoals || ObjectivesWithGoals.length === 0) {
-  //         return res.status(404).json({
-  //           success: false,
-  //           message: "No Objectives and Goals found.",
-  //           data: [],
-  //         });
-  //       }
-  //       return res
-  //         .status(200)
-  //         .json({ success: true, data: ObjectivesWithGoals });
-  //     }
-  //   ).sort({ _id: -1 });
-  // });
+  router.get("/getAllObjectivesForDashboard", async (req, res) => {
+    let data = [];
+    try {
+      let objectivesCount = await Objectives.countDocuments();
+      let objectiveCompleted = await Objectives.countDocuments({
+        complete: true,
+      });
+      let objectiveUncompleted = await Objectives.countDocuments({
+        complete: false,
+      });
+      data.push({
+        objectivesCount: objectivesCount,
+        objectiveCompleted: objectiveCompleted,
+        objectiveUncompleted: objectiveUncompleted,
+      });
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
 
   router.get("/getAllObjectives", (req, res) => {
-    // Search database for all blog posts
     Objectives.find({ deleted: false }, (err, Objectives) => {
-      // Check if error was found or not
-
       if (err) {
         return res.status(500).json({ success: false, message: err });
       }
@@ -64,7 +39,7 @@ module.exports = (router) => {
         });
       }
       return res.status(200).json({ success: true, Objectives });
-    }).sort({ _id: -1 }); // Sort blogs from newest to oldest
+    }).sort({ _id: -1 });
   });
 
   router.put("/updateobjectivecompletion", (req, res) => {
@@ -100,11 +75,9 @@ module.exports = (router) => {
   });
 
   router.get("/getAllByIdObjectives/:id", (req, res) => {
-    // Search database for all blog posts
     Objectives.find(
       { deleted: false, goalId: req.params.id },
       (err, Objectives) => {
-        // Check if error was found or not
         if (err) {
           return res.status(500).json({ success: false, message: err });
         }
@@ -118,7 +91,7 @@ module.exports = (router) => {
         }
         return res.status(200).json({ success: true, Objectives });
       }
-    ).sort({ _id: -1 }); // Sort blogs from newest to oldest
+    ).sort({ _id: -1 });
   });
 
   router.post("/findObjectivesById", (req, res) => {
@@ -129,7 +102,6 @@ module.exports = (router) => {
         if (err) {
           res.json({ success: false, message: "Objectives not found" });
         } else {
-          // Check if blogs were found in database
           if (!Objectives) {
             res.json({ success: false, message: "No Objectives found." });
           } else {

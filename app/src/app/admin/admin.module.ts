@@ -25,6 +25,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
 import { GoalsComponent } from './goals/goals.component';
 import { SelectButtonModule } from 'primeng/selectbutton';
+
 import {
     dataFilterPipe,
     NumberWithCommas,
@@ -50,6 +51,7 @@ import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { BlockUIModule } from 'primeng/blockui';
 import { PanelModule } from 'primeng/panel';
+import { SkeletonModule } from 'primeng/skeleton';
 
 const pipes = [
     dataFilterPipe,
@@ -101,6 +103,7 @@ const pipes = [
         TagModule,
         BlockUIModule,
         PanelModule,
+        SkeletonModule,
     ],
     declarations: [
         AdminComponent,

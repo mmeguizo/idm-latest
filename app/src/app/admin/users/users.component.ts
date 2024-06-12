@@ -147,7 +147,11 @@ export class UsersComponent implements OnInit, OnDestroy {
     getAllusers() {
         this.loading = true;
         this.user
-            .getRoute('get', 'users', 'getAllUsers')
+            .getRoute(
+                'get',
+                'users',
+                `getAllUsersExceptLoggedIn/${this.auth.getTokenUserID()}`
+            )
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
                 this.users = data.users;

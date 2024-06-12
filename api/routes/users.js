@@ -7,40 +7,74 @@ let bcrypt = require("bcryptjs");
 const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = (router) => {
+  router.get("/getAllUsersForDashboard", async (req, res) => {
+    let data = [];
+    try {
+      let adminCount = await User.countDocuments({
+        deleted: false,
+        role: "admin",
+      });
+      let userCount = await User.countDocuments({
+        deleted: false,
+        role: "user",
+      });
+      let documentCount = await User.countDocuments({ deleted: false });
+      data.push({
+        admin: adminCount,
+        user: userCount,
+        document: documentCount,
+      });
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
+
   router.get("/getAllUsers", (req, res) => {
-    // Search database for all blog posts
     User.find(
       { deleted: false },
       { id: 1, email: 1, username: 1, department: 1, role: 1, status: 1 },
       (err, users) => {
-        // Check if error was found or not
         if (err) {
-          res.json({ success: false, message: err }); // Return error message
+          res.json({ success: false, message: err });
         } else {
-          // Check if blogs were found in database
           if (!users) {
-            res.json({ success: false, message: "No User found." }); // Return error of no blogs found
+            res.json({ success: false, message: "No User found." });
           } else {
-            res.json({ success: true, users: users }); // Return success and blogs array
+            res.json({ success: true, users: users });
           }
         }
       }
-    ).sort({ _id: -1 }); // Sort blogs from newest to oldest
+    ).sort({ _id: -1 });
+  });
+
+  router.get("/getAllUsersExceptLoggedIn/:id", (req, res) => {
+    User.find(
+      { id: { $ne: req.params.id }, deleted: false },
+      { id: 1, email: 1, username: 1, department: 1, role: 1, status: 1 },
+      (err, users) => {
+        if (err) {
+          res.json({ success: false, message: err });
+        } else {
+          if (!users) {
+            res.json({ success: false, message: "No User found." });
+          } else {
+            res.json({ success: true, users: users });
+          }
+        }
+      }
+    ).sort({ _id: -1 });
   });
 
   router.post("/findById", (req, res) => {
-    console.log("finding user");
-    console.log(req.body);
-
     User.findOne({ id: req.body.id }, function (err, user) {
       if (err) {
-        res.json({ success: false, message: err }); // Return error message
+        res.json({ success: false, message: err });
       } else {
-        // Check if blogs were found in database
         if (!user) {
-          res.json({ success: false, message: "No User found." }); // Return error of no blogs found
+          res.json({ success: false, message: "No User found." });
         } else {
-          res.json({ success: true, user: user }); // Return success and blogs array
+          res.json({ success: true, user: user });
         }
       }
     });
@@ -225,8 +259,6 @@ module.exports = (router) => {
 
     const user = await User.findOne({ id: req.body.id });
 
-    console.log(data);
-
     if (data.confirmPassword !== data.password) {
       res.json({
         success: false,
@@ -285,8 +317,6 @@ module.exports = (router) => {
       }
     } else {
       const { username, email, profile_pic, id } = req.body;
-
-      console.log("updateProfile else", req.body);
 
       User.findOneAndUpdate(
         { id: id },

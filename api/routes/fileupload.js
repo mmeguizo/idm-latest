@@ -208,6 +208,7 @@ module.exports = (router) => {
                 source: newFileName,
                 user_id: req.decoded.id,
                 for: "avatar",
+                objective_id: "dummy_id",
                 filetype: file.mimetype.substring(
                   0,
                   file.mimetype.indexOf("/")

@@ -5,6 +5,21 @@ const ObjectId = mongoose.Types.ObjectId;
 const Objectives = require("../models/objective");
 
 module.exports = (router) => {
+  router.get("/getGoalsForDashboard", async (req, res) => {
+    let data = [];
+    try {
+      let goalCount = await Goals.countDocuments();
+      let goalDeletedCount = await Goals.countDocuments({ deleted: true });
+      data.push({
+        goalCount: goalCount,
+        goalDeletedCount: goalDeletedCount,
+      });
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
+
   router.get("/getAllObjectivesWithObjectives", (req, res) => {
     Goals.aggregate(
       [

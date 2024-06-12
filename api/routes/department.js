@@ -3,6 +3,29 @@ const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 
 module.exports = (router) => {
+  router.get("/getAllDepartmentForDashboard", async (req, res) => {
+    let data = [];
+    try {
+      let departmentCount = await Department.countDocuments();
+      let departmentActive = await Department.countDocuments({
+        deleted: false,
+        status: "active",
+      });
+      let departmentInactive = await Department.countDocuments({
+        deleted: true,
+        status: "inactive",
+      });
+      data.push({
+        departmentCount: departmentCount,
+        departmentActive: departmentActive,
+        departmentInactive: departmentInactive,
+      });
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
+
   router.get("/getAllDepartment", (req, res) => {
     // Search database for all blog posts
     Department.find(
