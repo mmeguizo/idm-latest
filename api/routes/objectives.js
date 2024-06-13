@@ -10,14 +10,23 @@ module.exports = (router) => {
       let objectivesCount = await Objectives.countDocuments();
       let objectiveCompleted = await Objectives.countDocuments({
         complete: true,
+        deleted: false,
       });
       let objectiveUncompleted = await Objectives.countDocuments({
         complete: false,
+        deleted: false,
+      });
+      let objectivesData = await Objectives.find({ deleted: false }).select({
+        _id: 0,
+        id: 1,
+        complete: 1,
+        date_added: 1,
       });
       data.push({
         objectivesCount: objectivesCount,
         objectiveCompleted: objectiveCompleted,
         objectiveUncompleted: objectiveUncompleted,
+        objectivesData: objectivesData,
       });
       res.json({ success: true, data: data });
     } catch (error) {

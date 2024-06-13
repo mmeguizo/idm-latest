@@ -381,8 +381,6 @@ module.exports = (router) => {
   router.get(
     "/getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id",
     (req, res) => {
-      console.log("getAllFilesHistoryFromObjectiveLoad", req.params);
-
       const { user_id, objective_id } = req.params;
       File.find(
         {
@@ -394,8 +392,6 @@ module.exports = (router) => {
           __v: 0.0,
         },
         (err, files) => {
-          console.log("getAllFilesHistoryFromObjectiveLoad", files);
-
           if (err) {
             return res.json({ success: false, message: err.message });
           } else {
@@ -418,84 +414,3 @@ module.exports = (router) => {
 
   return router;
 };
-
-// router.post("/addMultipleFile/:user_id", async (req, res) => {
-//   let useFor = "files";
-//   let formidable = require("formidable");
-//   let fs = require("fs");
-//   let path = require("path");
-//   let md5 = require("md5");
-
-//   let returnMe = [];
-
-//   let form = new formidable.IncomingForm();
-
-//   form.maxFileSize = 2500 * 1024 * 1024;
-//   form.multiples = true;
-
-//   form.uploadDir = path.join(__dirname, "..", "images/files");
-
-//   form.onPart = async function (part) {
-//     if (!part.filename) {
-//       return;
-//     }
-
-//     let newFileName = [useFor, Math.random(), Math.random(), Math.random()];
-
-//     newFileName = `${md5(newFileName.join(""))}.${part.filename
-//       .split(".")
-//       .pop()}`;
-
-//     let uploadPath = path.join(form.uploadDir, newFileName);
-
-//     const writeStream = fs.createWriteStream(uploadPath);
-//     part.pipe(writeStream);
-
-//     let uploadData = new File({
-//       id: uuidv4(),
-//       user_id: req.params.user_id,
-//       source: newFileName,
-//       for: "files",
-//       filetype: part.mime.substring(0, part.mime.indexOf("/")),
-//     });
-
-//     await uploadData.save();
-
-//     returnMe.push({
-//       fields: part.headers["content-disposition"],
-//       file: newFileName,
-//     });
-//   };
-
-//   form.on("progress", (bytesReceived, bytesExpected) => {});
-
-//   form.on("error", function (err) {
-//     console.log("An error has occured: \n" + err);
-//     res.eventEmitter("error");
-//   });
-
-//   // once all the files have been uploaded, send a response to the client
-//   form.on("end", function () {
-//     console.log("finished uploading");
-//     res.json({
-//       success: true,
-//       message: "Files uploaded successfully ",
-//       data: returnMe,
-//     });
-//   });
-
-//   form.parse(req);
-// });
-
-// try {
-//   await res.json({
-//     success: true,
-//     message: "Files uploaded successfully!",
-//     data: uploadedFiles,
-//   });
-// } catch (err) {
-//   console.error("Error saving uploaded files:", err);
-//   res
-//     .status(500)
-//     .json({ success: false, message: "Error saving uploaded files" }); // Handle errors gracefully
-// }

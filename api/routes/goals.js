@@ -5,6 +5,50 @@ const ObjectId = mongoose.Types.ObjectId;
 const Objectives = require("../models/objective");
 
 module.exports = (router) => {
+  router.get("/getObjectivesViewTable", async (req, res) => {
+    try {
+      const data = await Goals.aggregate([
+        {
+          $match: {
+            deleted: false,
+          },
+        },
+        {
+          $lookup: {
+            from: "objectives",
+            localField: "id",
+            foreignField: "goalId",
+            as: "objectives",
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "createdBy",
+            foreignField: "id",
+            as: "users",
+          },
+        },
+        {
+          $project: {
+            createdAt: 1,
+            goals: 1,
+            "objectives.budget": 1,
+            "objectives.complete": 1,
+            "objectives.date_added": 1,
+            "objectives.timetable": 1,
+            "objectives.functional_objective": 1,
+            "users.username": 1,
+            "users.department": 1,
+          },
+        },
+      ]);
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
+
   router.get("/getGoalsForDashboard", async (req, res) => {
     let data = [];
     try {
@@ -122,9 +166,8 @@ module.exports = (router) => {
       async (err, Goals) => {
         // Check if error was found or not
         if (err) {
-          res.json({ success: false, message: err }); // Return error message
+          res.json({ success: false, message: err });
         } else {
-          // Check if blogs were found in database
           if (!Goals || Goals.length === 0) {
             res.json({
               success: false,
@@ -132,18 +175,6 @@ module.exports = (router) => {
               Goals: [],
             }); // Return error of no blogs found
           } else {
-            /*
-            let newGoals = Goals.map((goal) => {
-              let subBudget = 0;
-              goal.subBudget = subBudget;
-              if (goal.objectivesDetails !== null) {
-                returnData = goal.objectivesDetails.map((e) => {
-                  subBudget = subBudget + e.budget;
-                });
-              }
-            });
-            */
-
             let returnedData = await Promise.all(
               await CalculateBudgetAndCompletion(Goals)
             );
@@ -227,9 +258,8 @@ module.exports = (router) => {
       (err, Goals) => {
         // Check if error was found or not
         if (err) {
-          res.json({ success: false, message: err }); // Return error message
+          res.json({ success: false, message: err });
         } else {
-          // Check if blogs were found in database
           if (!Goals || Goals.length === 0) {
             res.json({
               success: false,
@@ -251,7 +281,6 @@ module.exports = (router) => {
       if (err) {
         res.json({ success: false, message: "Goals not found" });
       } else {
-        // Check if blogs were found in database
         if (!Goals) {
           res.json({ success: false, message: "No Goals found." });
         } else {

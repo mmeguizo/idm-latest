@@ -27,28 +27,25 @@ module.exports = (router) => {
   });
 
   router.get("/getAllDepartment", (req, res) => {
-    // Search database for all blog posts
     Department.find(
-      { deleted: false },
+      {},
       { id: 1, department: 1, status: 1, deleted: 1 },
       (err, department) => {
-        // Check if error was found or not
         if (err) {
-          res.json({ success: false, message: err }); // Return error message
+          res.json({ success: false, message: err });
         } else {
-          // Check if blogs were found in database
           if (!department || department.length === 0) {
             res.json({
               success: false,
               message: "No Department found.",
               department: [],
-            }); // Return error of no blogs found
+            });
           } else {
-            res.json({ success: true, departments: department }); // Return success and blogs array
+            res.json({ success: true, departments: department });
           }
         }
       }
-    ).sort({ _id: -1 }); // Sort blogs from newest to oldest
+    ).sort({ _id: -1 });
   });
 
   router.post("/findDepartmentById", (req, res) => {
@@ -59,7 +56,6 @@ module.exports = (router) => {
         if (err) {
           res.json({ success: false, message: "Department not found" });
         } else {
-          // Check if blogs were found in database
           if (!department) {
             res.json({ success: false, message: "No Department found." });
           } else {

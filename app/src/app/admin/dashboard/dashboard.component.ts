@@ -4,6 +4,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { GoalService } from 'src/app/demo/service/goal.service';
 import { DepartmentService } from 'src/app/demo/service/department.service';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
+import { get } from 'lodash';
 
 @Component({
     selector: 'app-admin-dashboard',
@@ -15,11 +16,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     goals: any;
     private getDashboardSubscription = new Subject<void>();
 
-    chartData: any;
+    objectivePieData: any;
+    objectiveDoughnutData: any;
 
     chartOptions: any;
     deparmentData: any;
     objectivesData: any;
+    options: any;
 
     constructor(
         public userService: UserService,
@@ -29,12 +32,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.initChart();
-
         this.getAllusers();
         this.getAllGoals();
         this.getAllDept();
         this.getAllObjectives();
+        this.getObjectiveViewPieChart();
     }
     ngOnDestroy() {
         this.getDashboardSubscription.unsubscribe();
@@ -77,76 +79,140 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .subscribe((data: any) => {
                 console.log({ getAllObjectives: data });
                 this.objectivesData = data.data[0];
+                this.initChartsDoughnut({
+                    complete: data.data[0].objectiveCompleted,
+                    uncomplete: data.data[0].objectiveUncompleted,
+                });
             });
     }
 
-    initChart() {
+    getObjectiveViewPieChart() {
+        this.goalService
+            .getRoute('get', 'goals', `getObjectivesViewTable`)
+            .pipe(takeUntil(this.getDashboardSubscription))
+            .subscribe((data: any) => {
+                console.log({ getObjectiveViewPieChart: data });
+                // this.initCharts(data);
+            });
+    }
+
+    // initCharts(data: any) {
+    //     const documentStyle = getComputedStyle(document.documentElement);
+    //     const textColor = documentStyle.getPropertyValue('--text-color');
+    //     const textColorSecondary = documentStyle.getPropertyValue(
+    //         '--text-color-secondary'
+    //     );
+    //     const surfaceBorder =
+    //         documentStyle.getPropertyValue('--surface-border');
+
+    //     const goals = data.data.map((goal) => goal.goals);
+    //     const goalsBudgets = data.data.map((goal) => {
+    //         return goal.objectives.reduce(
+    //             (total, obj) => total + obj.budget,
+    //             0
+    //         );
+    //     });
+
+    //     const objectiveLabels = data.data.flatMap((goal) =>
+    //         goal.objectives.map((obj) => goal.goals)
+    //     );
+    //     const objectiveBudgets = data.data.flatMap((goal) =>
+    //         goal.objectives.map((obj) => obj.budget)
+    //     );
+
+    //     const userAndDeptLabels = data.data.map(
+    //         (goal) =>
+    //             `${goal.users[0].username}  (${goal.objectives.map(
+    //                 (e) => e.functional_objective
+    //             )})`
+    //     );
+    //     const userAndDeptBudgets = data.data.map((goal) => {
+    //         return goal.objectives.reduce(
+    //             (total, obj) => total + obj.budget,
+    //             0
+    //         );
+    //     });
+
+    //     this.objectivePieData = {
+    //         labels: [...goals],
+    //         // labels: [...goals, ...objectiveLabels, ...userAndDeptLabels],
+    //         datasets: [
+    //             {
+    //                 label: 'Budget',
+    //                 data: [
+    //                     ...goalsBudgets,
+    //                     // ...objectiveBudgets,
+    //                     // ...userAndDeptBudgets,
+    //                 ],
+    //                 backgroundColor: [
+    //                     documentStyle.getPropertyValue('--blue-500'),
+    //                     documentStyle.getPropertyValue('--yellow-500'),
+    //                     documentStyle.getPropertyValue('--green-500'),
+    //                 ],
+    //                 hoverBackgroundColor: [
+    //                     documentStyle.getPropertyValue('--blue-400'),
+    //                     documentStyle.getPropertyValue('--yellow-400'),
+    //                     documentStyle.getPropertyValue('--green-400'),
+    //                 ],
+    //             },
+    //         ],
+    //     };
+
+    //     this.options = {
+    //         scales: {
+    //             y: {
+    //                 beginAtZero: true,
+    //             },
+    //         },
+    //         plugins: {
+    //             legend: {
+    //                 labels: {
+    //                     usePointStyle: true,
+    //                     color: textColor,
+    //                 },
+    //             },
+    //             // tooltips: {
+    //             //     callbacks: {
+    //             //         label: function (tooltipItem) {
+    //             //             const dataIndex = tooltipItem.dataIndex;
+    //             //             console.log(dataIndex);
+    //             //             console.log(goals.length);
+    //             //         },
+    //             //     },
+    //             // },
+    //         },
+    //     };
+    // }
+
+    initChartsDoughnut(data: any) {
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue(
-            '--text-color-secondary'
-        );
-        const surfaceBorder =
-            documentStyle.getPropertyValue('--surface-border');
 
-        this.chartData = {
-            labels: [
-                'January',
-                'February',
-                'March',
-                'April',
-                'May',
-                'June',
-                'July',
-            ],
+        this.objectiveDoughnutData = {
+            labels: ['Complete', 'In Progress'],
             datasets: [
                 {
-                    label: 'First Dataset',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    backgroundColor:
-                        documentStyle.getPropertyValue('--bluegray-700'),
-                    borderColor:
-                        documentStyle.getPropertyValue('--bluegray-700'),
-                    tension: 0.4,
-                },
-                {
-                    label: 'Second Dataset',
-                    data: [28, 48, 40, 19, 86, 27, 90],
-                    fill: false,
-                    backgroundColor:
-                        documentStyle.getPropertyValue('--green-600'),
-                    borderColor: documentStyle.getPropertyValue('--green-600'),
-                    tension: 0.4,
+                    data: [data.complete, data.uncomplete],
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--yellow-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--yellow-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                    ],
                 },
             ],
         };
 
-        this.chartOptions = {
+        this.options = {
+            cutout: '60%',
             plugins: {
                 legend: {
                     labels: {
                         color: textColor,
-                    },
-                },
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary,
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false,
-                    },
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary,
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false,
                     },
                 },
             },

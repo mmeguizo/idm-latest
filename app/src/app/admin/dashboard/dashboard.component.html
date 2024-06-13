@@ -25,7 +25,6 @@
                     <i class="pi pi-users text-blue-500 text-xl"></i>
                 </div>
             </div>
-
             @if (users) {
             <span class="text-green-500 font-medium"
                 >{{ users?.user || 0 }} Users</span
@@ -162,14 +161,20 @@
             }
         </div>
     </div>
+    <!-- <div class="col-12 xl:col-6">
+        <div class="card">
+            <h5>Objective Overview</h5>
+            <p-chart type="bar" [data]="objectivePieData" [options]="options" />
+        </div>
+    </div> -->
     <div class="col-12 xl:col-6">
         <div class="card">
-            <h5>Sales Overview</h5>
+            <h5>Objective Status</h5>
             <p-chart
-                type="line"
-                [data]="chartData"
-                [options]="chartOptions"
-            ></p-chart>
+                type="doughnut"
+                [data]="objectiveDoughnutData"
+                [options]="options"
+            />
         </div>
     </div>
 </div>
