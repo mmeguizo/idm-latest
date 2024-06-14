@@ -9,6 +9,7 @@ const ObjectId = mongoose.Types.ObjectId;
 let fs = require("fs");
 const { fail } = require("assert");
 let md5 = require("md5");
+const { logger } = require("../middleware/logger");
 module.exports = (router) => {
   router.post("/addMultipleFiles/:user_id/:objective_id", async (req, res) => {
     let ReturnData = [];
@@ -69,7 +70,7 @@ module.exports = (router) => {
 
         Promise.all(savePromises)
           .then((data) => {
-            console.log("Files Saving success....:", data);
+            console.log("Files Saving success....:");
           })
           .catch((err) => {
             // res.json({
@@ -103,6 +104,14 @@ module.exports = (router) => {
       success: true,
       message: "Files uploaded successfully!",
     });
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
 
   router.post("/addFile/:user_id", async (req, res) => {
@@ -173,6 +182,14 @@ module.exports = (router) => {
         data: returnMe,
       });
     });
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
 
   router.post("/addAvatar", (req, res) => {
@@ -247,6 +264,14 @@ module.exports = (router) => {
       // console.log('hey');
     });
     form.parse(req);
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
 
   router.put("/deleteFile", (req, res) => {
@@ -276,6 +301,14 @@ module.exports = (router) => {
           });
         }
       }
+    );
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
     );
   });
 
@@ -333,6 +366,14 @@ module.exports = (router) => {
     //     // });
     //   }
     // );
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
 
   router.get("/getAllFiles/:user_id", (req, res) => {
@@ -345,6 +386,13 @@ module.exports = (router) => {
         return res.json({ success: true, message: "Files", data: files });
       }
     });
+    let params = JSON.stringify(req.params);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
 
   router.get("/getAllFilesFromObjective/:user_id/:objective_id", (req, res) => {
@@ -377,6 +425,14 @@ module.exports = (router) => {
     //     return res.json({ success: true, message: "Files", data: files });
     //   }
     // });
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
   router.get(
     "/getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id",
@@ -409,6 +465,14 @@ module.exports = (router) => {
       //     return res.json({ success: true, message: "Files", data: files });
       //   }
       // });
+      let params = JSON.stringify(req.params);
+      let query = JSON.stringify(req.query);
+      let body = JSON.stringify(req.body);
+      logger.info(
+        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+          req.statusCode
+        }|${req.socket.remoteAddress}|${Date.now()}`
+      );
     }
   );
 

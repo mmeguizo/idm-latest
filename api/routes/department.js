@@ -1,7 +1,7 @@
 const Department = require("../models/department"); // Import Department Model Schema
 const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
-
+const { logger } = require("../middleware/logger");
 module.exports = (router) => {
   router.get("/getAllDepartmentForDashboard", async (req, res) => {
     let data = [];
@@ -24,6 +24,15 @@ module.exports = (router) => {
     } catch (error) {
       res.json({ success: false, message: error });
     }
+
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
 
   router.get("/getAllDepartment", (req, res) => {
@@ -46,6 +55,15 @@ module.exports = (router) => {
         }
       }
     ).sort({ _id: -1 });
+
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
 
   router.post("/findDepartmentById", (req, res) => {
@@ -63,6 +81,15 @@ module.exports = (router) => {
           }
         }
       }
+    );
+
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
     );
   });
 
@@ -105,6 +132,15 @@ module.exports = (router) => {
           });
         }
       });
+
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
 
   router.put("/deleteDepartment", (req, res) => {
@@ -128,6 +164,15 @@ module.exports = (router) => {
           });
         }
       }
+    );
+
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
     );
   });
 
@@ -162,6 +207,14 @@ module.exports = (router) => {
         );
       }
     );
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
 
   router.put("/changeDepartmentStatus", (req, res) => {
@@ -194,6 +247,14 @@ module.exports = (router) => {
         );
       }
     );
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
   });
 
   router.put("/updateDepartment", async (req, res) => {
@@ -223,6 +284,14 @@ module.exports = (router) => {
           });
         }
       }
+    );
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
     );
   });
 

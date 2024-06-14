@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 const hash = require("../config/password-hasher");
 const mongoose = require("mongoose");
 let bcrypt = require("bcryptjs");
-
+const { logger } = require("../middleware/logger");
 const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = (router) => {

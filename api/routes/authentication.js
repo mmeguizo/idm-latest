@@ -4,6 +4,7 @@ const config = require("../config/database");
 const { v4: uuidv4 } = require("uuid");
 let bcrypt = require("bcryptjs");
 const comparePassword = require("../models/validators/password-compare");
+const { logger } = require("../middleware/logger");
 
 module.exports = (router) => {
   router.post("/register", (req, res) => {
@@ -104,8 +105,6 @@ module.exports = (router) => {
     }
   });
 
-  //old login connections login without network down response
-
   // router.post("/login", (req, res) => {
   //   const { username, password } = req.body;
   //   if (!username)
@@ -155,7 +154,7 @@ module.exports = (router) => {
     if (!password)
       return res.json({ success: false, message: "No password was provided" });
 
-    User.findOne({ email: email.toLowerCase() })
+    User.findOne({ email: email.toLowerCase().trim() })
       .then(async (user) => {
         if (!user)
           return res.json({ success: false, message: "User Not Found" });
@@ -166,7 +165,7 @@ module.exports = (router) => {
             success: false,
             message: "Your account is inactive",
           });
-        if (await comparePassword(req.body.password, user.password)) {
+        if (await comparePassword(req.body.password.trim(), user.password)) {
           //remove _id andpassword from the entries
           let newUser = user.toObject();
           delete newUser.password;
@@ -176,6 +175,14 @@ module.exports = (router) => {
           const token = jwt.sign(newUser, config.secret, {
             expiresIn: "24h",
           });
+          let params = JSON.stringify(req.params);
+          let query = JSON.stringify(req.query);
+          let body = JSON.stringify(req.body);
+          logger.info(
+            ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+              req.statusCode
+            }|${req.socket.remoteAddress}|${Date.now()}`
+          );
           res.json({
             success: true,
             message: "Password is Correct",

@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const Goals = require("../models/goals");
 const Files = require("../models/fileupload");
+const { logger } = require("../middleware/logger");
 module.exports = (router) => {
   router.get("/getAllObjectivesForDashboard", async (req, res) => {
     let data = [];

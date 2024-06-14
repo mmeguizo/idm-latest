@@ -17,8 +17,10 @@ const department = require("./routes/department")(router);
 const goals = require("./routes/goals")(router);
 const objectives = require("./routes/objectives")(router);
 
-mongoose.Promise = global.Promise;
+const { logMiddleware } = require("./middleware/logger");
 
+mongoose.Promise = global.Promise;
+mongoose.set("strictQuery", false);
 mongoose.connect(config.uri, config.options, (err) => {
   if (err) {
     console.log("cant connect to database " + process.env.DB_NAME);
@@ -28,6 +30,7 @@ mongoose.connect(config.uri, config.options, (err) => {
 });
 
 app.use(cors());
+app.use(logMiddleware);
 
 //CORS middleware
 var allowCrossDomain = function (req, res, next) {

@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Objectives = require("../models/objective");
-
+const { logger } = require("../middleware/logger");
 module.exports = (router) => {
   router.get("/getObjectivesViewTable", async (req, res) => {
     try {
