@@ -22,6 +22,11 @@ module.exports = (router) => {
           },
         },
         {
+          $match: {
+            "objectives.deleted": false,
+          },
+        },
+        {
           $lookup: {
             from: "users",
             localField: "createdBy",
@@ -40,6 +45,7 @@ module.exports = (router) => {
             "objectives.functional_objective": 1,
             "users.username": 1,
             "users.department": 1,
+            "objectives.deleted": 1,
           },
         },
       ]);

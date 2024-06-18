@@ -23,6 +23,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     deparmentData: any;
     objectivesData: any;
     options: any;
+    barData: any;
+    barOptions: any;
 
     constructor(
         public userService: UserService,
@@ -90,99 +92,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.goalService
             .getRoute('get', 'goals', `getObjectivesViewTable`)
             .pipe(takeUntil(this.getDashboardSubscription))
-            .subscribe((data: any) => {
+            .subscribe((data?: any) => {
                 console.log({ getObjectiveViewPieChart: data });
-                // this.initCharts(data);
+                this.initBarCharts(data?.data);
             });
     }
-
-    // initCharts(data: any) {
-    //     const documentStyle = getComputedStyle(document.documentElement);
-    //     const textColor = documentStyle.getPropertyValue('--text-color');
-    //     const textColorSecondary = documentStyle.getPropertyValue(
-    //         '--text-color-secondary'
-    //     );
-    //     const surfaceBorder =
-    //         documentStyle.getPropertyValue('--surface-border');
-
-    //     const goals = data.data.map((goal) => goal.goals);
-    //     const goalsBudgets = data.data.map((goal) => {
-    //         return goal.objectives.reduce(
-    //             (total, obj) => total + obj.budget,
-    //             0
-    //         );
-    //     });
-
-    //     const objectiveLabels = data.data.flatMap((goal) =>
-    //         goal.objectives.map((obj) => goal.goals)
-    //     );
-    //     const objectiveBudgets = data.data.flatMap((goal) =>
-    //         goal.objectives.map((obj) => obj.budget)
-    //     );
-
-    //     const userAndDeptLabels = data.data.map(
-    //         (goal) =>
-    //             `${goal.users[0].username}  (${goal.objectives.map(
-    //                 (e) => e.functional_objective
-    //             )})`
-    //     );
-    //     const userAndDeptBudgets = data.data.map((goal) => {
-    //         return goal.objectives.reduce(
-    //             (total, obj) => total + obj.budget,
-    //             0
-    //         );
-    //     });
-
-    //     this.objectivePieData = {
-    //         labels: [...goals],
-    //         // labels: [...goals, ...objectiveLabels, ...userAndDeptLabels],
-    //         datasets: [
-    //             {
-    //                 label: 'Budget',
-    //                 data: [
-    //                     ...goalsBudgets,
-    //                     // ...objectiveBudgets,
-    //                     // ...userAndDeptBudgets,
-    //                 ],
-    //                 backgroundColor: [
-    //                     documentStyle.getPropertyValue('--blue-500'),
-    //                     documentStyle.getPropertyValue('--yellow-500'),
-    //                     documentStyle.getPropertyValue('--green-500'),
-    //                 ],
-    //                 hoverBackgroundColor: [
-    //                     documentStyle.getPropertyValue('--blue-400'),
-    //                     documentStyle.getPropertyValue('--yellow-400'),
-    //                     documentStyle.getPropertyValue('--green-400'),
-    //                 ],
-    //             },
-    //         ],
-    //     };
-
-    //     this.options = {
-    //         scales: {
-    //             y: {
-    //                 beginAtZero: true,
-    //             },
-    //         },
-    //         plugins: {
-    //             legend: {
-    //                 labels: {
-    //                     usePointStyle: true,
-    //                     color: textColor,
-    //                 },
-    //             },
-    //             // tooltips: {
-    //             //     callbacks: {
-    //             //         label: function (tooltipItem) {
-    //             //             const dataIndex = tooltipItem.dataIndex;
-    //             //             console.log(dataIndex);
-    //             //             console.log(goals.length);
-    //             //         },
-    //             //     },
-    //             // },
-    //         },
-    //     };
-    // }
 
     initChartsDoughnut(data: any) {
         const documentStyle = getComputedStyle(document.documentElement);
@@ -208,11 +122,85 @@ export class DashboardComponent implements OnInit, OnDestroy {
         };
 
         this.options = {
-            cutout: '60%',
+            cutout: '65%',
             plugins: {
                 legend: {
                     labels: {
                         color: textColor,
+                    },
+                },
+            },
+        };
+    }
+    initBarCharts(goal?: any) {
+        let objectivesData = goal?.map((e) => e.objectives);
+        let objectivesDataTrue = goal?.map((e) =>
+            e.objectives.filter((x) => x.deleted == false)
+        );
+        console.log({ objectivesDataTrue: objectivesDataTrue });
+
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+        const textColorSecondary = documentStyle.getPropertyValue(
+            '--text-color-secondary'
+        );
+        const surfaceBorder =
+            documentStyle.getPropertyValue('--surface-border');
+
+        this.barData = {
+            labels: [...goal?.map((e) => e.goals)],
+            datasets: [
+                {
+                    label: 'Goals',
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--primary-500'),
+                    borderColor:
+                        documentStyle.getPropertyValue('--primary-500'),
+                    data: [...goal?.map((e) => 1)],
+                },
+                {
+                    label: 'Objectives',
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--primary-200'),
+                    borderColor:
+                        documentStyle.getPropertyValue('--primary-200'),
+                    data: [
+                        ...objectivesDataTrue.map((e) =>
+                            e.length ? e.length : 0
+                        ),
+                    ],
+                },
+            ],
+        };
+
+        this.barOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        fontColor: textColor,
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: textColorSecondary,
+                        font: {
+                            weight: 500,
+                        },
+                    },
+                    grid: {
+                        display: false,
+                        drawBorder: false,
+                    },
+                },
+                y: {
+                    ticks: {
+                        color: textColorSecondary,
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false,
                     },
                 },
             },

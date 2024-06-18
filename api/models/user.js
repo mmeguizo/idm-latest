@@ -22,6 +22,7 @@ const userSchema = new Schema({
     validate: username.usernameValidators,
   },
   department: { type: String, required: true, default: "ICT" },
+  campus: { type: String, required: true },
   role: { type: String, default: "user" },
   status: { type: String, default: "pending" },
   deleted: { type: Boolean, default: false },

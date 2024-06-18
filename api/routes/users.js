@@ -51,7 +51,15 @@ module.exports = (router) => {
   router.get("/getAllUsersExceptLoggedIn/:id", (req, res) => {
     User.find(
       { id: { $ne: req.params.id }, deleted: false },
-      { id: 1, email: 1, username: 1, department: 1, role: 1, status: 1 },
+      {
+        id: 1,
+        email: 1,
+        username: 1,
+        department: 1,
+        role: 1,
+        status: 1,
+        campus: 1,
+      },
       (err, users) => {
         if (err) {
           res.json({ success: false, message: err });
@@ -102,6 +110,7 @@ module.exports = (router) => {
       username: req.body.username.toLowerCase(),
       password: req.body.password,
       department: req.body.department,
+      campus: req.body.campus,
       // role: req.body.role.toLowerCase(),
     };
 

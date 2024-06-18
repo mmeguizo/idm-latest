@@ -9,6 +9,7 @@ const departmentSchema = new Schema({
     required: true,
     lowercase: true,
   },
+  campus: { type: String, required: true },
   status: { type: String, default: "active" },
   deleted: { type: Boolean, default: false },
 });

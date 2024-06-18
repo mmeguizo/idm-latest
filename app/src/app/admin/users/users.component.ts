@@ -18,6 +18,8 @@ import {
     ValidatorFn,
 } from '@angular/forms';
 import { DepartmentService } from 'src/app/demo/service/department.service';
+import { CampusService } from 'src/app/demo/service/campus.service';
+
 export interface UsersElement {
     _id: string;
     id: string;
@@ -38,6 +40,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     users: any[] = [];
     statuses: any[] = [];
     deptDropdownValue: any[] = [];
+    deptDropdownCampusValue: any[] = [];
     cols!: any;
     loading = true;
     changeStatusCard: boolean = false;
@@ -63,10 +66,12 @@ export class UsersComponent implements OnInit, OnDestroy {
     deleteUserId: string;
     citiesDemo: { name: string; code: string }[];
     formGroupDemo: any;
+    formGroupCampus: any;
     constructor(
         private user: UserService,
         public auth: AuthService,
         public dept: DepartmentService,
+        public camp: CampusService,
         private messageService: MessageService,
         public formBuilder: FormBuilder,
         public AddUserFormBuilder: FormBuilder
@@ -75,6 +80,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.getAllusers();
         this.getAllDepartments();
+        this.getAllCampuses();
         this.cols = [
             { field: 'username', header: 'Username' },
             { field: 'email', header: 'Email' },
@@ -117,6 +123,9 @@ export class UsersComponent implements OnInit, OnDestroy {
         this.formGroupDemo = new FormGroup({
             selectedCity: new FormControl(),
         });
+        this.formGroupCampus = new FormGroup({
+            selectedCampus: new FormControl(),
+        });
     }
 
     createForm() {
@@ -127,6 +136,15 @@ export class UsersComponent implements OnInit, OnDestroy {
         });
     }
 
+    getAllCampuses() {
+        this.camp
+            .getRoute('get', 'campus', 'getAllCampus')
+            .pipe(takeUntil(this.getUserSubscription))
+            .subscribe((data: any) => {
+                this.deptDropdownCampusValue = data.data[0];
+                console.log(this.deptDropdownCampusValue);
+            });
+    }
     createFormAddUser() {
         this.Addform = this.AddUserFormBuilder.group({
             username: ['', [Validators.required]],
@@ -185,6 +203,11 @@ export class UsersComponent implements OnInit, OnDestroy {
                 (dept) => dept.name === data.department
             ),
         });
+        this.formGroupCampus.setValue({
+            selectedCampus: this.deptDropdownCampusValue.find(
+                (dept) => dept.name === data.campus
+            ),
+        });
         this.form.setValue({
             username: data.username,
             email: data.email,
@@ -201,6 +224,7 @@ export class UsersComponent implements OnInit, OnDestroy {
             username: form.value.username,
             email: form.value.email,
             department: this.formGroupDemo.value.selectedCity.name,
+            campus: this.formGroupCampus.value.selectedCampus.name,
             // role: form.value.role.name,
         };
 
@@ -300,6 +324,7 @@ export class UsersComponent implements OnInit, OnDestroy {
             username: form.value.username,
             email: form.value.email,
             department: this.formGroupDemo.value.selectedCity.name,
+            campus: this.formGroupCampus.value.selectedCampus.name,
             password: form.value.password,
             confirm: form.value.confirm,
         };

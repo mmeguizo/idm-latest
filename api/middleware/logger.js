@@ -16,18 +16,19 @@ const logger = winston.createLogger({
   ],
 });
 
-logger.add(
-  new winston.transports.Console({
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.splat()
-    ),
-  })
-);
+// logger.add(
+//   new winston.transports.Console({
+//     format: winston.format.combine(
+//       winston.format.colorize(),
+//       winston.format.splat()
+//     ),
+//   })
+// );
 
 // Logging middleware
 const logMiddleware = async (req, res, next) => {
   const startTime = Date.now();
+
   res.on("finish", async () => {
     const duration = Date.now() - startTime;
     const data = {

@@ -30,6 +30,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { AuthInterceptor } from './auth.interceptor';
 import { NotAuthGuard } from './guard/notAuth.guard';
 import { NotfoundComponent } from './notfound/notfound.component';
+import { CampusService } from './demo/service/campus.service';
 
 export function tokenGetter() {
     return localStorage.getItem('access_token');
@@ -62,6 +63,7 @@ export function tokenGetter() {
         AuthService,
         ConnectionService,
         DepartmentService,
+        CampusService,
         FileService,
         GoalService,
         ObjectiveService,
