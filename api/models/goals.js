@@ -7,6 +7,7 @@ const goalsSchema = new Schema(
     id: { type: String, required: true, unique: true },
     goals: { type: String, required: true, lowercase: true },
     campus: { type: String, required: true },
+    department: { type: String, required: true },
     budget: { type: Number, required: true },
     objectives: [],
     date_added: { type: Date, required: true, default: Date.now },
@@ -15,6 +16,12 @@ const goalsSchema = new Schema(
     updatedBy: { type: String },
     updateDate: { type: Date },
     complete: { type: Boolean, default: false },
+    objectiveBudget: [
+      {
+        id: { type: String },
+        budget: { type: Number },
+      },
+    ],
     deleted: { type: Boolean, default: false },
   },
   { timestamps: true }

@@ -60,9 +60,18 @@ module.exports = (router) => {
     try {
       let goalCount = await Goals.countDocuments();
       let goalDeletedCount = await Goals.countDocuments({ deleted: true });
+      let goalAmountTotal = await Goals.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalAmount: { $sum: "$budget" },
+          },
+        },
+      ]);
       data.push({
         goalCount: goalCount,
         goalDeletedCount: goalDeletedCount,
+        totalBudget: goalAmountTotal,
       });
       res.json({ success: true, data: data });
     } catch (error) {
@@ -123,6 +132,8 @@ module.exports = (router) => {
             id: 1,
             goals: 1,
             budget: 1,
+            department: 1,
+            campus: 1,
             createdBy: 1,
             deleted: 1,
             date_added: 1,
@@ -297,7 +308,7 @@ module.exports = (router) => {
   });
 
   router.post("/addGoals", (req, res) => {
-    let { goals, budget, createdBy } = req.body;
+    let { goals, budget, createdBy, campus, department } = req.body;
 
     if (!goals && budget) {
       return res.json({
@@ -310,6 +321,8 @@ module.exports = (router) => {
       id: uuidv4(),
       goals,
       budget,
+      campus,
+      department,
       createdBy,
     };
     Goals.create(goalsDataRequest)

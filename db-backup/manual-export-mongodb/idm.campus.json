@@ -1,0 +1,28 @@
+[{
+  "_id": {
+    "$oid": "6671335f09f41396c5ab9f8f"
+  },
+  "campusName": "Talisay",
+  "campusId": 1
+},
+{
+  "_id": {
+    "$oid": "6671339f09f41396c5ab9f90"
+  },
+  "campusName": "Alijis",
+  "campusId": 2
+},
+{
+  "_id": {
+    "$oid": "667133bf09f41396c5ab9f91"
+  },
+  "campusName": "Binalbagan",
+  "campusId": 3
+},
+{
+  "_id": {
+    "$oid": "667133de09f41396c5ab9f92"
+  },
+  "campusName": "Fortune Town",
+  "campusId": 4
+}]

@@ -4,7 +4,15 @@ const mongoose = require("mongoose");
 const Goals = require("../models/goals");
 const Files = require("../models/fileupload");
 const { logger } = require("../middleware/logger");
+const objective = require("../models/objective");
 module.exports = (router) => {
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("en-PH", {
+      style: "currency",
+      currency: "PHP",
+    }).format(amount);
+  };
+
   router.get("/getAllObjectivesForDashboard", async (req, res) => {
     let data = [];
     try {
@@ -122,8 +130,23 @@ module.exports = (router) => {
     );
   });
 
-  router.post("/addObjectives", (req, res) => {
+  router.post("/addObjectives", async (req, res) => {
     const objectivesData = req.body;
+    const { goalId, budget: objectiveBudget } = req.body;
+    let goalBudget = 0;
+    let totalSubGoalBudget = 0;
+    let goalObjectiveNumber = [];
+
+    let goalData = await Goals.findOne({ id: goalId }).select({
+      budget: 1,
+      objectives: 1,
+      objectiveBudget: 1,
+    });
+    totalSubGoalBudget = goalData.objectiveBudget
+      .map((e) => e.budget)
+      .reduce((a, b) => a + b, 0);
+
+    goalBudget = goalData.budget;
 
     if (!objectivesData) {
       return res.json({
@@ -132,49 +155,53 @@ module.exports = (router) => {
       });
     }
 
+    if (objectiveBudget > goalBudget) {
+      return res.json({
+        success: false,
+        message: `Objective Budget must not exceed ${formatCurrency(
+          goalBudget
+        )} of Goal Budget`,
+      });
+    }
+    if (totalSubGoalBudget + objectiveBudget > goalBudget) {
+      return res.json({
+        success: false,
+        message: `Objective Budget must not exceed the remaning ${formatCurrency(
+          goalBudget - totalSubGoalBudget
+        )} of Goal Budget`,
+      });
+    }
+
     const ObjectivesDataRequest = {
       id: uuidv4(),
       ...objectivesData,
     };
-    Objectives.create(ObjectivesDataRequest, function (err, data) {
-      if (err) {
-        if (err.code === 11000) {
-          res.json({
-            success: false,
-            message:
-              " Objectives and Action Plan Objectives Name already exists ",
-            err: err.message,
-          });
-        } else if (err.errors) {
-          const errors = Object.keys(err.errors);
-          res.json({ success: false, message: err.errors[errors[0]].message });
-        } else {
-          res.json({
-            success: false,
-            message:
-              "Could not add  Objectives and Action Plan Error : " +
-              err.message,
-          });
+
+    try {
+      let newObjectives = await Objectives.create(ObjectivesDataRequest);
+      res.json({
+        success: true,
+        message: "Objectives Added Successfully",
+        data: newObjectives,
+      });
+      let updateGoal = await Goals.updateOne(
+        { id: req.body.goalId },
+        {
+          $push: {
+            objectives: newObjectives.id,
+            objectiveBudget: {
+              id: newObjectives.id,
+              budget: objectivesData.budget,
+            },
+          },
         }
-      } else {
-        Goals.updateOne(
-          { id: req.body.goalId },
-          { $push: { objectives: data.id } },
-          function (err, datas) {
-            if (err) {
-              res.json({ success: false, message: "Could not add Objectives" });
-            } else {
-              res.json({
-                success: true,
-                message:
-                  "This  Objectives and Action Plan Objectives is successfully Added ",
-                data: { Objectives: data, Goals: datas },
-              });
-            }
-          }
-        );
-      }
-    });
+      );
+    } catch (error) {
+      res.json({
+        success: false,
+        message: "Could not add  Objectives and Action Plan Error : " + error,
+      });
+    }
   });
 
   router.put("/deleteObjectives", (req, res) => {
@@ -281,11 +308,22 @@ module.exports = (router) => {
   });
 
   router.put("/updateObjectives", async (req, res) => {
-    let { id, ...ObjectivesData } = req.body;
+    let { id, goalId, budget: objectiveBudget, ...ObjectivesData } = req.body;
+
+    let goal = await Goals.findOne({
+      id: goalId,
+      deleted: false,
+    }).select({
+      id: 1,
+      budget: 1,
+      objectives: 1,
+    });
+
+    let { budget: goalBudget, objectives: goalObjectives } = goal;
 
     Objectives.findOneAndUpdate(
       { id: id },
-      ObjectivesData,
+      req.body,
       { new: true },
       (err, response) => {
         if (err) return res.json({ success: false, message: err.message });

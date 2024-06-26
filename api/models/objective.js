@@ -24,7 +24,7 @@ const objectivesSchema = new mongoose.Schema({
   complete: { type: Boolean, default: false },
   data_source: { type: String },
   budget: { type: Number, required: true },
-  campus: { type: String, required: true },
+  // campus: { type: String, required: true },
   date_added: { type: Date, required: true, default: Date.now },
   createdBy: { type: String, required: true },
   updateby: { type: String },

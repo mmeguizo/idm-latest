@@ -1,21 +1,23 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ConnectionService } from './connection.service';
 import { AuthService } from './auth.service';
 
-@Injectable({
-    providedIn: 'root',
-})
-export class DepartmentService {
+@Injectable()
+export class RouteService {
     public authToken;
     public options;
-    picture: HttpHeaders;
 
     constructor(
+        private http: HttpClient,
         public auth: AuthService,
-        public cs: ConnectionService,
-        private http: HttpClient
+        public cs: ConnectionService
     ) {}
+
+    loadToken() {
+        const token = localStorage.getItem('token');
+        this.authToken = token;
+    }
 
     createAuthenticationHeaders() {
         this.loadToken();
@@ -24,15 +26,6 @@ export class DepartmentService {
             Accept: 'image/jpeg',
             authorization: this.authToken,
         });
-    }
-
-    loadToken() {
-        const token = localStorage.getItem('token');
-        this.authToken = token;
-    }
-
-    private getEndpoint(model: string, apiName: string) {
-        return `${this.cs.domain}/${model}/${apiName}`;
     }
 
     getRoute(endpoint: any, model?: any, apiName?: any, data?: any) {

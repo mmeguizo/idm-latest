@@ -5,7 +5,7 @@
         <div class="card">
             <div class="add-user-heading">
                 <span class="text-xl font-medium mt-2 text-slate-950"
-                    >Filter Menu</span
+                    >Goals</span
                 >
                 <button
                     (click)="addGoal()"
@@ -28,7 +28,9 @@
                 [globalFilterFields]="[
                     'goals',
                     'budget',
-                    'createdBy',
+                    'department',
+                    'campus',
+                    'users.username',
                     'createdAt',
                     'options'
                 ]"
@@ -86,6 +88,34 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
+
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Department
+                                <p-columnFilter
+                                    type="text"
+                                    field="department"
+                                    display="menu"
+                                    placeholder="Search by Department"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Campus
+                                <p-columnFilter
+                                    type="text"
+                                    field="campus"
+                                    display="menu"
+                                    placeholder="Search by Campus"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
                         <th style="min-width: 12rem">
                             <div
                                 class="flex justify-content-between align-items-center"
@@ -137,7 +167,8 @@
                                         goal.id,
                                         goal._id,
                                         goal.goals,
-                                        goal.remainingBudget
+                                        goal.remainingBudget,
+                                        goal
                                     )
                                 "
                                 pButton
@@ -215,6 +246,12 @@
                         </td>
 
                         <td>
+                            {{ goal.department | titlecase }}
+                        </td>
+                        <td>
+                            {{ goal.campus | titlecase }}
+                        </td>
+                        <td>
                             {{ goal.users.username | titlecase }}
                         </td>
                         <td>
@@ -223,16 +260,8 @@
                         <td>
                             <div class="col">
                                 <p-progressBar
-                                    [color]="
-                                        goal.CompletePercentage
-                                            ? '#1da750'
-                                            : '#ef4444'
-                                    "
-                                    [value]="
-                                        goal.CompletePercentage
-                                            ? goal.CompletePercentage
-                                            : 100
-                                    "
+                                    [color]="'#1da750'"
+                                    [value]="goal.CompletePercentage"
                                     [showValue]="true"
                                 ></p-progressBar>
                             </div>
@@ -272,7 +301,6 @@
 </div>
 
 <!-- add goal dialog -->
-
 <p-dialog
     header="Add Goal"
     [(visible)]="addGoalDialogCard"
@@ -307,20 +335,28 @@
                         formControlName="budget"
                     >
                     </p-inputNumber>
-                    <!-- <input
-                        pInputText
-                        id="goal"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            addGoalform?.get('budget').touched &&
-                            addGoalform?.controls['budget'].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="budget"
-                        required
-                    /> -->
+                </div>
+                <div class="field">
+                    <label htmlFor="department">Department</label>
+                    <form [formGroup]="formGroupDemo">
+                        <p-dropdown
+                            formControlName="selectDepartment"
+                            [options]="deptDropdownValue"
+                            optionLabel="name"
+                            placeholder="Select a Department"
+                        />
+                    </form>
+                </div>
+                <div class="field">
+                    <label htmlFor="department">Campus</label>
+                    <form [formGroup]="formGroupCampus">
+                        <p-dropdown
+                            formControlName="selectedCampus"
+                            [options]="deptDropdownCampusValue"
+                            optionLabel="name"
+                            placeholder="Select a Campus"
+                        />
+                    </form>
                 </div>
             </form>
         </div>
@@ -336,7 +372,6 @@
 </p-dialog>
 
 <!-- update goal dialog -->
-
 <p-dialog
     header="Update Goal"
     [(visible)]="updateGoalDialogCard"
@@ -371,6 +406,28 @@
                         formControlName="budget"
                     >
                     </p-inputNumber>
+                </div>
+                <div class="field">
+                    <label htmlFor="department">Department</label>
+                    <form [formGroup]="formGroupDemo">
+                        <p-dropdown
+                            formControlName="selectDepartment"
+                            [options]="deptDropdownValue"
+                            optionLabel="name"
+                            placeholder="Select a Department"
+                        />
+                    </form>
+                </div>
+                <div class="field">
+                    <label htmlFor="department">Campus</label>
+                    <form [formGroup]="formGroupCampus">
+                        <p-dropdown
+                            formControlName="selectedCampus"
+                            [options]="deptDropdownCampusValue"
+                            optionLabel="name"
+                            placeholder="Select a Campus"
+                        />
+                    </form>
                 </div>
             </form>
         </div>
@@ -442,7 +499,7 @@
 
                         <p-button
                             icon="pi pi-plus"
-                            (click)="addSubGoal()"
+                            (click)="addSubGoal(objectiveData)"
                             severity="success"
                             [outlined]="true"
                             pTooltip="Add Objectives"
@@ -970,13 +1027,17 @@
                 </div>
                 <div class="field">
                     <label htmlFor="name1">
-                        Budget will not exceeed Remaining
+                        <!-- @if(goalDataRemainingBudget > 0){ Budget should not
+                        exceeed Remaining
                         {{ goalDataRemainingBudget | peso }}
+                        } @else {
+                        <span class="text-red-400"> No more Budget left</span>
+                        } -->
+                        budget
                     </label>
                     <p-inputNumber
                         mode="decimal"
                         [min]="0"
-                        [max]="goalDataRemainingBudget"
                         formControlName="budget"
                         [showButtons]="true"
                     >

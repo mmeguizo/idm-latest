@@ -3,6 +3,24 @@ const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const { logger } = require("../middleware/logger");
 module.exports = (router) => {
+  router.get("/getAllDepartmentDropdown", async (req, res) => {
+    let data = [];
+    try {
+      let campus = await Department.find({ deleted: false, status: "active" });
+      data.push(
+        campus.map((e) => {
+          return { name: e.department, code: e.department };
+        })
+      );
+      await res.json({
+        success: true,
+        data: data,
+      });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
+
   router.get("/getAllDepartmentForDashboard", async (req, res) => {
     let data = [];
     try {

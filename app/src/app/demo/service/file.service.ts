@@ -35,9 +35,6 @@ export class FileService {
 
     addFile(form, id = null) {
         this.createAuthenticationHeaders();
-
-        console.log(form);
-
         return this.http.post(
             this.cs.domain + `/fileupload/addFile/${id}`,
             form,

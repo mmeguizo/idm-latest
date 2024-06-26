@@ -1,6 +1,9 @@
 const winston = require("winston");
 require("winston-mongodb");
 require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const config = require("../config/database");
+
 const logs = require("../models/logs");
 // Logger configuration
 const logger = winston.createLogger({
@@ -28,22 +31,28 @@ const logger = winston.createLogger({
 // Logging middleware
 const logMiddleware = async (req, res, next) => {
   const startTime = Date.now();
-
-  res.on("finish", async () => {
-    const duration = Date.now() - startTime;
-    const data = {
-      method: req.method,
-      params: req.params,
-      query: req.query,
-      url: req.originalUrl,
-      body: req.body,
-      status: res.statusCode,
-      duration: `${duration}ms`,
-      date: Date.now(),
-    };
-    await logs.create(data);
-    logger.info("HTTP Request", data);
-  });
+  // Extract the token from the Authorization header
+  const authHeader = req.headers["authorization"];
+  if (authHeader !== undefined) {
+    res.on("finish", async () => {
+      const duration = Date.now() - startTime;
+      ({ username, id, role, profile_pic, campus, department } =
+        await jwt.verify(authHeader, config.secret));
+      const data = {
+        method: req.method,
+        params: req.params,
+        query: req.query,
+        url: req.originalUrl,
+        body: req.body,
+        status: res.statusCode,
+        duration: `${duration}ms`,
+        date: Date.now(),
+        user: { username, id, role, profile_pic, campus, department },
+      };
+      await logs.create(data);
+      logger.info("HTTP Request", data);
+    });
+  }
 
   next();
 };

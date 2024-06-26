@@ -3,7 +3,7 @@
         <div class="card">
             <div class="add-user-heading">
                 <span class="text-xl font-medium mt-2 text-slate-950"
-                    >Filter Menu</span
+                    >Users</span
                 >
                 <button
                     (click)="addUserDialogButton()"
@@ -310,6 +310,19 @@
         </div>
         <div class="flex align-items-center gap-3">
             <div class="field col-10 md:col-10">
+                <label htmlFor="department">Department</label>
+                <form [formGroup]="formGroupDemo">
+                    <p-dropdown
+                        formControlName="selectDepartment"
+                        [options]="deptDropdownValue"
+                        optionLabel="name"
+                        placeholder="Select a Department"
+                    />
+                </form>
+            </div>
+        </div>
+        <div class="flex align-items-center gap-3">
+            <div class="field col-10 md:col-10">
                 <label htmlFor="department">Campus</label>
                 <form [formGroup]="formGroupCampus">
                     <p-dropdown
@@ -317,19 +330,6 @@
                         [options]="deptDropdownCampusValue"
                         optionLabel="name"
                         placeholder="Select a Campus"
-                    />
-                </form>
-            </div>
-        </div>
-        <div class="flex align-items-center gap-3">
-            <div class="field col-10 md:col-10">
-                <label htmlFor="department">Department</label>
-                <form [formGroup]="formGroupDemo">
-                    <p-dropdown
-                        formControlName="selectedCity"
-                        [options]="deptDropdownValue"
-                        optionLabel="name"
-                        placeholder="Select a Department"
                     />
                 </form>
             </div>
@@ -359,10 +359,6 @@
     [draggable]="false"
     [resizable]="false"
 >
-    <!-- <span class="p-text-secondary block mb-5"
-    >Update your information.</span
->  -->
-
     <form [formGroup]="Addform">
         <div class="flex align-items-center gap-3">
             <div class="p-fluid">
@@ -479,7 +475,7 @@
                     <div class="field col-10 md:col-10">
                         <form [formGroup]="formGroupDemo">
                             <p-dropdown
-                                formControlName="selectedCity"
+                                formControlName="selectDepartment"
                                 [options]="deptDropdownValue"
                                 optionLabel="name"
                                 placeholder="Select a Department"

@@ -52,6 +52,9 @@ import { TagModule } from 'primeng/tag';
 import { BlockUIModule } from 'primeng/blockui';
 import { PanelModule } from 'primeng/panel';
 import { SkeletonModule } from 'primeng/skeleton';
+import { LogsComponent } from './logs/logs.component';
+import { GoalDashboardComponent } from './goals/dashboard/dashboard.component';
+import { ObjectivesComponent } from './goals/objectives/objectives.component';
 
 const pipes = [
     dataFilterPipe,
@@ -111,6 +114,9 @@ const pipes = [
         UsersComponent,
         GoalsComponent,
         DepartmentsComponent,
+        LogsComponent,
+        GoalDashboardComponent,
+        ObjectivesComponent,
         ...pipes,
     ],
     exports: [...pipes],

@@ -49,7 +49,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .getRoute('get', 'users', 'getAllUsersForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllusers: data });
                 this.users = data.data[0];
             });
     }
@@ -58,7 +57,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .getRoute('get', 'goals', 'getGoalsForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllGoals: data });
                 this.goals = data.data[0];
             });
     }
@@ -68,8 +66,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .getRoute('get', 'department', 'getAllDepartmentForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                console.log(data);
-                console.log({ getAllDept: data });
                 this.deparmentData = data.data[0];
             });
     }
@@ -79,7 +75,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .getRoute('get', 'objectives', `getAllObjectivesForDashboard`)
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllObjectives: data });
                 this.objectivesData = data.data[0];
                 this.initChartsDoughnut({
                     complete: data.data[0].objectiveCompleted,
@@ -93,7 +88,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .getRoute('get', 'goals', `getObjectivesViewTable`)
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data?: any) => {
-                console.log({ getObjectiveViewPieChart: data });
                 this.initBarCharts(data?.data);
             });
     }
@@ -137,7 +131,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         let objectivesDataTrue = goal?.map((e) =>
             e.objectives.filter((x) => x.deleted == false)
         );
-        console.log({ objectivesDataTrue: objectivesDataTrue });
 
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');

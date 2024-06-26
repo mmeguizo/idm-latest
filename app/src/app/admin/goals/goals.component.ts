@@ -20,7 +20,7 @@ import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { DepartmentService } from 'src/app/demo/service/department.service';
 import { FileService } from 'src/app/demo/service/file.service';
 import { FileUpload } from 'primeng/fileupload';
-import { BlockUI } from 'primeng/blockui';
+import { CampusService } from 'src/app/demo/service/campus.service';
 
 @Component({
     selector: 'app-goals',
@@ -37,6 +37,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     AllObjectivesFiles: any[] = [];
     AllObjectivesHistoryFiles: any[] = [];
     ViewBudget: any[] = [];
+    deptDropdownCampusValue: any[] = [];
 
     //table columns
     cols!: any;
@@ -72,6 +73,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
     public updateGoalform: any;
     public addObjectiveGoalform: any;
     public addFileForm: any;
+    formGroupCampus: any;
+    formGroupDemo: any;
 
     //dropdowns
     formGroupDropdown: any;
@@ -100,7 +103,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
         private obj: ObjectiveService,
         private dept: DepartmentService,
         private fileService: FileService,
-        private fileUpload: FileUpload
+        private fileUpload: FileUpload,
+        private camp: CampusService
     ) {
         this.USERID = this.auth.getTokenUserID();
     }
@@ -121,6 +125,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.cols = [
             { field: 'goals', header: 'Goals' },
             { field: 'budget', header: 'Budget' },
+            { field: 'department', header: 'Department' },
+            { field: 'campus', header: 'Campus' },
             { field: 'createdBy', header: 'CreatedBy' },
             { field: 'createdAt', header: 'CreatedAt' },
             { field: 'options', header: 'Options' },
@@ -130,9 +136,18 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.createUpdateGoalForm();
         this.createAddObjectiveGoalform();
         this.createaddFileForm();
+        this.getAllCampuses();
 
         this.formGroupDropdown = new FormGroup({
             selectedDropdown: new FormControl(),
+        });
+
+        this.formGroupDemo = new FormGroup({
+            selectDepartment: new FormControl(),
+        });
+
+        this.formGroupCampus = new FormGroup({
+            selectedCampus: new FormControl(),
         });
 
         // progress bar
@@ -154,6 +169,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.addGoalform = this.formBuilder.group({
             goals: ['', [Validators.required]],
             budget: ['', [Validators.required]],
+            campus: ['', [Validators.required]],
+            department: ['', [Validators.required]],
         });
     }
     createaddFileForm() {
@@ -184,7 +201,17 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.updateGoalform = this.formBuilder.group({
             goals: ['', [Validators.required]],
             budget: ['', [Validators.required]],
+            campus: ['', [Validators.required]],
         });
+    }
+
+    getAllCampuses() {
+        this.camp
+            .getRoute('get', 'campus', 'getAllCampus')
+            .pipe(takeUntil(this.getGoalSubscription))
+            .subscribe((data: any) => {
+                this.deptDropdownCampusValue = data.data[0];
+            });
     }
 
     getAllObjectivesWithObjectives() {
@@ -193,43 +220,46 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 // this.ObjectivesGoals = data.goals;
+                console.log(data.goals);
+
                 this.goals = data.goals;
                 this.loading = false;
             });
     }
     getAllDept() {
         this.dept
-            .getRoute('get', 'department', 'getAllDepartment')
+            .getRoute('get', 'department', 'getAllDepartmentDropdown')
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
-                let map = data.departments.map((e) => ({
-                    name: e.department,
-                    code: e.department,
-                }));
-                this.deptDropdownValue.push(...map);
+                this.deptDropdownValue = data.data[0];
             });
     }
 
     async getObjectives(
         id: string,
-        objectId?: string,
-        subHeader?: string,
-        goalDataRemainingBudget?: number
+        objectId: string = '',
+        subHeader: string = '',
+        goalDataRemainingBudget: number = 0,
+        goalData: any = []
     ) {
+        console.log({ id, objectId, subHeader, goalDataRemainingBudget });
+
         //passed data needed for the subgoal table or adding table modal
         this.subObjectiveGoalID = id;
-        this.goal_ObjectId = objectId;
+        this.goal_ObjectId = objectId || goalData._id || '';
         //open the objective modal
         this.subGoalObjective = true;
         //remaining budget needed in adding objective input
-        this.goalDataRemainingBudget = goalDataRemainingBudget;
+        this.goalDataRemainingBudget = goalDataRemainingBudget || 0;
         //headers in objective table
         this.subObjectiveHeaders = this.customTitleCase(
-            subHeader || this.subObjectiveHeaders
+            subHeader || this.subObjectiveHeaders || ''
         );
 
-        //get all objectives with subobjective
+        //get all goals with subobjective
         if (id) {
+            this.loading = true;
+
             this.obj
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
@@ -278,7 +308,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
         return true;
     }
 
-    addSubGoal() {
+    addSubGoal(data?: any) {
+        console.log({ addSubGoal: data });
+
         this.addObjectiveGoalDialogCard = true;
     }
 
@@ -298,6 +330,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
         let data = {
             goals: form.value.goals,
             budget: form.value.budget,
+            campus: this.formGroupCampus.value.selectedCampus.name,
+            department: this.formGroupDemo.value.selectDepartment.name,
             createdBy: this.userID,
         };
 
@@ -335,7 +369,11 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .getRoute('post', 'objectives', 'addObjectives', e.value)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
+                console.log({ addSubObjectiveGoalDialogExec: data });
+
                 if (data.success) {
+                    this.addObjectiveGoalDialogCard = false;
+                    this.getAllObjectivesWithObjectives();
                     this.getObjectives(this.subObjectiveGoalID);
                     this.messageService.add({
                         severity: 'success  ',
@@ -343,15 +381,14 @@ export class GoalsComponent implements OnInit, OnDestroy {
                         detail: data.message,
                     });
                     //fix the error becomes null after adding new objective
-                    this.goal_ObjectId = data.data.Objectives.goal_Id;
+                    this.goal_ObjectId = data.data.goal_Id;
                     // clear the data
-                    this.addObjectiveGoalDialogCard = false;
                     this.addObjectiveGoalform.reset();
                     this.formGroupDropdown.reset();
                     this.goalDataRemainingBudget = 0;
                 } else {
                     this.messageService.add({
-                        severity: 'error  ',
+                        severity: 'warn  ',
                         summary: 'Error',
                         detail: data.message,
                     });
@@ -364,6 +401,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
             id: this.updateGoalID,
             goals: form.value.goals,
             budget: form.value.budget,
+            department: this.formGroupDemo.value.selectDepartment.name,
+            campus: this.formGroupCampus.value.selectedCampus.name,
         };
         this.goal
             .getRoute('put', 'goals', 'updateGoals', data)
@@ -391,6 +430,17 @@ export class GoalsComponent implements OnInit, OnDestroy {
     updateGoal(goal) {
         this.updateGoalDialogCard = true;
         this.updateGoalID = goal.id;
+        this.formGroupDemo.setValue({
+            selectDepartment: this.deptDropdownValue.find(
+                (dept) => dept.name === goal.department
+            ),
+        });
+        this.formGroupCampus.setValue({
+            selectedCampus: this.deptDropdownCampusValue.find(
+                (dept) => dept.name === goal.campus
+            ),
+        });
+
         this.updateGoalform = this.formBuilder.group({
             goals: [goal.goals || '', [Validators.required]],
             budget: [goal.budget || 0, [Validators.required]],
@@ -513,6 +563,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
+                    this.getAllObjectivesWithObjectives();
                     this.getObjectives(this.subObjectiveGoalID);
                     this.addObjectiveGoalDialogCard = false;
                     this.messageService.add({
@@ -702,7 +753,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     clearAddObjectiveGoalDialogCardDatas() {
         this.addObjectiveGoalDialogCard = false;
+        this.updateObjectiveGoalFlag = false;
         this.tobeUpdatedSubGoal = null;
+        this.addObjectiveGoalform.reset();
     }
 
     hidviewObjectRefetch(id) {
@@ -831,5 +884,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
     closeSubGoalTable() {
         this.subGoalObjective = false;
         this.objectiveDatas = [];
+    }
+
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
     }
 }

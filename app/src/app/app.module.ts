@@ -31,6 +31,8 @@ import { AuthInterceptor } from './auth.interceptor';
 import { NotAuthGuard } from './guard/notAuth.guard';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { CampusService } from './demo/service/campus.service';
+import { LogService } from './demo/service/logs.service';
+import { RouteService } from './demo/service/route.service';
 
 export function tokenGetter() {
     return localStorage.getItem('access_token');
@@ -73,6 +75,8 @@ export function tokenGetter() {
         AuthGuard,
         NotAuthGuard,
         AuthInterceptor,
+        LogService,
+        RouteService,
     ],
 
     bootstrap: [AppComponent],

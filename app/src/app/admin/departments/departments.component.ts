@@ -19,6 +19,7 @@ import { DepartmentService } from 'src/app/demo/service/department.service';
 export class DepartmentsComponent implements OnInit, OnDestroy {
     private getdepartmenttSubscription = new Subject<void>();
     @ViewChild('filter') filter!: ElementRef;
+
     depts: any[] = [];
     cols!: any;
     loading = true;

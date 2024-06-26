@@ -81,6 +81,7 @@ export class UsersComponent implements OnInit, OnDestroy {
         this.getAllusers();
         this.getAllDepartments();
         this.getAllCampuses();
+        this.getAllDepartmentDropdown();
         this.cols = [
             { field: 'username', header: 'Username' },
             { field: 'email', header: 'Email' },
@@ -94,34 +95,12 @@ export class UsersComponent implements OnInit, OnDestroy {
             { label: 'Active', value: 'qualified' },
             { label: 'Pending', value: 'proposal' },
         ];
-        this.deptDropdownValue = [
-            {
-                name: 'office of the secretary',
-                code: 'office of the secretary',
-            },
-            {
-                name: 'office of the vice-president',
-                code: 'office of the vice-president',
-            },
-            {
-                name: 'office of the president',
-                code: 'office of the president',
-            },
-            {
-                name: 'information and communications technology',
-                code: 'information and communications technology',
-            },
-            {
-                name: 'department of finance',
-                code: 'department of finance',
-            },
-        ];
 
         this.createForm();
         this.createFormAddUser();
 
         this.formGroupDemo = new FormGroup({
-            selectedCity: new FormControl(),
+            selectDepartment: new FormControl(),
         });
         this.formGroupCampus = new FormGroup({
             selectedCampus: new FormControl(),
@@ -142,7 +121,14 @@ export class UsersComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
                 this.deptDropdownCampusValue = data.data[0];
-                console.log(this.deptDropdownCampusValue);
+            });
+    }
+    getAllDepartmentDropdown() {
+        this.camp
+            .getRoute('get', 'department', 'getAllDepartmentDropdown')
+            .pipe(takeUntil(this.getUserSubscription))
+            .subscribe((data: any) => {
+                this.deptDropdownValue = data.data[0];
             });
     }
     createFormAddUser() {
@@ -199,7 +185,7 @@ export class UsersComponent implements OnInit, OnDestroy {
         this.selectedRole = data.role;
 
         this.formGroupDemo.setValue({
-            selectedCity: this.deptDropdownValue.find(
+            selectDepartment: this.deptDropdownValue.find(
                 (dept) => dept.name === data.department
             ),
         });
@@ -223,7 +209,7 @@ export class UsersComponent implements OnInit, OnDestroy {
             id: this.updateUserId,
             username: form.value.username,
             email: form.value.email,
-            department: this.formGroupDemo.value.selectedCity.name,
+            department: this.formGroupDemo.value.selectDepartment.name,
             campus: this.formGroupCampus.value.selectedCampus.name,
             // role: form.value.role.name,
         };
@@ -323,7 +309,7 @@ export class UsersComponent implements OnInit, OnDestroy {
         let data = {
             username: form.value.username,
             email: form.value.email,
-            department: this.formGroupDemo.value.selectedCity.name,
+            department: this.formGroupDemo.value.selectDepartment.name,
             campus: this.formGroupCampus.value.selectedCampus.name,
             password: form.value.password,
             confirm: form.value.confirm,

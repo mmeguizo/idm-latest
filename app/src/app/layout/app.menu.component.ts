@@ -45,9 +45,25 @@ export class AppMenuComponent implements OnInit {
                     label: 'Goals',
                     items: [
                         {
-                            label: 'Goals List',
-                            icon: 'pi pi-compass',
-                            routerLink: ['/admin/goals'],
+                            label: 'Goals',
+                            icon: 'pi pi-caret-down',
+                            items: [
+                                {
+                                    label: 'Dashboard',
+                                    icon: 'pi pi-compass',
+                                    routerLink: ['/admin/goals/dashboard'],
+                                },
+                                {
+                                    label: 'Goals',
+                                    icon: 'pi pi-align-justify',
+                                    routerLink: ['/admin/goals'],
+                                },
+                                {
+                                    label: 'Objectives',
+                                    icon: 'pi pi-flag',
+                                    routerLink: ['/admin/goals/objectives'],
+                                },
+                            ],
                         },
                     ],
                 },
@@ -56,8 +72,18 @@ export class AppMenuComponent implements OnInit {
                     items: [
                         {
                             label: 'Users List',
-                            icon: 'pi pi-fw pi-table',
+                            icon: 'pi pi-table',
                             routerLink: ['/admin/users'],
+                        },
+                    ],
+                },
+                {
+                    label: 'Logs',
+                    items: [
+                        {
+                            label: 'History',
+                            icon: 'pi pi-server',
+                            routerLink: ['/admin/logs'],
                         },
                     ],
                 },

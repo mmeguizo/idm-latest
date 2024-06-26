@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const logs = new Schema(
   {
+    method: {},
     params: {},
     query: {},
     url: {},
@@ -12,6 +13,7 @@ const logs = new Schema(
     date: {},
     statusCode: {},
     ip: {},
+    user: {},
   },
   {
     timestamps: true,

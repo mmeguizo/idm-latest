@@ -261,7 +261,7 @@ export class AuthService {
 
     getRoute(endpoint: any, model?: any, apiName?: any, data?: any) {
         console.log('getRoute', { endpoint, model, apiName, data });
-        // this.createAuthenticationHeaders();
+        this.createAuthenticationHeaders();
         const url = `${this.connection.domain}/${model}/${apiName}`;
         return this.http.request(endpoint, url, {
             body: data,

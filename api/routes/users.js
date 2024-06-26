@@ -237,11 +237,13 @@ module.exports = (router) => {
   });
 
   router.put("/updateUser", async (req, res) => {
-    const { username, email, department, id } = req.body;
+    const { username, email, department, id, campus } = req.body;
+
+    console.log(req.body);
 
     User.findOneAndUpdate(
       { id: id },
-      { username, email, department },
+      { username, email, department, campus },
       { upsert: false },
       (err, response) => {
         if (err) return res.json({ success: false, message: err.message });

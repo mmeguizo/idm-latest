@@ -17,6 +17,7 @@ const department = require("./routes/department")(router);
 const goals = require("./routes/goals")(router);
 const objectives = require("./routes/objectives")(router);
 const campus = require("./routes/campus")(router);
+const log = require("./routes/log")(router);
 
 const { logMiddleware } = require("./middleware/logger");
 
@@ -67,6 +68,7 @@ app.use("/department", department);
 app.use("/objectives", objectives);
 app.use("/goals", goals);
 app.use("/campus", campus);
+app.use("/logs", log);
 app.use(
   "/profile_pic",
   express.static(path.join(__dirname, "../uploads/images"))
