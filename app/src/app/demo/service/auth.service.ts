@@ -25,7 +25,7 @@ export class AuthService {
     public options: any;
     fulluserloggedData: {};
     public socketserver: any = { status: true, message: 'online' };
-
+    private checkTokenExpirationInterval: any;
     constructor(
         private router: Router,
         public connection: ConnectionService,
@@ -35,6 +35,37 @@ export class AuthService {
         public jwtHelper: JwtHelperService
     ) {
         this.domain = this.connection.domain;
+        this.scheduleTokenExpirationCheck();
+    }
+
+    scheduleTokenExpirationCheck() {
+        // Check for token expiration every minute
+        this.checkTokenExpirationInterval = setInterval(() => {
+            if (
+                this.authToken &&
+                this.jwtHelper.isTokenExpired(this.authToken)
+            ) {
+                this.logoutIfTokenExpired();
+                this.showTokenExpiredToast(); // Show the toast message
+            }
+        }, 60000); // Check every minute
+    }
+
+    showTokenExpiredToast() {
+        this.messageService.add({
+            severity: 'error',
+            summary: 'Session Expired',
+            detail: 'Your session has expired. Please log in again.',
+        });
+    }
+
+    logoutIfTokenExpired() {
+        clearInterval(this.checkTokenExpirationInterval); // Clear the interval when logging out.
+        this.authToken = null;
+        this.user = null;
+        // this.fulluserloggedData = null;
+        localStorage.clear();
+        this.router.navigate(['login']);
     }
 
     handleError(error: HttpErrorResponse) {
@@ -160,18 +191,91 @@ export class AuthService {
         //'@auth0/angular-jwt'; is adding 'Bearer ' in token so i removed it manually
         this.createAuthenticationHeaders();
         //return this.http.get('/authentication/profile', { headers: this.options })
-        return this.http.get(this.domain + '/authentication/profile', {
-            headers: this.options,
-        });
+        return this.http
+            .get(this.domain + '/authentication/profile', {
+                headers: this.options,
+            })
+            .pipe(
+                catchError((error: HttpErrorResponse) => {
+                    console.error(`API Error (${error.status}):`, error.error);
+                    if (error.status === 401 || error.status === 403) {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'You are unauthorized!',
+                        });
+                        this.logout();
+                    } else if (error.status === 500) {
+                        // Internal server error
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'Internal server error. Please try again later.',
+                        });
+                    } else if (error.status === 404) {
+                        // Not found error
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'The requested resource was not found.',
+                        });
+                    } else {
+                        // Other errors
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error,
+                        });
+                    }
+
+                    return throwError(error);
+                })
+            );
     }
 
     getPublicProfile(username) {
         this.createAuthenticationHeaders(); // Create headers before sending to API
         // return this.http.get('/authentication/publicProfile/' + username, { headers: this.options });
-        return this.http.get(
-            this.domain + 'authentication/publicProfile/' + username,
-            { headers: this.options }
-        );
+        return this.http
+            .get(this.domain + 'authentication/publicProfile/' + username, {
+                headers: this.options,
+            })
+            .pipe(
+                catchError((error: HttpErrorResponse) => {
+                    console.error(`API Error (${error.status}):`, error.error);
+                    if (error.status === 401 || error.status === 403) {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'You are unauthorized!',
+                        });
+                        this.logout();
+                    } else if (error.status === 500) {
+                        // Internal server error
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'Internal server error. Please try again later.',
+                        });
+                    } else if (error.status === 404) {
+                        // Not found error
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'The requested resource was not found.',
+                        });
+                    } else {
+                        // Other errors
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error,
+                        });
+                    }
+
+                    return throwError(error);
+                })
+            );
     }
 
     public back() {
@@ -263,9 +367,46 @@ export class AuthService {
         console.log('getRoute', { endpoint, model, apiName, data });
         this.createAuthenticationHeaders();
         const url = `${this.connection.domain}/${model}/${apiName}`;
-        return this.http.request(endpoint, url, {
-            body: data,
-            // headers: this.options,
-        });
+        return this.http
+            .request(endpoint, url, {
+                body: data,
+                // headers: this.options,
+            })
+            .pipe(
+                catchError((error: HttpErrorResponse) => {
+                    console.error(`API Error (${error.status}):`, error.error);
+                    if (error.status === 401 || error.status === 403) {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'You are unauthorized!',
+                        });
+                        this.logout();
+                    } else if (error.status === 500) {
+                        // Internal server error
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'Internal server error. Please try again later.',
+                        });
+                    } else if (error.status === 404) {
+                        // Not found error
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'The requested resource was not found.',
+                        });
+                    } else {
+                        // Other errors
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error,
+                        });
+                    }
+
+                    return throwError(error);
+                })
+            );
     }
 }

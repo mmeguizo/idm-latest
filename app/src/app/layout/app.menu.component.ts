@@ -81,7 +81,7 @@ export class AppMenuComponent implements OnInit {
                     label: 'Logs',
                     items: [
                         {
-                            label: 'History',
+                            label: 'Activity',
                             icon: 'pi pi-server',
                             routerLink: ['/admin/logs'],
                         },

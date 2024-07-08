@@ -93,6 +93,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     // set initial value
     onclickCompletionButton = [];
     blockedPanel: boolean;
+    subOnjectiveHeaderData: any;
 
     constructor(
         private messageService: MessageService,
@@ -252,6 +253,11 @@ export class GoalsComponent implements OnInit, OnDestroy {
         //remaining budget needed in adding objective input
         this.goalDataRemainingBudget = goalDataRemainingBudget || 0;
         //headers in objective table
+
+        this.subOnjectiveHeaderData = goalData;
+
+        console.log({ subOnjectiveHeaderData: this.subOnjectiveHeaderData });
+
         this.subObjectiveHeaders = this.customTitleCase(
             subHeader || this.subObjectiveHeaders || ''
         );
@@ -259,11 +265,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
         //get all goals with subobjective
         if (id) {
             this.loading = true;
-
             this.obj
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
+                    console.log({ getAllByIdObjectives: data });
+
                     this.objectiveDatas = data.Objectives;
                     //initialize completion button
                     for (

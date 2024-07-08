@@ -444,7 +444,6 @@
 
 <!-- main objective table  -->
 <p-dialog
-    [header]="subObjectiveHeaders"
     [modal]="true"
     [(visible)]="subGoalObjective"
     [style]="{ width: '60rem' }"
@@ -453,7 +452,44 @@
     (onHide)="hideViewObjectiveTable()"
     responsiveLayout="stack"
 >
+    <!--  [header]="subObjectiveHeaders" -->
     <div class="grid">
+        <div
+            class="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center surface-section text-800"
+        >
+            <section>
+                <span class="block text-6xl font-bold mb-1">
+                    {{ subOnjectiveHeaderData?.users?.username | titlecase }}
+                </span>
+                <div class="text-6xl text-primary font-bold mb-3">
+                    {{ subOnjectiveHeaderData?.campus || "Campus" | titlecase }}
+                </div>
+                <p class="mt-0 mb-4 text-700 line-height-3">
+                    {{
+                        subOnjectiveHeaderData?.department || "Department"
+                            | titlecase
+                    }}
+                </p>
+            </section>
+        </div>
+        <div
+            class="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center surface-section text-800"
+        >
+            <section>
+                <!-- {{ subOnjectiveHeaderData?.budget || 0 | peso }} -->
+                <span class="block text-6xl font-bold mb-1">
+                    {{ subObjectiveHeaders | titlecase }}
+                </span>
+                <div class="text-6xl text-primary font-bold mb-3">
+                    {{ subOnjectiveHeaderData?.budget || 0 | peso }}
+                </div>
+                <p class="mt-0 mb-4 text-700 line-height-3">
+                    Remaining:
+                    {{ subOnjectiveHeaderData?.remainingBudget | peso }}
+                </p>
+            </section>
+        </div>
+
         <div class="col-12">
             <p-table
                 #dt2
@@ -720,9 +756,7 @@
                         <td>
                             {{ objectiveData.formula | titlecase }}
                         </td>
-                        <!-- <td>
-                            {{ objectiveData.department | titlecase }}
-                        </td> -->
+
                         <td>
                             {{ objectiveData.responsible_persons | titlecase }}
                         </td>

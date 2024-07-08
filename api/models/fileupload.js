@@ -13,7 +13,7 @@ const fileUpload = new Schema(
     for: { type: String, maxlength: 50, required: true },
     date_added: {
       type: Date,
-      default: new Date(),
+      default: () => new Date(), // <--- new date nodejs less than one day local ph  time
     },
     status: { type: Boolean, default: true },
     filetype: { type: String, default: "" },

@@ -21,8 +21,6 @@ module.exports = (router) => {
     const uploadedFiles = []; // Array to store uploaded file details
 
     form.on("file", async (field, file) => {
-      // console.log({ FILEEEEE: file, field, form });
-
       const newFileName = [
         useFor,
         Math.random(),
@@ -73,25 +71,19 @@ module.exports = (router) => {
             console.log("Files Saving success....:");
           })
           .catch((err) => {
-            // res.json({
-            //   success: false,
-            //   message: "Error, could not save files : " + err,
-            // });
             console.error("Error uploading file:", err);
           });
       } catch (err) {
         console.error("Error uploading file:", err);
-        // Handle upload errors appropriately (e.g., send error response to client)
       }
     });
 
     form.on("progress", (bytesReceived, bytesExpected) => {
-      // Handle upload progress if needed
+      console.log("Progress:", bytesReceived, bytesExpected);
     });
 
     form.on("error", (err) => {
       console.error("An error occurred:", err);
-      // res.status(500).json({ message: "Error uploading files" }); // Handle errors gracefully
     });
 
     form.on("end", async () => {
@@ -261,7 +253,7 @@ module.exports = (router) => {
       console.log("An error has occured: \n" + err);
     });
     form.on("end", function () {
-      // console.log('hey');
+      console.log("end");
     });
     form.parse(req);
     let params = JSON.stringify(req.params);
@@ -278,7 +270,6 @@ module.exports = (router) => {
     let file = req.body.link.source;
     let id = req.body.link.id;
 
-    // res.json({ success: true, message: "The file has been remove." });
     let fs = require("fs");
     fs.unlink(
       `${path.join(__dirname, "..", "images/files")}/${file}`,
@@ -345,27 +336,7 @@ module.exports = (router) => {
         ).sort({ date_added: 1 });
       }
     );
-    // fs.unlink(
-    //   `${path.join(__dirname, "..", "images/files")}/${file}`,
-    //   (err) => {
-    //     if (err) {
-    //       return res.json({
-    //         success: false,
-    //         message: "The server cant find the file.",
-    //       });
-    //     }
-    //     // File.deleteOne({ id: id }, (err, results) => {
-    //     //   if (err) {
-    //     //     return res.json({ success: false, message: err.message });
-    //     //   } else {
-    //     //     return res.json({
-    //     //       success: true,
-    //     //       message: "The file has been remove.",
-    //     //     });
-    //     //   }
-    //     // });
-    //   }
-    // );
+
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
@@ -397,6 +368,9 @@ module.exports = (router) => {
 
   router.get("/getAllFilesFromObjective/:user_id/:objective_id", (req, res) => {
     const { user_id, objective_id } = req.params;
+
+    console.log(req.params);
+
     File.find(
       {
         user_id: user_id,
@@ -418,13 +392,6 @@ module.exports = (router) => {
       date_added: -1,
     });
 
-    // File.find(query, (err, files) => {
-    //   if (err) {
-    //     return res.json({ success: false, message: err.message });
-    //   } else {
-    //     return res.json({ success: true, message: "Files", data: files });
-    //   }
-    // });
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
@@ -455,16 +422,9 @@ module.exports = (router) => {
           }
         }
       ).sort({
-        createdAt: -1,
+        createdAt: 1,
       });
 
-      // File.find(query, (err, files) => {
-      //   if (err) {
-      //     return res.json({ success: false, message: err.message });
-      //   } else {
-      //     return res.json({ success: true, message: "Files", data: files });
-      //   }
-      // });
       let params = JSON.stringify(req.params);
       let query = JSON.stringify(req.query);
       let body = JSON.stringify(req.body);
@@ -478,3 +438,25 @@ module.exports = (router) => {
 
   return router;
 };
+
+// fs.unlink(
+//   `${path.join(__dirname, "..", "images/files")}/${file}`,
+//   (err) => {
+//     if (err) {
+//       return res.json({
+//         success: false,
+//         message: "The server cant find the file.",
+//       });
+//     }
+//     // File.deleteOne({ id: id }, (err, results) => {
+//     //   if (err) {
+//     //     return res.json({ success: false, message: err.message });
+//     //   } else {
+//     //     return res.json({
+//     //       success: true,
+//     //       message: "The file has been remove.",
+//     //     });
+//     //   }
+//     // });
+//   }
+// );

@@ -25,7 +25,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
 import { GoalsComponent } from './goals/goals.component';
 import { SelectButtonModule } from 'primeng/selectbutton';
-
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import {
     dataFilterPipe,
     NumberWithCommas,
@@ -55,7 +55,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { LogsComponent } from './logs/logs.component';
 import { GoalDashboardComponent } from './goals/dashboard/dashboard.component';
 import { ObjectivesComponent } from './goals/objectives/objectives.component';
-
 const pipes = [
     dataFilterPipe,
     NumberWithCommas,
@@ -107,6 +106,7 @@ const pipes = [
         BlockUIModule,
         PanelModule,
         SkeletonModule,
+        DynamicDialogModule,
     ],
     declarations: [
         AdminComponent,

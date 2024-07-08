@@ -13,6 +13,83 @@ module.exports = (router) => {
     }).format(amount);
   };
 
+  router.get("/getAllByIdObjectivesWithGoalsAndUsers", (req, res) => {
+    Objectives.aggregate([
+      { $match: { deleted: false } },
+      {
+        $lookup: {
+          as: "goals",
+          from: "goals",
+          foreignField: "_id",
+          localField: "goal_Id",
+        },
+      },
+      { $unwind: { path: "$goals", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          as: "users",
+          from: "users",
+          foreignField: "id",
+          localField: "createdBy",
+        },
+      },
+      { $unwind: { path: "$users", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          "goals.objectives": 0,
+          "goals.objectiveBudget": 0,
+        },
+      },
+    ])
+      .sort({ createdAt: -1 })
+      .then((objectives) => {
+        // Success
+        res.status(200).json({
+          success: true,
+          data: objectives,
+        });
+      })
+      .catch((err) => {
+        // Error handling
+        console.error("Error fetching objectives with goals and users:", err);
+        res.status(500).json({ error: "Internal server error" });
+      });
+  });
+
+  router.get("/getAllObjectivesBudget", async (req, res) => {
+    try {
+      let objectives = await Objectives.aggregate([
+        {
+          $match: {
+            deleted: false,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalObjectiveBudget: {
+              $sum: "$budget",
+            },
+          },
+        },
+      ]);
+
+      if (objectives.length > 0) {
+        res.json({
+          success: true,
+          data: objectives[0].totalObjectiveBudget,
+        });
+      } else {
+        res.json({
+          success: true,
+          data: 0,
+        });
+      }
+    } catch (err) {
+      res.json({ success: false, message: err });
+    }
+  });
+
   router.get("/getAllObjectivesForDashboard", async (req, res) => {
     let data = [];
     try {
@@ -41,23 +118,6 @@ module.exports = (router) => {
     } catch (error) {
       res.json({ success: false, message: error });
     }
-  });
-
-  router.get("/getAllObjectives", (req, res) => {
-    Objectives.find({ deleted: false }, (err, Objectives) => {
-      if (err) {
-        return res.status(500).json({ success: false, message: err });
-      }
-
-      if (!Objectives || Objectives.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "No Objectives found.",
-          Objectives: [],
-        });
-      }
-      return res.status(200).json({ success: true, Objectives });
-    }).sort({ _id: -1 });
   });
 
   router.put("/updateobjectivecompletion", (req, res) => {
@@ -110,6 +170,23 @@ module.exports = (router) => {
         return res.status(200).json({ success: true, Objectives });
       }
     ).sort({ _id: -1 });
+  });
+
+  router.get("/getAllObjectives", (req, res) => {
+    Objectives.find({ deleted: false }, (err, Objectives) => {
+      if (err) {
+        return res.status(500).json({ success: false, message: err });
+      }
+
+      if (!Objectives || Objectives.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No Objectives found.",
+          Objectives: [],
+        });
+      }
+      return res.status(200).json({ success: true, Objectives });
+    }).sort({ _id: -1 });
   });
 
   router.post("/findObjectivesById", (req, res) => {
