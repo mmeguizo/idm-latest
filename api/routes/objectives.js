@@ -232,22 +232,24 @@ module.exports = (router) => {
       });
     }
 
-    if (objectiveBudget > goalBudget) {
+    if (objectiveBudget > goalBudget - totalSubGoalBudget) {
       return res.json({
         success: false,
         message: `Objective Budget must not exceed ${formatCurrency(
-          goalBudget
-        )} of Goal Budget`,
-      });
-    }
-    if (totalSubGoalBudget + objectiveBudget > goalBudget) {
-      return res.json({
-        success: false,
-        message: `Objective Budget must not exceed the remaning ${formatCurrency(
           goalBudget - totalSubGoalBudget
-        )} of Goal Budget`,
+        )} of the remaining Goal Budget `,
       });
     }
+
+    //totalSubGoalBudget - ${totalSubGoalBudget} goalBudget - ${goalBudget} objectiveBudget - ${objectiveBudget}
+    // if (totalSubGoalBudget + objectiveBudget > goalBudget) {
+    //   return res.json({
+    //     success: false,
+    //     message: `Objective Budget must not exceed the remaning ${formatCurrency(
+    //       goalBudget - totalSubGoalBudget
+    //     )} of Goal Budget`,
+    //   });
+    // }
 
     const ObjectivesDataRequest = {
       id: uuidv4(),
@@ -322,7 +324,23 @@ module.exports = (router) => {
         { new: true, upsert: true, select: "-__v" } // Use { new: true } to return the updated document
       );
 
-      if (!updatedObjective) {
+      if (updatedObjective) {
+        await Goals.find({ objectives: { $in: [data.id] } })
+          .then(async (goals) => {
+            await Goals.updateMany(
+              { objectives: { $in: [data.id] } }, // Find goals referencing the objective
+              {
+                $pull: {
+                  objectives: data.id, // Remove from objectives array
+                  objectiveBudget: { id: data.id }, // Remove from objectiveBudget array
+                },
+              }
+            );
+          })
+          .catch((err) => {
+            console.error("Error finding goals:", err);
+          });
+      } else {
         return res.json({
           success: false,
           message: "Could not update objective",

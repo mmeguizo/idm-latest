@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Objectives = require("../models/objective");
 const { logger } = require("../middleware/logger");
+const userHistory = require("../models/userhistories");
 module.exports = (router) => {
   router.get("/getObjectivesViewTable", async (req, res) => {
     try {
@@ -326,13 +327,23 @@ module.exports = (router) => {
       createdBy,
     };
     Goals.create(goalsDataRequest)
-      .then((data) =>
+      .then((data) => {
+        userHistory.create({
+          userId: createdBy,
+          activityType: "PUT",
+          activityDetails: {
+            url: "goals/addGoals",
+            data: goalsDataRequest,
+            action: "Added Goals",
+          },
+        });
+
         res.json({
           success: true,
           message: "This  Goals and Action Plan Goals is successfully Added ",
           data: { goals: data },
-        })
-      )
+        });
+      })
       .catch((err) => {
         if (err.code === 11000) {
           res.json({

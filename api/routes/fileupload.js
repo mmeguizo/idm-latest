@@ -10,6 +10,9 @@ let fs = require("fs");
 const { fail } = require("assert");
 let md5 = require("md5");
 const { logger } = require("../middleware/logger");
+const Logs = require("../models/logs");
+const { log } = require("console");
+
 module.exports = (router) => {
   router.post("/addMultipleFiles/:user_id/:objective_id", async (req, res) => {
     let ReturnData = [];
@@ -60,6 +63,8 @@ module.exports = (router) => {
               if (err) {
                 reject(err);
               } else {
+                console.log({ fileAdd: data });
+
                 resolve(data);
               }
             });
