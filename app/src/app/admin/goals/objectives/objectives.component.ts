@@ -54,6 +54,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
     formGroupDropdown: any;
     dropdwonSelection: { name: string; code: string }[];
     viewObjectiveFileHistoryDialogCard: boolean;
+    USERNAME: string;
     constructor(
         private obj: ObjectiveService,
         private messageService: MessageService,
@@ -65,6 +66,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
         private goal: GoalService
     ) {
         this.USERID = this.auth.getTokenUserID();
+
         this.getAllobjectivesGoalsUsers();
     }
 
@@ -101,7 +103,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             .getRoute('get', 'objectives', 'getAllObjectives')
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
-                console.log(data.Objectives);
+                console.log({ DATAHUH: data.Objectives });
 
                 this.objectiveDatas = data.Objectives;
 
@@ -124,7 +126,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
                 this.objectiveDatas = data.data;
-                console.log({ getAllobjectivesGoalsUsers: data });
                 this.loading = false;
             });
     }
@@ -156,9 +157,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
     ) {
         this.onclickCompletionButton[index] = true;
         let goalIDs = data.goalId;
-
-        //create an index of boolean to match the button on the table
-        // if not all buttons will load too
 
         this.confirmationService.confirm({
             key: 'updateObjectiveComplete',
@@ -193,11 +191,9 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
                                 detail: results.message,
                                 life: 5000,
                             });
-                            this.getAllobjectives();
+                            // this.getAllobjectives();
+                            this.getAllobjectivesGoalsUsers();
                             this.loading = false;
-                            // this saves the objectid instead of refetch by closing the dialog it will run hideview to refetch
-                            // this.hideviewObjectiveFileDialogCardID = goalIDs;
-                            // this.hideviewObjectiveFileDialogCard(goalIDs);
                         } else {
                             this.messageService.add({
                                 severity: 'error  ',
@@ -369,7 +365,8 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
                 if (data.success) {
                     // this.getAllObjectivesWithObjectives();
                     // this.getObjectives(this.subObjectiveGoalID);
-                    this.getAllobjectives();
+                    // this.getAllobjectives();
+                    this.getAllobjectivesGoalsUsers();
                     this.getAllFilesFromObjectiveLoad(
                         this.USERID,
                         this.objectiveIDforFile

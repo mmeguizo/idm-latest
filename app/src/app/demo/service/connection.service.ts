@@ -4,7 +4,10 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class ConnectionService {
-    //localhost development
+    //ngrok development
+    // public domain: string = 'https://a51f-136-158-184-122.ngrok-free.app ';
+
+    //localhost dev
     public domain: string = 'http://localhost:3000';
 
     // if deployed online

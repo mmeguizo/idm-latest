@@ -1,7 +1,7 @@
 const Logs = require("../models/logs");
 
 module.exports = (router) => {
-  router.get("/getAllLogs", async (req, res) => {
+  router.get("/getAllLogs/:id", async (req, res) => {
     let data = [];
     try {
       //   let logs = await Logs.find({ method: { $ne: "GET" } }).sort({
@@ -14,6 +14,17 @@ module.exports = (router) => {
             method: {
               $ne: "GET",
             },
+            // "user.id": {
+            //   $ne: req.params.id,
+            // },
+          },
+        },
+        {
+          $lookup: {
+            as: "goals",
+            from: "goals",
+            foreignField: "_id",
+            localField: "body._id",
           },
         },
         {
@@ -25,16 +36,16 @@ module.exports = (router) => {
           },
         },
         {
-          $sort: {
-            createdAt: -1,
-          },
-        },
-        {
           $lookup: {
             as: "ParamsObjectives",
             from: "objectives",
             foreignField: "id",
             localField: "params.objective_id",
+          },
+        },
+        {
+          $sort: {
+            createdAt: -1,
           },
         },
       ]);
@@ -64,7 +75,7 @@ module.exports = (router) => {
   // pathSegments[1] = wordToRemove
   function removeWord(text, wordToRemove) {
     if (text === "updateobjectivecompletion") {
-      return "completed";
+      return "changed status of";
     }
 
     if (text === "addMultipleFiles") {

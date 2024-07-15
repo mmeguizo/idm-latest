@@ -439,5 +439,201 @@ module.exports = (router) => {
     );
   });
 
+  //**********************USer Routes ********************** */
+
+  router.get("/getAllObjectivesForDashboard/:id", async (req, res) => {
+    let data = [];
+    try {
+      let objectivesCount = await Objectives.countDocuments({
+        createdBy: req.params.id,
+      });
+      let objectiveCompleted = await Objectives.countDocuments({
+        complete: true,
+        deleted: false,
+        createdBy: req.params.id,
+      });
+      let objectiveUncompleted = await Objectives.countDocuments({
+        complete: false,
+        deleted: false,
+        createdBy: req.params.id,
+      });
+      let objectivesData = await Objectives.find({
+        deleted: false,
+        createdBy: req.params.id,
+      }).select({
+        _id: 0,
+        id: 1,
+        complete: 1,
+        date_added: 1,
+      });
+      data.push({
+        objectivesCount: objectivesCount,
+        objectiveCompleted: objectiveCompleted,
+        objectiveUncompleted: objectiveUncompleted,
+        objectivesData: objectivesData,
+      });
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
+
+  router.get("/getAllByIdObjectives/:id/:userId", (req, res) => {
+    console.log({ getAllByIdObjectives: [req.params.id, req.params.userId] });
+
+    Objectives.find(
+      { deleted: false, goalId: req.params.id, createdBy: req.params.userId },
+      (err, Objectives) => {
+        if (err) {
+          return res.status(500).json({ success: false, message: err });
+        }
+
+        if (!Objectives || Objectives.length === 0) {
+          return res.json({
+            success: false,
+            message: "No Objectives found.",
+            Objectives: [],
+          });
+        }
+        return res.status(200).json({ success: true, Objectives });
+      }
+    ).sort({ _id: -1 });
+  });
+
+  router.get("/getAllByIdObjectivesWithGoalsAndUsers/:id", (req, res) => {
+    Objectives.aggregate([
+      { $match: { deleted: false, createdBy: req.params.id } },
+      {
+        $lookup: {
+          as: "goals",
+          from: "goals",
+          foreignField: "_id",
+          localField: "goal_Id",
+        },
+      },
+      { $unwind: { path: "$goals", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          as: "users",
+          from: "users",
+          foreignField: "id",
+          localField: "createdBy",
+        },
+      },
+      { $unwind: { path: "$users", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          "goals.objectives": 0,
+          "goals.objectiveBudget": 0,
+        },
+      },
+    ])
+      .sort({ createdAt: -1 })
+      .then((objectives) => {
+        // Success
+        res.status(200).json({
+          success: true,
+          data: objectives,
+        });
+      })
+      .catch((err) => {
+        // Error handling
+        console.error("Error fetching objectives with goals and users:", err);
+        res.status(500).json({ error: "Internal server error" });
+      });
+  });
+
+  router.get("/getAllObjectives/:id", (req, res) => {
+    Objectives.find(
+      { deleted: false, createdBy: req.params.id },
+      (err, Objectives) => {
+        if (err) {
+          return res.status(500).json({ success: false, message: err });
+        }
+
+        if (!Objectives || Objectives.length === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "No Objectives found.",
+            Objectives: [],
+          });
+        }
+        return res.status(200).json({ success: true, Objectives });
+      }
+    ).sort({ _id: -1 });
+  });
+
+  router.get("/getAllObjectivesForDashboard/:id", async (req, res) => {
+    let data = [];
+    try {
+      let objectivesCount = await Objectives.countDocuments({
+        createdBy: req.params.id,
+      });
+      let objectiveCompleted = await Objectives.countDocuments({
+        complete: true,
+        deleted: false,
+        createdBy: req.params.id,
+      });
+      let objectiveUncompleted = await Objectives.countDocuments({
+        complete: false,
+        deleted: false,
+        createdBy: req.params.id,
+      });
+      let objectivesData = await Objectives.find({
+        deleted: false,
+        createdBy: req.params.id,
+      }).select({
+        _id: 0,
+        id: 1,
+        complete: 1,
+        date_added: 1,
+      });
+      data.push({
+        objectivesCount: objectivesCount,
+        objectiveCompleted: objectiveCompleted,
+        objectiveUncompleted: objectiveUncompleted,
+        objectivesData: objectivesData,
+      });
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
+
+  router.get("/getAllObjectivesBudget/:id", async (req, res) => {
+    try {
+      let objectives = await Objectives.aggregate([
+        {
+          $match: {
+            deleted: false,
+            createdBy: req.params.id,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalObjectiveBudget: {
+              $sum: "$budget",
+            },
+          },
+        },
+      ]);
+
+      if (objectives.length > 0) {
+        res.json({
+          success: true,
+          data: objectives[0].totalObjectiveBudget,
+        });
+      } else {
+        res.json({
+          success: true,
+          data: 0,
+        });
+      }
+    } catch (err) {
+      res.json({ success: false, message: err });
+    }
+  });
+
   return router;
 };

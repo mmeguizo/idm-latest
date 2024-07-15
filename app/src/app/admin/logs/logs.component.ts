@@ -8,6 +8,7 @@ import {
 import { LogService } from 'src/app/demo/service/logs.service';
 import { Subject, takeUntil } from 'rxjs';
 import { Table } from 'primeng/table';
+import { AuthService } from 'src/app/demo/service/auth.service';
 
 interface PageEvent {
     first: number;
@@ -29,10 +30,12 @@ export class LogsComponent {
     loading = true;
     cols!: any;
     first: number = 0;
-
+    USERNAME: string;
     rows: number = 10;
 
-    constructor(public log: LogService) {
+    constructor(public log: LogService, private auth: AuthService) {
+        this.USERNAME =
+            this.auth.getTokenUsername() || localStorage.getItem('username');
         this.getAllLogs();
         this.cols = [
             { field: 'method', header: 'Action' },
@@ -43,12 +46,17 @@ export class LogsComponent {
         ];
     }
 
-    getAllLogs() {
+    async getAllLogs() {
         this.loading = true;
         this.log
-            .getAllLogs('get', 'logs', 'getAllLogs')
+            .getAllLogs(
+                'get',
+                'logs',
+                'getAllLogs/' + this.auth.getTokenUserID()
+            )
             .pipe(takeUntil(this.getdepartmenttSubscription))
             .subscribe((data: any) => {
+                console.log({ getAllLogs: data.data[0] });
                 this.logs = data.data[0];
                 this.loading = false;
             });
@@ -62,5 +70,37 @@ export class LogsComponent {
     clear(table: Table) {
         table.clear();
         this.filter.nativeElement.value = '';
+    }
+
+    getArticle(resource: string): string {
+        if (!resource) return '';
+        const vowels = ['a', 'e', 'i', 'o', 'u'];
+        return vowels.includes(resource[0].toLowerCase()) ? 'an' : 'a';
+    }
+
+    getLogDisplayValue(log: any): string {
+        if (log?.objectives?.[0]?.functional_objective) {
+            return log.objectives[0].functional_objective;
+        } else if (log?.ParamsObjectives?.[0]?.functional_objective) {
+            return log.ParamsObjectives[0].functional_objective;
+        } else if (log?.body?._id) {
+            return 'ID: ' + log.body._id;
+        } else if (log?.body?.username === log?.user.username) {
+            return 'For Himself';
+        } else if (log?.body?.functional_objective) {
+            return log.body.functional_objective;
+        } else if (log?.goals?.[0]?.goals || log?.body?.goals) {
+            return log?.goals?.[0]?.goals || log?.body?.goals;
+        } else {
+            return 'for Himself';
+        }
+    }
+
+    getUserProfilePic(image: any): string {
+        return image?.user?.profile_pic === 'no-photo.png'
+            ? image?.body?.profile_pic
+                ? image?.body?.profile_pic
+                : image?.user?.profile_pic
+            : image?.user?.profile_pic;
     }
 }

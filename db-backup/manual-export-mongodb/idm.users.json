@@ -9,9 +9,10 @@
   "status": "active",
   "deleted": false,
   "password": "$2a$10$l6HmndpVHX6Ry4czNTrEKuo66LPXUjigewqYINIk5VS.mhwSQENcu",
-  "profile_pic": "756b0f301b51526940b608bc0871360e.png",
+  "profile_pic": "b040d6fd4130667171a43b71f796f655.jpg",
   "department": "information and communications technology",
-  "__v": 0
+  "__v": 0,
+  "campus": "Talisay"
 },
 {
   "_id": {
@@ -26,7 +27,8 @@
   "deleted": false,
   "password": "$2a$10$KE.PhJEP0GD50ip1WQb9FeBKmz7jTH5TcjXZ2EqpvMxsbQM91iWAq",
   "profile_pic": "a5de7b7c68c518b4e5265fa535b82e32.jpg",
-  "__v": 0
+  "__v": 0,
+  "campus": "Talisay"
 },
 {
   "_id": {
@@ -41,7 +43,8 @@
   "deleted": false,
   "password": "$2a$10$y6.4QkMdcR7y9AthIH/skuiVtXsOSyciWtcp3WtXl2wH8tDjDkJ6C",
   "profile_pic": "3a880afe6b1ea1805eda6e200bbcc989.png",
-  "__v": 0
+  "__v": 0,
+  "campus": "Talisay"
 },
 {
   "_id": {
@@ -56,7 +59,8 @@
   "deleted": false,
   "password": "$2a$10$qFZjrpT.a5qfBjpq8jnfAONuPdYUwEBXS8FNySMd.Ifvf20zzDkVS",
   "profile_pic": "no-photo.png",
-  "__v": 0
+  "__v": 0,
+  "campus": "Talisay"
 },
 {
   "_id": {
@@ -115,6 +119,22 @@
   "status": "inactive",
   "deleted": true,
   "password": "$2a$10$QM1X3fHw4RqSt/LdX39dpuWEt.ObQjv7AVCpvHguCkpWjC.LAxHs6",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66714c643eb6b48edf76839d"
+  },
+  "id": "4b9900b8-1821-458c-b6ed-2318bb2ad857",
+  "email": "campususer@chmsu.edu.ph",
+  "username": "campususer",
+  "department": "office of the secretary",
+  "campus": "Talisay",
+  "role": "user",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$srj8K3BLF1cI5iIDpEDBbefQ0XeKGMEGLUIkB/5OkgvbbvHm2nCTO",
   "profile_pic": "no-photo.png",
   "__v": 0
 }]

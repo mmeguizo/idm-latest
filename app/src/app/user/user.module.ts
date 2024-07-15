@@ -10,19 +10,32 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserComponent } from './user.component';
 import { UserRoutingModule } from './user-routing.module';
+import { SharedModule } from '../shared/shared.module';
+import { FileUploadModule, FileUpload } from 'primeng/fileupload';
+import { GoalsComponent } from './goals/goals.component';
+import { ObjectivesComponent } from './goals/objectives/objectives.component';
+import { GoalDashboardComponent } from './goals/dashboard/dashboard.component';
 
 @NgModule({
     imports: [
-        CommonModule,
-        FormsModule,
-        ChartModule,
-        MenuModule,
-        TableModule,
-        StyleClassModule,
-        PanelMenuModule,
-        ButtonModule,
+        // CommonModule,
+        // FormsModule,
+        // ChartModule,
+        // MenuModule,
+        // TableModule,
+        // StyleClassModule,
+        // PanelMenuModule,
+        // ButtonModule,
         UserRoutingModule,
+        SharedModule,
     ],
-    declarations: [UserComponent, DashboardComponent],
+    declarations: [
+        UserComponent,
+        DashboardComponent,
+        GoalsComponent,
+        ObjectivesComponent,
+        GoalDashboardComponent,
+    ],
+    providers: [FileUpload],
 })
 export class UserModule {}

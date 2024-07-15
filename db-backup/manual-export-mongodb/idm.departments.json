@@ -1,0 +1,50 @@
+[{
+  "_id": {
+    "$oid": "663c42b2f625b7f086470ea2"
+  },
+  "id": "e1eaf3c1-11d2-4d7b-8b4a-0622a2581d82",
+  "department": "department of finance",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "663c80b1b274537203084f90"
+  },
+  "id": "4b25b864-10b2-4463-8adf-2dc3e207f6fb",
+  "department": "information and communications technology",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "663c80f2b274537203084f95"
+  },
+  "id": "ea1f8215-213a-4150-9263-06e69df49ad0",
+  "department": "office of the president",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "663c8111b274537203084f99"
+  },
+  "id": "b95e62b3-1893-405b-84ea-15ea1b9bac05",
+  "department": "office of the vice-president",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "663d972eeb17e002b237f2de"
+  },
+  "id": "4ba81385-c149-4999-bfa6-5985c0d617da",
+  "department": "office of the secretary",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+}]

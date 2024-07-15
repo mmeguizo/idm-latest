@@ -5,6 +5,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const Objectives = require("../models/objective");
 const { logger } = require("../middleware/logger");
 const userHistory = require("../models/userhistories");
+const { log } = require("console");
 module.exports = (router) => {
   router.get("/getObjectivesViewTable", async (req, res) => {
     try {
@@ -238,9 +239,18 @@ module.exports = (router) => {
         let totalValues = completionCounterArray.length; // Count the total number of values in the array
         let percentage = Math.round((numberOfTrueValues / totalValues) * 100); // Calculate the percentage
         goal.CompletePercentage = percentage; // Assign the percentage to the goal object
+        goal.searchDate = await formatIsoDate(goal.createdAt);
       }
       return goal;
     });
+  }
+
+  async function formatIsoDate(isoDateString) {
+    const date = new Date(isoDateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed, so add 1
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   }
 
   router.get("/getAllGoals", (req, res) => {
@@ -479,6 +489,252 @@ module.exports = (router) => {
         }
       }
     );
+  });
+
+  //**********************USer Routes ********************** */
+  router.get("/getGoalsForUserDashboard/:id", async (req, res) => {
+    const userId = req.params.id; // Get user ID from request parameters
+    let data = [];
+    try {
+      let goalCount = await Goals.countDocuments({ createdBy: userId });
+      let goalDeletedCount = await Goals.countDocuments({
+        createdBy: userId,
+        deleted: true,
+      });
+      let goalAmountTotal = await Goals.aggregate([
+        {
+          $match: { createdBy: userId }, // Match goals created by the user
+        },
+        {
+          $group: {
+            _id: null,
+            totalAmount: { $sum: "$budget" },
+          },
+        },
+      ]);
+
+      data.push({
+        goalCount: goalCount,
+        goalDeletedCount: goalDeletedCount,
+        totalBudget:
+          goalAmountTotal.length > 0 ? goalAmountTotal[0].totalAmount : 0,
+      });
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
+
+  router.get("/getObjectivesViewTable/:id", async (req, res) => {
+    try {
+      const data = await Goals.aggregate([
+        {
+          $match: {
+            deleted: false,
+            createdBy: req.params.id,
+          },
+        },
+        {
+          $lookup: {
+            from: "objectives",
+            localField: "id",
+            foreignField: "goalId",
+            as: "objectives",
+          },
+        },
+        {
+          $match: {
+            "objectives.deleted": false,
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "createdBy",
+            foreignField: "id",
+            as: "users",
+          },
+        },
+        {
+          $project: {
+            createdAt: 1,
+            goals: 1,
+            "objectives.budget": 1,
+            "objectives.complete": 1,
+            "objectives.date_added": 1,
+            "objectives.timetable": 1,
+            "objectives.functional_objective": 1,
+            "users.username": 1,
+            "users.department": 1,
+            "objectives.deleted": 1,
+          },
+        },
+      ]);
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
+
+  router.get("/getAllObjectivesWithObjectives/:id", (req, res) => {
+    console.log({ getAllObjectivesWithObjectives: req.params.id });
+
+    Goals.aggregate(
+      [
+        {
+          $match: {
+            deleted: false,
+            createdBy: req.params.id,
+          },
+        },
+        {
+          $lookup: {
+            from: "objectives",
+            let: { objectiveIds: "$objectives" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $in: ["$id", "$$objectiveIds"] },
+                      { $eq: ["$deleted", false] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "objectivesDetails",
+          },
+        },
+        {
+          $lookup: {
+            as: "users",
+            from: "users",
+            foreignField: "id",
+            localField: "createdBy",
+          },
+        },
+        { $unwind: { path: "$users" } },
+        {
+          $addFields: {
+            objectivesDetails: {
+              $cond: {
+                if: { $eq: ["$objectivesDetails", []] },
+                then: null,
+                else: "$objectivesDetails",
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            id: 1,
+            goals: 1,
+            budget: 1,
+            department: 1,
+            campus: 1,
+            createdBy: 1,
+            deleted: 1,
+            date_added: 1,
+            createdAt: 1,
+            __v: 1,
+            updatedAt: 1,
+            complete: 1,
+            "users.id": 1,
+            "users.username": 1,
+            objectivesDetails: {
+              $cond: {
+                if: { $eq: ["$objectivesDetails", null] },
+                then: null,
+                else: {
+                  $map: {
+                    input: "$objectivesDetails",
+                    as: "od",
+                    in: {
+                      id: "$$od.id",
+                      functional_objective: "$$od.functional_objective",
+                      performance_indicator: "$$od.performance_indicator",
+                      target: "$$od.target",
+                      formula: "$$od.formula",
+                      programs: "$$od.programs",
+                      responsible_persons: "$$od.responsible_persons",
+                      clients: "$$od.clients",
+                      timetable: "$$od.timetable",
+                      frequency_monitoring: "$$od.frequency_monitoring",
+                      data_source: "$$od.data_source",
+                      budget: "$$od.budget",
+                      createdBy: "$$od.createdBy",
+                      deleted: "$$od.deleted",
+                      date_added: "$$od.date_added",
+                      createdAt: "$$od.createdAt",
+                      __v: "$$od.__v",
+                      complete: "$$od.complete",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      ],
+
+      { allowDiskUse: true },
+      async (err, Goals) => {
+        // Check if error was found or not
+        if (err) {
+          res.json({ success: false, message: err });
+        } else {
+          if (!Goals || Goals.length === 0) {
+            res.json({
+              success: false,
+              message: "No Goals found.",
+              Goals: [],
+            }); // Return error of no blogs found
+          } else {
+            let returnedData = await Promise.all(
+              await CalculateBudgetAndCompletion(Goals)
+            );
+
+            res.json({ success: true, goals: returnedData }); // Return success and blogs array
+          }
+        }
+      }
+    ).sort({ _id: -1 });
+
+    // ).sort({ _id: -1 }); // Sort blogs from newest to oldest
+  });
+
+  router.get("/getGoalsForDashboard/:id", async (req, res) => {
+    let data = [];
+    try {
+      let goalCount = await Goals.countDocuments({ createdBy: req.params.id });
+      let goalDeletedCount = await Goals.countDocuments({
+        createdBy: req.params.id,
+        deleted: true,
+      });
+      let goalAmountTotal = await Goals.aggregate([
+        {
+          $match: {
+            createdBy: req.params.id,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalAmount: { $sum: "$budget" },
+          },
+        },
+      ]);
+      data.push({
+        goalCount: goalCount,
+        goalDeletedCount: goalDeletedCount,
+        totalBudget: goalAmountTotal,
+      });
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
   });
 
   return router;

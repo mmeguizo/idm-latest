@@ -4,6 +4,7 @@ import {
     OnDestroy,
     ElementRef,
     ViewChild,
+    ChangeDetectorRef,
 } from '@angular/core';
 import { Subject, pipe, takeUntil } from 'rxjs';
 import { Table } from 'primeng/table';
@@ -90,6 +91,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     value = 0;
     interval: any;
     goalDataRemainingBudget: number = 0;
+    goalBudget: number = 0;
     // set initial value
     onclickCompletionButton = [];
     blockedPanel: boolean;
@@ -105,7 +107,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
         private dept: DepartmentService,
         private fileService: FileService,
         private fileUpload: FileUpload,
-        private camp: CampusService
+        private camp: CampusService,
+        private changeDetectorRef: ChangeDetectorRef
     ) {
         this.USERID = this.auth.getTokenUserID();
     }
@@ -251,11 +254,13 @@ export class GoalsComponent implements OnInit, OnDestroy {
         //open the objective modal
         this.subGoalObjective = true;
         //remaining budget needed in adding objective input
-        this.goalDataRemainingBudget = goalDataRemainingBudget || 0;
         //headers in objective table
 
         this.subOnjectiveHeaderData = goalData;
-
+        this.goalDataRemainingBudget =
+            goalDataRemainingBudget ||
+            this.subOnjectiveHeaderData?.remainingBudget;
+        this.goalBudget = this.subOnjectiveHeaderData?.budget;
         console.log({ subOnjectiveHeaderData: this.subOnjectiveHeaderData });
 
         this.subObjectiveHeaders = this.customTitleCase(
@@ -272,6 +277,37 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     console.log({ getAllByIdObjectives: data });
 
                     this.objectiveDatas = data.Objectives;
+                    //initialize completion button
+                    for (
+                        let i = 0;
+                        i < this.objectiveDatas.length.length;
+                        i++
+                    ) {
+                        this.onclickCompletionButton[i] = false;
+                    }
+
+                    this.loading = false;
+                });
+        }
+    }
+    async getObjectivesReload(id: string) {
+        //get all goals with subobjective
+        if (id) {
+            this.loading = true;
+            this.obj
+                .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
+                .pipe(takeUntil(this.getGoalSubscription))
+                .subscribe((data: any) => {
+                    console.log({ getAllByIdObjectives: data });
+
+                    this.objectiveDatas = data.Objectives;
+
+                    let subBudget = data.Objectives.reduce((acc, e) => {
+                        return acc + e.budget;
+                    }, 0);
+
+                    this.goalDataRemainingBudget = this.goalBudget - subBudget;
+                    this.changeDetectorRef.detectChanges();
                     //initialize completion button
                     for (
                         let i = 0;
@@ -380,8 +416,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
                 if (data.success) {
                     this.addObjectiveGoalDialogCard = false;
+                    //close the objective table
+                    // this.subGoalObjective = false;
                     this.getAllObjectivesWithObjectives();
-                    this.getObjectives(this.subObjectiveGoalID);
+                    this.getObjectivesReload(this.subObjectiveGoalID);
                     this.messageService.add({
                         severity: 'success  ',
                         summary: 'Done',
@@ -528,7 +566,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     .subscribe(async (results: any) => {
                         if (results.success) {
                             this.getAllObjectivesWithObjectives();
-                            this.getObjectives(goalIDs);
+                            // this.getObjectives(goalIDs);
+                            this.getObjectivesReload(goalIDs);
                             this.messageService.add({
                                 severity: 'success  ',
                                 summary: 'Done',
@@ -570,8 +609,11 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
+                    //close the objective table
+                    this.addObjectiveGoalDialogCard = false;
+                    // this.subGoalObjective = false;
                     this.getAllObjectivesWithObjectives();
-                    this.getObjectives(this.subObjectiveGoalID);
+                    this.getObjectivesReload(this.subObjectiveGoalID);
                     this.addObjectiveGoalDialogCard = false;
                     this.messageService.add({
                         severity: 'success  ',

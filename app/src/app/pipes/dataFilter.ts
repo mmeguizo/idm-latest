@@ -210,3 +210,26 @@ export class PesoPipe implements PipeTransform {
         }
     }
 }
+
+// @Pipe({
+//     name: 'stringToDate',
+// })
+// export class StringToDatePipe implements PipeTransform {
+//     transform(value: string | null | undefined): Date | null {
+//         return value ? new Date(value) : null; // Return null for invalid inputs
+//     }
+// }
+
+@Pipe({ name: 'isoToDate' })
+export class StringToDatePipe implements PipeTransform {
+    transform(value: string): string {
+        if (!value) {
+            return ''; // Handle null or empty input
+        }
+        const date = new Date(value);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Add 1 (months are 0-indexed) and pad with '0'
+        const day = String(date.getDate()).padStart(2, '0');
+        return `<span class="math-inline">\{year\}\-</span>{month}-${day}`;
+    }
+}
