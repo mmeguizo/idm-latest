@@ -11,6 +11,7 @@ import { GoalDashboardComponent } from './goals/dashboard/dashboard.component';
 import { ObjectivesComponent } from './goals/objectives/objectives.component';
 import { FileUploadModule, FileUpload } from 'primeng/fileupload';
 import { SharedModule } from '../shared/shared.module';
+import { AiComponent } from './ai/ai.component';
 
 @NgModule({
     imports: [AdminRoutingModule, SharedModule],
@@ -23,6 +24,7 @@ import { SharedModule } from '../shared/shared.module';
         LogsComponent,
         GoalDashboardComponent,
         ObjectivesComponent,
+        AiComponent,
     ],
     providers: [FileUpload],
 })

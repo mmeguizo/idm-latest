@@ -458,6 +458,13 @@
             class="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center surface-section text-800"
         >
             <section>
+                <!-- <button
+                    pButton
+                    icon="pi pi-file-pdf"
+                    (click)="printPdf()"
+                    pTooltip="Generate PDF"
+                    tooltipPosition="top"
+                ></button> -->
                 <span class="block text-6xl font-bold mb-1">
                     {{ subOnjectiveHeaderData?.users?.username | titlecase }}
                 </span>
@@ -541,7 +548,18 @@
                             pTooltip="Add Objectives"
                             tooltipPosition="top"
                         />
-
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            (click)="
+                                printTable(
+                                    subOnjectiveHeaderData?.department || ''
+                                )
+                            "
+                            severity="info"
+                            [outlined]="true"
+                            pTooltip="Print PDF"
+                            tooltipPosition="top"
+                        />
                         <span class="p-input-icon-left mb-2">
                             <i class="pi pi-search"></i>
                             <input
@@ -781,11 +799,11 @@
                         </td>
                         <td>
                             {{
-                                objectiveData.timetable[0] | date : "shortDate"
+                                objectiveData?.timetable[0] | date : "shortDate"
                             }}
                             -
                             {{
-                                objectiveData.timetable[1] | date : "shortDate"
+                                objectiveData?.timetable[1] | date : "shortDate"
                             }}
                         </td>
                         <td>
@@ -1515,3 +1533,44 @@
         />
     </ng-template>
 </p-dialog>
+
+<!-- printoptions -->
+
+<!-- hidden if printable is click it should be visible use css -->
+<table id="print" [ngClass]="{ hidden: !isPrintableVisible }">
+    <thead>
+        <tr>
+            <!-- <th>ID</th> -->
+            <th>Functional Objectives</th>
+            <th>Performance Indicators</th>
+            <th>Target</th>
+            <th>Formula</th>
+            <th>Programs, Projects or Activities</th>
+            <th>Responsible Persons & Partners</th>
+            <th>Target Participants or Clients</th>
+            <th>Timetable</th>
+            <th>Frequency of Monitoring</th>
+            <th>Means of Verification (Data Source)</th>
+            <th>Budget</th>
+        </tr>
+    </thead>
+    <tbody *ngIf="objectiveDatas?.length != 0">
+        <tr *ngFor="let obj of objectiveDatas; let i = index">
+            <!-- <td>{{ i + 1 }}</td> -->
+            <td>{{ obj.functional_objective | titlecase }}</td>
+            <td>{{ obj.performance_indicator | titlecase }}</td>
+            <td>{{ obj.target | titlecase }}</td>
+            <td>{{ obj.formula | titlecase }}</td>
+            <td>{{ obj.programs | titlecase }}</td>
+            <td>{{ obj.responsible_persons | titlecase }}</td>
+            <td>{{ obj.clients | titlecase }}</td>
+            <td>
+                {{ obj.timetable[0] | date : "MMM d yyyy" }} -
+                {{ obj.timetable[1] | date : "MMM d yyyy" }}
+            </td>
+            <td>{{ obj.frequency_monitoring | titlecase }}</td>
+            <td>{{ obj.data_source | titlecase }}</td>
+            <td>{{ obj.budget | peso }}</td>
+        </tr>
+    </tbody>
+</table>

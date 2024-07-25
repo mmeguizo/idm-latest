@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate {
 
                 setTimeout(() => {
                     this.authService.logout();
-                }, 2000);
+                }, 5000);
                 return false;
             }
             return true;

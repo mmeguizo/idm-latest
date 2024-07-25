@@ -73,22 +73,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .getProductsWithOrdersSmall()
             .then((data) => (this.products = data));
 
-        // this.obj
-        //     .getRoute('get', 'objectives', 'getAllObjectivesForDashboard')
-        //     .subscribe({
-        //         next: (data: any) => {
-        //             this.totalObjectives = data.data[0].objectivesCount;
-        //             this.completedObjectives = data.data[0].objectiveCompleted;
-        //             this.completedObjectives =
-        //                 data.data[0].objectiveUncompleted;
-        //             this.createChart(); // Call to create the chart after data is fetched
-        //         },
-        //         error: (error) => {
-        //             console.error('Error fetching objectives:', error);
-        //             // Handle the error appropriately
-        //         },
-        //     });
-
         this.getAllObjectivesForTable();
     }
 
@@ -105,81 +89,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 .length || 0
         );
     }
-
-    // createChart() {
-    //     const documentStyle = getComputedStyle(document.documentElement);
-
-    //     this.barData = {
-    //         labels: ['Goals'],
-    //         datasets: [
-    //             {
-    //                 label: 'Goals',
-    //                 backgroundColor:
-    //                     documentStyle.getPropertyValue('--primary-500'),
-    //                 data: [this.goalCount],
-    //             },
-    //             {
-    //                 label: 'Total Objectives',
-    //                 backgroundColor:
-    //                     documentStyle.getPropertyValue('--primary-400'),
-    //                 data: [this.totalObjectives],
-    //             },
-    //             {
-    //                 label: 'Completed Objectives',
-    //                 backgroundColor:
-    //                     documentStyle.getPropertyValue('--green-500'),
-    //                 data: [this.completedObjectives],
-    //             },
-    //             {
-    //                 label: 'Incomplete Objectives',
-    //                 backgroundColor:
-    //                     documentStyle.getPropertyValue('--orange-500'),
-    //                 data: [this.completedObjectives],
-    //             },
-    //         ],
-    //     };
-
-    //     this.barOptions = {
-    //         plugins: {
-    //             legend: {
-    //                 labels: {
-    //                     color: documentStyle.getPropertyValue('--text-color'),
-    //                 },
-    //             },
-    //         },
-    //         scales: {
-    //             x: {
-    //                 stacked: true,
-    //                 ticks: {
-    //                     color: documentStyle.getPropertyValue(
-    //                         '--text-color-secondary'
-    //                     ),
-    //                 },
-    //                 grid: {
-    //                     color: documentStyle.getPropertyValue('--surface-d'),
-    //                 },
-    //             },
-    //             y: {
-    //                 stacked: true,
-    //                 ticks: {
-    //                     color: documentStyle.getPropertyValue(
-    //                         '--text-color-secondary'
-    //                     ),
-    //                 },
-    //                 grid: {
-    //                     color: documentStyle.getPropertyValue('--surface-d'),
-    //                 },
-    //             },
-    //         },
-    //     };
-
-    //     const ctx = document.getElementById('myChart') as HTMLCanvasElement; // Replace with your canvas element's ID
-    //     this.myChart = new Chart(ctx, {
-    //         type: 'bar',
-    //         data: this.barData,
-    //         options: this.barOptions,
-    //     });
-    // }
 
     getGoals() {
         this.goal

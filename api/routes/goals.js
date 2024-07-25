@@ -6,6 +6,7 @@ const Objectives = require("../models/objective");
 const { logger } = require("../middleware/logger");
 const userHistory = require("../models/userhistories");
 const { log } = require("console");
+const goals = require("../models/goals");
 module.exports = (router) => {
   router.get("/getObjectivesViewTable", async (req, res) => {
     try {
@@ -206,6 +207,112 @@ module.exports = (router) => {
 
     // ).sort({ _id: -1 }); // Sort blogs from newest to oldest
   });
+
+  router.get(
+    "/getAllObjectivesWithObjectivesForDashboard/:campus?",
+    (req, res) => {
+      console.log({
+        getAllObjectivesWithObjectivesForDashboard: req.params.campus,
+      });
+      let finalMatch = { deleted: false }; // Start with the base filter
+      console.log(req.params.campus === "undefined");
+      if (req.params.campus === "undefined") {
+        finalMatch = {
+          deleted: false,
+        };
+      } else {
+        finalMatch = {
+          deleted: false,
+          campus: req.params.campus,
+        };
+      }
+      Goals.aggregate(
+        [
+          {
+            $match: finalMatch,
+          },
+          {
+            $lookup: {
+              from: "objectives",
+              let: { objectiveIds: "$objectives" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $in: ["$id", "$$objectiveIds"] },
+                        { $eq: ["$deleted", false] },
+                      ],
+                    },
+                  },
+                },
+              ],
+              as: "objectivesDetails",
+            },
+          },
+          {
+            $lookup: {
+              as: "users",
+              from: "users",
+              foreignField: "id",
+              localField: "createdBy",
+            },
+          },
+          { $unwind: { path: "$users" } },
+          {
+            $addFields: {
+              objectivesDetails: {
+                $cond: {
+                  if: { $eq: ["$objectivesDetails", []] },
+                  then: null,
+                  else: "$objectivesDetails",
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              id: 1,
+              goals: 1,
+              budget: 1,
+              department: 1,
+              campus: 1,
+              createdBy: 1,
+              deleted: 1,
+              date_added: 1,
+              createdAt: 1,
+              __v: 1,
+              updatedAt: 1,
+              complete: 1,
+            },
+          },
+        ],
+
+        { allowDiskUse: true },
+        async (err, Goals) => {
+          // Check if error was found or not
+          if (err) {
+            res.json({ success: false, message: err });
+          } else {
+            if (!Goals || Goals.length === 0) {
+              res.json({
+                success: false,
+                message: "No Goals found.",
+                Goals: [],
+              }); // Return error of no blogs found
+            } else {
+              res.json({
+                success: true,
+                // goalDropdown: GoalsWithDropdown,
+                goals: Goals,
+              }); // Return success and blogs array
+            }
+          }
+        }
+      ).sort({ _id: -1 });
+    }
+  );
 
   async function CalculateBudgetAndCompletion(data) {
     return await data.map(async (goal) => {
@@ -577,8 +684,6 @@ module.exports = (router) => {
   });
 
   router.get("/getAllObjectivesWithObjectives/:id", (req, res) => {
-    console.log({ getAllObjectivesWithObjectives: req.params.id });
-
     Goals.aggregate(
       [
         {

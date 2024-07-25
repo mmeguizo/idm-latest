@@ -4,7 +4,10 @@ import { Subject, takeUntil } from 'rxjs';
 import { GoalService } from 'src/app/demo/service/goal.service';
 import { DepartmentService } from 'src/app/demo/service/department.service';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
-import { get } from 'lodash';
+import { IdepartmentDropdown } from 'src/app/interface/department.interface';
+import { IcampusDropdown } from 'src/app/interface/campus.interface';
+import { CampusService } from 'src/app/demo/service/campus.service';
+import { BranchService } from 'src/app/demo/service/branch.service';
 
 @Component({
     selector: 'app-admin-dashboard',
@@ -15,22 +18,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
     users: any;
     goals: any;
     private getDashboardSubscription = new Subject<void>();
-
     objectivePieData: any;
     objectiveDoughnutData: any;
-
     chartOptions: any;
     deparmentData: any;
     objectivesData: any;
     options: any;
     barData: any;
     barOptions: any;
+    loading: boolean = false;
+    NewGoals: any;
+    cities: any[];
+    countries: any[] = [];
+    departmentList: IdepartmentDropdown[] | undefined;
+    campusList: IcampusDropdown[] | undefined;
+
+    selectedDepartmentDropdown: IdepartmentDropdown | undefined;
+    selectedCampusDropdown: IcampusDropdown | undefined;
+
+    selectedAgoal: Boolean = false;
+
+    pieData: any;
+    pieDataBool: Boolean = false;
+    pieOptions: any;
+    objectivesSideData: any[];
+    selectedGoalData: any;
 
     constructor(
         public userService: UserService,
         private goalService: GoalService,
         private dept: DepartmentService,
-        private obj: ObjectiveService
+        private obj: ObjectiveService,
+        private campus: CampusService,
+        private branch: BranchService
     ) {}
 
     ngOnInit() {
@@ -38,31 +58,41 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.getAllGoals();
         this.getAllDept();
         this.getAllObjectives();
-        this.getObjectiveViewPieChart();
+        this.getAllObjectivesWithObjectives();
+        this.getAllCampusForDashboard();
+        // this.initCharts();
     }
     ngOnDestroy() {
         this.getDashboardSubscription.unsubscribe();
     }
 
-    getAllusers() {
-        this.userService
+    async getAllCampusForDashboard() {
+        await this.branch.getCampus().then((campus) => {
+            console.log({ getAllCampusForDashboard: campus });
+            this.campusList = campus;
+        });
+    }
+
+    async getAllusers() {
+        await this.userService
             .getRoute('get', 'users', 'getAllUsersForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
                 this.users = data.data[0];
             });
     }
-    getAllGoals() {
-        this.goalService
+    async getAllGoals() {
+        await this.goalService
             .getRoute('get', 'goals', 'getGoalsForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                this.goals = data.data[0];
+                console.log({ getAllGoalsNewGoals: data });
+                this.NewGoals = data.data;
             });
     }
 
-    getAllDept() {
-        this.dept
+    async getAllDept() {
+        await this.dept
             .getRoute('get', 'department', 'getAllDepartmentForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
@@ -70,68 +100,90 @@ export class DashboardComponent implements OnInit, OnDestroy {
             });
     }
 
-    getAllObjectives() {
-        this.obj
+    async getAllObjectives() {
+        await this.obj
             .getRoute('get', 'objectives', `getAllObjectivesForDashboard`)
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
                 this.objectivesData = data.data[0];
-                this.initChartsDoughnut({
-                    complete: data.data[0].objectiveCompleted,
-                    uncomplete: data.data[0].objectiveUncompleted,
-                });
             });
     }
 
-    getObjectiveViewPieChart() {
-        this.goalService
-            .getRoute('get', 'goals', `getObjectivesViewTable`)
+    async getAllObjectivesWithObjectives(campus?: string) {
+        this.loading = true;
+        await this.goalService
+            .getRoute(
+                'get',
+                'goals',
+                `getAllObjectivesWithObjectivesForDashboard/${campus}`
+            )
             .pipe(takeUntil(this.getDashboardSubscription))
-            .subscribe((data?: any) => {
-                this.initBarCharts(data?.data);
+            .subscribe(async (data: any) => {
+                this.goals = data.goals;
+                this.loading = false;
             });
     }
 
-    initChartsDoughnut(data: any) {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-
-        this.objectiveDoughnutData = {
-            labels: ['Complete', 'In Progress'],
-            datasets: [
-                {
-                    data: [data.complete, data.uncomplete],
-                    backgroundColor: [
-                        documentStyle.getPropertyValue('--blue-500'),
-                        documentStyle.getPropertyValue('--yellow-500'),
-                        documentStyle.getPropertyValue('--green-500'),
-                    ],
-                    hoverBackgroundColor: [
-                        documentStyle.getPropertyValue('--blue-400'),
-                        documentStyle.getPropertyValue('--yellow-400'),
-                        documentStyle.getPropertyValue('--green-400'),
-                    ],
-                },
-            ],
-        };
-
-        this.options = {
-            cutout: '65%',
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor,
-                    },
-                },
-            },
-        };
+    async getAllDepartmentForDashboard() {
+        await this.dept
+            .getRoute('get', 'department', 'getAllDepartmentDropdown')
+            .pipe(takeUntil(this.getDashboardSubscription))
+            .subscribe((data: any) => {
+                this.departmentList = data.data[0];
+            });
     }
-    initBarCharts(goal?: any) {
-        let objectivesData = goal?.map((e) => e.objectives);
-        let objectivesDataTrue = goal?.map((e) =>
-            e.objectives.filter((x) => x.deleted == false)
-        );
 
+    showDetails(goal: any) {
+        console.log({ showDetails: goal });
+    }
+
+    selectedGoal(goal: any) {
+        console.log({ selectedGoal: goal });
+        this.selectedAgoal = true;
+        this.selectedGoalData = goal;
+
+        if (goal) {
+            this.obj
+                .getRoute(
+                    'get',
+                    'objectives',
+                    `getAllObjectivesForDashboardPie/${goal.id}`
+                )
+                .pipe(takeUntil(this.getDashboardSubscription))
+                .subscribe((data: any) => {
+                    console.log({ getAllByIdObjectives: data });
+
+                    let {
+                        objectiveCompleted,
+                        objectiveUncompleted,
+                        objectivesData,
+                        completionPercentage,
+                    } = data.data[0];
+                    this.objectivesSideData = objectivesData;
+                    this.pieDataBool = objectivesData.length > 1 ? true : false;
+                    this.initCharts(objectivesData);
+                    this.loading = false;
+                });
+        }
+    }
+
+    onChangeCampus(event: any = '') {
+        console.log({ onChangeCampus: event?.value });
+        this.loading = true;
+        this.selectedAgoal = false;
+        this.goals = [];
+        this.getAllObjectivesWithObjectives(event?.value?.name ?? '');
+    }
+
+    onClearCampus() {
+        this.loading = true;
+        this.selectedAgoal = false;
+        this.goals = [];
+        this.getAllObjectivesWithObjectives();
+    }
+
+    initCharts(data?: any) {
+        console.log({ initCharts: data });
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -140,60 +192,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const surfaceBorder =
             documentStyle.getPropertyValue('--surface-border');
 
-        this.barData = {
-            labels: [...goal?.map((e) => e.goals)],
+        this.pieData = {
+            labels: data.map((e) => e.functional_objective),
             datasets: [
                 {
-                    label: 'Goals',
-                    backgroundColor:
-                        documentStyle.getPropertyValue('--primary-500'),
-                    borderColor:
-                        documentStyle.getPropertyValue('--primary-500'),
-                    data: [...goal?.map((e) => 1)],
-                },
-                {
-                    label: 'Objectives',
-                    backgroundColor:
-                        documentStyle.getPropertyValue('--primary-200'),
-                    borderColor:
-                        documentStyle.getPropertyValue('--primary-200'),
-                    data: [
-                        ...objectivesDataTrue.map((e) =>
-                            e.length ? e.length : 0
-                        ),
+                    data: data.map((e) => 1),
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--indigo-500'),
+                        documentStyle.getPropertyValue('--purple-500'),
+                        documentStyle.getPropertyValue('--teal-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--indigo-400'),
+                        documentStyle.getPropertyValue('--purple-400'),
+                        documentStyle.getPropertyValue('--teal-400'),
                     ],
                 },
             ],
         };
 
-        this.barOptions = {
+        this.pieOptions = {
             plugins: {
                 legend: {
                     labels: {
-                        fontColor: textColor,
-                    },
-                },
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary,
-                        font: {
-                            weight: 500,
-                        },
-                    },
-                    grid: {
-                        display: false,
-                        drawBorder: false,
-                    },
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary,
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false,
+                        usePointStyle: true,
+                        color: textColor,
                     },
                 },
             },

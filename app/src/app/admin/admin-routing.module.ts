@@ -7,6 +7,7 @@ import { GoalDashboardComponent } from './goals/dashboard/dashboard.component';
 import { DepartmentsComponent } from './departments/departments.component';
 import { LogsComponent } from './logs/logs.component';
 import { ObjectivesComponent } from './goals/objectives/objectives.component';
+import { AiComponent } from './ai/ai.component';
 
 @NgModule({
     imports: [
@@ -19,6 +20,7 @@ import { ObjectivesComponent } from './goals/objectives/objectives.component';
             { path: 'goals/objectives', component: ObjectivesComponent },
             { path: 'departments', component: DepartmentsComponent },
             { path: 'logs', component: LogsComponent },
+            { path: 'ai', component: AiComponent },
             { path: '**', redirectTo: '/dashboard' },
         ]),
     ],

@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/mmeguizo/chmsu-idm.git#readme",
   "dependencies": {
+    "@google/generative-ai": "^0.16.0",
+    "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

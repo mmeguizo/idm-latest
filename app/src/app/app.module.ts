@@ -33,6 +33,9 @@ import { NotfoundComponent } from './notfound/notfound.component';
 import { CampusService } from './demo/service/campus.service';
 import { LogService } from './demo/service/logs.service';
 import { RouteService } from './demo/service/route.service';
+import { PdfService } from './demo/service/pdf.service';
+import { AiService } from './demo/service/ai.service';
+import { BranchService } from './demo/service/branch.service';
 
 export function tokenGetter() {
     return localStorage.getItem('access_token');
@@ -77,6 +80,9 @@ export function tokenGetter() {
         AuthInterceptor,
         LogService,
         RouteService,
+        PdfService,
+        BranchService,
+        AiService,
     ],
 
     bootstrap: [AppComponent],

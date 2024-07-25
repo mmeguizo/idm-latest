@@ -15,26 +15,17 @@ import { FileUploadModule, FileUpload } from 'primeng/fileupload';
 import { GoalsComponent } from './goals/goals.component';
 import { ObjectivesComponent } from './goals/objectives/objectives.component';
 import { GoalDashboardComponent } from './goals/dashboard/dashboard.component';
+import { AiComponent } from './ai/ai.component';
 
 @NgModule({
-    imports: [
-        // CommonModule,
-        // FormsModule,
-        // ChartModule,
-        // MenuModule,
-        // TableModule,
-        // StyleClassModule,
-        // PanelMenuModule,
-        // ButtonModule,
-        UserRoutingModule,
-        SharedModule,
-    ],
+    imports: [UserRoutingModule, SharedModule],
     declarations: [
         UserComponent,
         DashboardComponent,
         GoalsComponent,
         ObjectivesComponent,
         GoalDashboardComponent,
+        AiComponent,
     ],
     providers: [FileUpload],
 })

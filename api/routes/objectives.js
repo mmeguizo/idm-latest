@@ -241,16 +241,6 @@ module.exports = (router) => {
       });
     }
 
-    //totalSubGoalBudget - ${totalSubGoalBudget} goalBudget - ${goalBudget} objectiveBudget - ${objectiveBudget}
-    // if (totalSubGoalBudget + objectiveBudget > goalBudget) {
-    //   return res.json({
-    //     success: false,
-    //     message: `Objective Budget must not exceed the remaning ${formatCurrency(
-    //       goalBudget - totalSubGoalBudget
-    //     )} of Goal Budget`,
-    //   });
-    // }
-
     const ObjectivesDataRequest = {
       id: uuidv4(),
       ...objectivesData,
@@ -593,6 +583,54 @@ module.exports = (router) => {
         objectiveCompleted: objectiveCompleted,
         objectiveUncompleted: objectiveUncompleted,
         objectivesData: objectivesData,
+      });
+      res.json({ success: true, data: data });
+    } catch (error) {
+      res.json({ success: false, message: error });
+    }
+  });
+
+  router.get("/getAllObjectivesForDashboardPie/:id", async (req, res) => {
+    console.log({ getAllObjectivesForDashboardPie: req.params.id });
+
+    let data = [];
+    try {
+      let objectivesCount = await Objectives.countDocuments({
+        goalId: req.params.id,
+      });
+      let objectiveCompleted = await Objectives.countDocuments({
+        complete: true,
+        deleted: false,
+        goalId: req.params.id,
+      });
+      let objectiveUncompleted = await Objectives.countDocuments({
+        complete: false,
+        deleted: false,
+        goalId: req.params.id,
+      });
+      let objectivesData = await Objectives.find({
+        deleted: false,
+        goalId: req.params.id,
+      }).select({
+        _id: 0,
+        id: 1,
+        functional_objective: 1,
+        budget: 1,
+        complete: 1,
+        date_added: 1,
+      });
+
+      let completionPercentage =
+        objectivesCount > 0
+          ? Math.round((objectiveCompleted / objectivesData.length) * 100)
+          : 0;
+
+      data.push({
+        objectivesCount: objectivesCount,
+        objectiveCompleted: objectiveCompleted,
+        objectiveUncompleted: objectiveUncompleted,
+        objectivesData: objectivesData,
+        completionPercentage: completionPercentage,
       });
       res.json({ success: true, data: data });
     } catch (error) {

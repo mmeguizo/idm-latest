@@ -129,9 +129,9 @@
             <div class="flex justify-content-between mb-3">
                 <div>
                     <span class="block text-500 font-medium mb-3">Goals</span>
-                    @if (goals) {
+                    @if (NewGoals) {
                     <div class="text-900 font-medium text-xl">
-                        {{ goals?.goalCount || "0" }}
+                        {{ NewGoals?.goalCount || "0" }}
                     </div>
                     } @else {<p-skeleton
                         shape="circle"
@@ -147,44 +147,211 @@
                     <i class="pi pi-compass text-purple-500 text-xl"></i>
                 </div>
             </div>
-            @if (goals) {
+            @if (NewGoals) {
             <span class="text-500">Active : </span>
             <span class="text-green-500 font-medium"
-                >{{ goals?.goalCount || 0 }} -
+                >{{ NewGoals?.goalCount || 0 }} -
             </span>
             <span class="text-500">Deleted : </span>
             <span class="text-red-500 font-medium"
-                >{{ goals?.goalDeletedCount || 0 }}
+                >{{ NewGoals?.goalDeletedCount || 0 }}
             </span>
             } @else {
             <p-skeleton width="12rem" height="2rem"></p-skeleton>
             }
         </div>
     </div>
-    <!-- <div class="col-12 xl:col-6">
+    <div class="col-12">
         <div class="card">
-            <h5>Objective Overview</h5>
-            <p-chart type="bar" [data]="objectivePieData" [options]="options" />
-        </div>
-    </div> -->
-    <div class="col-12 xl:col-6">
-        <div class="card">
-            <h5>Objective Status</h5>
-            <p-chart
-                type="doughnut"
-                [data]="objectiveDoughnutData"
-                [options]="options"
+            <p-dropdown
+                [options]="campusList"
+                [(ngModel)]="selectedCampusDropdown"
+                optionLabel="name"
+                [showClear]="true"
+                placeholder="Select Campus"
+                (onChange)="onChangeCampus($event)"
+                (onClear)="onClearCampus()"
             />
-        </div>
-    </div>
-    <div class="col-12 xl:col-6">
-        <div class="card">
-            <h5>Bar Chart</h5>
-            <p-chart
-                type="bar"
-                [data]="barData"
-                [options]="barOptions"
-            ></p-chart>
+
+            <p-tabView orientation="right">
+                <p-tabPanel header="Goals List" class="line-height-3 m-0">
+                    <div class="card">
+                        <div class="grid">
+                            <div
+                                class="col-5 align-items-center justify-content-center"
+                            >
+                                <p-table
+                                    [value]="goals"
+                                    selectionMode="single"
+                                    [loading]="loading"
+                                    *ngIf="goals"
+                                >
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Goal</th>
+                                            <th>Campus</th>
+                                            <th>Department</th>
+                                            <th>Budget</th>
+                                        </tr>
+                                    </ng-template>
+
+                                    <ng-template pTemplate="body" let-goal>
+                                        <tr
+                                            class="cursor-pointer hover:shadow-8 text-sm"
+                                            (click)="selectedGoal(goal)"
+                                        >
+                                            <td>
+                                                {{ goal.goals | titlecase }}
+                                            </td>
+                                            <td>
+                                                {{ goal.campus | titlecase }}
+                                            </td>
+                                            <td>
+                                                {{
+                                                    goal.department | titlecase
+                                                }}
+                                            </td>
+                                            <td>{{ goal.budget | peso }}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+
+                                <p-skeleton
+                                    width="12rem"
+                                    height="2rem"
+                                    *ngIf="!goals"
+                                ></p-skeleton>
+                            </div>
+                            <div class="col-2">
+                                <p-divider layout="vertical">
+                                    <b>OR</b>
+                                </p-divider>
+                            </div>
+                            @if (!selectedAgoal) {
+                            <div
+                                class="col-5 align-items-center justify-content-center"
+                            >
+                                <div class="card flex justify-content-center">
+                                    <div
+                                        style="
+                                            display: flex;
+                                            flex-direction: column;
+                                            align-items: center;
+                                            justify-content: center;
+                                        "
+                                    >
+                                        <!-- <ng-template pTemplate="header"> -->
+                                        <img
+                                            alt="Card"
+                                            src="assets/layout/images/logo.png"
+                                            style="
+                                                width: 200px;
+                                                height: 200px;
+                                                display: flex !important;
+                                                justify-content: center !important;
+                                                align-items: center !important;
+                                            "
+                                        />
+                                        <!-- </ng-template> -->
+                                        <span class="my-6"></span>
+                                        <div class="text-2xl font-bold">
+                                            Please Select a Goal...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            } @else {
+                            <div
+                                class="col-5 align-items-center justify-content-center"
+                            >
+                                <div class="card">
+                                    @if(!pieDataBool){
+                                    <div class="mb-3 font-bold text-2xl">
+                                        <span class="text-900">No , </span
+                                        ><span class="text-blue-600"
+                                            >Objectives Yet.</span
+                                        >
+                                    </div>
+                                    } @else {
+                                    <p-chart
+                                        type="doughnut"
+                                        [data]="pieData"
+                                        [options]="pieOptions"
+                                        width="100%"
+                                        height="100%"
+                                    ></p-chart>
+                                    }
+
+                                    <div
+                                        class="text-900 font-medium text-xl mb-2"
+                                    >
+                                        {{
+                                            selectedGoalData?.goals | titlecase
+                                        }}
+                                    </div>
+                                    <div class="text-600">
+                                        {{
+                                            selectedGoalData?.department
+                                                | titlecase
+                                        }}
+                                    </div>
+                                    <hr
+                                        class="my-3 mx-0 border-top-1 border-none surface-border"
+                                    />
+                                    <div class="flex align-items-center">
+                                        <span
+                                            class="font-bold text-2xl text-900"
+                                            >{{
+                                                selectedGoalData?.budget | peso
+                                            }}</span
+                                        >
+                                    </div>
+                                    <hr
+                                        class="my-3 mx-0 border-top-1 border-none surface-border"
+                                    />
+                                    <ul class="list-none p-0 m-0 flex-grow-1">
+                                        @for (item of objectivesSideData; track
+                                        item.id) {
+                                        <li
+                                            class="flex align-items-center mb-3"
+                                        >
+                                            <span class="text-sm"
+                                                >{{
+                                                    item.functional_objective
+                                                        | titlecase
+                                                }}
+                                            </span>
+                                            &nbsp; - &nbsp;
+                                            <span class="text-sm"
+                                                >{{ item.budget | peso }}
+                                            </span>
+                                            &nbsp; - &nbsp;
+                                            <span class="text-sm">{{
+                                                item.date_added
+                                                    | date : "mediumDate"
+                                            }}</span>
+                                            &nbsp; - &nbsp; @if(item.complete){
+                                            <i
+                                                class="pi pi-check-circle text-green-500 mr-2"
+                                            ></i>
+                                            } @else{
+                                            <i
+                                                class="pi pi-exclamation-triangle text-red-500 mr-2"
+                                            ></i>
+                                            }
+                                        </li>
+                                        <hr
+                                            class="mb-3 mx-0 border-top-1 border-none surface-border mt-auto"
+                                        />
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </p-tabPanel>
+            </p-tabView>
         </div>
     </div>
 </div>

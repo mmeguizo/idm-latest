@@ -21,6 +21,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { AccordionModule } from 'primeng/accordion';
 import {
     dataFilterPipe,
     NumberWithCommas,
@@ -48,6 +49,9 @@ import { BlockUIModule } from 'primeng/blockui';
 import { PanelModule } from 'primeng/panel';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ScrollerModule } from 'primeng/scroller';
+import { TabViewModule } from 'primeng/tabview';
+import { DividerModule } from 'primeng/divider';
+import { DataViewModule } from 'primeng/dataview';
 const pipes = [
     dataFilterPipe,
     NumberWithCommas,
@@ -103,6 +107,10 @@ const pipes = [
         SkeletonModule,
         DynamicDialogModule,
         ScrollerModule,
+        AccordionModule,
+        TabViewModule,
+        DividerModule,
+        DataViewModule,
         ...pipes,
         // FileUpload
     ],

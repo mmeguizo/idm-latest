@@ -19,7 +19,7 @@ const objectives = require("./routes/objectives")(router);
 const campus = require("./routes/campus")(router);
 const log = require("./routes/log")(router);
 const userhistory = require("./routes/userhistory")(router);
-
+const ai = require("./routes/ai")(router);
 const { logMiddleware } = require("./middleware/logger");
 
 mongoose.Promise = global.Promise;
@@ -58,8 +58,6 @@ app.use(allowCrossDomain);
 app.use(express.static(__dirname + "/dist/"));
 app.use("/images", express.static(path.join(__dirname, "./images")));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads/files")));
-app.use("/uploads", express.static(path.join(__dirname, "../uploads/images")));
-
 //api routes
 //app.use('/customer', customer);
 app.use("/authentication", authentication);
@@ -70,6 +68,7 @@ app.use("/objectives", objectives);
 app.use("/goals", goals);
 app.use("/campus", campus);
 app.use("/logs", log);
+app.use("/ai", ai);
 app.use("/userhistory", userhistory);
 app.use(
   "/profile_pic",

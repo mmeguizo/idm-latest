@@ -87,6 +87,16 @@ export class AppMenuComponent implements OnInit {
                         },
                     ],
                 },
+                {
+                    label: 'Ai Helper',
+                    items: [
+                        {
+                            label: 'Gemini',
+                            icon: 'pi pi-google',
+                            routerLink: ['/admin/ai'],
+                        },
+                    ],
+                },
             ];
         } else {
             this.model = [
@@ -123,6 +133,16 @@ export class AppMenuComponent implements OnInit {
                                     routerLink: ['/user/goals/objectives'],
                                 },
                             ],
+                        },
+                    ],
+                },
+                {
+                    label: 'Ai Helper',
+                    items: [
+                        {
+                            label: 'Gemini',
+                            icon: 'pi pi-google',
+                            routerLink: ['/admin/ai'],
                         },
                     ],
                 },
