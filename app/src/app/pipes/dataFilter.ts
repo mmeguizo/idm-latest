@@ -3,6 +3,8 @@ import { Injectable, Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { pipe } from 'rxjs';
 import { ConnectionService } from '../demo/service/connection.service';
+import { marked } from 'marked';
+import { MarkdownService } from 'ngx-markdown';
 
 @Pipe({
     name: 'dataFilter',
@@ -46,7 +48,6 @@ export class dataFilterPipe implements PipeTransform {
     //         });
     //     }
     //         return array;
-
     //     }
 }
 
@@ -231,5 +232,12 @@ export class StringToDatePipe implements PipeTransform {
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Add 1 (months are 0-indexed) and pad with '0'
         const day = String(date.getDate()).padStart(2, '0');
         return `<span class="math-inline">\{year\}\-</span>{month}-${day}`;
+    }
+}
+@Pipe({ name: 'markdown' })
+export class MarkdownPipe implements PipeTransform {
+    async transform(value: string): Promise<string> {
+        // Return a promise
+        return marked(value); // Await if marked is async
     }
 }

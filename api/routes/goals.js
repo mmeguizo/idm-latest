@@ -211,9 +211,6 @@ module.exports = (router) => {
   router.get(
     "/getAllObjectivesWithObjectivesForDashboard/:campus?",
     (req, res) => {
-      console.log({
-        getAllObjectivesWithObjectivesForDashboard: req.params.campus,
-      });
       let finalMatch = { deleted: false }; // Start with the base filter
       console.log(req.params.campus === "undefined");
       if (req.params.campus === "undefined") {

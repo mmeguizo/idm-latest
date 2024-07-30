@@ -35,6 +35,7 @@ import {
     FileNameOnly,
     PesoPipe,
     StringToDatePipe,
+    MarkdownPipe,
 } from '../pipes/dataFilter';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -52,6 +53,8 @@ import { ScrollerModule } from 'primeng/scroller';
 import { TabViewModule } from 'primeng/tabview';
 import { DividerModule } from 'primeng/divider';
 import { DataViewModule } from 'primeng/dataview';
+import { MarkdownModule } from 'ngx-markdown';
+
 const pipes = [
     dataFilterPipe,
     NumberWithCommas,
@@ -65,6 +68,7 @@ const pipes = [
     FileNameOnly,
     PesoPipe,
     StringToDatePipe,
+    MarkdownPipe,
 ];
 
 @NgModule({
@@ -111,6 +115,7 @@ const pipes = [
         TabViewModule,
         DividerModule,
         DataViewModule,
+        MarkdownModule,
         ...pipes,
         // FileUpload
     ],

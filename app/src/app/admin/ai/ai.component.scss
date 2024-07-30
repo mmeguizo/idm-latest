@@ -2,10 +2,10 @@
 Mixins
 --------------------*/
 @mixin center {
-    // position: absolute;
-    // top: 50%;
-    // left: 50%;
-    // transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 @mixin ball {
@@ -15,119 +15,71 @@ Mixins
     width: 3px;
     height: 3px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.8);
     z-index: 2;
     margin-top: 4px;
     animation: ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite;
 }
 
-/*--------------------
-  Body
-  --------------------*/
 *,
 *::before,
 *::after {
     box-sizing: border-box;
-}
-
-html,
-body {
-    height: 100%;
+    padding: 0;
+    margin: 0;
 }
 
 body {
-    background: linear-gradient(135deg, #044f48, #2a7561);
-    background-size: cover;
     font-family: "Open Sans", sans-serif;
     font-size: 12px;
     line-height: 1.3;
     overflow: hidden;
 }
 
-.bg {
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    background: url("https://images.unsplash.com/photo-1451186859696-371d9477be93?crop=entropy&fit=crop&fm=jpg&h=975&ixjsv=2.1.0&ixlib=rb-0.3.5&q=80&w=1925")
-        no-repeat 0 0;
-    filter: blur(80px);
-    transform: scale(1.2);
+.layout-main-container {
+    max-height: 100dvh !important;
+}
+
+.card {
+    max-height: calc(100dvh - 180px);
+    overflow: hidden;
 }
 
 /*--------------------
-  Chat
-  --------------------*/
+    Chat
+    --------------------*/
 .chat {
-    @include center;
-    width: 300px;
-    height: 80vh;
-    max-height: 500px;
+    width: 100%;
+    height: calc(100dvh - 252px);
     z-index: 2;
     overflow: hidden;
-    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 20px;
+    background: #fff;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
 }
 
 /*--------------------
-  Chat Title
-  --------------------*/
+    Chat Title
+    --------------------*/
 .chat-title {
     flex: 0 1 45px;
     position: relative;
     z-index: 2;
-    background: rgba(0, 0, 0, 0.2);
-    color: #fff;
+    background: #dbdbdb;
+    color: #444444;
     text-transform: uppercase;
     text-align: left;
-    padding: 10px 10px 10px 50px;
-
-    h1,
-    h2 {
-        font-weight: normal;
-        font-size: 10px;
-        margin: 0;
-        padding: 0;
-    }
-
-    h2 {
-        color: rgba(255, 255, 255, 0.5);
-        font-size: 8px;
-        letter-spacing: 1px;
-    }
-
-    .avatar {
-        position: absolute;
-        z-index: 1;
-        top: 8px;
-        left: 9px;
-        border-radius: 30px;
-        width: 30px;
-        height: 30px;
-        overflow: hidden;
-        margin: 0;
-        padding: 0;
-        border: 2px solid rgba(255, 255, 255, 0.24);
-
-        img {
-            width: 100%;
-            height: auto;
-        }
-    }
+    padding: 20px 20px;
 }
 
 /*--------------------
-  Messages
-  --------------------*/
+    Messages
+    --------------------*/
 .messages {
     flex: 1 1 auto;
     color: rgba(255, 255, 255, 0.5);
-    overflow: hidden;
+    overflow: auto;
     position: relative;
     width: 100%;
 
@@ -137,22 +89,23 @@ body {
         left: 0;
         height: 101%;
         width: 100%;
+        padding: 10px;
     }
 
     .message {
         clear: both;
         float: left;
-        padding: 6px 10px 7px;
+        padding: 10px 15px 7.5px 15px;
         border-radius: 10px 10px 10px 0;
         background: rgba(0, 0, 0, 0.3);
         margin: 8px 0;
-        font-size: 11px;
+        font-size: 14px;
         line-height: 1.4;
-        margin-left: 35px;
+        margin-left: 20px;
         position: relative;
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 
-        .timestamp {
+        &.timestamp {
             position: absolute;
             bottom: -15px;
             font-size: 9px;
@@ -189,9 +142,8 @@ body {
 
         &.message-personal {
             float: right;
-            color: #fff;
+            // color: #444444;
             text-align: right;
-            background: linear-gradient(120deg, #248a52, #257287);
             border-radius: 10px 10px 0 10px;
 
             &::before {
@@ -199,7 +151,23 @@ body {
                 right: 0;
                 border-right: none;
                 border-left: 5px solid transparent;
-                border-top: 4px solid #257287;
+                border-top: 4px solid #9ff4ff;
+                bottom: -4px;
+            }
+        }
+
+        &.message-ai {
+            float: left;
+            color: #444444;
+            text-align: left;
+            border-radius: 10px 10px 10px 0;
+
+            &::before {
+                right: auto;
+                left: 0;
+                border-left: none;
+                border-right: 5px solid transparent;
+                border-top: 4px solid #f5f5f5;
                 bottom: -4px;
             }
         }
@@ -212,6 +180,30 @@ body {
             transform: scale(0);
             transform-origin: 0 0;
             animation: bounce 500ms linear both;
+        }
+
+        &-personal,
+        &-ai {
+            float: none; /* Remove floats for better flexbox behavior */
+            margin-left: 0; /* Reset margins for consistent placement */
+        }
+
+        &-personal {
+            background-color: #9ff4ff; /* Light blue */
+            color: #006064; /* Dark teal */
+            align-self: flex-end;
+            text-align: left;
+        }
+
+        &-ai {
+            background-color: #f5f5f5; /* Light gray */
+            color: #212121; /* Dark gray */
+            align-self: flex-start;
+            text-align: left;
+        }
+
+        &.new {
+            animation: bounce 500ms linear both; /* Apply bounce animation only to new messages */
         }
 
         &.loading {
@@ -240,48 +232,54 @@ body {
                 }
             }
         }
+
+        .messages-content {
+            display: flex; /* Enable flexbox for message alignment */
+            flex-direction: column; /* Stack messages vertically */
+        }
     }
 }
 
 /*--------------------
-  Message Box
-  --------------------*/
+    Message Box
+    --------------------*/
 .message-box {
     flex: 0 1 40px;
     width: 100%;
     background: rgba(0, 0, 0, 0.3);
-    padding: 10px;
+    padding: 10px 20px;
     position: relative;
+    height: 70px;
+    display: flex;
+    gap: 10px;
 
     & .message-input {
-        background: none;
+        background: white;
+        border-radius: 50px;
         border: none;
         outline: none !important;
         resize: none;
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 11px;
-        height: 17px;
+        color: #444444;
+        font-size: 14px;
+        height: 100%;
         margin: 0;
-        padding-right: 20px;
-        width: 265px;
-    }
-
-    textarea:focus:-webkit-placeholder {
-        color: transparent;
+        display: flex;
+        padding: 15px 0px 0px 20px;
+        width: 100%;
+        &:focus:-webkit-placeholder {
+            color: transparent;
+        }
     }
 
     & .message-submit {
-        position: absolute;
         z-index: 1;
-        top: 9px;
-        right: 10px;
         color: #fff;
         border: none;
-        background: #248a52;
-        font-size: 10px;
+        background-color: #248a52;
+        font-size: 14px;
         text-transform: uppercase;
         line-height: 1;
-        padding: 6px 10px;
+        padding: 0px 20px;
         border-radius: 10px;
         outline: none !important;
         transition: background 0.2s ease;
@@ -293,8 +291,8 @@ body {
 }
 
 /*--------------------
-  Custom Srollbar
-  --------------------*/
+    Custom Srollbar
+    --------------------*/
 .mCSB_scrollTools {
     margin: 1px -3px 1px 0;
     opacity: 0;
@@ -310,8 +308,8 @@ body {
 }
 
 /*--------------------
-  Bounce
-  --------------------*/
+    Bounce
+    --------------------*/
 @keyframes bounce {
     0% {
         transform: matrix3d(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
@@ -548,4 +546,13 @@ body {
     to {
         transform: translateY(-10px);
     }
+}
+.variable-binding,
+.variable-textarea {
+    width: 49%;
+}
+
+.variable-binding {
+    display: block;
+    float: right;
 }

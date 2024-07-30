@@ -3,6 +3,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { HarmBlockThreshold, HarmCategory } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const aiDb = require("../models/ais");
+const { v4: uuidv4 } = require("uuid");
 
 const chatHistories = new Map();
 module.exports = (router) => {
@@ -60,7 +61,8 @@ module.exports = (router) => {
       chatHistories.set(userId, chatHistory);
 
       let aiSave = aiDb.create({
-        user: userId,
+        chatId: uuidv4(),
+        userId: userId,
         prompt: userMessage,
         responseAi: responseText,
       });
@@ -70,6 +72,23 @@ module.exports = (router) => {
       }
     } catch (error) {
       console.error("Error chatting with Gemini:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  router.get("/get-all-chat/:id", async (req, res) => {
+    try {
+      let messages = await aiDb
+        .find({
+          userId: req.params.id,
+        })
+        .sort({ createdAt: 1 })
+        .limit(1000);
+      res.json({
+        success: true,
+        chats: messages,
+      });
+    } catch (error) {
       res.status(500).json({ error: "Internal server error" });
     }
   });

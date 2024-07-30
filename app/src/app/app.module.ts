@@ -36,7 +36,7 @@ import { RouteService } from './demo/service/route.service';
 import { PdfService } from './demo/service/pdf.service';
 import { AiService } from './demo/service/ai.service';
 import { BranchService } from './demo/service/branch.service';
-
+import { MarkdownModule } from 'ngx-markdown';
 export function tokenGetter() {
     return localStorage.getItem('access_token');
 }
@@ -50,10 +50,9 @@ export function tokenGetter() {
         JwtModule.forRoot({
             config: {
                 tokenGetter: tokenGetter,
-                // allowedDomains: ['example.com'],
-                // disallowedRoutes: ['http://example.com/examplebadroute/'],
             },
         }),
+        MarkdownModule.forRoot(),
         SplitButtonModule,
     ],
     providers: [
