@@ -65,6 +65,11 @@ module.exports = (router) => {
       let goalDeletedCount = await Goals.countDocuments({ deleted: true });
       let goalAmountTotal = await Goals.aggregate([
         {
+          $match: {
+            deleted: false,
+          },
+        },
+        {
           $group: {
             _id: null,
             totalAmount: { $sum: "$budget" },
@@ -212,7 +217,6 @@ module.exports = (router) => {
     "/getAllObjectivesWithObjectivesForDashboard/:campus?",
     (req, res) => {
       let finalMatch = { deleted: false }; // Start with the base filter
-      console.log(req.params.campus === "undefined");
       if (req.params.campus === "undefined") {
         finalMatch = {
           deleted: false,
@@ -282,6 +286,40 @@ module.exports = (router) => {
               __v: 1,
               updatedAt: 1,
               complete: 1,
+              "users.id": 1,
+              "users.username": 1,
+              objectivesDetails: {
+                $cond: {
+                  if: { $eq: ["$objectivesDetails", null] },
+                  then: null,
+                  else: {
+                    $map: {
+                      input: "$objectivesDetails",
+                      as: "od",
+                      in: {
+                        id: "$$od.id",
+                        functional_objective: "$$od.functional_objective",
+                        performance_indicator: "$$od.performance_indicator",
+                        target: "$$od.target",
+                        formula: "$$od.formula",
+                        programs: "$$od.programs",
+                        responsible_persons: "$$od.responsible_persons",
+                        clients: "$$od.clients",
+                        timetable: "$$od.timetable",
+                        frequency_monitoring: "$$od.frequency_monitoring",
+                        data_source: "$$od.data_source",
+                        budget: "$$od.budget",
+                        createdBy: "$$od.createdBy",
+                        deleted: "$$od.deleted",
+                        date_added: "$$od.date_added",
+                        createdAt: "$$od.createdAt",
+                        __v: "$$od.__v",
+                        complete: "$$od.complete",
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
         ],
@@ -299,10 +337,15 @@ module.exports = (router) => {
                 Goals: [],
               }); // Return error of no blogs found
             } else {
+              let returnedData = await Promise.all(
+                await CalculateBudgetAndCompletion(Goals)
+                // await getBarChartsData(Goals)
+              );
               res.json({
                 success: true,
                 // goalDropdown: GoalsWithDropdown,
-                goals: Goals,
+                goals: returnedData,
+                // multi : GoalsBarCharts
               }); // Return success and blogs array
             }
           }
@@ -356,6 +399,110 @@ module.exports = (router) => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
+
+  router.get(
+    "/getAllObjectivesWithObjectivesForBarChartsDashboard/:campus?",
+    async (req, res) => {
+      try {
+        let finalMatch = { deleted: false };
+        if (req.params.campus !== "undefined") {
+          finalMatch = { ...finalMatch, campus: req.params.campus };
+        }
+        if (req.params.campus === "undefined") {
+          finalMatch = {
+            deleted: false,
+          };
+        } else {
+          finalMatch = {
+            deleted: false,
+            campus: req.params.campus,
+          };
+        }
+
+        console.log({
+          getAllObjectivesWithObjectivesForBarChartsDashboard: finalMatch,
+        });
+
+        let multiData = await Goals.aggregate([
+          {
+            $match: finalMatch,
+          },
+
+          //   { $match: { deleted: false } },
+          {
+            $lookup: {
+              from: "objectives", // Lookup the objectives associated with each goal
+              localField: "id",
+              foreignField: "goalId",
+              as: "goalDetails",
+            },
+          }, // Keep your existing lookup to "objectives" as "goalDetails"
+
+          // Crucial Change: Filter out empty "goalDetails" arrays BEFORE unwinding
+          { $match: { goalDetails: { $ne: [] } } },
+
+          { $unwind: "$goalDetails" },
+
+          // This $match stage should already be redundant as we have filtered out empty goalDetails
+          // { $match: { "goalDetails.functional_objective": { $ne: null } } }, // Ensure functional_objective exists
+
+          {
+            $group: {
+              _id: "$goals",
+              series: {
+                $push: {
+                  name: "$goalDetails.functional_objective",
+                  value: "$goalDetails.budget",
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              name: "$_id",
+              series: 1,
+            },
+          },
+          //   {
+          //     $lookup: {
+          //       from: "objectives", // Lookup the objectives associated with each goal
+          //       localField: "id",
+          //       foreignField: "goalId",
+          //       as: "goalDetails",
+          //     },
+          //   },
+          //   {
+          //     $group: {
+          //       _id: "$goals", // Group by goal's title directly (assuming the field is called "goals" in the Goals collection)
+          //       series: {
+          //         $push: {
+          //           // Create the 'series' array for each goal
+          //           name: "$goalDetails.functional_objective",
+          //           value: "$goalDetails.budget",
+          //         },
+          //       },
+          //     },
+          //   },
+          //   {
+          //     $project: {
+          //       _id: 0, // Exclude the _id field
+          //       name: "$_id", // Rename _id to name
+          //       series: 1, // Include the series array
+          //     },
+          //   },
+        ]);
+        console.log(multiData);
+
+        return res.status(200).json({
+          success: true,
+          multi: multiData,
+        });
+      } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+      }
+    }
+  );
 
   router.get("/getAllGoals", (req, res) => {
     Goals.aggregate(

@@ -33,8 +33,11 @@ module.exports = (router) => {
             threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
           },
         ],
+        systemInstruction:
+          " You are the University Goal Refiner, specializing in goal setting, planning, and budgeting. When I provide you with a draft goal, plan, or budget description, refine it to ensure clear, concise, and grammatically correct language. Focus on enhancing clarity and professionalism while maintaining the original intent of the description. Additionally, offer suggestions for further improvements or potential alternative phrasing to better align with the overall context of the university's goals",
       });
       const userId = req.body.userId;
+
       let chatHistory = chatHistories.get(userId) || [];
 
       const userMessage = req.body.message;

@@ -13,6 +13,53 @@ module.exports = (router) => {
     }).format(amount);
   };
 
+  router.get("/getObjectiveForCalendar", (req, res) => {
+    Objectives.aggregate([
+      { $match: { deleted: false } },
+      {
+        $lookup: {
+          as: "goals",
+          from: "goals",
+          foreignField: "_id",
+          localField: "goal_Id",
+        },
+      },
+      { $unwind: { path: "$goals", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          as: "users",
+          from: "users",
+          foreignField: "id",
+          localField: "createdBy",
+        },
+      },
+      { $unwind: { path: "$users", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          id: 1,
+          "goals.goals": 1,
+          timetable: 1,
+          "users.username": 1,
+          "users.profile_pic": 1,
+          "users.department": 1,
+        },
+      },
+    ])
+      .sort({ createdAt: -1 })
+      .then((objectives) => {
+        // Success
+        res.status(200).json({
+          success: true,
+          data: objectives,
+        });
+      })
+      .catch((err) => {
+        // Error handling
+        console.error("Error fetching objectives with goals and users:", err);
+        res.status(500).json({ error: "Internal server error" });
+      });
+  });
+
   router.get("/getAllByIdObjectivesWithGoalsAndUsers", (req, res) => {
     Objectives.aggregate([
       { $match: { deleted: false } },
@@ -430,6 +477,49 @@ module.exports = (router) => {
   });
 
   //**********************USer Routes ********************** */
+
+  router.get("/getObjectiveForCalendar/:id", (req, res) => {
+    Objectives.aggregate([
+      { $match: { deleted: false, userId: req.params.id } },
+      {
+        $lookup: {
+          as: "goals",
+          from: "goals",
+          foreignField: "_id",
+          localField: "goal_Id",
+        },
+      },
+      { $unwind: { path: "$goals", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          as: "users",
+          from: "users",
+          foreignField: "id",
+          localField: "createdBy",
+        },
+      },
+      { $unwind: { path: "$users", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          "goals.objectives": 0,
+          "goals.objectiveBudget": 0,
+        },
+      },
+    ])
+      .sort({ createdAt: -1 })
+      .then((objectives) => {
+        // Success
+        res.status(200).json({
+          success: true,
+          data: objectives,
+        });
+      })
+      .catch((err) => {
+        // Error handling
+        console.error("Error fetching objectives with goals and users:", err);
+        res.status(500).json({ error: "Internal server error" });
+      });
+  });
 
   router.get("/getAllObjectivesForDashboard/:id", async (req, res) => {
     let data = [];
