@@ -166,6 +166,7 @@
                                     getObjectives(
                                         goal.id,
                                         goal._id,
+                                        goal.goallistsId,
                                         goal.goals,
                                         goal.remainingBudget,
                                         goal
@@ -302,152 +303,22 @@
 </div>
 
 <!-- add goal dialog -->
-<p-dialog
-    header="Add Goal"
-    [(visible)]="addGoalDialogCard"
-    [style]="{ width: '25rem' }"
->
-    <div class="p-fluid">
-        <div class="field col-10 md:col-10">
-            <form [formGroup]="addGoalform">
-                <div class="field">
-                    <label htmlFor="name1">Goal name</label>
-                    <input
-                        pInputText
-                        id="goals"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            addGoalform?.get('goals').touched &&
-                            addGoalform?.controls['goals'].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="goals"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Budget</label>
-                    <p-inputNumber
-                        mode="decimal"
-                        [showButtons]="true"
-                        [min]="0"
-                        formControlName="budget"
-                    >
-                    </p-inputNumber>
-                </div>
-                <div class="field">
-                    <label htmlFor="department">Department</label>
-                    <form [formGroup]="formGroupDemo">
-                        <p-dropdown
-                            formControlName="selectDepartment"
-                            [options]="deptDropdownValue"
-                            optionLabel="name"
-                            placeholder="Select a Department"
-                        />
-                    </form>
-                </div>
-                <div class="field">
-                    <label htmlFor="department">Campus</label>
-                    <form [formGroup]="formGroupCampus">
-                        <p-dropdown
-                            formControlName="selectedCampus"
-                            [options]="deptDropdownCampusValue"
-                            optionLabel="name"
-                            placeholder="Select a Campus"
-                        />
-                    </form>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="flex justify-space-between gap-2">
-        <p-button
-            label="Cancel"
-            severity="secondary"
-            (click)="addGoalDialogCard = false"
-        />
-        <p-button label="Save" (click)="addGoalDialogExec(addGoalform)" />
-    </div>
-</p-dialog>
+<app-adding-goal
+    [addNewGoal]="parentAddnewGoal"
+    (childAddGoalEvent)="receivedAddGoalEvent($event)"
+></app-adding-goal>
 
 <!-- update goal dialog -->
-<p-dialog
-    header="Update Goal"
-    [(visible)]="updateGoalDialogCard"
-    [style]="{ width: '25rem' }"
->
-    <div class="p-fluid">
-        <div class="field col-10 md:col-10">
-            <form [formGroup]="updateGoalform">
-                <div class="field">
-                    <label htmlFor="name1">Goal name</label>
-                    <input
-                        pInputText
-                        id="goals"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            updateGoalform?.get('goals').touched &&
-                            updateGoalform?.controls['goals'].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="goals"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Budget</label>
-                    <p-inputNumber
-                        mode="decimal"
-                        [showButtons]="true"
-                        [min]="0"
-                        formControlName="budget"
-                    >
-                    </p-inputNumber>
-                </div>
-                <div class="field">
-                    <label htmlFor="department">Department</label>
-                    <form [formGroup]="formGroupDemo">
-                        <p-dropdown
-                            formControlName="selectDepartment"
-                            [options]="deptDropdownValue"
-                            optionLabel="name"
-                            placeholder="Select a Department"
-                        />
-                    </form>
-                </div>
-                <div class="field">
-                    <label htmlFor="department">Campus</label>
-                    <form [formGroup]="formGroupCampus">
-                        <p-dropdown
-                            formControlName="selectedCampus"
-                            [options]="deptDropdownCampusValue"
-                            optionLabel="name"
-                            placeholder="Select a Campus"
-                        />
-                    </form>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="flex justify-space-between gap-2">
-        <p-button
-            label="Cancel"
-            severity="secondary"
-            (click)="updateGoalDialogCard = false"
-        />
-        <p-button label="Save" (click)="updateGoalDialogExec(updateGoalform)" />
-    </div>
-</p-dialog>
+<app-update-goal
+    [editGoal]="parentEditGoal"
+    (childEditGoalEvent)="receivedEditGoalEvent($event)"
+></app-update-goal>
 
 <!-- main objective table  -->
 <p-dialog
     [modal]="true"
     [(visible)]="subGoalObjective"
-    [style]="{ width: '60rem' }"
+    [style]="{ width: '60rem', overflow: 'auto' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     [maximizable]="true"
     (onHide)="hideViewObjectiveTable()"
@@ -536,7 +407,7 @@
 
                         <p-button
                             icon="pi pi-plus"
-                            (click)="addSubGoal(objectiveData)"
+                            (click)="addSubGoal(objectiveDatas)"
                             severity="success"
                             [outlined]="true"
                             pTooltip="Add Objectives"
@@ -546,7 +417,7 @@
                         <p-button
                             icon="pi pi-file-pdf"
                             (click)="
-                                printTable(
+                                printTableNeeds(
                                     subOnjectiveHeaderData?.department || ''
                                 )
                             "
@@ -726,7 +597,19 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Remarks
+                                <p-columnFilter
+                                    type="text"
+                                    field="remarks"
+                                    display="menu"
+                                    placeholder="Search by Remarks"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
                         <th style="min-width: 12rem">
                             <div
                                 class="flex justify-content-between align-items-center"
@@ -740,6 +623,7 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
+
                         <th style="min-width: 6rem">
                             <div
                                 class="flex justify-content-between align-items-center"
@@ -812,6 +696,9 @@
                         </td>
                         <td>
                             {{ objectiveData.createdAt | date : "mediumDate" }}
+                        </td>
+                        <td>
+                            {{ objectiveData.remarks }}
                         </td>
                         <td>
                             <p-button
@@ -904,230 +791,17 @@
 </p-dialog>
 
 <!-- add objective dialog card -->
-<p-dialog
-    styleClass="addObjective"
-    [header]="updateObjectiveGoalFlag ? 'Update' : 'Add' + ' Objectives'"
-    [(visible)]="addObjectiveGoalDialogCard"
-    [style]="{ width: '50rem' }"
-    [modal]="true"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-    position="top"
-    (onHide)="clearAddObjectiveGoalDialogCardDatas()"
+<app-add-objective
+    [addNewObjective]="parentAddnewObjective"
+    (childAddObjectiveEvent)="receivedAddObjectiveEvent($event)"
 >
-    <div class="p-fluid">
-        <div class="field col-10 md:col-10">
-            <form [formGroup]="addObjectiveGoalform">
-                <div class="field">
-                    <label htmlFor="name1">Functional Objective</label>
-                    <input
-                        pInputText
-                        id="functional_objective"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            addObjectiveGoalform?.get('functional_objective')
-                                .touched &&
-                            addObjectiveGoalform?.controls[
-                                'functional_objective'
-                            ].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="functional_objective"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Performance Indicator</label>
-                    <input
-                        pInputText
-                        id="performance_indicator"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            addObjectiveGoalform?.get('performance_indicator')
-                                .touched &&
-                            addObjectiveGoalform?.controls[
-                                'performance_indicator'
-                            ].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="performance_indicator"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Target</label>
-                    <input
-                        pInputText
-                        id="target"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            addObjectiveGoalform?.get('target').touched &&
-                            addObjectiveGoalform?.controls['target'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="target"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Formula</label>
-                    <input
-                        pInputText
-                        id="formula"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            addObjectiveGoalform?.get('formula').touched &&
-                            addObjectiveGoalform?.controls['formula'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="formula"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Programs</label>
-                    <input
-                        pInputText
-                        id="programs"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            addObjectiveGoalform?.get('programs').touched &&
-                            addObjectiveGoalform?.controls['programs'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="programs"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Responsible Persons</label>
-                    <input
-                        pInputText
-                        id="responsible_persons"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            addObjectiveGoalform?.get('responsible_persons')
-                                .touched &&
-                            addObjectiveGoalform?.controls[
-                                'responsible_persons'
-                            ].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="responsible_persons"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Clients</label>
-                    <input
-                        pInputText
-                        id="clients"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            addObjectiveGoalform?.get('clients').touched &&
-                            addObjectiveGoalform?.controls['clients'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="clients"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Timetable</label>
-                    <p-calendar
-                        formControlName="timetable"
-                        selectionMode="range"
-                        [readonlyInput]="true"
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="department">Frequency Monitoring</label>
-                    <form [formGroup]="formGroupDropdown">
-                        <p-dropdown
-                            formControlName="selectedDropdown"
-                            [options]="dropdwonSelection"
-                            optionLabel="name"
-                            placeholder="Select a Frequency"
-                        />
-                    </form>
-                </div>
-                <div class="field">
-                    <label htmlFor="name1"
-                        >Means of Verification(Data Source)</label
-                    >
-                    <input
-                        pInputText
-                        id="data_source"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            addObjectiveGoalform?.get('data_source').touched &&
-                            addObjectiveGoalform?.controls['data_source'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="data_source"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">
-                        <!-- @if(goalDataRemainingBudget > 0){ Budget should not
-                        exceeed Remaining
-                        {{ goalDataRemainingBudget | peso }}
-                        } @else {
-                        <span class="text-red-400"> No more Budget left</span>
-                        } -->
-                        budget
-                    </label>
-                    <p-inputNumber
-                        mode="decimal"
-                        [min]="0"
-                        formControlName="budget"
-                        [showButtons]="true"
-                    >
-                    </p-inputNumber>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="flex justify-space-between gap-2">
-        <p-button
-            label="Cancel"
-            severity="secondary"
-            (click)="clearAddObjectiveGoalDialogCardDatas()"
-        />
-        <!--  (click)="addObjectiveGoalDialogCard = false"
-         (click)="clearForms(addObjectiveGoalform, formGroupDropdown)"
-        -->
-        <p-button
-            [label]="updateObjectiveGoalFlag ? 'Update' : 'Save'"
-            (click)="
-                updateObjectiveGoalFlag
-                    ? updateSubObjectiveGoalDialogExec(addObjectiveGoalform)
-                    : addSubObjectiveGoalDialogExec(addObjectiveGoalform)
-            "
-        />
-    </div>
-</p-dialog>
+</app-add-objective>
+
+<app-update-objective
+    [updateObjective]="parentupdateObjective"
+    (childUpdateObjective)="receivedUpdateObjective($event)"
+>
+</app-update-objective>
 
 <!-- view file table list -->
 <p-dialog
@@ -1425,14 +1099,6 @@
                                 Status
                             </div>
                         </th>
-                        <!--
-                        <th style="min-width: 9rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Options
-                            </div>
-                        </th> -->
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-AllObjectivesHistoryFiles>
@@ -1466,11 +1132,6 @@
                             }}
                         </td>
                         <td>
-                            <!-- {{
-                                AllObjectivesHistoryFiles.date_added
-                                    | date : "mediumDate"
-                            }} -->
-
                             <span
                                 [class]="
                                     'cursor-pointer  customer-badge status-' +
@@ -1500,33 +1161,6 @@
                                 }}</span
                             >
                         </td>
-                        <!--
-                        <td>
-                            <div class="options-users">
-                                @if(blockedPanel){
-                                <i
-                                    class="pi pi-trash text-xl"
-                                    style="color: #868585"
-                                ></i>
-
-                                } @else {
-                                <i
-                                    (click)="
-                                        deleteSubGoalFile(
-                                            AllObjectivesHistoryFiles.id,
-                                            AllObjectivesHistoryFiles.source
-                                        )
-                                    "
-                                    class="pi pi-trash text-xl"
-                                    style="color: #ef4444; cursor: pointer"
-                                ></i>
-                                }
-
-                                <p-confirmPopup
-                                    key="deleteSubGoalFile"
-                                ></p-confirmPopup>
-                            </div>
-                        </td> -->
                     </tr>
                 </ng-template>
 
@@ -1554,10 +1188,50 @@
     </ng-template>
 </p-dialog>
 
+<!-- Printing functions  -->
+<p-dialog
+    header="Office Head"
+    [modal]="true"
+    [(visible)]="printingHead"
+    [style]="{ width: '25rem' }"
+>
+    <span class="p-text-secondary block mb-5">Update your information.</span>
+    <div class="flex align-items-center gap-3 mb-3">
+        <label for="username" class="font-semibold w-6rem">Name</label>
+        <input
+            pInputText
+            #nameInput
+            id="name"
+            placeholder="e.g Benrie Nufable, PHD. TM"
+            class="flex-auto"
+            autocomplete="off"
+            [(ngModel)]="nameValue"
+        />
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <label for="email" class="font-semibold w-6rem">Office</label>
+        <input
+            pInputText
+            id="office"
+            #officeInput
+            placeholder="e.g MIS Head - DPO"
+            class="flex-auto"
+            autocomplete="off"
+            [(ngModel)]="officeValue"
+        />
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancel"
+            severity="secondary"
+            (onClick)="printingHead = false"
+        />
+        <p-button label="Save" (onClick)="printTable(); printingHead = false" />
+    </div>
+</p-dialog>
 <table id="print" [ngClass]="{ hidden: !isPrintableVisible }">
     <thead>
         <tr>
-            <!-- <th>ID</th> -->
             <th>Functional Objectives</th>
             <th>Performance Indicators</th>
             <th>Target</th>
@@ -1573,7 +1247,6 @@
     </thead>
     <tbody *ngIf="objectiveDatas?.length != 0">
         <tr *ngFor="let obj of objectiveDatas; let i = index">
-            <!-- <td>{{ i + 1 }}</td> -->
             <td>{{ obj.functional_objective | titlecase }}</td>
             <td>{{ obj.performance_indicator | titlecase }}</td>
             <td>{{ obj.target | titlecase }}</td>

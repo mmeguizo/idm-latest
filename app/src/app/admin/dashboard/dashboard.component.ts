@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    ChangeDetectorRef,
+} from '@angular/core';
 import { UserService } from 'src/app/demo/service/user.service';
 import { Subject, takeUntil } from 'rxjs';
 import { GoalService } from 'src/app/demo/service/goal.service';
@@ -8,6 +14,9 @@ import { IdepartmentDropdown } from 'src/app/interface/department.interface';
 import { IcampusDropdown } from 'src/app/interface/campus.interface';
 import { CampusService } from 'src/app/demo/service/campus.service';
 import { BranchService } from 'src/app/demo/service/branch.service';
+import { MessageService } from 'primeng/api';
+import { TabView, TabPanel } from 'primeng/tabview';
+import { ChartComponent } from '@swimlane/ngx-charts';
 
 @Component({
     selector: 'app-admin-dashboard',
@@ -44,14 +53,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
     objectivesSideData: any[];
     selectedGoalData: any;
 
+    totalBudget: number = 0;
+    totalSubBudget: number = 0;
+    remainingBudget: number = 0;
+    completionPercentage: number = 0;
+    completedGoals: number = 0;
+    inProgressGoals: number = 0;
+    notStartedGoals: number;
+    knobValue: number;
+
+    // charts data
+
+    barCharts: any;
+
+    // tabview and panel
+    selectedIndex = 0;
+    @ViewChild(TabView) tabView: TabView;
     constructor(
         public userService: UserService,
         private goalService: GoalService,
         private dept: DepartmentService,
         private obj: ObjectiveService,
         private campus: CampusService,
-        private branch: BranchService
-    ) {}
+        private branch: BranchService,
+        private messageService: MessageService,
+        private changeDetectorRef: ChangeDetectorRef
+    ) {
+        // Object.assign(this, { multi });
+    }
 
     ngOnInit() {
         this.getAllusers();
@@ -60,10 +89,59 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.getAllObjectives();
         this.getAllObjectivesWithObjectives();
         this.getAllCampusForDashboard();
-        // this.initCharts();
+        // this.thisBarCharts();
     }
-    ngOnDestroy() {
-        this.getDashboardSubscription.unsubscribe();
+
+    processDashboardData(data) {
+        this.totalBudget =
+            data.goals?.reduce((sum, goal) => sum + (goal.budget || 0), 0) || 0;
+
+        this.totalSubBudget = (data.goals ?? []).reduce((sum, goal) => {
+            return (
+                sum +
+                (goal.objectivesDetails?.reduce(
+                    (subSum, obj) => subSum + (obj.budget || 0),
+                    0
+                ) ?? 0)
+            );
+        }, 0);
+
+        console.log({
+            totalBudget: this.totalBudget,
+            totalSubBudget: this.totalSubBudget,
+        });
+
+        this.knobValue = this.remainingBudget =
+            (this.totalSubBudget !== 0 ? this.totalBudget : 0) -
+            this.totalSubBudget;
+
+        console.log(this.knobValue);
+
+        const goalsWithObjectives = (data.goals ?? []).filter(
+            (goal) =>
+                goal.objectivesDetails && goal.objectivesDetails.length > 0
+        );
+
+        // Calculate completed goals
+        this.completedGoals = goalsWithObjectives.filter((goal) =>
+            goal.objectivesDetails.every((obj) => obj.complete)
+        ).length;
+
+        // Calculate in-progress goals
+        this.inProgressGoals = goalsWithObjectives.filter((goal) =>
+            goal.objectivesDetails.some((obj) => !obj.complete)
+        ).length;
+
+        // Calculate not started goals
+        this.notStartedGoals = data.goals?.length
+            ? data.goals.length - this.inProgressGoals - this.completedGoals
+            : 0;
+
+        // Correctly calculate completion percentage (using filtered goals with objectives)
+        this.completionPercentage =
+            this.totalBudget > 0
+                ? (this.completedGoals / goalsWithObjectives.length) * 100
+                : 0;
     }
 
     async getAllCampusForDashboard() {
@@ -105,22 +183,36 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .getRoute('get', 'objectives', `getAllObjectivesForDashboard`)
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                this.objectivesData = data.data[0];
+                this.objectivesData = data.data[0] || [];
             });
     }
 
     async getAllObjectivesWithObjectives(campus?: string) {
         this.loading = true;
-        await this.goalService
+        this.goalService
             .getRoute(
                 'get',
                 'goals',
                 `getAllObjectivesWithObjectivesForDashboard/${campus}`
             )
             .pipe(takeUntil(this.getDashboardSubscription))
-            .subscribe(async (data: any) => {
-                this.goals = data.goals;
-                this.loading = false;
+            .subscribe({
+                next: (data: any) => {
+                    console.log({ getAllObjectivesWithObjectives: data });
+                    this.goals = data.goals || [];
+                    this.thisBarCharts(data.goals);
+                    this.processDashboardData(data);
+                    this.loading = false;
+                },
+                error: (error) => {
+                    console.error('Error fetching data:', error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Failed to fetch goals',
+                    }); // Display error message
+                    this.loading = false;
+                },
             });
     }
 
@@ -172,6 +264,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.loading = true;
         this.selectedAgoal = false;
         this.goals = [];
+        this.totalBudget = 0;
+        this.totalSubBudget = 0;
+        this.remainingBudget = 0;
+        this.completionPercentage = 0;
+        this.completedGoals = 0;
+        this.inProgressGoals = 0;
+        this.notStartedGoals = 0;
+        this.knobValue = 0;
         this.getAllObjectivesWithObjectives(event?.value?.name ?? '');
     }
 
@@ -217,6 +317,130 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     labels: {
                         usePointStyle: true,
                         color: textColor,
+                    },
+                },
+            },
+        };
+    }
+
+    // Create Pie Chart
+    createPieChart() {
+        if (this.objectivesSideData && this.objectivesSideData.length > 0) {
+            const completed = this.objectivesSideData.filter(
+                (obj) => obj.complete
+            ).length;
+            const notCompleted = this.objectivesSideData.length - completed;
+
+            this.pieData = {
+                labels: ['Completed', 'Not Completed'],
+                datasets: [
+                    {
+                        data: [completed, notCompleted],
+                        backgroundColor: ['#42A5F5', '#FFA726'],
+                        hoverBackgroundColor: ['#64B5F6', '#FFB74D'],
+                    },
+                ],
+            };
+            this.pieDataBool = true;
+        } else {
+            this.pieDataBool = false;
+        }
+    }
+
+    ngOnDestroy() {
+        this.getDashboardSubscription.next();
+        this.getDashboardSubscription.complete();
+    }
+
+    // tab view and panel
+
+    onChange($event: any) {
+        this.selectedIndex = $event.index;
+        console.log($event.index);
+    }
+
+    getSelectedHeader() {
+        alert(this.tabView.tabs[this.selectedIndex].header);
+    }
+
+    async thisBarCharts(data: any = []) {
+        console.log({ thisBarCharts: data });
+
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+        const textColorSecondary = documentStyle.getPropertyValue(
+            '--text-color-secondary'
+        );
+        const surfaceBorder =
+            documentStyle.getPropertyValue('--surface-border');
+
+        const labels = [];
+        const sublabels = [];
+        const datasets = [];
+        const budgetData = [];
+        const usedColors = new Set<string>(); //To keep track of used colors
+
+        data.forEach((goal) => {
+            if (goal.objectivesDetails) {
+                goal.objectivesDetails.map((obj) => {
+                    budgetData.push(obj.budget);
+                    labels.push(obj.functional_objective);
+                });
+            }
+        });
+
+        datasets.push({
+            label: 'Sub Goals',
+            backgroundColor: [
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+            ],
+            borderColor: [
+                'rgb(255, 159, 64)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+            ],
+            data: budgetData,
+        });
+
+        console.log({
+            labels: labels,
+            datasets: datasets[0],
+        });
+        this.barCharts = {
+            labels: labels,
+            datasets: datasets,
+        };
+
+        this.options = {
+            plugins: {
+                legend: {
+                    labels: {
+                        color: textColor,
+                    },
+                },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: textColorSecondary,
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false,
+                    },
+                },
+                x: {
+                    ticks: {
+                        color: textColorSecondary,
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false,
                     },
                 },
             },

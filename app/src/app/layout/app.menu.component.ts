@@ -54,16 +54,36 @@ export class AppMenuComponent implements OnInit {
                                     routerLink: ['/admin/goals/dashboard'],
                                 },
                                 {
-                                    label: 'Goals',
+                                    label: 'Goals Tables',
                                     icon: 'pi pi-align-justify',
                                     routerLink: ['/admin/goals'],
                                 },
                                 {
-                                    label: 'Objectives',
+                                    label: 'Objectives Tables',
                                     icon: 'pi pi-flag',
                                     routerLink: ['/admin/goals/objectives'],
                                 },
+                                {
+                                    label: 'Calendar',
+                                    icon: 'pi pi-calendar-plus',
+                                    routerLink: ['/admin/goals/calendar'],
+                                },
+                                {
+                                    label: 'Charts',
+                                    icon: 'pi pi-chart-line',
+                                    routerLink: ['/admin/goals/reporting'],
+                                },
                             ],
+                        },
+                    ],
+                },
+                {
+                    label: 'Manager',
+                    items: [
+                        {
+                            label: 'Goal',
+                            icon: 'pi pi-sitemap',
+                            routerLink: ['/admin/goal-management'],
                         },
                     ],
                 },
@@ -132,6 +152,11 @@ export class AppMenuComponent implements OnInit {
                                     icon: 'pi pi-flag',
                                     routerLink: ['/user/goals/objectives'],
                                 },
+                                {
+                                    label: 'Calendar',
+                                    icon: 'pi pi-calendar-plus',
+                                    routerLink: ['/user/goals/calendar'],
+                                },
                             ],
                         },
                     ],
@@ -142,7 +167,7 @@ export class AppMenuComponent implements OnInit {
                         {
                             label: 'Gemini',
                             icon: 'pi pi-google',
-                            routerLink: ['/admin/ai'],
+                            routerLink: ['/user/ai'],
                         },
                     ],
                 },

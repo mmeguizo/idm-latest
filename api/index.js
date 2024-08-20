@@ -20,6 +20,7 @@ const campus = require("./routes/campus")(router);
 const log = require("./routes/log")(router);
 const userhistory = require("./routes/userhistory")(router);
 const ai = require("./routes/ai")(router);
+const goallists = require("./routes/goallists")(router);
 const { logMiddleware } = require("./middleware/logger");
 
 mongoose.Promise = global.Promise;
@@ -65,6 +66,7 @@ app.use("/campus", campus);
 app.use("/logs", log);
 app.use("/ai", ai);
 app.use("/userhistory", userhistory);
+app.use("/goallists", goallists);
 app.use(
   "/profile_pic",
   express.static(path.join(__dirname, "../uploads/images"))

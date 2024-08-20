@@ -8,6 +8,9 @@ import { DepartmentsComponent } from './departments/departments.component';
 import { LogsComponent } from './logs/logs.component';
 import { ObjectivesComponent } from './goals/objectives/objectives.component';
 import { AiComponent } from './ai/ai.component';
+import { CalendarComponent } from './goals/calendar/calendar.component';
+import { ReportingComponent } from './goals/reporting/reporting.component';
+import { GoalManagementComponent } from './goal-management/goal-management.component';
 
 @NgModule({
     imports: [
@@ -18,7 +21,10 @@ import { AiComponent } from './ai/ai.component';
             { path: 'goals', component: GoalsComponent },
             { path: 'goals/dashboard', component: GoalDashboardComponent },
             { path: 'goals/objectives', component: ObjectivesComponent },
+            { path: 'goals/calendar', component: CalendarComponent },
+            { path: 'goals/reporting', component: ReportingComponent },
             { path: 'departments', component: DepartmentsComponent },
+            { path: 'goal-management', component: GoalManagementComponent },
             { path: 'logs', component: LogsComponent },
             { path: 'ai', component: AiComponent },
             { path: '**', redirectTo: '/dashboard' },

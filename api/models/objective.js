@@ -19,6 +19,7 @@ const objectivesSchema = new mongoose.Schema({
   programs: { type: String },
   responsible_persons: { type: String, required: true },
   clients: { type: String },
+  remarks: { type: String },
   timetable: [],
   frequency_monitoring: { type: String },
   complete: { type: Boolean, default: false },

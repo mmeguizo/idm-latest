@@ -13,10 +13,20 @@ import { FileUploadModule, FileUpload } from 'primeng/fileupload';
 import { SharedModule } from '../shared/shared.module';
 import { AiComponent } from './ai/ai.component';
 import { MarkdownModule } from 'ngx-markdown';
+import { ReportingComponent } from './goals/reporting/reporting.component';
 import 'prismjs';
 import 'prismjs/components/prism-typescript.min.js';
 import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import 'prismjs/plugins/line-highlight/prism-line-highlight.js';
+import { GoalManagementComponent } from './goal-management/goal-management.component';
+import { AddGoalComponent } from './goal-management/add-goal/add-goal.component';
+import { GoalTableComponent } from './goal-management/goal-table/goal-table.component';
+import { AddingGoalComponent } from './goals/add-goal/adding-goal.component';
+import { PrintTableComponent } from './goals/print-table/print-table.component';
+import { AddObjectiveComponent } from './goals/add-objective/add-objective.component';
+import { UpdateGoalComponent } from './goals/update-goal/update-goal.component';
+import { UpdateObjectiveComponent } from './goals/update-objective/update-objective.component';
+
 @NgModule({
     imports: [AdminRoutingModule, SharedModule, MarkdownModule.forRoot()],
     declarations: [
@@ -29,6 +39,15 @@ import 'prismjs/plugins/line-highlight/prism-line-highlight.js';
         GoalDashboardComponent,
         ObjectivesComponent,
         AiComponent,
+        ReportingComponent,
+        GoalManagementComponent,
+        AddGoalComponent,
+        AddingGoalComponent,
+        GoalTableComponent,
+        PrintTableComponent,
+        AddObjectiveComponent,
+        UpdateGoalComponent,
+        UpdateObjectiveComponent,
     ],
     providers: [FileUpload],
 })

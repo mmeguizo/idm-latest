@@ -519,3 +519,16 @@ $color-red-1: #ffb256;
 #link:hover {
     opacity: 1;
 }
+::ng-deep .p-knob-text {
+    text-align: center !important;
+    font-size: xx-small !important;
+}
+
+::ng-deep .p-knob.p-component {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart-parents {
+}

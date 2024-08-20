@@ -78,14 +78,41 @@ export class LogsComponent {
         return vowels.includes(resource[0].toLowerCase()) ? 'an' : 'a';
     }
 
+    // getLogDisplayValue(log: any): string {
+    //     if (log?.objectives?.[0]?.functional_objective) {
+    //         return log.objectives[0].functional_objective;
+    //     } else if (log?.ParamsObjectives?.[0]?.functional_objective) {
+    //         return log.ParamsObjectives[0].functional_objective;
+    //     } else if (log?.body?._id) {
+    //         return 'ID: ' + log.body._id;
+    //     } else if (log?.body?.username === log?.user.username) {
+    //         return 'For Himself';
+    //     } else if (log?.body?.functional_objective) {
+    //         return log.body.functional_objective;
+    //     } else if (log?.goals?.[0]?.goals || log?.body?.goals) {
+    //         return log?.goals?.[0]?.goals || log?.body?.goals;
+    //     } else {
+    //         return 'for Himself';
+    //     }
+    // }
+
     getLogDisplayValue(log: any): string {
+        if (!log) {
+            // Check if 'log' itself is undefined
+            return 'Unknown'; // Or some other appropriate default value
+        }
+
         if (log?.objectives?.[0]?.functional_objective) {
             return log.objectives[0].functional_objective;
         } else if (log?.ParamsObjectives?.[0]?.functional_objective) {
             return log.ParamsObjectives[0].functional_objective;
         } else if (log?.body?._id) {
             return 'ID: ' + log.body._id;
-        } else if (log?.body?.username === log?.user.username) {
+        } else if (
+            log?.body?.username &&
+            log?.user?.username &&
+            log.body.username === log.user.username
+        ) {
             return 'For Himself';
         } else if (log?.body?.functional_objective) {
             return log.body.functional_objective;

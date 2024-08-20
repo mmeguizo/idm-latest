@@ -5,6 +5,7 @@ import {
     ElementRef,
     ViewChild,
     ChangeDetectorRef,
+    EventEmitter,
 } from '@angular/core';
 import { Subject, pipe, takeUntil } from 'rxjs';
 import { Table } from 'primeng/table';
@@ -22,6 +23,7 @@ import { DepartmentService } from 'src/app/demo/service/department.service';
 import { FileService } from 'src/app/demo/service/file.service';
 import { FileUpload } from 'primeng/fileupload';
 import { CampusService } from 'src/app/demo/service/campus.service';
+import { PrintTableComponent } from './print-table/print-table.component';
 
 @Component({
     selector: 'app-goals',
@@ -31,6 +33,7 @@ import { CampusService } from 'src/app/demo/service/campus.service';
 export class GoalsComponent implements OnInit, OnDestroy {
     private getGoalSubscription = new Subject<void>();
     @ViewChild('filter') filter!: ElementRef;
+    @ViewChild(PrintTableComponent) printTableComponent: PrintTableComponent;
 
     //table data
     goals: any[] = [];
@@ -97,6 +100,18 @@ export class GoalsComponent implements OnInit, OnDestroy {
     blockedPanel: boolean;
     subOnjectiveHeaderData: any;
     isPrintableVisible: boolean = false;
+    printingHead: boolean = false;
+    nameValue: string = ''; // Declare variables to hold values
+    officeValue: string = '';
+    printingOfficeName: string = '';
+
+    //add goal child component
+    parentAddnewGoal: any = {};
+    parentEditGoal: any = {};
+    parentupdateObjective: any = {};
+    parentAddnewObjective: any = {};
+    printFlag: boolean;
+    goallistsId: string;
 
     constructor(
         private messageService: MessageService,
@@ -107,7 +122,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         private obj: ObjectiveService,
         private dept: DepartmentService,
         private fileService: FileService,
-        private fileUpload: FileUpload,
         private camp: CampusService,
         private changeDetectorRef: ChangeDetectorRef
     ) {
@@ -224,9 +238,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .getRoute('get', 'goals', 'getAllObjectivesWithObjectives')
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
-                // this.ObjectivesGoals = data.goals;
                 console.log(data.goals);
-
                 this.goals = data.goals;
                 this.loading = false;
             });
@@ -236,21 +248,31 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .getRoute('get', 'department', 'getAllDepartmentDropdown')
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
-                this.deptDropdownValue = data.data[0];
+                console.log({ getAllDept: data.data });
+                this.deptDropdownValue = data?.data[0];
             });
     }
 
     async getObjectives(
         id: string,
         objectId: string = '',
+        goallistsId: string = '',
         subHeader: string = '',
         goalDataRemainingBudget: number = 0,
         goalData: any = []
     ) {
-        console.log({ id, objectId, subHeader, goalDataRemainingBudget });
+        console.log({
+            id,
+            objectId,
+            subHeader,
+            goalDataRemainingBudget,
+            goallistsId,
+            goalData,
+        });
 
         //passed data needed for the subgoal table or adding table modal
         this.subObjectiveGoalID = id;
+        this.goallistsId = goallistsId;
         this.goal_ObjectId = objectId || goalData._id || '';
         //open the objective modal
         this.subGoalObjective = true;
@@ -354,54 +376,19 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     addSubGoal(data?: any) {
         console.log({ addSubGoal: data });
-
-        this.addObjectiveGoalDialogCard = true;
-    }
-
-    addGoal() {
-        this.addGoalDialogCard = true;
+        this.parentAddnewObjective = {
+            addObjective: true,
+            goallistsId: this.goallistsId,
+            goalId: this.subObjectiveGoalID,
+            goal_ObjectId: this.goal_ObjectId,
+        };
+        // this.addObjectiveGoalDialogCard = true;
     }
 
     addFiles(objectiveData: any) {
         // alert(objectiveID);
         this.addObjectiveFileDialogCard = true;
         // alert(JSON.stringify(objectiveData));
-    }
-
-    addGoalDialogExec(form: any) {
-        this.userID = this.USERID;
-
-        let data = {
-            goals: form.value.goals,
-            budget: form.value.budget,
-            campus: this.formGroupCampus.value.selectedCampus.name,
-            department: this.formGroupDemo.value.selectDepartment.name,
-            createdBy: this.userID,
-        };
-
-        this.goal
-            .getRoute('post', 'goals', 'addGoals', data)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    this.getAllObjectivesWithObjectives();
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
-                    this.addGoalDialogCard = false;
-                    this.addGoalform.reset();
-                    this.formGroupDemo.reset();
-                    this.formGroupCampus.reset();
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
     }
 
     addSubObjectiveGoalDialogExec(e: any) {
@@ -475,59 +462,58 @@ export class GoalsComponent implements OnInit, OnDestroy {
             });
     }
 
-    updateGoal(goal) {
-        this.updateGoalDialogCard = true;
-        this.updateGoalID = goal.id;
-        this.formGroupDemo.setValue({
-            selectDepartment: this.deptDropdownValue.find(
-                (dept) => dept.name === goal.department
-            ),
-        });
-        this.formGroupCampus.setValue({
-            selectedCampus: this.deptDropdownCampusValue.find(
-                (dept) => dept.name === goal.campus
-            ),
-        });
+    addGoal() {
+        console.log('adding goal');
+        this.parentAddnewGoal = { addGoal: true };
+    }
 
-        this.updateGoalform = this.formBuilder.group({
-            goals: [goal.goals || '', [Validators.required]],
-            budget: [goal.budget || 0, [Validators.required]],
-        });
+    updateGoal(goal) {
+        this.parentEditGoal = {
+            editGoal: true,
+            goal: goal,
+            updateGoalID: goal.id,
+        };
     }
 
     updateSubGoal(data: any) {
-        this.tobeUpdatedSubGoal = data.id;
-        //reset every after click
-        this.addObjectiveGoalform.reset();
-        // this.formGroupDropdown.reset();
+        console.log(data);
 
-        this.updateObjectiveGoalFlag = true;
-        this.addObjectiveGoalDialogCard = true;
-        this.formGroupDropdown.setValue({
-            selectedDropdown: this.dropdwonSelection.find(
-                (dept) => dept.name === data.frequency_monitoring
-            ) || { name: 'daily', code: 'Daily' },
-        });
+        this.parentupdateObjective = {
+            editGoal: true,
+            data,
+        };
+        // this.tobeUpdatedSubGoal = data.id;
+        // //reset every after click
+        // this.addObjectiveGoalform.reset();
+        // // this.formGroupDropdown.reset();
 
-        this.addObjectiveGoalform.patchValue({
-            // department: ['', [Validators.required]],
-            userId: data.userId,
-            goalId: data.goalId,
-            functional_objective: data.functional_objective,
-            performance_indicator: data.performance_indicator,
-            target: data.target,
-            formula: data.formula,
-            programs: data.programs,
-            responsible_persons: data.responsible_persons,
-            clients: data.clients,
-            timetable: [
-                new Date(data.timetable[0]),
-                new Date(data.timetable[1]),
-            ],
-            frequency_monitoring: data.frequency_monitoring,
-            data_source: data.data_source,
-            budget: data.budget,
-        });
+        // this.updateObjectiveGoalFlag = true;
+        // this.addObjectiveGoalDialogCard = true;
+        // this.formGroupDropdown.setValue({
+        //     selectedDropdown: this.dropdwonSelection.find(
+        //         (dept) => dept.name === data.frequency_monitoring
+        //     ) || { name: 'daily', code: 'Daily' },
+        // });
+
+        // this.addObjectiveGoalform.patchValue({
+        //     // department: ['', [Validators.required]],
+        //     userId: data.userId,
+        //     goalId: data.goalId,
+        //     functional_objective: data.functional_objective,
+        //     performance_indicator: data.performance_indicator,
+        //     target: data.target,
+        //     formula: data.formula,
+        //     programs: data.programs,
+        //     responsible_persons: data.responsible_persons,
+        //     clients: data.clients,
+        //     timetable: [
+        //         new Date(data.timetable[0]),
+        //         new Date(data.timetable[1]),
+        //     ],
+        //     frequency_monitoring: data.frequency_monitoring,
+        //     data_source: data.data_source,
+        //     budget: data.budget,
+        // });
     }
 
     updateObjectiveComplete(
@@ -945,7 +931,38 @@ export class GoalsComponent implements OnInit, OnDestroy {
         );
     }
 
-    printTable(subOnjectiveHeaderData: any = '') {
+    printTableNeeds(header?) {
+        this.printingHead = true;
+        this.printingOfficeName = header;
+    }
+
+    receivedAddGoalEvent(addGoalMessageResults: any) {
+        if (addGoalMessageResults.success) {
+            this.getAllObjectivesWithObjectives();
+        }
+    }
+
+    receivedEditGoalEvent(editGoalMessageResults: any) {
+        console.log({ editGoalMessageResults });
+
+        if (editGoalMessageResults.success) {
+            this.getAllObjectivesWithObjectives();
+        }
+    }
+    receivedUpdateObjective(editObjectiveMessageResults: any) {
+        console.log({ receivedUpdateObjective: editObjectiveMessageResults });
+        this.getObjectivesReload(editObjectiveMessageResults.id);
+    }
+
+    receivedAddObjectiveEvent(newObjective: any) {
+        this.getObjectivesReload(newObjective.goalId);
+    }
+
+    ngAfterViewInit() {
+        // Now you can safely call printTable
+        // this.printTable();
+    }
+    printTable(subOnjectiveHeaderData: any = '', name?: any, office?: any) {
         let imageSrc = this.auth.domain + '/assets/layout/images/logo.png';
         this.isPrintableVisible = true;
         let print, win;
@@ -978,11 +995,11 @@ export class GoalsComponent implements OnInit, OnDestroy {
               padding: unset;
               width: unset;
               height: unset;
-              -webkit-print-color-adjust: exact; /* Enable background graphics */
-              print-color-adjust: exact; /* Enable background graphics */
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
             }
             @page {
-              size: landscape; /* Set layout to landscape */
+              size: landscape;
             }
             margin: 1.5in 0in 0in 0in;
           }
@@ -1141,9 +1158,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             }
           }
 
-          .border-0 {
-            /* border: 0px; */
-          }
+
 
           .p-0 {
             padding: 0px;
@@ -1206,7 +1221,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
                       <th class="text-align-end">Page 2</th>
                     </tr>
                     <tr class="font-condensed">
-                    <th colspan="5">NAME OF OFFICE : ${subOnjectiveHeaderData.toUpperCase()}</th>
+                   <th colspan="5">${
+                       subOnjectiveHeaderData.toUpperCase() ||
+                       this.printingOfficeName.toUpperCase()
+                   }</th>
                       <th colspan="5">QUALITY OBJECTIVES AND ACTION PLAN</th>
                       <th class="text-align-end">CY</th>
                     </tr>
@@ -1224,8 +1242,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
                         <div>
                           <div>
                             <div>Prepared by:</div>
-                            <div>BENRIE JAMES NUFABLE, PHD. TM</div>
-                            <div>MIS Head - DPO</div>
+                            <div>${this.nameValue.toLocaleUpperCase()}</div>
+                            <div>${this.officeValue.toLocaleUpperCase()}</div>
                           </div>
                           <div>
                             <div>Reviewed and verified by:</div>
@@ -1248,5 +1266,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
               `);
         win.document.close();
         this.isPrintableVisible = false;
+        this.printingOfficeName = '';
+        this.nameValue = '';
+        this.officeValue = '';
     }
 }

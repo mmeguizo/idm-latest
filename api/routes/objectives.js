@@ -266,6 +266,7 @@ module.exports = (router) => {
       objectives: 1,
       objectiveBudget: 1,
     });
+
     totalSubGoalBudget = goalData.objectiveBudget
       .map((e) => e.budget)
       .reduce((a, b) => a + b, 0);
@@ -294,13 +295,36 @@ module.exports = (router) => {
     };
 
     try {
+      //create new Objectives
       let newObjectives = await Objectives.create(ObjectivesDataRequest);
       res.json({
         success: true,
         message: "Objectives Added Successfully",
         data: newObjectives,
       });
-      let updateGoal = await Goals.updateOne(
+      //update the goal model with budget and objectives id
+
+      try {
+        // Update the goal model with budget and objectives id
+        await Goals.updateOne(
+          { id: req.body.goalId },
+          {
+            $push: {
+              objectives: newObjectives.id,
+              objectiveBudget: {
+                id: newObjectives.id,
+                budget: ObjectivesDataRequest.budget,
+              },
+            },
+          }
+        );
+      } catch (updateError) {
+        console.error("Error updating goal with new objectives:", updateError);
+        // Optional: Send an additional response or log the error.
+      }
+
+      /*
+          await Goals.updateOne(
         { id: req.body.goalId },
         {
           $push: {
@@ -312,6 +336,7 @@ module.exports = (router) => {
           },
         }
       );
+      */
     } catch (error) {
       res.json({
         success: false,
@@ -681,8 +706,6 @@ module.exports = (router) => {
   });
 
   router.get("/getAllObjectivesForDashboardPie/:id", async (req, res) => {
-    console.log({ getAllObjectivesForDashboardPie: req.params.id });
-
     let data = [];
     try {
       let objectivesCount = await Objectives.countDocuments({

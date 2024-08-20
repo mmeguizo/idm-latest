@@ -146,6 +146,7 @@ module.exports = (router) => {
             deleted: 1,
             date_added: 1,
             createdAt: 1,
+            goallistsId: 1,
             __v: 1,
             updatedAt: 1,
             complete: 1,
@@ -280,7 +281,9 @@ module.exports = (router) => {
               department: 1,
               campus: 1,
               createdBy: 1,
+              goallistsId: 1,
               deleted: 1,
+              goalData: 1,
               date_added: 1,
               createdAt: 1,
               __v: 1,
@@ -419,10 +422,6 @@ module.exports = (router) => {
           };
         }
 
-        console.log({
-          getAllObjectivesWithObjectivesForBarChartsDashboard: finalMatch,
-        });
-
         let multiData = await Goals.aggregate([
           {
             $match: finalMatch,
@@ -464,36 +463,7 @@ module.exports = (router) => {
               series: 1,
             },
           },
-          //   {
-          //     $lookup: {
-          //       from: "objectives", // Lookup the objectives associated with each goal
-          //       localField: "id",
-          //       foreignField: "goalId",
-          //       as: "goalDetails",
-          //     },
-          //   },
-          //   {
-          //     $group: {
-          //       _id: "$goals", // Group by goal's title directly (assuming the field is called "goals" in the Goals collection)
-          //       series: {
-          //         $push: {
-          //           // Create the 'series' array for each goal
-          //           name: "$goalDetails.functional_objective",
-          //           value: "$goalDetails.budget",
-          //         },
-          //       },
-          //     },
-          //   },
-          //   {
-          //     $project: {
-          //       _id: 0, // Exclude the _id field
-          //       name: "$_id", // Rename _id to name
-          //       series: 1, // Include the series array
-          //     },
-          //   },
         ]);
-        console.log(multiData);
-
         return res.status(200).json({
           success: true,
           multi: multiData,
@@ -570,7 +540,8 @@ module.exports = (router) => {
   });
 
   router.post("/addGoals", (req, res) => {
-    let { goals, budget, createdBy, campus, department } = req.body;
+    let { goals, budget, createdBy, campus, department, goallistsId } =
+      req.body;
 
     if (!goals && budget) {
       return res.json({
@@ -586,6 +557,7 @@ module.exports = (router) => {
       campus,
       department,
       createdBy,
+      goallistsId,
     };
     Goals.create(goalsDataRequest)
       .then((data) => {
@@ -743,6 +715,7 @@ module.exports = (router) => {
   });
 
   //**********************USer Routes ********************** */
+
   router.get("/getGoalsForUserDashboard/:id", async (req, res) => {
     const userId = req.params.id; // Get user ID from request parameters
     let data = [];
@@ -887,6 +860,7 @@ module.exports = (router) => {
             deleted: 1,
             date_added: 1,
             createdAt: 1,
+            goallistsId: 1,
             __v: 1,
             updatedAt: 1,
             complete: 1,

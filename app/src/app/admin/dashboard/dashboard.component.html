@@ -173,8 +173,16 @@
                 (onClear)="onClearCampus()"
             />
 
-            <p-tabView orientation="right">
-                <p-tabPanel header="Goals List" class="line-height-3 m-0">
+            <p-tabView
+                (onChange)="onChange($event)"
+                [activeIndex]="selectedIndex"
+                orientation="right"
+            >
+                <p-tabPanel
+                    header="Goals List"
+                    class="line-height-3 m-0"
+                    [selected]="true"
+                >
                     <div class="card">
                         <div class="grid">
                             <div
@@ -214,8 +222,19 @@
                                             <td>{{ goal.budget | peso }}</td>
                                         </tr>
                                     </ng-template>
+                                    <ng-template pTemplate="emptymessage">
+                                        <tr>
+                                            <td colspan="8">No Goals found.</td>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="loadingbody">
+                                        <tr>
+                                            <td colspan="8">
+                                                Loading Goals data. Please wait.
+                                            </td>
+                                        </tr>
+                                    </ng-template>
                                 </p-table>
-
                                 <p-skeleton
                                     width="12rem"
                                     height="2rem"
@@ -229,33 +248,61 @@
                             </div>
                             @if (!selectedAgoal) {
                             <div
-                                class="col-5 align-items-center justify-content-center"
+                                class="col-5 align-items-center justify-content-center md:flex-column"
                             >
-                                <div class="card flex justify-content-center">
+                                <!--   [(ngModel)]="knobValue" -->
+                                <div
+                                    class="card flex justify-content-center flex-column"
+                                >
+                                    <p class="text-sm text-center">
+                                        Total Goal : {{ totalBudget | peso }}
+                                    </p>
+                                    <p class="text-sm text-center">
+                                        Total Objective Goal :
+                                        {{ knobValue | peso }}
+                                    </p>
+                                    <hr
+                                        class="my-3 mx-0 border-top-1 border-none surface-border"
+                                    />
                                     <div
-                                        style="
-                                            display: flex;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            justify-content: center;
-                                        "
+                                        id="progress"
+                                        class="justify-content-around align-items-center flex flex-row sm:flex-column md:flex-row"
                                     >
-                                        <!-- <ng-template pTemplate="header"> -->
-                                        <img
-                                            alt="Card"
-                                            src="assets/layout/images/logo.png"
-                                            style="
-                                                width: 200px;
-                                                height: 200px;
-                                                display: flex !important;
-                                                justify-content: center !important;
-                                                align-items: center !important;
-                                            "
-                                        />
-                                        <!-- </ng-template> -->
-                                        <span class="my-6"></span>
-                                        <div class="text-2xl font-bold">
-                                            Please Select a Goal...
+                                        <div
+                                            class="flex align-items-center md:flex-column justify-content-center"
+                                        >
+                                            <i
+                                                class="pi pi-check text-green-500 mr-2"
+                                            ></i>
+                                            &nbsp;
+                                            <p class="text-xs">
+                                                Complete : {{ completedGoals }}
+                                            </p>
+                                        </div>
+                                        <div
+                                            class="flex align-items-center md:flex-column justify-content-center"
+                                        >
+                                            <i
+                                                class="pi pi-spin pi-spinner text-yellow-500 mr-2"
+                                            ></i>
+                                            &nbsp;
+                                            <p class="text-xs">
+                                                In Progress :{{
+                                                    inProgressGoals
+                                                }}
+                                            </p>
+                                        </div>
+                                        <div
+                                            class="flex align-items-center md:flex-column justify-content-center"
+                                        >
+                                            <i
+                                                class="pi pi-wrench text-red-500 mr-2"
+                                            ></i>
+                                            &nbsp;
+                                            <p class="text-xs">
+                                                Not Started :
+                                                {{ notStartedGoals }}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -349,6 +396,19 @@
                             </div>
                             }
                         </div>
+                    </div>
+                </p-tabPanel>
+                <p-tabPanel
+                    header="Charts"
+                    class="line-height-3 m-0"
+                    cache="false"
+                >
+                    <div class="card">
+                        <p-chart
+                            type="bar"
+                            [data]="barCharts"
+                            [options]="options"
+                        />
                     </div>
                 </p-tabPanel>
             </p-tabView>

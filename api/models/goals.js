@@ -13,6 +13,7 @@ const goalsSchema = new Schema(
     date_added: { type: Date, required: true, default: Date.now },
     createdBy: { type: String },
     createdAt: { type: Date, default: Date.now },
+    goallistsId: { type: String },
     updatedBy: { type: String },
     updateDate: { type: Date },
     complete: { type: Boolean, default: false },

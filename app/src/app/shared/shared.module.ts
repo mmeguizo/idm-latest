@@ -54,6 +54,11 @@ import { TabViewModule } from 'primeng/tabview';
 import { DividerModule } from 'primeng/divider';
 import { DataViewModule } from 'primeng/dataview';
 import { MarkdownModule } from 'ngx-markdown';
+import { KnobModule } from 'primeng/knob';
+import { OrderListModule } from 'primeng/orderlist';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 const pipes = [
     dataFilterPipe,
@@ -116,6 +121,12 @@ const pipes = [
         DividerModule,
         DataViewModule,
         MarkdownModule,
+        KnobModule,
+        NgxChartsModule,
+        OrderListModule,
+        ProgressSpinnerModule,
+        ConfirmDialogModule,
+        // BoldReportViewerModule,
         ...pipes,
         // FileUpload
     ],

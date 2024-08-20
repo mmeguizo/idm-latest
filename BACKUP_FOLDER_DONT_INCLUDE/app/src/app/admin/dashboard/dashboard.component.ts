@@ -1,0 +1,352 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UserService } from 'src/app/demo/service/user.service';
+import { Subject, takeUntil } from 'rxjs';
+import { GoalService } from 'src/app/demo/service/goal.service';
+import { DepartmentService } from 'src/app/demo/service/department.service';
+import { ObjectiveService } from 'src/app/demo/service/objective.service';
+import { IdepartmentDropdown } from 'src/app/interface/department.interface';
+import { IcampusDropdown } from 'src/app/interface/campus.interface';
+import { CampusService } from 'src/app/demo/service/campus.service';
+import { BranchService } from 'src/app/demo/service/branch.service';
+import { MessageService } from 'primeng/api';
+
+@Component({
+    selector: 'app-admin-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.scss',
+})
+export class DashboardComponent implements OnInit, OnDestroy {
+    users: any;
+    goals: any;
+    private getDashboardSubscription = new Subject<void>();
+    objectivePieData: any;
+    objectiveDoughnutData: any;
+    chartOptions: any;
+    deparmentData: any;
+    objectivesData: any;
+    options: any;
+    barData: any;
+    barOptions: any;
+    loading: boolean = false;
+    NewGoals: any;
+    cities: any[];
+    countries: any[] = [];
+    departmentList: IdepartmentDropdown[] | undefined;
+    campusList: IcampusDropdown[] | undefined;
+
+    selectedDepartmentDropdown: IdepartmentDropdown | undefined;
+    selectedCampusDropdown: IcampusDropdown | undefined;
+
+    selectedAgoal: Boolean = false;
+
+    pieData: any;
+    pieDataBool: Boolean = false;
+    pieOptions: any;
+    objectivesSideData: any[];
+    selectedGoalData: any;
+
+    totalBudget: number = 0;
+    totalSubBudget: number = 0;
+    remainingBudget: number = 0;
+    completionPercentage: number = 0;
+    completedGoals: number = 0;
+    inProgressGoals: number = 0;
+    notStartedGoals: number;
+    knobValue: number;
+
+    constructor(
+        public userService: UserService,
+        private goalService: GoalService,
+        private dept: DepartmentService,
+        private obj: ObjectiveService,
+        private campus: CampusService,
+        private branch: BranchService,
+        private messageService: MessageService
+    ) {}
+
+    ngOnInit() {
+        this.getAllusers();
+        this.getAllGoals();
+        this.getAllDept();
+        this.getAllObjectives();
+        this.getAllObjectivesWithObjectives();
+        this.getAllCampusForDashboard();
+        // this.initCharts();
+    }
+
+    processDashboardData(data) {
+        this.totalBudget =
+            data.goals?.reduce((sum, goal) => sum + (goal.budget || 0), 0) || 0;
+
+        this.totalSubBudget = (data.goals ?? []).reduce((sum, goal) => {
+            return (
+                sum +
+                (goal.objectivesDetails?.reduce(
+                    (subSum, obj) => subSum + (obj.budget || 0),
+                    0
+                ) ?? 0)
+            );
+        }, 0);
+
+        console.log({
+            totalBudget: this.totalBudget,
+            totalSubBudget: this.totalSubBudget,
+        });
+
+        this.knobValue = this.remainingBudget =
+            (this.totalSubBudget !== 0 ? this.totalBudget : 0) -
+            this.totalSubBudget;
+
+        const goalsWithObjectives = (data.goals ?? []).filter(
+            (goal) =>
+                goal.objectivesDetails && goal.objectivesDetails.length > 0
+        );
+
+        // Calculate completed goals
+        this.completedGoals = goalsWithObjectives.filter((goal) =>
+            goal.objectivesDetails.every((obj) => obj.complete)
+        ).length;
+
+        // Calculate in-progress goals
+        this.inProgressGoals = goalsWithObjectives.filter((goal) =>
+            goal.objectivesDetails.some((obj) => !obj.complete)
+        ).length;
+
+        // Calculate not started goals
+        this.notStartedGoals = data.goals?.length
+            ? data.goals.length - this.inProgressGoals - this.completedGoals
+            : 0;
+
+        // Correctly calculate completion percentage (using filtered goals with objectives)
+        this.completionPercentage =
+            this.totalBudget > 0
+                ? (this.completedGoals / goalsWithObjectives.length) * 100
+                : 0;
+    }
+
+    async getAllCampusForDashboard() {
+        await this.branch.getCampus().then((campus) => {
+            console.log({ getAllCampusForDashboard: campus });
+            this.campusList = campus;
+        });
+    }
+
+    async getAllusers() {
+        await this.userService
+            .getRoute('get', 'users', 'getAllUsersForDashboard')
+            .pipe(takeUntil(this.getDashboardSubscription))
+            .subscribe((data: any) => {
+                this.users = data.data[0];
+            });
+    }
+    async getAllGoals() {
+        await this.goalService
+            .getRoute('get', 'goals', 'getGoalsForDashboard')
+            .pipe(takeUntil(this.getDashboardSubscription))
+            .subscribe((data: any) => {
+                console.log({ getAllGoalsNewGoals: data });
+                this.NewGoals = data.data;
+            });
+    }
+
+    async getAllDept() {
+        await this.dept
+            .getRoute('get', 'department', 'getAllDepartmentForDashboard')
+            .pipe(takeUntil(this.getDashboardSubscription))
+            .subscribe((data: any) => {
+                this.deparmentData = data.data[0];
+            });
+    }
+
+    async getAllObjectives() {
+        await this.obj
+            .getRoute('get', 'objectives', `getAllObjectivesForDashboard`)
+            .pipe(takeUntil(this.getDashboardSubscription))
+            .subscribe((data: any) => {
+                this.objectivesData = data.data[0];
+            });
+    }
+
+    // async getAllObjectivesWithObjectives(campus?: string) {
+    //     this.loading = true;
+    //     await this.goalService
+    //         .getRoute(
+    //             'get',
+    //             'goals',
+    //             `getAllObjectivesWithObjectivesForDashboard/${campus}`
+    //         )
+    //         .pipe(takeUntil(this.getDashboardSubscription))
+    //         .subscribe(async (data: any) => {
+    //             console.log({ getAllObjectivesWithObjectives: data });
+    //             this.goals = data.goals;
+    //             this.loading = false;
+    //         });
+    // }
+
+    async getAllObjectivesWithObjectives(campus?: string) {
+        this.loading = true;
+        this.goalService
+            .getRoute(
+                'get',
+                'goals',
+                `getAllObjectivesWithObjectivesForDashboard/${campus}`
+            )
+            .pipe(takeUntil(this.getDashboardSubscription))
+            .subscribe({
+                next: (data: any) => {
+                    console.log({ getAllObjectivesWithObjectives: data });
+
+                    this.processDashboardData(data);
+
+                    this.goals = data.goals;
+                    this.loading = false;
+                },
+                error: (error) => {
+                    console.error('Error fetching data:', error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Failed to fetch goals',
+                    }); // Display error message
+                    this.loading = false;
+                },
+            });
+    }
+
+    async getAllDepartmentForDashboard() {
+        await this.dept
+            .getRoute('get', 'department', 'getAllDepartmentDropdown')
+            .pipe(takeUntil(this.getDashboardSubscription))
+            .subscribe((data: any) => {
+                this.departmentList = data.data[0];
+            });
+    }
+
+    showDetails(goal: any) {
+        console.log({ showDetails: goal });
+    }
+
+    selectedGoal(goal: any) {
+        console.log({ selectedGoal: goal });
+        this.selectedAgoal = true;
+        this.selectedGoalData = goal;
+
+        if (goal) {
+            this.obj
+                .getRoute(
+                    'get',
+                    'objectives',
+                    `getAllObjectivesForDashboardPie/${goal.id}`
+                )
+                .pipe(takeUntil(this.getDashboardSubscription))
+                .subscribe((data: any) => {
+                    console.log({ getAllByIdObjectives: data });
+
+                    let {
+                        objectiveCompleted,
+                        objectiveUncompleted,
+                        objectivesData,
+                        completionPercentage,
+                    } = data.data[0];
+                    this.objectivesSideData = objectivesData;
+                    this.pieDataBool = objectivesData.length > 1 ? true : false;
+                    this.initCharts(objectivesData);
+                    this.loading = false;
+                });
+        }
+    }
+
+    onChangeCampus(event: any = '') {
+        console.log({ onChangeCampus: event?.value });
+        this.loading = true;
+        this.selectedAgoal = false;
+        this.goals = [];
+        this.knobValue = 0;
+        this.totalBudget = 0;
+        this.totalSubBudget = 0;
+        this.remainingBudget = 0;
+        this.completionPercentage = 0;
+        this.completedGoals = 0;
+        this.inProgressGoals = 0;
+        this.notStartedGoals = 0;
+        this.knobValue = 0;
+        this.getAllObjectivesWithObjectives(event?.value?.name ?? '');
+    }
+
+    onClearCampus() {
+        this.loading = true;
+        this.selectedAgoal = false;
+        this.goals = [];
+        this.getAllObjectivesWithObjectives();
+    }
+
+    initCharts(data?: any) {
+        console.log({ initCharts: data });
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+        const textColorSecondary = documentStyle.getPropertyValue(
+            '--text-color-secondary'
+        );
+        const surfaceBorder =
+            documentStyle.getPropertyValue('--surface-border');
+
+        this.pieData = {
+            labels: data.map((e) => e.functional_objective),
+            datasets: [
+                {
+                    data: data.map((e) => 1),
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--indigo-500'),
+                        documentStyle.getPropertyValue('--purple-500'),
+                        documentStyle.getPropertyValue('--teal-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--indigo-400'),
+                        documentStyle.getPropertyValue('--purple-400'),
+                        documentStyle.getPropertyValue('--teal-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.pieOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+            },
+        };
+    }
+
+    // Create Pie Chart
+    createPieChart() {
+        if (this.objectivesSideData && this.objectivesSideData.length > 0) {
+            const completed = this.objectivesSideData.filter(
+                (obj) => obj.complete
+            ).length;
+            const notCompleted = this.objectivesSideData.length - completed;
+
+            this.pieData = {
+                labels: ['Completed', 'Not Completed'],
+                datasets: [
+                    {
+                        data: [completed, notCompleted],
+                        backgroundColor: ['#42A5F5', '#FFA726'],
+                        hoverBackgroundColor: ['#64B5F6', '#FFB74D'],
+                    },
+                ],
+            };
+            this.pieDataBool = true;
+        } else {
+            this.pieDataBool = false;
+        }
+    }
+
+    ngOnDestroy() {
+        this.getDashboardSubscription.next();
+        this.getDashboardSubscription.complete();
+    }
+}
