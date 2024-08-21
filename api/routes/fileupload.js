@@ -14,102 +14,106 @@ const Logs = require("../models/logs");
 const { log } = require("console");
 
 module.exports = (router) => {
-  router.post("/addMultipleFiles/:user_id/:objective_id", async (req, res) => {
-    let ReturnData = [];
-    let useFor = "files";
-    let form = new formidable.IncomingForm({ multiples: true });
-    form.maxFileSize = 2500 * 1024 * 1024; // Adjust max file size as needed
-    form.uploadDir = path.join(__dirname, "..", "images/files");
+  router.post(
+    "/addMultipleFiles/:user_id/:objective_id",
 
-    const uploadedFiles = []; // Array to store uploaded file details
+    async (req, res) => {
+      let ReturnData = [];
+      let useFor = "files";
+      let form = new formidable.IncomingForm({ multiples: true });
+      form.maxFileSize = 2500 * 1024 * 1024; // Adjust max file size as needed
+      form.uploadDir = path.join(__dirname, "..", "images/files");
 
-    form.on("file", async (field, file) => {
-      const newFileName = [
-        useFor,
-        Math.random(),
-        Math.random(),
-        Math.random(),
-      ].join("");
-      const ext = file.originalFilename.split(".").pop();
-      const finalFileName = `${md5(newFileName)}${ext ? `.${ext}` : ""}`;
+      const uploadedFiles = []; // Array to store uploaded file details
 
-      try {
-        const filePath = file.filepath; // Assuming `filepath` property exists
-        const readStream = fs.createReadStream(filePath);
+      form.on("file", async (field, file) => {
+        const newFileName = [
+          useFor,
+          Math.random(),
+          Math.random(),
+          Math.random(),
+        ].join("");
+        const ext = file.originalFilename.split(".").pop();
+        const finalFileName = `${md5(newFileName)}${ext ? `.${ext}` : ""}`;
 
-        await new Promise((resolve, reject) => {
-          const fileStream = fs.createWriteStream(
-            path.join(form.uploadDir, finalFileName)
+        try {
+          const filePath = file.filepath; // Assuming `filepath` property exists
+          const readStream = fs.createReadStream(filePath);
+
+          await new Promise((resolve, reject) => {
+            const fileStream = fs.createWriteStream(
+              path.join(form.uploadDir, finalFileName)
+            );
+            fileStream.on("error", (err) => reject(err));
+            fileStream.on("finish", () => resolve());
+            readStream.pipe(fileStream); // Pipe the read stream to the write stream
+          });
+
+          uploadedFiles.push(
+            new File({
+              id: uuidv4(),
+              user_id: req.params.user_id,
+              objective_id: req.params.objective_id,
+              source: finalFileName,
+              for: "files",
+              filetype: file.mimetype.split("/")[0],
+            })
           );
-          fileStream.on("error", (err) => reject(err));
-          fileStream.on("finish", () => resolve());
-          readStream.pipe(fileStream); // Pipe the read stream to the write stream
-        });
 
-        uploadedFiles.push(
-          new File({
-            id: uuidv4(),
-            user_id: req.params.user_id,
-            objective_id: req.params.objective_id,
-            source: finalFileName,
-            for: "files",
-            filetype: file.mimetype.split("/")[0],
-          })
-        );
+          let savePromises = uploadedFiles.map((file) => {
+            return new Promise((resolve, reject) => {
+              file.save((err, data) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  console.log({ fileAdd: data });
 
-        let savePromises = uploadedFiles.map((file) => {
-          return new Promise((resolve, reject) => {
-            file.save((err, data) => {
-              if (err) {
-                reject(err);
-              } else {
-                console.log({ fileAdd: data });
-
-                resolve(data);
-              }
+                  resolve(data);
+                }
+              });
             });
           });
-        });
 
-        Promise.all(savePromises)
-          .then((data) => {
-            console.log("Files Saving success....:");
-          })
-          .catch((err) => {
-            console.error("Error uploading file:", err);
-          });
-      } catch (err) {
-        console.error("Error uploading file:", err);
-      }
-    });
+          Promise.all(savePromises)
+            .then((data) => {
+              console.log("Files Saving success....:");
+            })
+            .catch((err) => {
+              console.error("Error uploading file:", err);
+            });
+        } catch (err) {
+          console.error("Error uploading file:", err);
+        }
+      });
 
-    form.on("progress", (bytesReceived, bytesExpected) => {
-      console.log("Progress:", bytesReceived, bytesExpected);
-    });
+      form.on("progress", (bytesReceived, bytesExpected) => {
+        console.log("Progress:", bytesReceived, bytesExpected);
+      });
 
-    form.on("error", (err) => {
-      console.error("An error occurred:", err);
-    });
+      form.on("error", (err) => {
+        console.error("An error occurred:", err);
+      });
 
-    form.on("end", async () => {
-      console.log("Finished uploading files");
-    });
+      form.on("end", async () => {
+        console.log("Finished uploading files");
+      });
 
-    form.parse(req);
+      form.parse(req);
 
-    res.json({
-      success: true,
-      message: "Files uploaded successfully!",
-    });
-    let params = JSON.stringify(req.params);
-    let query = JSON.stringify(req.query);
-    let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
-  });
+      res.json({
+        success: true,
+        message: "Files uploaded successfully!",
+      });
+      let params = JSON.stringify(req.params);
+      let query = JSON.stringify(req.query);
+      let body = JSON.stringify(req.body);
+      logger.info(
+        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+          req.statusCode
+        }|${req.socket.remoteAddress}|${Date.now()}`
+      );
+    }
+  );
 
   router.post("/addFile/:user_id", async (req, res) => {
     let useFor = "files";
@@ -371,41 +375,45 @@ module.exports = (router) => {
     );
   });
 
-  router.get("/getAllFilesFromObjective/:user_id/:objective_id", (req, res) => {
-    const { user_id, objective_id } = req.params;
+  router.get(
+    "/getAllFilesFromObjective/:user_id/:objective_id",
 
-    console.log(req.params);
+    (req, res) => {
+      const { user_id, objective_id } = req.params;
 
-    File.find(
-      {
-        user_id: user_id,
-        objective_id: objective_id,
-        for: "files",
-        status: true,
-      },
-      {
-        __v: 0.0,
-      },
-      (err, files) => {
-        if (err) {
-          return res.json({ success: false, message: err.message });
-        } else {
-          return res.json({ success: true, message: "Files", data: files });
+      console.log(req.params);
+
+      File.find(
+        {
+          user_id: user_id,
+          objective_id: objective_id,
+          for: "files",
+          status: true,
+        },
+        {
+          __v: 0.0,
+        },
+        (err, files) => {
+          if (err) {
+            return res.json({ success: false, message: err.message });
+          } else {
+            return res.json({ success: true, message: "Files", data: files });
+          }
         }
-      }
-    ).sort({
-      date_added: -1,
-    });
+      ).sort({
+        date_added: -1,
+      });
 
-    let params = JSON.stringify(req.params);
-    let query = JSON.stringify(req.query);
-    let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
-  });
+      let params = JSON.stringify(req.params);
+      let query = JSON.stringify(req.query);
+      let body = JSON.stringify(req.body);
+      logger.info(
+        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+          req.statusCode
+        }|${req.socket.remoteAddress}|${Date.now()}`
+      );
+    }
+  );
   router.get(
     "/getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id",
     (req, res) => {

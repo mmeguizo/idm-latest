@@ -122,7 +122,7 @@ module.exports = (router) => {
       console.error("Error updating goal list:", error);
       res.status(500).json({
         success: false,
-        message: "Internal server error",
+        message: "Internal server error Or Token Expired",
       });
     }
   });
@@ -145,66 +145,77 @@ module.exports = (router) => {
     }
   });
 
-  router.get("/getAllAddObjectivesGoallistsDropdown/:id", async (req, res) => {
-    let data = [];
-    try {
-      let campus = await Goallists.find({ id: req.params.id, deleted: false });
-      data.push(
-        campus.flatMap((e) => {
-          return e.objectives.map((x) => {
-            return {
-              name: x.objective,
-              code: x.objective,
-              GoalId: e.id,
-              goal: e.goals,
-              objId: x.id,
-            };
-          });
-        })
-      );
-      await res.json({
-        success: true,
-        // get the first level array of data
-        objectives: data[0],
-        // campus,
-      });
-    } catch (error) {
-      res.json({ success: false, message: error });
-    }
-  });
+  router.get(
+    "/getAllAddObjectivesGoallistsDropdown/:id",
 
-  router.get("/getAllEditObjectivesGoallistsDropdown/:id", async (req, res) => {
-    const { id } = req.params;
-    let data = [];
-    try {
-      let goal = await Goals.find({ id: id });
-      let campus = await Goallists.find({
-        id: goal[0].goallistsId,
-        deleted: false,
-      });
-      data.push(
-        campus.flatMap((e) => {
-          return e.objectives.map((x) => {
-            return {
-              name: x.objective,
-              code: x.objective,
-              GoalId: e.id,
-              goal: e.goals,
-              objId: x.id,
-            };
-          });
-        })
-      );
-      await res.json({
-        success: true,
-        // get the first level array of data
-        objectives: data[0],
-        // campus,
-      });
-    } catch (error) {
-      res.json({ success: false, message: error });
+    async (req, res) => {
+      let data = [];
+      try {
+        let campus = await Goallists.find({
+          id: req.params.id,
+          deleted: false,
+        });
+        data.push(
+          campus.flatMap((e) => {
+            return e.objectives.map((x) => {
+              return {
+                name: x.objective,
+                code: x.objective,
+                GoalId: e.id,
+                goal: e.goals,
+                objId: x.id,
+              };
+            });
+          })
+        );
+        await res.json({
+          success: true,
+          // get the first level array of data
+          objectives: data[0],
+          // campus,
+        });
+      } catch (error) {
+        res.json({ success: false, message: error });
+      }
     }
-  });
+  );
+
+  router.get(
+    "/getAllEditObjectivesGoallistsDropdown/:id",
+
+    async (req, res) => {
+      const { id } = req.params;
+      let data = [];
+      try {
+        let goal = await Goals.find({ id: id });
+        let campus = await Goallists.find({
+          id: goal[0].goallistsId,
+          deleted: false,
+        });
+        data.push(
+          campus.flatMap((e) => {
+            return e.objectives.map((x) => {
+              return {
+                name: x.objective,
+                code: x.objective,
+                GoalId: e.id,
+                goal: e.goals,
+                objId: x.id,
+              };
+            });
+          })
+        );
+        await res.json({
+          success: true,
+          // get the first level array of data
+          objectives: data[0],
+          // campus,
+        });
+      } catch (error) {
+        res.json({ success: false, message: error });
+      }
+    }
+  );
 
   return router;
 };

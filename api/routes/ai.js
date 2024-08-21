@@ -75,7 +75,7 @@ module.exports = (router) => {
       }
     } catch (error) {
       console.error("Error chatting with Gemini:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: "Internal server error Or Token Expired" });
     }
   });
 
@@ -92,7 +92,7 @@ module.exports = (router) => {
         chats: messages,
       });
     } catch (error) {
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: "Internal server error Or Token Expired" });
     }
   });
 

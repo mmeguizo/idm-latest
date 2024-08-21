@@ -4,7 +4,7 @@ const config = require("../config/database");
 const { v4: uuidv4 } = require("uuid");
 let bcrypt = require("bcryptjs");
 const comparePassword = require("../models/validators/password-compare");
-const { logger } = require("../middleware/logger");
+const { logger, logMiddleware } = require("../middleware/logger");
 
 module.exports = (router) => {
   router.post("/register", (req, res) => {
@@ -172,29 +172,66 @@ Object { a: 5, c: 7 }
 
   // any route that needs authorization or token should be under it if not above this middleware
   router.use((req, res, next) => {
-    //'@auth0/angular-jwt' automatically adds token in the headers but it also add the world 'Bearer ' so i manually format it
-    //i slice the word 'Bearer '  = 7
-    //let token = (req.headers['authorization']).slice(7);
-    var token = "";
+    //'@auth0/angular-jwt' automatically adds token in the headers but it also adds the word 'Bearer ', so we manually format it.
+    let token = "";
+    let request = req;
+    const startTime = Date.now();
+    const duration = Date.now() - startTime;
+
+    const data = {
+      method: req?.method,
+      params: req?.params,
+      query: req?.query,
+      url: req?.originalUrl,
+      body: req?.body,
+      status: res.statusCode,
+      duration: `${duration}ms`,
+      date: Date.now(),
+    };
+
     if (req.headers["authorization"]) {
+      // Extract the token by removing the 'Bearer ' part
+      // token = req.headers["authorization"].split(" ")[1];
       token = req.headers["authorization"].substring(
         req.headers["authorization"].indexOf(" ") + 1
       );
     }
 
     if (!token) {
-      res.json({ success: false, message: "No token provided" });
+      return res
+        .status(401)
+        .json({ success: false, message: "No token provided authentication" });
     } else {
-      //decrypt token
+      // Decrypt and verify the token
       jwt.verify(token, config.secret, (err, decoded) => {
+        if (decoded) {
+          data.user = { username, id, role, profile_pic, campus, department } =
+            decoded;
+          logMiddleware(data);
+        }
+
         if (err) {
-          //expire or invalid
-          res.json({ success: false, message: "Token invalid :" + err });
+          // Handle expired or invalid token
+          if (err.name === "TokenExpiredError") {
+            return res.status(401).json({
+              success: false,
+              message: "Token has expired. Please log in again.",
+            });
+          } else if (err.name === "JsonWebTokenError") {
+            return res.status(400).json({
+              success: false,
+              message: "Token is invalid: " + err.message,
+            });
+          } else {
+            return res.status(500).json({
+              success: false,
+              message: "Internal server error Or Token Expired Auth.",
+            });
+          }
         } else {
-          //assign token to headers
+          // Assign the decoded token to request headers
           req.decoded = decoded;
-          //to break to this functions if not it will just loop
-          next();
+          next(); // Proceed to the next middleware or route handler
         }
       });
     }

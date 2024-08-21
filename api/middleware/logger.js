@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/database");
 
 const logs = require("../models/logs");
+
 // Logger configuration
 const logger = winston.createLogger({
   level: "info",
@@ -19,42 +20,59 @@ const logger = winston.createLogger({
   ],
 });
 
-// logger.add(
-//   new winston.transports.Console({
-//     format: winston.format.combine(
-//       winston.format.colorize(),
-//       winston.format.splat()
-//     ),
-//   })
-// );
-
 // Logging middleware
-const logMiddleware = async (req, res, next) => {
-  const startTime = Date.now();
-  // Extract the token from the Authorization header
-  const authHeader = req.headers["authorization"];
-  if (authHeader !== undefined) {
-    res.on("finish", async () => {
-      const duration = Date.now() - startTime;
-      ({ username, id, role, profile_pic, campus, department } =
-        await jwt.verify(authHeader, config.secret));
-      const data = {
-        method: req.method,
-        params: req.params,
-        query: req.query,
-        url: req.originalUrl,
-        body: req.body,
-        status: res.statusCode,
-        duration: `${duration}ms`,
-        date: Date.now(),
-        user: { username, id, role, profile_pic, campus, department },
-      };
-      await logs.create(data);
-      logger.info("HTTP Request", data);
-    });
+async function logMiddleware({ data }) {
+  if (data) {
+    await logs.create(data);
   }
+  // const startTime = Date.now();
+  // const duration = Date.now() - startTime;
+  // const data = {
+  //   method: req.method,
+  //   params: req.params,
+  //   query: req.query,
+  //   url: req.originalUrl,
+  //   body: req.body,
+  //   status: res.statusCode,
+  //   duration: `${duration}ms`,
+  //   date: Date.now(),
+  //   user: { username, id, role, profile_pic, campus, department },
+  // };
 
-  next();
-};
+  // await logs.create(data);
+  // logger.info("HTTP Request", data);
+  //   const startTime = Date.now();
+  //   // Extract the token from the Authorization header
+  //   const authHeader = req.headers["authorization"];
+  //   if (authHeader) {
+  //     test = jwt.verify(authHeader, config.secret);
+
+  //     console.log({ logMiddleware: test });
+
+  //     const { username, id, role, profile_pic, campus, department } = jwt.verify(
+  //       authHeader,
+  //       config.secret
+  //     );
+  //     res.on("finish", async () => {
+  //       const duration = Date.now() - startTime;
+  //       const data = {
+  //         method: req.method,
+  //         params: req.params,
+  //         query: req.query,
+  //         url: req.originalUrl,
+  //         body: req.body,
+  //         status: res.statusCode,
+  //         duration: `${duration}ms`,
+  //         date: Date.now(),
+  //         user: { username, id, role, profile_pic, campus, department },
+  //       };
+  //       await logs.create(data);
+  //       logger.info("HTTP Request", data);
+  //     });
+
+  //   }
+  //   //next routes
+  // next();
+}
 
 module.exports = { logger, logMiddleware };

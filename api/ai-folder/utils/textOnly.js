@@ -60,7 +60,7 @@ module.exports = (router) => {
     })
     .catch((error) => {
       console.error("Error initializing GeminiAssistant:", error);
-      // Handle the error appropriately (e.g., send a 500 Internal Server Error response)
+      // Handle the error appropriately (e.g., send a 500 Internal server error Or Token Expired response)
     });
 };
 

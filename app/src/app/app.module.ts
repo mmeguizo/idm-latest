@@ -24,7 +24,7 @@ import { ObjectiveService } from './demo/service/objective.service';
 import { UserService } from './demo/service/user.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { JwtModule } from '@auth0/angular-jwt';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthGuard } from './guard/auth.guard';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { AuthInterceptor } from './auth.interceptor';
@@ -60,6 +60,11 @@ export function tokenGetter() {
     ],
     providers: [
         { provide: LocationStrategy, useClass: PathLocationStrategy },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+        },
         CountryService,
         CustomerService,
         EventService,

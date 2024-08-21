@@ -64,11 +64,11 @@ export class UserService {
                     });
                     this.auth.logout();
                 } else if (error.status === 500) {
-                    // Internal server error
+                    // Internal server error Or Token Expired
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: 'Internal server error. Please try again later.',
+                        detail: 'Internal server error Or Token Expired. Please try again later.',
                     });
                 } else if (error.status === 404) {
                     // Not found error
@@ -107,12 +107,14 @@ export class UserService {
                         });
                         this.auth.logout();
                     } else if (error.status === 500) {
-                        // Internal server error
+                        // Internal server error Or Token Expired
                         this.messageService.add({
                             severity: 'error',
                             summary: 'Error',
-                            detail: 'Internal server error. Please try again later.',
+                            detail: 'Internal server error Or Token Expired. Please try again later.',
                         });
+
+                        this.auth.logout();
                     } else if (error.status === 404) {
                         // Not found error
                         this.messageService.add({
@@ -157,12 +159,14 @@ export class UserService {
                         });
                         this.auth.logout();
                     } else if (error.status === 500) {
-                        // Internal server error
+                        // Internal server error Or Token Expired
                         this.messageService.add({
                             severity: 'error',
                             summary: 'Error',
-                            detail: 'Internal server error. Please try again later.',
+                            detail: 'Internal server error Or Token Expired. Please try again later.',
                         });
+
+                        this.auth.logout();
                     } else if (error.status === 404) {
                         // Not found error
                         this.messageService.add({

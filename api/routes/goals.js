@@ -7,6 +7,7 @@ const { logger } = require("../middleware/logger");
 const userHistory = require("../models/userhistories");
 const { log } = require("console");
 const goals = require("../models/goals");
+
 module.exports = (router) => {
   router.get("/getObjectivesViewTable", async (req, res) => {
     try {

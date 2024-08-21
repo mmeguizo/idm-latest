@@ -21,7 +21,7 @@ const log = require("./routes/log")(router);
 const userhistory = require("./routes/userhistory")(router);
 const ai = require("./routes/ai")(router);
 const goallists = require("./routes/goallists")(router);
-const { logMiddleware } = require("./middleware/logger");
+// const { logMiddleware } = require("./middleware/logger");
 
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", false);
@@ -34,7 +34,7 @@ mongoose.connect(config.uri, config.options, (err) => {
 });
 
 app.use(cors());
-app.use(logMiddleware);
+// app.use(logMiddleware);
 
 //CORS middleware
 var allowCrossDomain = function (req, res, next) {

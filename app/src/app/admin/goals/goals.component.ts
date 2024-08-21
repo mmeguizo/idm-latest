@@ -482,38 +482,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             editGoal: true,
             data,
         };
-        // this.tobeUpdatedSubGoal = data.id;
-        // //reset every after click
-        // this.addObjectiveGoalform.reset();
-        // // this.formGroupDropdown.reset();
-
-        // this.updateObjectiveGoalFlag = true;
-        // this.addObjectiveGoalDialogCard = true;
-        // this.formGroupDropdown.setValue({
-        //     selectedDropdown: this.dropdwonSelection.find(
-        //         (dept) => dept.name === data.frequency_monitoring
-        //     ) || { name: 'daily', code: 'Daily' },
-        // });
-
-        // this.addObjectiveGoalform.patchValue({
-        //     // department: ['', [Validators.required]],
-        //     userId: data.userId,
-        //     goalId: data.goalId,
-        //     functional_objective: data.functional_objective,
-        //     performance_indicator: data.performance_indicator,
-        //     target: data.target,
-        //     formula: data.formula,
-        //     programs: data.programs,
-        //     responsible_persons: data.responsible_persons,
-        //     clients: data.clients,
-        //     timetable: [
-        //         new Date(data.timetable[0]),
-        //         new Date(data.timetable[1]),
-        //     ],
-        //     frequency_monitoring: data.frequency_monitoring,
-        //     data_source: data.data_source,
-        //     budget: data.budget,
-        // });
     }
 
     updateObjectiveComplete(

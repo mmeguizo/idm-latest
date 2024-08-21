@@ -5,6 +5,7 @@ const Goals = require("../models/goals");
 const Files = require("../models/fileupload");
 const { logger } = require("../middleware/logger");
 const objective = require("../models/objective");
+
 module.exports = (router) => {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-PH", {
@@ -56,52 +57,60 @@ module.exports = (router) => {
       .catch((err) => {
         // Error handling
         console.error("Error fetching objectives with goals and users:", err);
-        res.status(500).json({ error: "Internal server error" });
+        res
+          .status(500)
+          .json({ error: "Internal server error Or Token Expired" });
       });
   });
 
-  router.get("/getAllByIdObjectivesWithGoalsAndUsers", (req, res) => {
-    Objectives.aggregate([
-      { $match: { deleted: false } },
-      {
-        $lookup: {
-          as: "goals",
-          from: "goals",
-          foreignField: "_id",
-          localField: "goal_Id",
+  router.get(
+    "/getAllByIdObjectivesWithGoalsAndUsers",
+
+    (req, res) => {
+      Objectives.aggregate([
+        { $match: { deleted: false } },
+        {
+          $lookup: {
+            as: "goals",
+            from: "goals",
+            foreignField: "_id",
+            localField: "goal_Id",
+          },
         },
-      },
-      { $unwind: { path: "$goals", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          as: "users",
-          from: "users",
-          foreignField: "id",
-          localField: "createdBy",
+        { $unwind: { path: "$goals", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            as: "users",
+            from: "users",
+            foreignField: "id",
+            localField: "createdBy",
+          },
         },
-      },
-      { $unwind: { path: "$users", preserveNullAndEmptyArrays: true } },
-      {
-        $project: {
-          "goals.objectives": 0,
-          "goals.objectiveBudget": 0,
+        { $unwind: { path: "$users", preserveNullAndEmptyArrays: true } },
+        {
+          $project: {
+            "goals.objectives": 0,
+            "goals.objectiveBudget": 0,
+          },
         },
-      },
-    ])
-      .sort({ createdAt: -1 })
-      .then((objectives) => {
-        // Success
-        res.status(200).json({
-          success: true,
-          data: objectives,
+      ])
+        .sort({ createdAt: -1 })
+        .then((objectives) => {
+          // Success
+          res.status(200).json({
+            success: true,
+            data: objectives,
+          });
+        })
+        .catch((err) => {
+          // Error handling
+          console.error("Error fetching objectives with goals and users:", err);
+          res
+            .status(500)
+            .json({ error: "Internal server error Or Token Expired" });
         });
-      })
-      .catch((err) => {
-        // Error handling
-        console.error("Error fetching objectives with goals and users:", err);
-        res.status(500).json({ error: "Internal server error" });
-      });
-  });
+    }
+  );
 
   router.get("/getAllObjectivesBudget", async (req, res) => {
     try {
@@ -542,46 +551,52 @@ module.exports = (router) => {
       .catch((err) => {
         // Error handling
         console.error("Error fetching objectives with goals and users:", err);
-        res.status(500).json({ error: "Internal server error" });
+        res
+          .status(500)
+          .json({ error: "Internal server error Or Token Expired" });
       });
   });
 
-  router.get("/getAllObjectivesForDashboard/:id", async (req, res) => {
-    let data = [];
-    try {
-      let objectivesCount = await Objectives.countDocuments({
-        createdBy: req.params.id,
-      });
-      let objectiveCompleted = await Objectives.countDocuments({
-        complete: true,
-        deleted: false,
-        createdBy: req.params.id,
-      });
-      let objectiveUncompleted = await Objectives.countDocuments({
-        complete: false,
-        deleted: false,
-        createdBy: req.params.id,
-      });
-      let objectivesData = await Objectives.find({
-        deleted: false,
-        createdBy: req.params.id,
-      }).select({
-        _id: 0,
-        id: 1,
-        complete: 1,
-        date_added: 1,
-      });
-      data.push({
-        objectivesCount: objectivesCount,
-        objectiveCompleted: objectiveCompleted,
-        objectiveUncompleted: objectiveUncompleted,
-        objectivesData: objectivesData,
-      });
-      res.json({ success: true, data: data });
-    } catch (error) {
-      res.json({ success: false, message: error });
+  router.get(
+    "/getAllObjectivesForDashboard/:id",
+
+    async (req, res) => {
+      let data = [];
+      try {
+        let objectivesCount = await Objectives.countDocuments({
+          createdBy: req.params.id,
+        });
+        let objectiveCompleted = await Objectives.countDocuments({
+          complete: true,
+          deleted: false,
+          createdBy: req.params.id,
+        });
+        let objectiveUncompleted = await Objectives.countDocuments({
+          complete: false,
+          deleted: false,
+          createdBy: req.params.id,
+        });
+        let objectivesData = await Objectives.find({
+          deleted: false,
+          createdBy: req.params.id,
+        }).select({
+          _id: 0,
+          id: 1,
+          complete: 1,
+          date_added: 1,
+        });
+        data.push({
+          objectivesCount: objectivesCount,
+          objectiveCompleted: objectiveCompleted,
+          objectiveUncompleted: objectiveUncompleted,
+          objectivesData: objectivesData,
+        });
+        res.json({ success: true, data: data });
+      } catch (error) {
+        res.json({ success: false, message: error });
+      }
     }
-  });
+  );
 
   router.get("/getAllByIdObjectives/:id/:userId", (req, res) => {
     console.log({ getAllByIdObjectives: [req.params.id, req.params.userId] });
@@ -605,48 +620,54 @@ module.exports = (router) => {
     ).sort({ _id: -1 });
   });
 
-  router.get("/getAllByIdObjectivesWithGoalsAndUsers/:id", (req, res) => {
-    Objectives.aggregate([
-      { $match: { deleted: false, createdBy: req.params.id } },
-      {
-        $lookup: {
-          as: "goals",
-          from: "goals",
-          foreignField: "_id",
-          localField: "goal_Id",
+  router.get(
+    "/getAllByIdObjectivesWithGoalsAndUsers/:id",
+
+    (req, res) => {
+      Objectives.aggregate([
+        { $match: { deleted: false, createdBy: req.params.id } },
+        {
+          $lookup: {
+            as: "goals",
+            from: "goals",
+            foreignField: "_id",
+            localField: "goal_Id",
+          },
         },
-      },
-      { $unwind: { path: "$goals", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          as: "users",
-          from: "users",
-          foreignField: "id",
-          localField: "createdBy",
+        { $unwind: { path: "$goals", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            as: "users",
+            from: "users",
+            foreignField: "id",
+            localField: "createdBy",
+          },
         },
-      },
-      { $unwind: { path: "$users", preserveNullAndEmptyArrays: true } },
-      {
-        $project: {
-          "goals.objectives": 0,
-          "goals.objectiveBudget": 0,
+        { $unwind: { path: "$users", preserveNullAndEmptyArrays: true } },
+        {
+          $project: {
+            "goals.objectives": 0,
+            "goals.objectiveBudget": 0,
+          },
         },
-      },
-    ])
-      .sort({ createdAt: -1 })
-      .then((objectives) => {
-        // Success
-        res.status(200).json({
-          success: true,
-          data: objectives,
+      ])
+        .sort({ createdAt: -1 })
+        .then((objectives) => {
+          // Success
+          res.status(200).json({
+            success: true,
+            data: objectives,
+          });
+        })
+        .catch((err) => {
+          // Error handling
+          console.error("Error fetching objectives with goals and users:", err);
+          res
+            .status(500)
+            .json({ error: "Internal server error Or Token Expired" });
         });
-      })
-      .catch((err) => {
-        // Error handling
-        console.error("Error fetching objectives with goals and users:", err);
-        res.status(500).json({ error: "Internal server error" });
-      });
-  });
+    }
+  );
 
   router.get("/getAllObjectives/:id", (req, res) => {
     Objectives.find(
@@ -668,88 +689,96 @@ module.exports = (router) => {
     ).sort({ _id: -1 });
   });
 
-  router.get("/getAllObjectivesForDashboard/:id", async (req, res) => {
-    let data = [];
-    try {
-      let objectivesCount = await Objectives.countDocuments({
-        createdBy: req.params.id,
-      });
-      let objectiveCompleted = await Objectives.countDocuments({
-        complete: true,
-        deleted: false,
-        createdBy: req.params.id,
-      });
-      let objectiveUncompleted = await Objectives.countDocuments({
-        complete: false,
-        deleted: false,
-        createdBy: req.params.id,
-      });
-      let objectivesData = await Objectives.find({
-        deleted: false,
-        createdBy: req.params.id,
-      }).select({
-        _id: 0,
-        id: 1,
-        complete: 1,
-        date_added: 1,
-      });
-      data.push({
-        objectivesCount: objectivesCount,
-        objectiveCompleted: objectiveCompleted,
-        objectiveUncompleted: objectiveUncompleted,
-        objectivesData: objectivesData,
-      });
-      res.json({ success: true, data: data });
-    } catch (error) {
-      res.json({ success: false, message: error });
+  router.get(
+    "/getAllObjectivesForDashboard/:id",
+
+    async (req, res) => {
+      let data = [];
+      try {
+        let objectivesCount = await Objectives.countDocuments({
+          createdBy: req.params.id,
+        });
+        let objectiveCompleted = await Objectives.countDocuments({
+          complete: true,
+          deleted: false,
+          createdBy: req.params.id,
+        });
+        let objectiveUncompleted = await Objectives.countDocuments({
+          complete: false,
+          deleted: false,
+          createdBy: req.params.id,
+        });
+        let objectivesData = await Objectives.find({
+          deleted: false,
+          createdBy: req.params.id,
+        }).select({
+          _id: 0,
+          id: 1,
+          complete: 1,
+          date_added: 1,
+        });
+        data.push({
+          objectivesCount: objectivesCount,
+          objectiveCompleted: objectiveCompleted,
+          objectiveUncompleted: objectiveUncompleted,
+          objectivesData: objectivesData,
+        });
+        res.json({ success: true, data: data });
+      } catch (error) {
+        res.json({ success: false, message: error });
+      }
     }
-  });
+  );
 
-  router.get("/getAllObjectivesForDashboardPie/:id", async (req, res) => {
-    let data = [];
-    try {
-      let objectivesCount = await Objectives.countDocuments({
-        goalId: req.params.id,
-      });
-      let objectiveCompleted = await Objectives.countDocuments({
-        complete: true,
-        deleted: false,
-        goalId: req.params.id,
-      });
-      let objectiveUncompleted = await Objectives.countDocuments({
-        complete: false,
-        deleted: false,
-        goalId: req.params.id,
-      });
-      let objectivesData = await Objectives.find({
-        deleted: false,
-        goalId: req.params.id,
-      }).select({
-        _id: 0,
-        id: 1,
-        functional_objective: 1,
-        budget: 1,
-        complete: 1,
-        date_added: 1,
-      });
+  router.get(
+    "/getAllObjectivesForDashboardPie/:id",
 
-      let completionPercentage =
-        objectivesCount > 0
-          ? Math.round((objectiveCompleted / objectivesData.length) * 100)
-          : 0;
+    async (req, res) => {
+      let data = [];
+      try {
+        let objectivesCount = await Objectives.countDocuments({
+          goalId: req.params.id,
+        });
+        let objectiveCompleted = await Objectives.countDocuments({
+          complete: true,
+          deleted: false,
+          goalId: req.params.id,
+        });
+        let objectiveUncompleted = await Objectives.countDocuments({
+          complete: false,
+          deleted: false,
+          goalId: req.params.id,
+        });
+        let objectivesData = await Objectives.find({
+          deleted: false,
+          goalId: req.params.id,
+        }).select({
+          _id: 0,
+          id: 1,
+          functional_objective: 1,
+          budget: 1,
+          complete: 1,
+          date_added: 1,
+        });
 
-      data.push({
-        objectivesCount: objectivesCount,
-        objectiveCompleted: objectiveCompleted,
-        objectiveUncompleted: objectiveUncompleted,
-        objectivesData: objectivesData,
-        completionPercentage: completionPercentage,
-      });
-      res.json({ success: true, data: data });
-    } catch (error) {
-      res.json({ success: false, message: error });
+        let completionPercentage =
+          objectivesCount > 0
+            ? Math.round((objectiveCompleted / objectivesData.length) * 100)
+            : 0;
+
+        data.push({
+          objectivesCount: objectivesCount,
+          objectiveCompleted: objectiveCompleted,
+          objectiveUncompleted: objectiveUncompleted,
+          objectivesData: objectivesData,
+          completionPercentage: completionPercentage,
+        });
+        res.json({ success: true, data: data });
+      } catch (error) {
+        res.json({ success: false, message: error });
+      }
     }
-  });
+  );
 
   router.get("/getAllObjectivesBudget/:id", async (req, res) => {
     try {
