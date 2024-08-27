@@ -147,77 +147,6 @@
                     ></p-dropdown>
                 </div>
 
-                <!-- <div
-                    class="field"
-                    *ngIf="
-                        addObjectiveGoalform.get('frequency_monitoring')
-                            .value === 'yearly'
-                    "
-                >
-                    <label>Yearly Timetable</label>
-                    <div class="grid">
-                        <div
-                            class="col-3"
-                            *ngFor="let month of months; let i = index"
-                        >
-                            <label for="month_{{ i }}">{{ month }}</label>
-                            <p-inputNumber
-                                id="month_{{ i }}"
-                                formControlName="month_{{ i }}"
-                                [min]="0"
-                            ></p-inputNumber>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="field"
-                    *ngIf="
-                        addObjectiveGoalform.get('frequency_monitoring')
-                            .value === 'quarterly'
-                    "
-                >
-                    <label>Quarterly Timetable</label>
-                    <div class="grid">
-                        <div
-                            class="col-4"
-                            *ngFor="let quarter of quarters; let i = index"
-                        >
-                            <label for="quarter_{{ i }}">{{ quarter }}</label>
-                            <p-inputNumber
-                                id="quarter_{{ i }}"
-                                formControlName="quarter_{{ i }}"
-                                [min]="0"
-                            ></p-inputNumber>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="field"
-                    *ngIf="
-                        addObjectiveGoalform.get('frequency_monitoring')
-                            .value === 'semi-annual'
-                    "
-                >
-                    <label>Semi-Annual Timetable</label>
-                    <div class="grid">
-                        <div
-                            class="col-6"
-                            *ngFor="let period of semi_annual; let i = index"
-                        >
-                            <label for="semi_annual_{{ i }}">{{
-                                period
-                            }}</label>
-                            <p-inputNumber
-                                id="semi_annual_{{ i }}"
-                                formControlName="semi_annual_{{ i }}"
-                                [min]="0"
-                            ></p-inputNumber>
-                        </div>
-                    </div>
-                </div> -->
-
                 <div
                     *ngIf="
                         addObjectiveGoalform.get('frequency_monitoring')
@@ -341,30 +270,3 @@
         </div>
     </div>
 </p-dialog>
-
-<!-- <p-dialog
-
->
-
-  <div class="field">
-                    <label htmlFor="name1">Timetable</label>
-                    <p-calendar
-                        formControlName="timetable"
-                        selectionMode="range"
-                        [readonlyInput]="true"
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="department">Frequency Monitoring</label>
-                    <form [formGroup]="formGroupDropdown">
-                        <p-dropdown
-                            formControlName="selectedDropdown"
-                            [options]="dropdwonSelection"
-                            optionLabel="name"
-                            placeholder="Select a Frequency"
-                        />
-                    </form>
-                </div>
-
-
-</p-dialog> -->

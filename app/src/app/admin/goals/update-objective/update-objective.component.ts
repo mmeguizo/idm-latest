@@ -44,6 +44,21 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     addExecutionGoal_Id: any;
     functional_objectiveMatchingDropdown: any;
     tobeUpdatedSubGoal: any;
+    selectedfrequencyOptions: {
+        name: string;
+        code: string;
+    };
+
+    frequencyOptions = [
+        { name: 'yearly', code: 'yearly' },
+        { name: 'quarterly', code: 'quarterly' },
+        { name: 'semi_annual', code: 'semi_annual' },
+    ];
+
+    months: string[] = [];
+    quarters: string[] = [];
+    semi_annual: string[] = [];
+
     constructor(
         private formBuilder: FormBuilder,
         private messageService: MessageService,
@@ -52,10 +67,28 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         private goallistService: GoallistService
     ) {
         this.USERID = this.auth.getTokenUserID();
+
+        for (let month = 0; month < 12; month++) {
+            this.months.push(
+                new Date(0, month).toLocaleString('default', { month: 'short' })
+            );
+        }
+
+        // Initialize quarters array
+        this.quarters = [
+            'Q1 (Jan-Mar)',
+            'Q2 (Apr-Jun)',
+            'Q3 (Jul-Sep)',
+            'Q4 (Oct-Dec)',
+        ];
+        this.semi_annual = [
+            '(Jan-Feb-Mar-Apr-May-Jun)',
+            '(Jul-Aug-Sep-Oct-Nov-Dec)',
+        ];
     }
 
     ngOnInit() {
-        this.createAddObjectiveGoalform();
+        this.createeditObjectiveGoalform();
         this.formGroupDropdown = new FormGroup({
             selectedDropdown: new FormControl(),
         });
@@ -77,6 +110,9 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         // add this to make sure it will not detect the previous value only current value
         if (changes['updateObjective']?.currentValue) {
             const { editGoal, data } = changes['updateObjective']?.currentValue;
+
+            console.log({ data });
+
             if (editGoal && data) {
                 const {
                     id,
@@ -143,7 +179,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             )
             .pipe(takeUntil(this.updateObjectiveSubscription))
             .subscribe({
-                next: (data: any) => {
+                next: async (data: any) => {
                     this.dropdwonGoallistSelection = data.objectives;
                     console.log({
                         getAllGoallistsDropdown: this.dropdwonGoallistSelection,
@@ -170,15 +206,21 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                         programs: programs,
                         responsible_persons: responsible_persons,
                         clients: clients,
-                        timetable: [
-                            new Date(timetable[0]),
-                            new Date(timetable[1]),
-                        ],
+                        // timetable: [
+                        //     new Date(timetable[0]),
+                        //     new Date(timetable[1]),
+                        // ],
                         frequency_monitoring: frequency_monitoring,
                         data_source: data_source,
                         budget: budget,
                         remarks: remarks,
                     });
+                    this.selectedfrequencyOptions = {
+                        name: frequency_monitoring,
+                        code: frequency_monitoring,
+                    };
+
+                    await this.onFrequencyChange(frequency_monitoring);
 
                     this.editObjectiveGoalDialogCard = true;
                 },
@@ -193,7 +235,76 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             });
     }
 
-    createAddObjectiveGoalform() {
+    async onFrequencyChange(event: any) {
+        const frequency = event?.value?.name || event;
+        this.selectedfrequencyOptions = {
+            name: event?.value?.name || event,
+            code: event?.value?.name || event,
+        };
+        // Clear existing dynamic controls
+        this.clearDynamicControls();
+
+        if (frequency === 'yearly') {
+            await this.addMonthlyControls();
+        } else if (frequency === 'quarterly') {
+            await this.addQuarterlyControls();
+        } else if (frequency === 'semi_annual') {
+            await this.addSemiAnnualControls();
+        }
+        console.log(frequency);
+
+        // Update the form control value
+        this.editObjectiveGoalform
+            .get('frequency_monitoring')
+            .setValue(frequency);
+    }
+
+    clearDynamicControls() {
+        this.months.forEach((_, i) => {
+            if (this.editObjectiveGoalform.contains(`month_${i}`)) {
+                this.editObjectiveGoalform.removeControl(`month_${i}`);
+            }
+        });
+        this.quarters.forEach((_, i) => {
+            if (this.editObjectiveGoalform.contains(`quarter_${i}`)) {
+                this.editObjectiveGoalform.removeControl(`quarter_${i}`);
+            }
+        });
+        this.semi_annual.forEach((_, i) => {
+            if (this.editObjectiveGoalform.contains(`semi_annual_${i}`)) {
+                this.editObjectiveGoalform.removeControl(`semi_annual_${i}`);
+            }
+        });
+    }
+
+    async addMonthlyControls() {
+        this.months.forEach((_, i) => {
+            this.editObjectiveGoalform.addControl(
+                `month_${i}`,
+                new FormControl(0, Validators.min(0))
+            );
+        });
+    }
+
+    async addQuarterlyControls() {
+        this.quarters.forEach((_, i) => {
+            this.editObjectiveGoalform.addControl(
+                `quarter_${i}`,
+                new FormControl(0, Validators.min(0))
+            );
+        });
+    }
+
+    async addSemiAnnualControls() {
+        this.semi_annual.forEach((_, i) => {
+            this.editObjectiveGoalform.addControl(
+                `semi_annual_${i}`,
+                new FormControl(0, Validators.min(0))
+            );
+        });
+    }
+
+    createeditObjectiveGoalform() {
         this.editObjectiveGoalform = this.formBuilder.group({
             // department: ['', [Validators.required]],
             userId: ['', [Validators.required]],

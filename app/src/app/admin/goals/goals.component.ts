@@ -113,6 +113,16 @@ export class GoalsComponent implements OnInit, OnDestroy {
     printFlag: boolean;
     goallistsId: string;
 
+    frequencyOptions = [
+        { name: 'yearly', code: 'yearly' },
+        { name: 'quarterly', code: 'quarterly' },
+        { name: 'semi_annual', code: 'semi_annual' },
+    ];
+
+    months: string[] = [];
+    quarters: string[] = [];
+    semi_annual: string[] = [];
+
     constructor(
         private messageService: MessageService,
         private formBuilder: FormBuilder,
@@ -476,8 +486,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     updateSubGoal(data: any) {
-        console.log(data);
-
         this.parentupdateObjective = {
             editGoal: true,
             data,

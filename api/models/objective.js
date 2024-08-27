@@ -20,8 +20,8 @@ const objectivesSchema = new mongoose.Schema({
   responsible_persons: { type: String, required: true },
   clients: { type: String },
   remarks: { type: String },
-  timetable: [],
-  frequency_monitoring: { type: String },
+  // timetable: [],
+  // frequency_monitoring: { type: String },
   month_0: { type: Number },
   month_1: { type: Number },
   month_2: { type: Number },
@@ -43,12 +43,12 @@ const objectivesSchema = new mongoose.Schema({
   semi_annual_1: { type: Number },
   semi_annual_2: { type: Number },
 
-  frequency_monitorings: {
+  frequency_monitoring: {
     type: String,
     enum: ["yearly", "quarterly", "monthly", "semi-annually"], // Define allowed values
     // required: true,
   },
-  timetables: {
+  timetable: {
     type: Map, // Use a Map to store month-value pairs
     of: Number, // Values will be numbers
     default: {}, // Initialize as an empty map
