@@ -22,6 +22,38 @@ const objectivesSchema = new mongoose.Schema({
   remarks: { type: String },
   timetable: [],
   frequency_monitoring: { type: String },
+  month_0: { type: Number },
+  month_1: { type: Number },
+  month_2: { type: Number },
+  month_3: { type: Number },
+  month_4: { type: Number },
+  month_5: { type: Number },
+  month_6: { type: Number },
+  month_7: { type: Number },
+  month_8: { type: Number },
+  month_9: { type: Number },
+  month_10: { type: Number },
+  month_11: { type: Number },
+
+  quarter_1: { type: Number },
+  quarter_2: { type: Number },
+  quarter_3: { type: Number },
+  quarter_4: { type: Number },
+
+  semi_annual_1: { type: Number },
+  semi_annual_2: { type: Number },
+
+  frequency_monitorings: {
+    type: String,
+    enum: ["yearly", "quarterly", "monthly", "semi-annually"], // Define allowed values
+    // required: true,
+  },
+  timetables: {
+    type: Map, // Use a Map to store month-value pairs
+    of: Number, // Values will be numbers
+    default: {}, // Initialize as an empty map
+  },
+
   complete: { type: Boolean, default: false },
   data_source: { type: String },
   budget: { type: Number, required: true },

@@ -5,6 +5,7 @@ const Goals = require("../models/goals");
 const Files = require("../models/fileupload");
 const { logger } = require("../middleware/logger");
 const objective = require("../models/objective");
+const { log } = require("winston");
 
 module.exports = (router) => {
   const formatCurrency = (amount) => {
@@ -270,89 +271,142 @@ module.exports = (router) => {
     let totalSubGoalBudget = 0;
     let goalObjectiveNumber = [];
 
-    let goalData = await Goals.findOne({ id: goalId }).select({
-      budget: 1,
-      objectives: 1,
-      objectiveBudget: 1,
-    });
-
-    totalSubGoalBudget = goalData.objectiveBudget
-      .map((e) => e.budget)
-      .reduce((a, b) => a + b, 0);
-
-    goalBudget = goalData.budget;
-
-    if (!objectivesData) {
-      return res.json({
-        success: false,
-        message: "You must provide an Objectives and Action Plan Information",
-      });
-    }
-
-    if (objectiveBudget > goalBudget - totalSubGoalBudget) {
-      return res.json({
-        success: false,
-        message: `Objective Budget must not exceed ${formatCurrency(
-          goalBudget - totalSubGoalBudget
-        )} of the remaining Goal Budget `,
-      });
-    }
-
-    const ObjectivesDataRequest = {
-      id: uuidv4(),
-      ...objectivesData,
-    };
-
     try {
-      //create new Objectives
-      let newObjectives = await Objectives.create(ObjectivesDataRequest);
-      res.json({
-        success: true,
-        message: "Objectives Added Successfully",
-        data: newObjectives,
+      let goalData = await Goals.findOne({ id: goalId }).select({
+        budget: 1,
+        objectives: 1,
+        objectiveBudget: 1,
       });
-      //update the goal model with budget and objectives id
 
-      try {
-        // Update the goal model with budget and objectives id
-        await Goals.updateOne(
-          { id: req.body.goalId },
-          {
-            $push: {
-              objectives: newObjectives.id,
-              objectiveBudget: {
-                id: newObjectives.id,
-                budget: ObjectivesDataRequest.budget,
-              },
-            },
-          }
-        );
-      } catch (updateError) {
-        console.error("Error updating goal with new objectives:", updateError);
-        // Optional: Send an additional response or log the error.
+      totalSubGoalBudget = goalData.objectiveBudget
+        .map((e) => e.budget)
+        .reduce((a, b) => a + b, 0);
+
+      goalBudget = goalData.budget;
+
+      if (!objectivesData) {
+        return res.status(400).json({ message: "Invalid data" });
       }
 
-      /*
-          await Goals.updateOne(
-        { id: req.body.goalId },
-        {
-          $push: {
-            objectives: newObjectives.id,
-            objectiveBudget: {
-              id: newObjectives.id,
-              budget: objectivesData.budget,
-            },
-          },
-        }
-      );
-      */
-    } catch (error) {
-      res.json({
-        success: false,
-        message: "Could not add  Objectives and Action Plan Error : " + error,
+      if (objectiveBudget > goalBudget - totalSubGoalBudget) {
+        return res.status(400).json({ message: "Budget exceeds limit" });
+      }
+
+      console.log({
+        objectivesData: objectivesData,
       });
+
+      const ObjectivesDataRequest = {
+        id: uuidv4(),
+        ...objectivesData,
+        frequency_monitorings: objectivesData.frequency_monitoring,
+        timetables: objectivesData.timetable,
+      };
+
+      const newObjective = new Objectives(ObjectivesDataRequest);
+      await newObjective.save();
+      console.log({ ObjectivesDataRequest });
+
+      res.status(201).json({ success: true, data: newObjective });
+    } catch (error) {
+      logger.error(error);
+
+      console.log(error);
+
+      res.status(500).json({ success: false, message: "Server Error" });
     }
   });
+
+  // router.post("/addObjectives", async (req, res) => {
+  //   const objectivesData = req.body;
+  //   const { goalId, budget: objectiveBudget } = req.body;
+  //   let goalBudget = 0;
+  //   let totalSubGoalBudget = 0;
+  //   let goalObjectiveNumber = [];
+
+  //   let goalData = await Goals.findOne({ id: goalId }).select({
+  //     budget: 1,
+  //     objectives: 1,
+  //     objectiveBudget: 1,
+  //   });
+
+  //   totalSubGoalBudget = goalData.objectiveBudget
+  //     .map((e) => e.budget)
+  //     .reduce((a, b) => a + b, 0);
+
+  //   goalBudget = goalData.budget;
+
+  //   if (!objectivesData) {
+  //     return res.json({
+  //       success: false,
+  //       message: "You must provide an Objectives and Action Plan Information",
+  //     });
+  //   }
+
+  //   if (objectiveBudget > goalBudget - totalSubGoalBudget) {
+  //     return res.json({
+  //       success: false,
+  //       message: `Objective Budget must not exceed ${formatCurrency(
+  //         goalBudget - totalSubGoalBudget
+  //       )} of the remaining Goal Budget `,
+  //     });
+  //   }
+
+  //   const ObjectivesDataRequest = {
+  //     id: uuidv4(),
+  //     ...objectivesData,
+  //   };
+
+  //   try {
+  //     //create new Objectives
+  //     let newObjectives = await Objectives.create(ObjectivesDataRequest);
+  //     res.json({
+  //       success: true,
+  //       message: "Objectives Added Successfully",
+  //       data: newObjectives,
+  //     });
+  //     //update the goal model with budget and objectives id
+
+  //     try {
+  //       // Update the goal model with budget and objectives id
+  //       await Goals.updateOne(
+  //         { id: req.body.goalId },
+  //         {
+  //           $push: {
+  //             objectives: newObjectives.id,
+  //             objectiveBudget: {
+  //               id: newObjectives.id,
+  //               budget: ObjectivesDataRequest.budget,
+  //             },
+  //           },
+  //         }
+  //       );
+  //     } catch (updateError) {
+  //       console.error("Error updating goal with new objectives:", updateError);
+  //       // Optional: Send an additional response or log the error.
+  //     }
+
+  //     /*
+  //         await Goals.updateOne(
+  //       { id: req.body.goalId },
+  //       {
+  //         $push: {
+  //           objectives: newObjectives.id,
+  //           objectiveBudget: {
+  //             id: newObjectives.id,
+  //             budget: objectivesData.budget,
+  //           },
+  //         },
+  //       }
+  //     );
+  //     */
+  //   } catch (error) {
+  //     res.json({
+  //       success: false,
+  //       message: "Could not add  Objectives and Action Plan Error : " + error,
+  //     });
+  //   }
+  // });
 
   router.put("/deleteObjectives", (req, res) => {
     let data = req.body;
