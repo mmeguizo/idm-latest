@@ -130,7 +130,10 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                     data_source,
                     budget,
                     remarks,
+                    ...wholeData
                 } = data;
+
+                console.log({ ngOnChanges: data });
 
                 //need for the backend
                 this.tobeUpdatedSubGoal = id;
@@ -150,6 +153,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                     data_source,
                     budget,
                     remarks,
+                    wholeData,
                 });
             }
         }
@@ -170,6 +174,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         data_source,
         budget,
         remarks,
+        wholeData,
     }) {
         this.goallistService
             .getRoute(
@@ -206,10 +211,6 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                         programs: programs,
                         responsible_persons: responsible_persons,
                         clients: clients,
-                        // timetable: [
-                        //     new Date(timetable[0]),
-                        //     new Date(timetable[1]),
-                        // ],
                         frequency_monitoring: frequency_monitoring,
                         data_source: data_source,
                         budget: budget,
@@ -220,7 +221,10 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                         code: frequency_monitoring,
                     };
 
-                    await this.onFrequencyChange(frequency_monitoring);
+                    await this.onFrequencyChange(
+                        frequency_monitoring,
+                        wholeData
+                    );
 
                     this.editObjectiveGoalDialogCard = true;
                 },
@@ -235,7 +239,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             });
     }
 
-    async onFrequencyChange(event: any) {
+    async onFrequencyChange(event: any, data?: any) {
         const frequency = event?.value?.name || event;
         this.selectedfrequencyOptions = {
             name: event?.value?.name || event,
@@ -245,11 +249,11 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         this.clearDynamicControls();
 
         if (frequency === 'yearly') {
-            await this.addMonthlyControls();
+            await this.addMonthlyControls(data);
         } else if (frequency === 'quarterly') {
-            await this.addQuarterlyControls();
+            await this.addQuarterlyControls(data);
         } else if (frequency === 'semi_annual') {
-            await this.addSemiAnnualControls();
+            await this.addSemiAnnualControls(data);
         }
         console.log(frequency);
 
@@ -277,29 +281,32 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         });
     }
 
-    async addMonthlyControls() {
+    async addMonthlyControls(data?: any) {
         this.months.forEach((_, i) => {
+            const monthValue = data ? data[`month_${i}`] || 0 : 0;
             this.editObjectiveGoalform.addControl(
                 `month_${i}`,
-                new FormControl(0, Validators.min(0))
+                new FormControl(monthValue, Validators.min(0))
             );
         });
     }
 
-    async addQuarterlyControls() {
+    async addQuarterlyControls(data?: any) {
         this.quarters.forEach((_, i) => {
+            const monthValue = data ? data[`quarter_${i}`] || 0 : 0;
             this.editObjectiveGoalform.addControl(
                 `quarter_${i}`,
-                new FormControl(0, Validators.min(0))
+                new FormControl(monthValue, Validators.min(0))
             );
         });
     }
 
-    async addSemiAnnualControls() {
+    async addSemiAnnualControls(data?: any) {
         this.semi_annual.forEach((_, i) => {
+            const monthValue = data ? data[`semi_annual_${i}`] || 0 : 0;
             this.editObjectiveGoalform.addControl(
                 `semi_annual_${i}`,
-                new FormControl(0, Validators.min(0))
+                new FormControl(monthValue, Validators.min(0))
             );
         });
     }
@@ -323,16 +330,75 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             budget: ['', [Validators.required]],
         });
     }
-    clearEditObjectiveGoalDialogCardDatas() {}
+    clearEditObjectiveGoalDialogCardDatas() {
+        this.editObjectiveGoalDialogCard = false;
+    }
 
     updateSubObjectiveGoalDialogExec(form: any) {
         form.value.id = this.tobeUpdatedSubGoal;
-        form.value.frequency_monitoring =
-            this.formGroupDropdown.value.selectedDropdown.name;
+        // form.value.frequency_monitoring =
+        //     this.formGroupDropdown.value.selectedDropdown.name;
         form.value.functional_objective = form.value.functional_objective.name;
 
+        let data = {
+            ...form.value,
+            // functional_objective: form.value.functional_objective.name,
+            timetable: new Map(), // Initialize the timetable Map
+        };
+
+        if (data.frequency_monitoring === 'yearly') {
+            // Remove quarterly and semi_annual fields
+            for (let quarter = 1; quarter <= 4; quarter++) {
+                delete data[`quarter_${quarter}`];
+            }
+            for (let i = 0; i <= 2; i++) {
+                delete data[`semi_annual_${i}`];
+            }
+
+            const timetableMap = new Map();
+            for (let month = 0; month < 12; month++) {
+                const monthName = new Date(0, month).toLocaleString('default', {
+                    month: 'short',
+                });
+                timetableMap.set(monthName, form.value[`month_${month}`]);
+            }
+            data.timetable = Array.from(timetableMap.entries());
+        } else if (data.frequency_monitoring === 'quarterly') {
+            // Remove yearly and semi_annual fields
+            for (let month = 0; month <= 12; month++) {
+                delete data[`month_${month}`];
+            }
+            for (let i = 0; i <= 2; i++) {
+                delete data[`semi_annual_${i}`];
+            }
+
+            const timetableMap = new Map();
+            for (let quarter = 1; quarter <= 4; quarter++) {
+                timetableMap.set(
+                    `Q${quarter}`,
+                    form.value[`quarter_${quarter}`]
+                );
+            }
+            data.timetable = Array.from(timetableMap.entries());
+        } else if (data.frequency_monitoring === 'semi_annual') {
+            // Remove yearly and quarterly fields
+            for (let month = 0; month <= 12; month++) {
+                delete data[`month_${month}`];
+            }
+            for (let quarter = 1; quarter <= 4; quarter++) {
+                delete data[`quarter_${quarter}`];
+            }
+
+            const timetableMap = new Map();
+            for (let i = 0; i < 2; i++) {
+                const periodName = this.semi_annual[i];
+                timetableMap.set(periodName, form.value[`semi_annual_${i}`]);
+            }
+            data.timetable = Array.from(timetableMap.entries());
+        }
+
         this.obj
-            .getRoute('put', 'objectives', 'updateObjectives', form.value)
+            .getRoute('put', 'objectives', 'updateObjectives', data)
             .pipe(takeUntil(this.updateObjectiveSubscription))
             .subscribe((data: any) => {
                 if (data.success) {

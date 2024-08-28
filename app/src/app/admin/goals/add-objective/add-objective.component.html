@@ -45,7 +45,7 @@
                 </div>
                 <div class="field">
                     <label htmlFor="name1">Target</label>
-                    <input
+                    <!-- <input
                         pInputText
                         id="target"
                         class="flex-auto"
@@ -59,7 +59,21 @@
                         "
                         formControlName="target"
                         required
-                    />
+                    /> -->
+                    <p-inputNumber
+                        mode="decimal"
+                        [showButtons]="true"
+                        [min]="0"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('target').touched &&
+                            addObjectiveGoalform?.controls['target'].errors
+                                ?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="target"
+                    >
+                    </p-inputNumber>
                 </div>
                 <div class="field">
                     <label htmlFor="name1">Formula</label>

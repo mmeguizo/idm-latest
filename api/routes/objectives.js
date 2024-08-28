@@ -458,28 +458,74 @@ module.exports = (router) => {
     });
 
     let { budget: goalBudget, objectives: goalObjectives } = goal;
+    console.log(req.body);
 
-    Objectives.findOneAndUpdate(
-      { id: id },
-      req.body,
-      { new: true },
-      (err, response) => {
-        if (err) return res.json({ success: false, message: err.message });
-        if (response) {
-          res.json({
-            success: true,
-            message: "Objectives Information has been updated!",
-            data: response,
-          });
-        } else {
-          res.json({
-            success: true,
-            message: "No Objectives has been modified!",
-            data: response,
+    Objectives.findOneAndDelete({ id: id }, (err, existingDocument) => {
+      if (err) return res.json({ success: false, message: err.message });
+
+      if (existingDocument) {
+        // Create a new object for insertion, ensuring all required fields are present
+        const newDocumentData = {
+          ...req.body,
+          id: existingDocument.id, // Preserve the original id
+          _id: existingDocument._id, // Preserve the original _id
+          createdBy: req.body.createdBy || existingDocument.createdBy, // Ensure `createdBy` is set
+          goal_Id: req.body.goal_Id || existingDocument.goal_Id, // Ensure `goal_Id` is set
+        };
+
+        // Log the data for debugging purposes
+        console.log("Existing Document:", existingDocument);
+        console.log("New Document Data:", newDocumentData);
+
+        // Ensure all required fields are present before creating the new document
+        if (!newDocumentData.createdBy || !newDocumentData.goal_Id) {
+          return res.json({
+            success: false,
+            message:
+              "`createdBy` and `goal_Id` are required fields and must be provided.",
           });
         }
+
+        // Insert the new document with the updated data
+        Objectives.create(newDocumentData, (err, newDocument) => {
+          if (err) return res.json({ success: false, message: err.message });
+
+          res.json({
+            success: true,
+            message: "Objectives Information has been completely replaced!",
+            data: newDocument,
+          });
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "Objective not found!",
+        });
       }
-    );
+    });
+
+    // Objectives.findOneAndUpdate(
+    //   { id: id }, // Match the document with the specified id
+    //   { $set: { ...req.body, id: undefined, _id: undefined } }, // Update all fields except 'id' and '_id'
+    //   { new: true }, // Return the modified document
+    //   (err, response) => {
+    //     if (err) return res.json({ success: false, message: err.message });
+
+    //     if (response) {
+    //       res.json({
+    //         success: true,
+    //         message: "Objectives Information has been updated!",
+    //         data: response,
+    //       });
+    //     } else {
+    //       res.json({
+    //         success: true,
+    //         message: "No Objectives has been modified!",
+    //         data: response,
+    //       });
+    //     }
+    //   }
+    // );
   });
 
   //**********************USer Routes ********************** */

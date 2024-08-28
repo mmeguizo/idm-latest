@@ -14,7 +14,7 @@ const objectivesSchema = new mongoose.Schema({
   },
   functional_objective: { type: String },
   performance_indicator: { type: String },
-  target: { type: String },
+  target: { type: Number },
   formula: { type: String },
   programs: { type: String },
   responsible_persons: { type: String, required: true },
@@ -38,14 +38,15 @@ const objectivesSchema = new mongoose.Schema({
   quarter_1: { type: Number },
   quarter_2: { type: Number },
   quarter_3: { type: Number },
-  quarter_4: { type: Number },
+  quarter_0: { type: Number },
 
+  semi_annual_0: { type: Number },
   semi_annual_1: { type: Number },
   semi_annual_2: { type: Number },
 
   frequency_monitoring: {
     type: String,
-    enum: ["yearly", "quarterly", "monthly", "semi-annually"], // Define allowed values
+    enum: ["yearly", "quarterly", "monthly", "semi_annual"], // Define allowed values
     // required: true,
   },
   timetable: {

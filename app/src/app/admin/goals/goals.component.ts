@@ -122,6 +122,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     months: string[] = [];
     quarters: string[] = [];
     semi_annual: string[] = [];
+    makeChanges: boolean;
 
     constructor(
         private messageService: MessageService,
@@ -244,6 +245,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     getAllObjectivesWithObjectives() {
+        this.loading = true;
         this.goal
             .getRoute('get', 'goals', 'getAllObjectivesWithObjectives')
             .pipe(takeUntil(this.getGoalSubscription))
@@ -271,15 +273,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         goalDataRemainingBudget: number = 0,
         goalData: any = []
     ) {
-        console.log({
-            id,
-            objectId,
-            subHeader,
-            goalDataRemainingBudget,
-            goallistsId,
-            goalData,
-        });
-
+        this.loading = true;
         //passed data needed for the subgoal table or adding table modal
         this.subObjectiveGoalID = id;
         this.goallistsId = goallistsId;
@@ -301,12 +295,13 @@ export class GoalsComponent implements OnInit, OnDestroy {
         );
 
         //get all goals with subobjective
+        this.loading = false;
         if (id) {
             this.loading = true;
             this.obj
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
-                .subscribe((data: any) => {
+                .subscribe(async (data: any) => {
                     console.log({ getAllByIdObjectives: data });
 
                     this.objectiveDatas = data.Objectives;
@@ -340,7 +335,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     }, 0);
 
                     this.goalDataRemainingBudget = this.goalBudget - subBudget;
-                    this.changeDetectorRef.detectChanges();
                     //initialize completion button
                     for (
                         let i = 0;
@@ -350,6 +344,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                         this.onclickCompletionButton[i] = false;
                     }
 
+                    this.changeDetectorRef.detectChanges();
                     this.loading = false;
                 });
         }
@@ -643,7 +638,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     .pipe(takeUntil(this.getGoalSubscription))
                     .subscribe((data: any) => {
                         if (data.success) {
-                            this.getObjectives(goalId);
+                            // this.getObjectives(goalId);
+                            this.getObjectivesReload(goalId);
+                            //tag is as changes so if close will recalculate the data
+                            this.makeChanges = true;
                             this.loading = false;
                             this.messageService.add({
                                 severity: 'success  ',
@@ -772,26 +770,30 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.addObjectiveGoalform.reset();
     }
 
-    hidviewObjectRefetch(id) {
-        this.obj
-            .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                this.objectiveDatas = data.Objectives;
-                // remove the data
-                this.hideviewObjectiveFileDialogCardID = null;
-                this.loading = false;
-            });
+    hidviewObjectRefetch() {
+        // this.obj
+        //     .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
+        //     .pipe(takeUntil(this.getGoalSubscription))
+        //     .subscribe((data: any) => {
+        //         this.objectiveDatas = data.Objectives;
+        //         // remove the data
+        //         this.hideviewObjectiveFileDialogCardID = null;
+        //         this.loading = false;
+        //     });
     }
 
     hideViewObjectiveTable(id?: string) {
         this.subGoalObjective = false;
         this.subObjectiveGoalID = null;
         this.objectiveDatas = [];
-        //after they click the switch it and close the dialog will refetch
-        if (id) {
-            this.hidviewObjectRefetch(id);
+        if (this.makeChanges) {
+            this.getAllObjectivesWithObjectives();
+            this.makeChanges = false;
         }
+        //after they click the switch it and close the dialog will refetch
+        // if (id) {
+        //     this.hidviewObjectRefetch(id);
+        // }
     }
 
     hideViewFileDialogCard() {
@@ -913,24 +915,29 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     receivedAddGoalEvent(addGoalMessageResults: any) {
+        //track if changes is made for the table to reload
+        this.makeChanges = true;
         if (addGoalMessageResults.success) {
             this.getAllObjectivesWithObjectives();
         }
     }
 
     receivedEditGoalEvent(editGoalMessageResults: any) {
-        console.log({ editGoalMessageResults });
-
+        //track if changes is made for the table to reload
+        this.makeChanges = true;
         if (editGoalMessageResults.success) {
             this.getAllObjectivesWithObjectives();
         }
     }
     receivedUpdateObjective(editObjectiveMessageResults: any) {
-        console.log({ receivedUpdateObjective: editObjectiveMessageResults });
+        //track if changes is made for the table to reload
+        this.makeChanges = true;
         this.getObjectivesReload(editObjectiveMessageResults.id);
     }
 
     receivedAddObjectiveEvent(newObjective: any) {
+        //track if changes is made for the table to reload
+        this.makeChanges = true;
         this.getObjectivesReload(newObjective.goalId);
     }
 
