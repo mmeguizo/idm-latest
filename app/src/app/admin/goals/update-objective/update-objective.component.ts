@@ -75,12 +75,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         }
 
         // Initialize quarters array
-        this.quarters = [
-            'Q1 (Jan-Mar)',
-            'Q2 (Apr-Jun)',
-            'Q3 (Jul-Sep)',
-            'Q4 (Oct-Dec)',
-        ];
+        this.quarters = ['quarter_0', 'quarter_1', 'quarter_2', 'quarter_3'];
         this.semi_annual = [
             '(Jan-Feb-Mar-Apr-May-Jun)',
             '(Jul-Aug-Sep-Oct-Nov-Dec)',
@@ -222,10 +217,13 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                     };
 
                     await this.onFrequencyChange(
-                        frequency_monitoring,
+                        await frequency_monitoring,
                         wholeData
                     );
-
+                    // Update the form control value
+                    this.editObjectiveGoalform
+                        .get('frequency_monitoring')
+                        .setValue(frequency_monitoring);
                     this.editObjectiveGoalDialogCard = true;
                 },
                 error: (error) => {
@@ -239,47 +237,48 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             });
     }
 
-    async onFrequencyChange(event: any, data?: any) {
-        const frequency = event?.value?.name || event;
-        this.selectedfrequencyOptions = {
-            name: event?.value?.name || event,
-            code: event?.value?.name || event,
-        };
-        // Clear existing dynamic controls
-        this.clearDynamicControls();
+    // async onFrequencyChange(event: any, data?: any) {
+    //     const frequency = event?.value?.name || event;
+    //     this.selectedfrequencyOptions = {
+    //         name: event?.value?.name || event,
+    //         code: event?.value?.name || event,
+    //     };
+    //     // Clear existing dynamic controls
+    //     this.clearDynamicControls();
 
-        if (frequency === 'yearly') {
-            await this.addMonthlyControls(data);
-        } else if (frequency === 'quarterly') {
-            await this.addQuarterlyControls(data);
-        } else if (frequency === 'semi_annual') {
-            await this.addSemiAnnualControls(data);
-        }
-        console.log(frequency);
+    //     console.log({ onFrequencyChange: frequency });
 
-        // Update the form control value
-        this.editObjectiveGoalform
-            .get('frequency_monitoring')
-            .setValue(frequency);
-    }
+    //     if (frequency === 'yearly') {
+    //         await this.addMonthlyControls(await data);
+    //     } else if (frequency === 'quarterly') {
+    //         await this.addQuarterlyControls(await data);
+    //     } else if (frequency === 'semi_annual') {
+    //         await this.addSemiAnnualControls(await data);
+    //     }
 
-    clearDynamicControls() {
-        this.months.forEach((_, i) => {
-            if (this.editObjectiveGoalform.contains(`month_${i}`)) {
-                this.editObjectiveGoalform.removeControl(`month_${i}`);
-            }
-        });
-        this.quarters.forEach((_, i) => {
-            if (this.editObjectiveGoalform.contains(`quarter_${i}`)) {
-                this.editObjectiveGoalform.removeControl(`quarter_${i}`);
-            }
-        });
-        this.semi_annual.forEach((_, i) => {
-            if (this.editObjectiveGoalform.contains(`semi_annual_${i}`)) {
-                this.editObjectiveGoalform.removeControl(`semi_annual_${i}`);
-            }
-        });
-    }
+    //     // Update the form control value
+    //     this.editObjectiveGoalform
+    //         .get('frequency_monitoring')
+    //         .setValue(frequency);
+    // }
+
+    // clearDynamicControls() {
+    //     this.months.forEach((_, i) => {
+    //         if (this.editObjectiveGoalform.contains(`month_${i}`)) {
+    //             this.editObjectiveGoalform.removeControl(`month_${i}`);
+    //         }
+    //     });
+    //     this.quarters.forEach((_, i) => {
+    //         if (this.editObjectiveGoalform.contains(`quarter_${i}`)) {
+    //             this.editObjectiveGoalform.removeControl(`quarter_${i}`);
+    //         }
+    //     });
+    //     this.semi_annual.forEach((_, i) => {
+    //         if (this.editObjectiveGoalform.contains(`semi_annual_${i}`)) {
+    //             this.editObjectiveGoalform.removeControl(`semi_annual_${i}`);
+    //         }
+    //     });
+    // }
 
     async addMonthlyControls(data?: any) {
         this.months.forEach((_, i) => {
@@ -291,15 +290,87 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         });
     }
 
-    async addQuarterlyControls(data?: any) {
-        this.quarters.forEach((_, i) => {
-            const monthValue = data ? data[`quarter_${i}`] || 0 : 0;
-            this.editObjectiveGoalform.addControl(
-                `quarter_${i}`,
-                new FormControl(monthValue, Validators.min(0))
-            );
+    async onFrequencyChange(event: any, data?: any) {
+        const frequency = event?.value?.name || event;
+        this.selectedfrequencyOptions = {
+            name: event?.value?.name || event,
+            code: event?.value?.name || event,
+        };
+        // Clear existing dynamic controls
+        this.clearDynamicControls();
+
+        console.log({ onFrequencyChange: frequency });
+
+        if (frequency === 'yearly') {
+            await this.addMonthlyControls(await data);
+        } else if (frequency === 'quarterly') {
+            await this.addQuarterlyControls(await data);
+        } else if (frequency === 'semi_annual') {
+            await this.addSemiAnnualControls(await data);
+        }
+    }
+
+    clearDynamicControls() {
+        // Clear monthly controls
+        this.months.forEach((_, i) => {
+            if (this.editObjectiveGoalform.contains(`month_${i}`)) {
+                this.editObjectiveGoalform.removeControl(`month_${i}`);
+            }
+        });
+
+        // Clear quarterly controls
+        for (let i = 0; i <= 12; i++) {
+            if (this.editObjectiveGoalform.contains(`quarter_${i}`)) {
+                this.editObjectiveGoalform.removeControl(`quarter_${i}`);
+            }
+        }
+
+        // Clear semi-annual controls
+        this.semi_annual.forEach((_, i) => {
+            if (this.editObjectiveGoalform.contains(`semi_annual_${i}`)) {
+                this.editObjectiveGoalform.removeControl(`semi_annual_${i}`);
+            }
         });
     }
+
+    async addQuarterlyControls(data?: any) {
+        // Add controls for quarters 0 to 3
+        for (let quarter = 0; quarter <= 3; quarter++) {
+            const quarterValue = data ? data[`quarter_${quarter}`] || 0 : 0;
+            this.editObjectiveGoalform.addControl(
+                `quarter_${quarter}`,
+                new FormControl(quarterValue, Validators.min(0))
+            );
+        }
+    }
+
+    // async addQuarterlyControls(data?: any) {
+    //     // for (let quarter = 0; quarter <= 4; quarter++) {
+    //     //     console.log({ addQuarterlyControls: data });
+    //     //     const monthValue = data ? data[`quarter_${quarter}`] || 0 : 0;
+    //     //     this.editObjectiveGoalform.addControl(
+    //     //         `quarter_${quarter}`,
+    //     //         new FormControl(monthValue, Validators.min(0))
+    //     //     );
+    //     // }
+
+    //     this.editObjectiveGoalform.addControl(
+    //         `quarter_0`,
+    //         new FormControl(data['quarter_0'], Validators.min(0))
+    //     );
+    //     this.editObjectiveGoalform.addControl(
+    //         `quarter_1`,
+    //         new FormControl(data['quarter_1'], Validators.min(0))
+    //     );
+    //     this.editObjectiveGoalform.addControl(
+    //         `quarter_2`,
+    //         new FormControl(data['quarter_2'], Validators.min(0))
+    //     );
+    //     this.editObjectiveGoalform.addControl(
+    //         `quarter_3`,
+    //         new FormControl(data['quarter_3'], Validators.min(0))
+    //     );
+    // }
 
     async addSemiAnnualControls(data?: any) {
         this.semi_annual.forEach((_, i) => {

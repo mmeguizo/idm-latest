@@ -275,14 +275,9 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
                 delete data[`semi_annual_${i}`];
             }
 
-            const timetableMap = new Map();
             for (let month = 0; month < 12; month++) {
-                const monthName = new Date(0, month).toLocaleString('default', {
-                    month: 'short',
-                });
-                timetableMap.set(monthName, e.value[`month_${month}`]);
+                data[`file_month_${month.toString()}`] = '';
             }
-            data.timetable = Array.from(timetableMap.entries());
         } else if (data.frequency_monitoring === 'quarterly') {
             // Remove yearly and semi_annual fields
             for (let month = 0; month <= 12; month++) {
@@ -291,12 +286,9 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             for (let i = 0; i <= 2; i++) {
                 delete data[`semi_annual_${i}`];
             }
-
-            const timetableMap = new Map();
-            for (let quarter = 1; quarter <= 4; quarter++) {
-                timetableMap.set(`Q${quarter}`, e.value[`quarter_${quarter}`]);
+            for (let month = 0; month < 4; month++) {
+                data[`file_quarter_${month.toString()}`] = '';
             }
-            data.timetable = Array.from(timetableMap.entries());
         } else if (data.frequency_monitoring === 'semi_annual') {
             // Remove yearly and quarterly fields
             for (let month = 0; month <= 12; month++) {
@@ -306,19 +298,10 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
                 delete data[`quarter_${quarter}`];
             }
 
-            const timetableMap = new Map();
-            for (let i = 0; i < 2; i++) {
-                const periodName = this.semi_annual[i];
-                timetableMap.set(periodName, e.value[`semi_annual_${i}`]);
+            for (let month = 0; month < 2; month++) {
+                data[`file_semi_annual_${month.toString()}`] = '';
             }
-            data.timetable = Array.from(timetableMap.entries());
         }
-
-        console.log({ addObjectives: data });
-
-        // Send the data via HTTP POST request
-
-        console.log({ addObjectives: data });
 
         this.obj
             .getRoute('post', 'objectives', 'addObjectives', data)

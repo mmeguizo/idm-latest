@@ -378,9 +378,9 @@
                 [paginator]="true"
                 [globalFilterFields]="[
                     '',
+                    'target',
                     'functional_objective',
                     'performance_indicator',
-                    'target',
                     'formula',
                     'programs',
                     'department',
@@ -449,6 +449,26 @@
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
+                                Percentage Complete
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Target
+                                <p-columnFilter
+                                    type="text"
+                                    field="target"
+                                    display="menu"
+                                    placeholder="Search by Target"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
                                 Functional Objective
                                 <p-columnFilter
                                     type="text"
@@ -471,19 +491,7 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Target
-                                <p-columnFilter
-                                    type="text"
-                                    field="target"
-                                    display="menu"
-                                    placeholder="Search by Target"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
+
                         <th style="min-width: 12rem">
                             <div
                                 class="flex justify-content-between align-items-center"
@@ -656,6 +664,35 @@
                     let-rowIndex="rowIndex"
                 >
                     <tr>
+                        <!-- <td>
+                            <span>percentage</span>
+                        </td> -->
+                        <td>
+                            <!-- <p-rating
+                                [ngModel]="objectiveData.completedStars"
+                                [readonly]="true"
+                                [cancel]="false"
+                                [stars]="objectiveData.target"
+                            ></p-rating> -->
+                            <p-progressBar
+                                [color]="'#1da750'"
+                                [value]="objectiveData.completionPercentage"
+                            />
+
+                            <!-- @for(star of [].constructor( objectiveData.target );
+                            track objectiveData.id ){ @if(
+                            objectiveData.target.length >
+                            objectiveData.completedStars ){
+                            <i class="pi pi-star text-yellow-200 text-sm"></i>
+                            } @else {
+                            <i
+                                class="pi pi-star-fill text-gray-800 text-sm"
+                            ></i>
+                            } } / {{ objectiveData.target }} -->
+                        </td>
+                        <td>
+                            {{ objectiveData.target }}
+                        </td>
                         <td>
                             {{ objectiveData.functional_objective | titlecase }}
                         </td>
@@ -664,9 +701,7 @@
                                 objectiveData.performance_indicator | titlecase
                             }}
                         </td>
-                        <td>
-                            {{ objectiveData.target }}
-                        </td>
+
                         <td>
                             {{ objectiveData.formula | titlecase }}
                         </td>
@@ -680,15 +715,7 @@
                         <td>
                             {{ objectiveData.clients | titlecase }}
                         </td>
-                        <!-- <td>
-                            {{
-                                objectiveData.timetable[0] | date : "shortDate"
-                            }}
-                            -
-                            {{
-                                objectiveData.timetable[1] | date : "shortDate"
-                            }}
-                        </td> -->
+
                         <td>
                             {{ objectiveData.frequency_monitoring | titlecase }}
                         </td>
@@ -706,6 +733,17 @@
                         </td>
                         <td>
                             <p-button
+                                [text]="true"
+                                [raised]="true"
+                                severity="help"
+                                icon="
+                                  pi pi-external-link
+                                "
+                                label="View"
+                                [(loading)]="onclickCompletionButton[rowIndex]"
+                                (click)="updateSubGoal(objectiveData)"
+                            ></p-button>
+                            <!-- <p-button
                                 [text]="true"
                                 [raised]="true"
                                 [severity]="
@@ -728,7 +766,7 @@
                                         objectiveData.complete
                                     )
                                 "
-                            ></p-button>
+                            ></p-button> -->
                             <p-confirmPopup
                                 #confirmPopupRef
                                 key="updateObjectiveComplete"
@@ -753,11 +791,11 @@
                         </td>
                         <td>
                             <div class="options-users">
-                                <i
+                                <!-- <i
                                     (click)="updateSubGoal(objectiveData)"
                                     class="pi pi-file-edit text-xl"
                                     style="color: #0ea5e9; cursor: pointer"
-                                ></i>
+                                ></i> -->
                                 <i
                                     (click)="
                                         deleteSubGoal(

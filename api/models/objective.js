@@ -35,14 +35,36 @@ const objectivesSchema = new mongoose.Schema({
   month_10: { type: Number },
   month_11: { type: Number },
 
+  file_month_0: { type: String },
+  file_month_1: { type: String },
+  file_month_2: { type: String },
+  file_month_3: { type: String },
+  file_month_4: { type: String },
+  file_month_5: { type: String },
+  file_month_6: { type: String },
+  file_month_7: { type: String },
+  file_month_8: { type: String },
+  file_month_9: { type: String },
+  file_month_10: { type: String },
+  file_month_11: { type: String },
+
   quarter_1: { type: Number },
   quarter_2: { type: Number },
   quarter_3: { type: Number },
   quarter_0: { type: Number },
 
+  file_quarter_1: { type: String },
+  file_quarter_2: { type: String },
+  file_quarter_3: { type: String },
+  file_quarter_0: { type: String },
+
   semi_annual_0: { type: Number },
   semi_annual_1: { type: Number },
   semi_annual_2: { type: Number },
+
+  file_semi_annual_0: { type: String },
+  file_semi_annual_1: { type: String },
+  file_semi_annual_2: { type: String },
 
   frequency_monitoring: {
     type: String,
