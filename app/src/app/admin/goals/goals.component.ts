@@ -7,7 +7,15 @@ import {
     ChangeDetectorRef,
     EventEmitter,
 } from '@angular/core';
-import { Subject, pipe, takeUntil } from 'rxjs';
+import {
+    Subject,
+    pipe,
+    takeUntil,
+    tap,
+    catchError,
+    Observable,
+    throwError,
+} from 'rxjs';
 import { Table } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { GoalService } from 'src/app/demo/service/goal.service';
@@ -45,7 +53,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     //table columns
     cols!: any;
-    loading = true;
+    loading = false;
 
     //variables used in the component
     userID: string;
@@ -113,6 +121,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
     printFlag: boolean;
     goallistsId: string;
 
+    // add files child component
+    parentAddnewFile: any = {};
+
     frequencyOptions = [
         { name: 'yearly', code: 'yearly' },
         { name: 'quarterly', code: 'quarterly' },
@@ -123,6 +134,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     quarters: string[] = [];
     semi_annual: string[] = [];
     makeChanges: boolean;
+    childComponentAddfileObjectiveId: any;
 
     constructor(
         private messageService: MessageService,
@@ -244,17 +256,52 @@ export class GoalsComponent implements OnInit, OnDestroy {
             });
     }
 
-    getAllObjectivesWithObjectives() {
+    // getAllObjectivesWithObjectives() {
+    //     const resultSubject = new Subject<boolean>();
+
+    //     this.loading = true;
+    //     this.goal
+    //         .getRoute('get', 'goals', 'getAllObjectivesWithObjectives')
+    //         .pipe(takeUntil(this.getGoalSubscription))
+    //         .subscribe((data: any) => {
+    //             console.log(data.goals);
+    //             this.goals = data.goals;
+    //             this.loading = false;
+    //         });
+    // }
+
+    getAllObjectivesWithObjectives(): Subject<boolean> {
+        const resultSubject = new Subject<boolean>(); // Create a new Subject to emit success or failure
+
         this.loading = true;
         this.goal
             .getRoute('get', 'goals', 'getAllObjectivesWithObjectives')
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                console.log(data.goals);
-                this.goals = data.goals;
-                this.loading = false;
-            });
+            .pipe(
+                takeUntil(this.getGoalSubscription),
+                tap((data: any) => {
+                    console.log(data.goals);
+                    this.goals = data.goals;
+                    this.loading = false;
+                    resultSubject.next(true); // Emit true on success
+                    resultSubject.complete(); // Complete the subject
+                }),
+                catchError((error) => {
+                    this.loading = false; // Set loading to false on error
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error getAllObjectivesWithObjectives',
+                        detail: error.message,
+                    });
+                    resultSubject.next(false); // Emit false on error
+                    resultSubject.complete(); // Complete the subject
+                    return throwError(error); // Re-throw the error if necessary
+                })
+            )
+            .subscribe(); // Trigger the observable
+        console.log({ resultSubject: resultSubject });
+        return resultSubject; // Return the subject to the caller
     }
+
     getAllDept() {
         this.dept
             .getRoute('get', 'department', 'getAllDepartmentDropdown')
@@ -389,24 +436,46 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
                     this.changeDetectorRef.detectChanges();
                     this.loading = false;
+                    this.makeChanges = false;
                 });
         }
     }
 
+    // async getAllFilesFromObjectiveLoad(
+    //     id: string,
+    //     objectiveID: string
+    // ): Promise<Boolean> {
+    //     this.loading = true;
+    //     this.fileService
+    //         .getAllFilesFromObjective(id, objectiveID)
+    //         .pipe(takeUntil(this.getGoalSubscription))
+    //         .subscribe((data: any) => {
+    //             this.AllObjectivesFiles = data.data;
+    //             this.loading = false;
+    //         });
+    //     return true;
+    // }
+
     async getAllFilesFromObjectiveLoad(
         id: string,
         objectiveID: string
-    ): Promise<Boolean> {
-        this.loading = true;
-        this.fileService
-            .getAllFilesFromObjective(id, objectiveID)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                this.AllObjectivesFiles = data.data;
-                this.loading = false;
-            });
-        return true;
+    ): Promise<boolean> {
+        try {
+            this.loading = true;
+            this.fileService
+                .getAllFilesFromObjective(id, objectiveID)
+                .pipe(takeUntil(this.getGoalSubscription))
+                .subscribe((data: any) => {
+                    this.AllObjectivesFiles = data.data;
+                    this.loading = false;
+                });
+            return true;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
     }
+
     async getAllFilesHistoryFromObjectiveLoad(
         id: string,
         objectiveID: string
@@ -417,6 +486,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.AllObjectivesHistoryFiles = data.data;
+                this.changeDetectorRef.detectChanges();
                 this.loading = false;
             });
         return true;
@@ -435,9 +505,23 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     addFiles(objectiveData: any) {
         // alert(objectiveID);
-        this.addObjectiveFileDialogCard = true;
+        // this.addObjectiveFileDialogCard = true;
         // alert(JSON.stringify(objectiveData));
+
+        this.parentAddnewFile = {
+            addFile: true,
+            objectiveId: this.childComponentAddfileObjectiveId,
+        };
     }
+
+    /*
+
+    addGoal() {
+        console.log('adding goal');
+        this.parentAddnewGoal = { addGoal: true };
+    }
+
+    */
 
     addSubObjectiveGoalDialogExec(e: any) {
         e.value.userId = this.USERID;
@@ -748,7 +832,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
         // alert(objectiveID);
         this.viewObjectiveFileDialogCard = true;
         this.objectiveIDforFile = objectiveData.id;
-
+        //use this when triggering the child component for adding file
+        this.childComponentAddfileObjectiveId = objectiveData.id;
         // alert(JSON.stringify(objectiveData));
         this.getAllFilesFromObjectiveLoad(this.USERID, objectiveData.id);
     }
@@ -756,54 +841,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     viewFilesHistory(objectiveData: any) {
         this.viewObjectiveFileHistoryDialogCard = true;
         this.getAllFilesHistoryFromObjectiveLoad(this.USERID, objectiveData.id);
-    }
-
-    onUpload(event: any) {
-        for (const file of event.files) {
-            this.uploadedFiles.push(file);
-        }
-
-        if (!this.validateFileType(this.uploadedFiles)) {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'File Unsupported',
-                detail: 'Unsupported file type! Please select only images, documents, or spreadsheets',
-            });
-            event.preventDefault();
-        }
-
-        this.fileService
-            .addMultipleFiles(
-                this.USERID,
-                this.objectiveIDforFile,
-                this.uploadedFiles
-            )
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                // after adding files it did not add the new files just reload, clear the data to fix the issue
-                this.AllObjectivesFiles = [];
-                this.getAllFilesFromObjectiveLoad(
-                    this.USERID,
-                    this.objectiveIDforFile
-                );
-                if (data.success) {
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'View the files',
-                        detail: 'Files added successfully',
-                    });
-                    this.addObjectiveFileDialogCard = false;
-                    this.addFileForm.reset();
-                    this.uploadedFiles = [];
-                    this.viewObjectiveFileDialogCard = false;
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
     }
 
     clearAddObjectiveGoalDialogCardDatas() {
@@ -830,8 +867,16 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.subObjectiveGoalID = null;
         this.objectiveDatas = [];
         if (this.makeChanges) {
-            this.getAllObjectivesWithObjectives();
-            this.makeChanges = false;
+            this.getAllObjectivesWithObjectives().subscribe(
+                (isSuccessful: boolean) => {
+                    if (isSuccessful) {
+                        this.makeChanges = false; // Reset makeChanges only if the operation was successful
+                    } else {
+                        console.log('Failed to load objectives.');
+                        // Handle error scenario if needed
+                    }
+                }
+            );
         }
         //after they click the switch it and close the dialog will refetch
         // if (id) {
@@ -961,27 +1006,97 @@ export class GoalsComponent implements OnInit, OnDestroy {
         //track if changes is made for the table to reload
         this.makeChanges = true;
         if (addGoalMessageResults.success) {
-            this.getAllObjectivesWithObjectives();
+            this.getAllObjectivesWithObjectives().subscribe(
+                (isSuccessful: boolean) => {
+                    if (isSuccessful) {
+                        this.makeChanges = false; // Reset makeChanges only if the operation was successful
+                    } else {
+                        console.log('Failed to load objectives.');
+                        // Handle error scenario if needed
+                    }
+                }
+            );
         }
+    }
+    receivedAddFileEvent(addNewFileEvent: any) {
+        const { USERID, objectiveId, viewObjectiveFileDialogCard } =
+            addNewFileEvent;
+
+        console.log({ receivedAddFileEvent: addNewFileEvent });
+        this.loading = true;
+        this.getAllFilesFromObjectiveLoad(USERID, objectiveId)
+            .then((data: any) => {
+                if (data.success) {
+                    // Run the code below if the return is true
+                    this.viewObjectiveFileDialogCard =
+                        viewObjectiveFileDialogCard;
+                    this.loading = false;
+                } else {
+                    // Notify if the return is false
+                    console.log('Failed to load files from objective.');
+                    // Handle error scenario if needed
+                }
+            })
+            .catch((error: any) => {
+                console.log('Error loading files from objective:', error);
+                // Handle error scenario if needed
+            });
+        //track if changes is made for the table to reload
+        // this.makeChanges = true;
+        // this.getAllObjectivesWithObjectives().subscribe(
+        //     (isSuccessful: boolean) => {
+        //         if (isSuccessful) {
+        //             this.makeChanges = false; // Reset makeChanges only if the operation was successful
+        //         } else {
+        //             console.log('Failed to load objectives.');
+        //             // Handle error scenario if needed
+        //         }
+        //     }
+        // );
     }
 
     receivedEditGoalEvent(editGoalMessageResults: any) {
         //track if changes is made for the table to reload
         this.makeChanges = true;
-        if (editGoalMessageResults.success) {
-            this.getAllObjectivesWithObjectives();
-        }
+        this.getAllObjectivesWithObjectives().subscribe(
+            (isSuccessful: boolean) => {
+                if (isSuccessful) {
+                    this.makeChanges = false; // Reset makeChanges only if the operation was successful
+                } else {
+                    console.log('Failed to load objectives.');
+                    // Handle error scenario if needed
+                }
+            }
+        );
     }
     receivedUpdateObjective(editObjectiveMessageResults: any) {
         //track if changes is made for the table to reload
         this.makeChanges = true;
-        this.getObjectivesReload(editObjectiveMessageResults.id);
+        this.getAllObjectivesWithObjectives().subscribe(
+            (isSuccessful: boolean) => {
+                if (isSuccessful) {
+                    this.makeChanges = false; // Reset makeChanges only if the operation was successful
+                } else {
+                    console.log('Failed to load objectives.');
+                    // Handle error scenario if needed
+                }
+            }
+        );
     }
 
     receivedAddObjectiveEvent(newObjective: any) {
         //track if changes is made for the table to reload
         this.makeChanges = true;
-        this.getObjectivesReload(newObjective.goalId);
+        this.getAllObjectivesWithObjectives().subscribe(
+            (isSuccessful: boolean) => {
+                if (isSuccessful) {
+                    this.makeChanges = false; // Reset makeChanges only if the operation was successful
+                } else {
+                    console.log('Failed to load objectives.');
+                    // Handle error scenario if needed
+                }
+            }
+        );
     }
 
     ngAfterViewInit() {
