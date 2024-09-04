@@ -274,7 +274,12 @@ export class FileService {
             );
     }
 
-    addMultipleFiles(id: string, objectiveIDforFile: string, files?: any) {
+    addMultipleFiles(
+        id: string,
+        objectiveIDforFile: string,
+        files?: any,
+        uploadobjective?: any
+    ) {
         this.createAuthenticationHeaders();
         console.log({ addMultipleFiles: files });
         const formData: FormData = new FormData();
@@ -286,7 +291,7 @@ export class FileService {
         return this.http
             .post(
                 this.cs.domain +
-                    `/fileupload/addMultipleFiles/${id}/${objectiveIDforFile}`,
+                    `/fileupload/addMultipleFiles/${id}/${objectiveIDforFile}/${uploadobjective}`,
                 formData,
                 { headers: this.options, responseType: 'json' }
             )

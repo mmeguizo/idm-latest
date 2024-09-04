@@ -19,6 +19,29 @@ const fileUpload = new Schema(
     filetype: { type: String, default: "" },
     objective_id: { type: String, required: true },
     // added_by:           { type:Number, maxlength:7, required:true },
+
+    // needed for file updload in objectives
+    file_month_0: { type: String },
+    file_month_1: { type: String },
+    file_month_2: { type: String },
+    file_month_3: { type: String },
+    file_month_4: { type: String },
+    file_month_5: { type: String },
+    file_month_6: { type: String },
+    file_month_7: { type: String },
+    file_month_8: { type: String },
+    file_month_9: { type: String },
+    file_month_10: { type: String },
+    file_month_11: { type: String },
+
+    file_quarter_1: { type: String },
+    file_quarter_2: { type: String },
+    file_quarter_3: { type: String },
+    file_quarter_0: { type: String },
+
+    file_semi_annual_0: { type: String },
+    file_semi_annual_1: { type: String },
+    file_semi_annual_2: { type: String },
   },
   {
     timestamps: true,

@@ -687,34 +687,25 @@ export class GoalsComponent implements OnInit, OnDestroy {
         });
     }
 
-    updateSubObjectiveGoalDialogExec(form: any) {
-        form.value.id = this.tobeUpdatedSubGoal;
-        form.value.frequency_monitoring =
-            this.formGroupDropdown.value.selectedDropdown.name;
-        this.obj
-            .getRoute('put', 'objectives', 'updateObjectives', form.value)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    //close the objective table
-                    this.addObjectiveGoalDialogCard = false;
-                    // this.subGoalObjective = false;
-                    this.getAllObjectivesWithObjectives();
-                    this.getObjectivesReload(this.subObjectiveGoalID);
-                    this.addObjectiveGoalDialogCard = false;
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
+    receivedUpdateObjective(editObjectiveMessageResults: any) {
+        const { success, id } = editObjectiveMessageResults;
+
+        //track if changes is made for the table to reload
+        this.makeChanges = true;
+        this.getAllObjectivesWithObjectives().subscribe(
+            (isSuccessful: boolean) => {
+                if (isSuccessful) {
+                    this.makeChanges = false; // Reset makeChanges only if the operation was successful
                 } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
+                    console.log('Failed to load objectives.');
+                    // Handle error scenario if needed
                 }
-            });
+            }
+        );
+        if (success) {
+            this.loading = true;
+            this.getObjectivesReload(id);
+        }
     }
 
     deleteGoalDialog(event: Event, _id: any) {
@@ -1056,20 +1047,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     receivedEditGoalEvent(editGoalMessageResults: any) {
-        //track if changes is made for the table to reload
-        this.makeChanges = true;
-        this.getAllObjectivesWithObjectives().subscribe(
-            (isSuccessful: boolean) => {
-                if (isSuccessful) {
-                    this.makeChanges = false; // Reset makeChanges only if the operation was successful
-                } else {
-                    console.log('Failed to load objectives.');
-                    // Handle error scenario if needed
-                }
-            }
-        );
-    }
-    receivedUpdateObjective(editObjectiveMessageResults: any) {
         //track if changes is made for the table to reload
         this.makeChanges = true;
         this.getAllObjectivesWithObjectives().subscribe(

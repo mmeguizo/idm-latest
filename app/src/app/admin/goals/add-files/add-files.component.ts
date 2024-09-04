@@ -34,6 +34,7 @@ export class AddFilesComponent implements OnInit, OnDestroy {
     uploadedFiles: any[] = [];
     userID: string;
     USERID: string;
+    frequencyFileName: string;
     objectiveIDforFile: any;
     AllObjectivesFiles: any[] = [];
     loading: boolean;
@@ -56,6 +57,7 @@ export class AddFilesComponent implements OnInit, OnDestroy {
         if (addFileTrigger && addFileTrigger.addFile) {
             this.addObjectiveFileDialogCard = true;
             this.objectiveIDforFile = addFileTrigger?.objectiveId;
+            this.frequencyFileName = addFileTrigger?.frequencyFileName;
         }
     }
 
@@ -92,7 +94,8 @@ export class AddFilesComponent implements OnInit, OnDestroy {
             .addMultipleFiles(
                 this.USERID,
                 this.objectiveIDforFile,
-                this.uploadedFiles
+                this.uploadedFiles,
+                this.frequencyFileName ? this.frequencyFileName : ''
             )
             .pipe(takeUntil(this.getAddFilesComponentSubscription))
             .subscribe({
@@ -101,13 +104,11 @@ export class AddFilesComponent implements OnInit, OnDestroy {
                         USERID: this.USERID,
                         objectiveId: this.objectiveIDforFile,
                         viewObjectiveFileDialogCard: false,
+                        frequencyFileNameForUpdate: data.fileNames[0],
+                        frequencyFileName: this.frequencyFileName,
                     });
+                    this.addObjectiveFileDialogCard = false;
                     this.AllObjectivesFiles = [];
-                    // this.getAllFilesFromObjectiveLoad(
-                    //     this.USERID,
-                    //     this.objectiveIDforFile
-                    // );
-
                     if (data.success) {
                         this.messageService.add({
                             severity: 'success  ',
@@ -117,6 +118,7 @@ export class AddFilesComponent implements OnInit, OnDestroy {
                         this.addFileForm.reset();
                         this.uploadedFiles = [];
                         this.addObjectiveFileDialogCard = false;
+
                         // this.viewObjectiveFileDialogCard = false;
                     }
                 },

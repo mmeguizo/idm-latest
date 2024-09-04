@@ -15,7 +15,7 @@ const { log } = require("console");
 
 module.exports = (router) => {
   router.post(
-    "/addMultipleFiles/:user_id/:objective_id",
+    "/addMultipleFiles/:user_id/:objective_id/:uploadObjectiveFilemonth",
 
     async (req, res) => {
       let ReturnData = [];
@@ -49,16 +49,22 @@ module.exports = (router) => {
             readStream.pipe(fileStream); // Pipe the read stream to the write stream
           });
 
-          uploadedFiles.push(
-            new File({
-              id: uuidv4(),
-              user_id: req.params.user_id,
-              objective_id: req.params.objective_id,
-              source: finalFileName,
-              for: "files",
-              filetype: file.mimetype.split("/")[0],
-            })
-          );
+          const uploadedFiles = [];
+
+          const fileData = {
+            id: uuidv4(),
+            user_id: req.params.user_id,
+            objective_id: req.params.objective_id,
+            source: finalFileName,
+            for: "files",
+            filetype: file.mimetype.split("/")[0],
+          };
+
+          if (req.params.uploadObjectiveFilemonth) {
+            fileData[req.params.uploadObjectiveFilemonth] = finalFileName;
+          }
+
+          uploadedFiles.push(new File(fileData));
 
           let savePromises = uploadedFiles.map((file) => {
             return new Promise((resolve, reject) => {
@@ -67,7 +73,6 @@ module.exports = (router) => {
                   reject(err);
                 } else {
                   console.log({ fileAdd: data });
-
                   resolve(data);
                 }
               });
@@ -77,10 +82,30 @@ module.exports = (router) => {
           Promise.all(savePromises)
             .then((data) => {
               console.log("Files Saving success....:");
+              const fileNames = data.map((file) => file.source);
+              res.json({
+                success: true,
+                message: "Files uploaded successfully!",
+                fileNames: fileNames,
+              });
             })
             .catch((err) => {
               console.error("Error uploading file:", err);
             });
+
+          // res.json({
+          //   success: true,
+          //   message: "Files uploaded successfully!",
+          //   fileNames: [],
+          // });
+
+          // Promise.all(savePromises)
+          //   .then((data) => {
+          //     console.log("Files Saving success....:");
+          //   })
+          //   .catch((err) => {
+          //     console.error("Error uploading file:", err);
+          //   });
         } catch (err) {
           console.error("Error uploading file:", err);
         }
@@ -100,10 +125,10 @@ module.exports = (router) => {
 
       form.parse(req);
 
-      res.json({
-        success: true,
-        message: "Files uploaded successfully!",
-      });
+      // res.json({
+      //   success: true,
+      //   message: "Files uploaded successfully!",
+      // });
       let params = JSON.stringify(req.params);
       let query = JSON.stringify(req.query);
       let body = JSON.stringify(req.body);
@@ -435,7 +460,7 @@ module.exports = (router) => {
           }
         }
       ).sort({
-        createdAt: 1,
+        createdAt: -1,
       });
 
       let params = JSON.stringify(req.params);

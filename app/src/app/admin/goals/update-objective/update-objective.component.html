@@ -1,149 +1,17 @@
 <p-dialog
     styleClass="addObjective"
-    header="Edit Objectives"
+    header="Note: Once file is uploaded dialog cannot be cancelled"
     [(visible)]="editObjectiveGoalDialogCard"
     [style]="{ width: '50rem' }"
     [modal]="true"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     position="top"
+    [closable]="false"
     (onHide)="clearEditObjectiveGoalDialogCardDatas()"
 >
     <div class="p-fluid">
         <div class="field col-10 md:col-10">
             <form [formGroup]="editObjectiveGoalform">
-                <!-- <div class="field">
-                    <label htmlFor="department">Functional Objective</label>
-                    <p-dropdown
-                        formControlName="functional_objective"
-                        [options]="dropdwonGoallistSelection"
-                        optionLabel="name"
-                        placeholder="Select an Objective"
-                        (onChange)="onGoalChange($event)"
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Performance Indicator</label>
-                    <input
-                        pInputText
-                        id="performance_indicator"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('performance_indicator')
-                                .touched &&
-                            editObjectiveGoalform?.controls[
-                                'performance_indicator'
-                            ].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="performance_indicator"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Target</label>
-                    <input
-                        pInputText
-                        id="target"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('target').touched &&
-                            editObjectiveGoalform?.controls['target'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="target"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Formula</label>
-                    <input
-                        pInputText
-                        id="formula"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('formula').touched &&
-                            editObjectiveGoalform?.controls['formula'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="formula"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Programs</label>
-                    <input
-                        pInputText
-                        id="programs"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('programs').touched &&
-                            editObjectiveGoalform?.controls['programs'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="programs"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Responsible Persons</label>
-                    <input
-                        pInputText
-                        id="responsible_persons"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('responsible_persons')
-                                .touched &&
-                            editObjectiveGoalform?.controls[
-                                'responsible_persons'
-                            ].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="responsible_persons"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Clients</label>
-                    <input
-                        pInputText
-                        id="clients"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('clients').touched &&
-                            editObjectiveGoalform?.controls['clients'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="clients"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="department">Frequency Monitoring</label>
-                    <p-dropdown
-                        formControlName="frequency_monitoring"
-                        [(ngModel)]="selectedfrequencyOptions"
-                        [options]="frequencyOptions"
-                        optionLabel="name"
-                        placeholder="Select a Frequency"
-                        (onChange)="onFrequencyChange($event)"
-                    ></p-dropdown>
-                </div> -->
                 <div
                     *ngIf="
                         editObjectiveGoalform.get('frequency_monitoring')
@@ -161,17 +29,37 @@
                                 formControlName="month_{{ i }}"
                                 [min]="0"
                             ></p-inputNumber>
-                            <p-fileUpload
-                                mode="basic"
-                                name="demo[]"
-                                url="./upload.php"
-                                accept="image/*"
-                                [maxFileSize]="1000000"
-                                (onUpload)="onBasicUpload()"
-                            ></p-fileUpload>
+
+                            <span
+                                *ngIf="
+                                    !editObjectiveGoalform.get(
+                                        'file_month_' + i
+                                    ).value
+                                "
+                                class="p-float-label p-input-icon-left"
+                            >
+                                <i class="pi pi-file-import"></i>
+                                <input
+                                    type="text"
+                                    id="lefticon"
+                                    pInputText
+                                    formControlName="file_month_{{ i }}"
+                                    (click)="onUpload($event, 'month', i)"
+                                />
+                                <label for="lefticon">Upload Files</label>
+                            </span>
                             <i
                                 class="pi pi-check-circle text-teal-400 text-2xl pr-3 pb-2"
+                                *ngIf="
+                                    editObjectiveGoalform.get('file_month_' + i)
+                                        .value
+                                "
                             ></i>
+                            <app-add-files
+                                [addNewFile]="parentAddnewFile"
+                                (childAddFile)="receivedAddFileEvent($event)"
+                                *ngIf="showAddFilesComponent"
+                            ></app-add-files>
                         </div>
                     </div>
                 </div>
@@ -192,17 +80,38 @@
                                 formControlName="quarter_{{ i }}"
                                 [min]="0"
                             ></p-inputNumber>
-                            <p-fileUpload
-                                mode="basic"
-                                name="demo[]"
-                                url="./upload.php"
-                                accept="image/*"
-                                [maxFileSize]="1000000"
-                                (onUpload)="onBasicUpload()"
-                            ></p-fileUpload>
+
+                            <span
+                                *ngIf="
+                                    !editObjectiveGoalform.get(
+                                        'file_quarter_' + i
+                                    ).value
+                                "
+                                class="p-float-label p-input-icon-left"
+                            >
+                                <i class="pi pi-file-import"></i>
+                                <input
+                                    type="text"
+                                    id="lefticon"
+                                    pInputText
+                                    formControlName="file_quarter_{{ i }}"
+                                    (click)="onUpload($event, 'quarter', i)"
+                                />
+                                <label for="lefticon">Upload Files</label>
+                            </span>
                             <i
                                 class="pi pi-check-circle text-teal-400 text-2xl pr-3 pb-2"
+                                *ngIf="
+                                    editObjectiveGoalform.get(
+                                        'file_quarter_' + i
+                                    ).value
+                                "
                             ></i>
+                            <app-add-files
+                                [addNewFile]="parentAddnewFile"
+                                (childAddFile)="receivedAddFileEvent($event)"
+                                *ngIf="showAddFilesComponent"
+                            ></app-add-files>
                         </div>
                     </div>
                 </div>
@@ -225,329 +134,40 @@
                                 formControlName="semi_annual_{{ i }}"
                                 [min]="0"
                             ></p-inputNumber>
-                            <p-fileUpload
-                                mode="basic"
-                                name="demo[]"
-                                url="./upload.php"
-                                accept="image/*"
-                                [maxFileSize]="1000000"
-                                (onUpload)="onBasicUpload()"
-                            ></p-fileUpload>
+
+                            <span
+                                *ngIf="
+                                    !editObjectiveGoalform.get(
+                                        'file_semi_annual_' + i
+                                    ).value
+                                "
+                                class="p-float-label p-input-icon-left"
+                            >
+                                <i class="pi pi-file-import"></i>
+                                <input
+                                    type="text"
+                                    id="lefticon"
+                                    pInputText
+                                    formControlName="file_semi_annual_{{ i }}"
+                                    (click)="onUpload($event, 'semi_annual', i)"
+                                />
+                                <label for="lefticon">Upload Files</label>
+                            </span>
                             <i
                                 class="pi pi-check-circle text-teal-400 text-2xl pr-3 pb-2"
+                                *ngIf="
+                                    editObjectiveGoalform.get(
+                                        'file_semi_annual_' + i
+                                    ).value
+                                "
                             ></i>
+                            <app-add-files
+                                [addNewFile]="parentAddnewFile"
+                                (childAddFile)="receivedAddFileEvent($event)"
+                                *ngIf="showAddFilesComponent"
+                            ></app-add-files>
                         </div>
                     </div>
-                </div>
-                <!--
-                <div class="field">
-                    <label htmlFor="name1"
-                        >Means of Verification(Data Source)</label
-                    >
-                    <input
-                        pInputText
-                        id="data_source"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('data_source').touched &&
-                            editObjectiveGoalform?.controls['data_source']
-                                .errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="data_source"
-                        required
-                    />
-                </div>
-              <div class="field">
-                    <label htmlFor="name1"> budget </label>
-                    <p-inputNumber
-                        mode="decimal"
-                        [min]="0"
-                        formControlName="budget"
-                        [showButtons]="true"
-                    >
-                    </p-inputNumber>
-                </div>
-                <div class="field">
-                    <label htmlFor="name1"> Remarks </label>
-                    <textarea
-                        rows="5"
-                        cols="30"
-                        formControlName="remarks"
-                        placeholder="Your Message"
-                        pInputTextarea
-                    ></textarea>
-                </div> -->
-            </form>
-        </div>
-    </div>
-    <div class="flex justify-space-between gap-2">
-        <p-button
-            label="Cancel"
-            severity="secondary"
-            (click)="clearEditObjectiveGoalDialogCardDatas()"
-        />
-        <p-button
-            label="Edit"
-            (click)="updateSubObjectiveGoalDialogExec(editObjectiveGoalform)"
-        />
-    </div>
-</p-dialog>
-
-<!-- old style
-
-
-<p-dialog
-    styleClass="addObjective"
-    header="Edit Objectives"
-    [(visible)]="editObjectiveGoalDialogCard"
-    [style]="{ width: '50rem' }"
-    [modal]="true"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-    position="top"
-    (onHide)="clearEditObjectiveGoalDialogCardDatas()"
->
-    <div class="p-fluid">
-        <div class="field col-10 md:col-10">
-            <form [formGroup]="editObjectiveGoalform">
-                <div class="field">
-                    <label htmlFor="department">Functional Objective</label>
-                    <p-dropdown
-                        formControlName="functional_objective"
-                        [options]="dropdwonGoallistSelection"
-                        optionLabel="name"
-                        placeholder="Select an Objective"
-                        (onChange)="onGoalChange($event)"
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Performance Indicator</label>
-                    <input
-                        pInputText
-                        id="performance_indicator"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('performance_indicator')
-                                .touched &&
-                            editObjectiveGoalform?.controls[
-                                'performance_indicator'
-                            ].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="performance_indicator"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Target</label>
-                    <input
-                        pInputText
-                        id="target"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('target').touched &&
-                            editObjectiveGoalform?.controls['target'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="target"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Formula</label>
-                    <input
-                        pInputText
-                        id="formula"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('formula').touched &&
-                            editObjectiveGoalform?.controls['formula'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="formula"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Programs</label>
-                    <input
-                        pInputText
-                        id="programs"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('programs').touched &&
-                            editObjectiveGoalform?.controls['programs'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="programs"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Responsible Persons</label>
-                    <input
-                        pInputText
-                        id="responsible_persons"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('responsible_persons')
-                                .touched &&
-                            editObjectiveGoalform?.controls[
-                                'responsible_persons'
-                            ].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="responsible_persons"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1">Clients</label>
-                    <input
-                        pInputText
-                        id="clients"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('clients').touched &&
-                            editObjectiveGoalform?.controls['clients'].errors
-                                ?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="clients"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="department">Frequency Monitoring</label>
-                    <p-dropdown
-                        formControlName="frequency_monitoring"
-                        [(ngModel)]="selectedfrequencyOptions"
-                        [options]="frequencyOptions"
-                        optionLabel="name"
-                        placeholder="Select a Frequency"
-                        (onChange)="onFrequencyChange($event)"
-                    ></p-dropdown>
-                </div>
-                <div
-                    *ngIf="
-                        editObjectiveGoalform.get('frequency_monitoring')
-                            .value === 'yearly'
-                    "
-                >
-                    <div class="grid">
-                        <div
-                            class="col-3"
-                            *ngFor="let month of months; let i = index"
-                        >
-                            <label for="month_{{ i }}">{{ month }}</label>
-                            <p-inputNumber
-                                id="month_{{ i }}"
-                                formControlName="month_{{ i }}"
-                                [min]="0"
-                            ></p-inputNumber>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    *ngIf="
-                        editObjectiveGoalform.get('frequency_monitoring')
-                            .value === 'quarterly'
-                    "
-                >
-                    <div class="grid">
-                        <div
-                            class="col-4"
-                            *ngFor="let quarter of quarters; let i = index"
-                        >
-                            <label for="quarter_{{ i }}">{{ quarter }}</label>
-                            <p-inputNumber
-                                id="quarter_{{ i }}"
-                                formControlName="quarter_{{ i }}"
-                                [min]="0"
-                            ></p-inputNumber>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    *ngIf="
-                        editObjectiveGoalform.get('frequency_monitoring')
-                            .value === 'semi_annual'
-                    "
-                >
-                    <div class="grid">
-                        <div
-                            class="col-6"
-                            *ngFor="let period of semi_annual; let i = index"
-                        >
-                            <label for="semi_annual_{{ i }}">{{
-                                period
-                            }}</label>
-                            <p-inputNumber
-                                id="semi_annual_{{ i }}"
-                                formControlName="semi_annual_{{ i }}"
-                                [min]="0"
-                            ></p-inputNumber>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label htmlFor="name1"
-                        >Means of Verification(Data Source)</label
-                    >
-                    <input
-                        pInputText
-                        id="data_source"
-                        class="flex-auto"
-                        autocomplete="off"
-                        [ngClass]="
-                            editObjectiveGoalform?.get('data_source').touched &&
-                            editObjectiveGoalform?.controls['data_source']
-                                .errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="data_source"
-                        required
-                    />
-                </div>
-                <div class="field">
-                    <label htmlFor="name1"> budget </label>
-                    <p-inputNumber
-                        mode="decimal"
-                        [min]="0"
-                        formControlName="budget"
-                        [showButtons]="true"
-                    >
-                    </p-inputNumber>
-                </div>
-                <div class="field">
-                    <label htmlFor="name1"> Remarks </label>
-                    <textarea
-                        rows="5"
-                        cols="30"
-                        formControlName="remarks"
-                        placeholder="Your Message"
-                        pInputTextarea
-                    ></textarea>
                 </div>
             </form>
         </div>
@@ -557,6 +177,7 @@
             label="Cancel"
             severity="secondary"
             (click)="clearEditObjectiveGoalDialogCardDatas()"
+            [disabled]="uploadSuccessFlag"
         />
         <p-button
             label="Edit"
@@ -564,6 +185,3 @@
         />
     </div>
 </p-dialog>
-
-
--->
