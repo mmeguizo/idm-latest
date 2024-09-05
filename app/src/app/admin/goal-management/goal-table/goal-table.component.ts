@@ -88,7 +88,6 @@ export class GoalTableComponent implements OnDestroy, OnChanges {
                 next: (data: any) => {
                     this.goals = data.data[0] || [];
                     this.loading = false;
-                    console.log(this.goals);
                 },
                 error: (error) => {
                     console.error('Error fetching data:', error);
@@ -159,12 +158,10 @@ export class GoalTableComponent implements OnDestroy, OnChanges {
     }
 
     expandAll() {
-        console.log(this.isExpanded);
         if (!this.isExpanded) {
             this.goals.forEach((goal) =>
                 goal.goals ? (this.expandedRows[goal.goals] = true) : ''
             );
-            console.log(this.expandedRows);
         } else {
             this.expandedRows = {};
         }

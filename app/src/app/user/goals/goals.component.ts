@@ -132,9 +132,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log({ userCampus: this.userCampus });
-        console.log({ userDepartment: this.userDepartment });
-
         this.getAllObjectivesWithObjectives();
         this.getAllDept();
 
@@ -249,7 +246,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 // this.ObjectivesGoals = data.goals;
-                console.log(data.goals);
 
                 this.goals = data.goals;
                 this.loading = false;
@@ -271,8 +267,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         goalDataRemainingBudget: number = 0,
         goalData: any = []
     ) {
-        console.log({ id, objectId, subHeader, goalDataRemainingBudget });
-
         //passed data needed for the subgoal table or adding table modal
         this.subObjectiveGoalID = id;
         this.goal_ObjectId = objectId || goalData._id || '';
@@ -286,7 +280,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             goalDataRemainingBudget ||
             this.subOnjectiveHeaderData?.remainingBudget;
         this.goalBudget = this.subOnjectiveHeaderData?.budget;
-        console.log({ subOnjectiveHeaderData: this.subOnjectiveHeaderData });
 
         this.subObjectiveHeaders = this.customTitleCase(
             subHeader || this.subObjectiveHeaders || ''
@@ -299,8 +292,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
-                    console.log({ getAllByIdObjectives: data });
-
                     this.objectiveDatas = data.Objectives;
                     //initialize completion button
                     for (
@@ -327,8 +318,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 )
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
-                    console.log({ getAllByIdObjectives: data });
-
                     this.objectiveDatas = data.Objectives;
                     let subBudget = data.Objectives.reduce((acc, e) => {
                         return acc + e.budget;
@@ -380,8 +369,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     addSubGoal(data?: any) {
-        console.log({ addSubGoal: data });
-
         this.addObjectiveGoalDialogCard = true;
     }
 
@@ -440,8 +427,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .getRoute('post', 'objectives', 'addObjectives', e.value)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
-                console.log({ addSubObjectiveGoalDialogExec: data });
-
                 if (data.success) {
                     this.addObjectiveGoalDialogCard = false;
                     //close the objective table
@@ -563,8 +548,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     ) {
         this.onclickCompletionButton[index] = true;
         let goalIDs = data.goalId;
-
-        console.log({ updateObjectiveComplete: completeStatus });
 
         if (completeStatus === true && this.role === 'user') {
             this.messageService.add({

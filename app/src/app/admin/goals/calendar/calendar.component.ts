@@ -73,8 +73,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe(
                 (data: any) => {
-                    console.log({ getAllobjectivesGoalsUsers: data.data });
-
                     const events = this.transformEvents(data.data);
                     this.updateCalendarEvents(events);
                     this.loading = false;

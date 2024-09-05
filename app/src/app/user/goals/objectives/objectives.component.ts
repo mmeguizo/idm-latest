@@ -74,7 +74,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log('test');
         // this.getAllobjectives();
         this.getAllobjectivesGoalsUsers();
         this.createaddFileForm();
@@ -106,7 +105,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             .getRoute('get', 'objectives', 'getAllObjectives/' + this.USERID)
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe(async (data: any) => {
-                console.log({ getAllobjectives: data.Objectives });
                 this.objectiveDatas = await data.Objectives;
                 for (let i = 0; i < this.objectiveDatas.length; i++) {
                     this.onclickCompletionButton[i] = false;
@@ -127,7 +125,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
                 this.objectiveDatas = data.data;
-                console.log({ getAllobjectivesGoalsUsers: data });
                 this.loading = false;
             });
     }
@@ -236,9 +233,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
         this.viewObjectiveFileDialogCard = true;
         this.objectiveIDforFile = objectiveData.id;
 
-        console.log(objectiveData);
-        console.log(this.objectiveIDforFile);
-
         // alert(JSON.stringify(objectiveData));
         this.getAllFilesFromObjectiveLoad(this.USERID, objectiveData.id);
     }
@@ -264,8 +258,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             .getAllFilesFromObjective(id, objectiveID)
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllFilesFromObjectiveLoad: data });
-
                 this.AllObjectivesFiles = data.data;
                 this.loading = false;
             });
@@ -273,8 +265,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
     }
 
     onUpload(event: any) {
-        console.log('clicked upload');
-
         for (const file of event.files) {
             this.uploadedFiles.push(file);
         }
@@ -434,54 +424,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
 
         return true;
     }
-
-    // show(data: any) {
-    //     this.ref = this.dialogService.open(data, {
-    //         header: 'Select a Product',
-    //         width: '50vw',
-    //         contentStyle: { overflow: 'auto' },
-    //         breakpoints: {
-    //             '960px': '75vw',
-    //             '640px': '90vw',
-    //         },
-    //         templates: {
-    //             footer: Footer,
-    //         },
-    //     });
-
-    //     this.ref.onClose.subscribe((data: any) => {
-    //         console.log('this is close');
-
-    //         // let summary_and_detail;
-    //         // if (data) {
-    //         //     const buttonType = data?.buttonType;
-    //         //     summary_and_detail = buttonType
-    //         //         ? {
-    //         //               summary: 'No Product Selected',
-    //         //               detail: `Pressed '${buttonType}' button`,
-    //         //           }
-    //         //         : { summary: 'Product Selected', detail: data?.name };
-    //         // } else {
-    //         //     summary_and_detail = {
-    //         //         summary: 'No Product Selected',
-    //         //         detail: 'Pressed Close button',
-    //         //     };
-    //         // }
-    //         // this.messageService.add({
-    //         //     severity: 'info',
-    //         //     ...summary_and_detail,
-    //         //     life: 3000,
-    //         // });
-    //     });
-
-    //     this.ref.onMaximize.subscribe((value) => {
-    //         this.messageService.add({
-    //             severity: 'info',
-    //             summary: 'Maximized',
-    //             detail: `maximized: ${value.maximized}`,
-    //         });
-    //     });
-    // }
 
     viewFilesHistory(objectiveData: any) {
         this.viewObjectiveFileHistoryDialogCard = true;

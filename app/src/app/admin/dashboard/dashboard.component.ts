@@ -214,9 +214,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             });
     }
 
-    showDetails(goal: any) {
-        console.log({ showDetails: goal });
-    }
+    showDetails(goal: any) {}
 
     selectedGoal(goal: any) {
         this.selectedAgoal = true;

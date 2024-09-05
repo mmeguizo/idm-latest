@@ -31,22 +31,7 @@ export class PrintTableComponent implements OnInit {
             this.authService.domain + '/assets/layout/images/logo.png'; // Get the image source
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        console.log(
-            {
-                printFlag: changes['printFlag']?.previousValue,
-                printFlags: changes['printFlag']?.currentValue,
-                // objectiveDatas: changes['objectiveDatas'].previousValue,
-                // subOnjectiveHeaderData:
-                //     changes['subOnjectiveHeaderData'].previousValue,
-                // nameValue: changes['nameValue'].previousValue,
-                // officeValue: changes['officeValue'].previousValue,
-                // printingOfficeName: changes['printingOfficeName'].previousValue,
-                // isPrintableVisible: changes['isPrintableVisible'].previousValue,
-            },
-            this.objectiveDatas
-        );
-    }
+    ngOnChanges(changes: SimpleChanges) {}
 
     printTable() {
         this.isPrintableVisible = true;

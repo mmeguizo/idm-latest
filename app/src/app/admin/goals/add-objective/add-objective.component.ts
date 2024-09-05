@@ -116,8 +116,7 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
     }
     onFrequencyChange(event: any) {
         const frequency = event.value.name;
-        console.log(frequency);
-        console.log(event.value.name);
+
         // Clear existing dynamic controls
         this.clearDynamicControls();
 
@@ -128,7 +127,6 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
         } else if (frequency === 'semi_annual') {
             this.addSemiAnnualControls();
         }
-        console.log(frequency);
 
         // Update the form control value
         this.addObjectiveGoalform
@@ -307,8 +305,6 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             .getRoute('post', 'objectives', 'addObjectives', data)
             .pipe(takeUntil(this.addObjectiveSubscription))
             .subscribe((data: any) => {
-                console.log({ addSubObjectiveGoalDialogExec: data });
-
                 if (data.success) {
                     this.addObjectiveGoalDialogCard = false;
                     this.messageService.add({

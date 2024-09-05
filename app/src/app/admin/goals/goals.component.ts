@@ -256,20 +256,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             });
     }
 
-    // getAllObjectivesWithObjectives() {
-    //     const resultSubject = new Subject<boolean>();
-
-    //     this.loading = true;
-    //     this.goal
-    //         .getRoute('get', 'goals', 'getAllObjectivesWithObjectives')
-    //         .pipe(takeUntil(this.getGoalSubscription))
-    //         .subscribe((data: any) => {
-    //             console.log(data.goals);
-    //             this.goals = data.goals;
-    //             this.loading = false;
-    //         });
-    // }
-
     getAllObjectivesWithObjectives(): Subject<boolean> {
         const resultSubject = new Subject<boolean>(); // Create a new Subject to emit success or failure
 
@@ -305,7 +291,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .getRoute('get', 'department', 'getAllDepartmentDropdown')
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllDept: data.data });
                 this.deptDropdownValue = data?.data[0];
             });
     }
@@ -333,7 +318,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             goalDataRemainingBudget ||
             this.subOnjectiveHeaderData?.remainingBudget;
         this.goalBudget = this.subOnjectiveHeaderData?.budget;
-        console.log({ subOnjectiveHeaderData: this.subOnjectiveHeaderData });
 
         this.subObjectiveHeaders = this.customTitleCase(
             subHeader || this.subObjectiveHeaders || ''
@@ -392,7 +376,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                         }
                     );
 
-                    console.log(this.objectiveDatas);
                     //initialize completion button
                     for (
                         let i = 0;
@@ -414,8 +397,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
-                    console.log({ getAllByIdObjectives_YYYYYYYYYYY: data });
-
                     this.objectiveDatas = data.Objectives;
 
                     let subBudget = data.Objectives.reduce((acc, e) => {
@@ -491,7 +472,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     addSubGoal(data?: any) {
-        console.log({ addSubGoal: data });
         this.parentAddnewObjective = {
             addObjective: true,
             goallistsId: this.goallistsId,
@@ -512,15 +492,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         };
     }
 
-    /*
-
-    addGoal() {
-        console.log('adding goal');
-        this.parentAddnewGoal = { addGoal: true };
-    }
-
-    */
-
     addSubObjectiveGoalDialogExec(e: any) {
         e.value.userId = this.USERID;
         e.value.goalId = this.subObjectiveGoalID;
@@ -532,8 +503,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .getRoute('post', 'objectives', 'addObjectives', e.value)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
-                console.log({ addSubObjectiveGoalDialogExec: data });
-
                 if (data.success) {
                     this.addObjectiveGoalDialogCard = false;
                     //close the objective table
@@ -593,7 +562,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     addGoal() {
-        console.log('adding goal');
         this.parentAddnewGoal = { addGoal: true };
     }
 
@@ -686,7 +654,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     receivedUpdateObjective(editObjectiveMessageResults: any) {
-        console.log({ receivedUpdateObjective: editObjectiveMessageResults });
         const { success, id: goalID } = editObjectiveMessageResults;
         //track if changes is made for the table to reload
         this.makeChanges = true;
@@ -848,7 +815,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     if (isSuccessful) {
                         this.makeChanges = false; // Reset makeChanges only if the operation was successful
                     } else {
-                        console.log('Failed to load objectives.');
                         // Handle error scenario if needed
                     }
                 }
@@ -987,7 +953,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     if (isSuccessful) {
                         this.makeChanges = false; // Reset makeChanges only if the operation was successful
                     } else {
-                        console.log('Failed to load objectives.');
                         // Handle error scenario if needed
                     }
                 }
@@ -998,7 +963,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         const { USERID, objectiveId, viewObjectiveFileDialogCard } =
             addNewFileEvent;
 
-        console.log({ receivedAddFileEvent: addNewFileEvent });
         this.loading = true;
         this.getAllFilesFromObjectiveLoad(USERID, objectiveId)
             .then((data: any) => {
@@ -1009,26 +973,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     this.loading = false;
                 } else {
                     // Notify if the return is false
-                    console.log('Failed to load files from objective.');
                     // Handle error scenario if needed
                 }
             })
             .catch((error: any) => {
-                console.log('Error loading files from objective:', error);
                 // Handle error scenario if needed
             });
-        //track if changes is made for the table to reload
-        // this.makeChanges = true;
-        // this.getAllObjectivesWithObjectives().subscribe(
-        //     (isSuccessful: boolean) => {
-        //         if (isSuccessful) {
-        //             this.makeChanges = false; // Reset makeChanges only if the operation was successful
-        //         } else {
-        //             console.log('Failed to load objectives.');
-        //             // Handle error scenario if needed
-        //         }
-        //     }
-        // );
     }
 
     receivedEditGoalEvent(editGoalMessageResults: any) {
@@ -1039,7 +989,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 if (isSuccessful) {
                     this.makeChanges = false; // Reset makeChanges only if the operation was successful
                 } else {
-                    console.log('Failed to load objectives.');
                     // Handle error scenario if needed
                 }
             }
@@ -1054,7 +1003,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 if (isSuccessful) {
                     this.makeChanges = false; // Reset makeChanges only if the operation was successful
                 } else {
-                    console.log('Failed to load objectives.');
                     // Handle error scenario if needed
                 }
             }

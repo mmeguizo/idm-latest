@@ -122,8 +122,6 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         if (changes['updateObjective']?.currentValue) {
             const { editGoal, data } = changes['updateObjective']?.currentValue;
 
-            console.log({ ngOnChangesUpdateObjectives: data });
-
             if (editGoal && data) {
                 const {
                     id,
@@ -144,8 +142,6 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                     ...wholeData
                 } = data;
                 this.goal_ObjectId = goalId;
-
-                console.log({ ngOnChanges: data });
 
                 //need for the backend
                 this.tobeUpdatedSubGoal = id;
@@ -175,8 +171,6 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         };
         // Clear existing dynamic controls
         this.clearDynamicControls();
-
-        console.log({ onFrequencyChange: frequency });
 
         if (frequency === 'yearly') {
             await this.addMonthlyControls(await data);
@@ -291,7 +285,6 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                 data[key] = form.value[key];
             }
         }
-        console.log({ update_objective: data });
         this.obj
             .getRoute('put', 'objectives', 'updateObjectives', data)
             .pipe(takeUntil(this.updateObjectiveSubscription))
@@ -304,7 +297,6 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                         summary: 'Done',
                         detail: data.message,
                     });
-                    console.log(data.data);
                     this.childUpdateObjective.emit({
                         success: true,
                         id: data.data?.goalId,
@@ -326,8 +318,6 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     }
 
     onUpload(event: any, type: string, index: number) {
-        console.log('function fire:', this.counter++);
-        console.log({ onUpload: { event, type, index } });
         this.showAddFilesComponent = true;
         this.parentAddnewFile = {
             addFile: true,
@@ -342,7 +332,6 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             this.showAddFilesComponent = false;
         }
         // Handle the event when a file is added
-        console.log('File added receivedAddFileEvent update:', event);
         this.onFileUploadSuccess(
             event.frequencyFileName,
             event.frequencyFileNameForUpdate

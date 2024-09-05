@@ -81,11 +81,6 @@ export class UpdateGoalComponent implements OnInit, OnDestroy {
         this.goalName = goal?.goals;
         this.goalId = goal?.id;
 
-        console.log({
-            goal,
-            editGoalTrigger: this.editGoalTrigger,
-        });
-
         if (this.editGoalTrigger && this.editGoalTrigger.editGoal) {
             this.formGroupDemo.setValue({
                 selectDepartment: this.deptDropdownValue.find(
@@ -121,7 +116,6 @@ export class UpdateGoalComponent implements OnInit, OnDestroy {
             .getRoute('get', 'department', 'getAllDepartmentDropdown')
             .pipe(takeUntil(this.updateGoalSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllDept: data.data });
                 this.deptDropdownValue = data?.data[0];
             });
     }

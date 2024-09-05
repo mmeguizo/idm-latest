@@ -96,7 +96,6 @@ export class AddingGoalComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.addGoalSubscription))
             .subscribe({
                 next: (data: any) => {
-                    console.log({ getAllGoallistsDropdown: data.data[0] });
                     this.deptDropdownGoalListValue = data.data[0];
                 },
                 error: (error) => {
@@ -155,7 +154,6 @@ export class AddingGoalComponent implements OnInit, OnDestroy {
             createdBy: this.USERID,
             goallistsId: this.selectedGoalId || '',
         };
-        console.log(data);
 
         if (
             data.goals === '' ||
@@ -171,8 +169,6 @@ export class AddingGoalComponent implements OnInit, OnDestroy {
             }); // Display error message
             return; // Stop further execution
         }
-
-        console.log(data);
 
         this.goal
             .getRoute('post', 'goals', 'addGoals', data)

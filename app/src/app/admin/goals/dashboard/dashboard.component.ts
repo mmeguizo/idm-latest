@@ -116,7 +116,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.goals = data.goals;
-                console.log({ getAllObjectivesForTable: this.goalForTables });
             });
     }
 
