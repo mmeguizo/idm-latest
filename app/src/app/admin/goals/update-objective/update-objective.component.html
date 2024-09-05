@@ -55,11 +55,6 @@
                                         .value
                                 "
                             ></i>
-                            <app-add-files
-                                [addNewFile]="parentAddnewFile"
-                                (childAddFile)="receivedAddFileEvent($event)"
-                                *ngIf="showAddFilesComponent"
-                            ></app-add-files>
                         </div>
                     </div>
                 </div>
@@ -107,11 +102,6 @@
                                     ).value
                                 "
                             ></i>
-                            <app-add-files
-                                [addNewFile]="parentAddnewFile"
-                                (childAddFile)="receivedAddFileEvent($event)"
-                                *ngIf="showAddFilesComponent"
-                            ></app-add-files>
                         </div>
                     </div>
                 </div>
@@ -161,11 +151,6 @@
                                     ).value
                                 "
                             ></i>
-                            <app-add-files
-                                [addNewFile]="parentAddnewFile"
-                                (childAddFile)="receivedAddFileEvent($event)"
-                                *ngIf="showAddFilesComponent"
-                            ></app-add-files>
                         </div>
                     </div>
                 </div>
@@ -185,3 +170,8 @@
         />
     </div>
 </p-dialog>
+<app-add-files
+    [addNewFile]="parentAddnewFile"
+    (childAddFile)="receivedAddFileEvent($event)"
+    *ngIf="showAddFilesComponent"
+></app-add-files>

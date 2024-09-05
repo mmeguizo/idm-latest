@@ -74,7 +74,8 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     // file service child
     showAddFilesComponent = false;
     parentAddnewFile: any;
-
+    uploadInProgress: boolean = false;
+    counter: number = 0;
     constructor(
         private formBuilder: FormBuilder,
         private messageService: MessageService,
@@ -93,10 +94,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
 
         // Initialize quarters array
         this.quarters = ['quarter_0', 'quarter_1', 'quarter_2', 'quarter_3'];
-        this.semi_annual = [
-            '(Jan-Feb-Mar-Apr-May-Jun)',
-            '(Jul-Aug-Sep-Oct-Nov-Dec)',
-        ];
+        this.semi_annual = ['semi_annual_0', 'semi_annual_1'];
     }
 
     ngOnInit() {
@@ -124,7 +122,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         if (changes['updateObjective']?.currentValue) {
             const { editGoal, data } = changes['updateObjective']?.currentValue;
 
-            console.log({ data });
+            console.log({ ngOnChangesUpdateObjectives: data });
 
             if (editGoal && data) {
                 const {
@@ -145,117 +143,28 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                     remarks,
                     ...wholeData
                 } = data;
+                this.goal_ObjectId = goalId;
 
                 console.log({ ngOnChanges: data });
 
                 //need for the backend
                 this.tobeUpdatedSubGoal = id;
 
-                this.getAllGoallistsDropdown({
-                    userId,
-                    goalId,
-                    functional_objective,
-                    performance_indicator,
-                    target,
-                    formula,
-                    programs,
-                    responsible_persons,
-                    clients,
-                    timetable,
-                    frequency_monitoring,
-                    data_source,
-                    budget,
-                    remarks,
-                    wholeData,
-                });
+                await this.onFrequencyChange(
+                    await frequency_monitoring,
+                    // wholeData //instead of wholedata to reflect deleted files or any
+                    wholeData
+                );
+                // Update the form control value
+                this.editObjectiveGoalform
+                    .get('frequency_monitoring')
+                    .setValue(frequency_monitoring);
+                //add delay to prepare the forms
+                setTimeout(() => {
+                    this.editObjectiveGoalDialogCard = true;
+                }, 300);
             }
         }
-    }
-
-    async getAllGoallistsDropdown({
-        userId,
-        goalId,
-        functional_objective,
-        performance_indicator,
-        target,
-        formula,
-        programs,
-        responsible_persons,
-        clients,
-        timetable,
-        frequency_monitoring,
-        data_source,
-        budget,
-        remarks,
-        wholeData,
-    }) {
-        this.goallistService
-            .getRoute(
-                'get',
-                'goallists',
-                `getAllEditObjectivesGoallistsDropdown/${goalId}`
-            )
-            .pipe(takeUntil(this.updateObjectiveSubscription))
-            .subscribe({
-                next: async (data: any) => {
-                    this.dropdwonGoallistSelection = data.objectives;
-                    console.log({
-                        getAllGoallistsDropdown: this.dropdwonGoallistSelection,
-                        functional_objective: functional_objective,
-                    });
-
-                    this.formGroupDropdown.setValue({
-                        selectedDropdown: this.dropdwonSelection.find(
-                            (dept) => dept.name === frequency_monitoring
-                        ) || { name: 'daily', code: 'Daily' },
-                    });
-
-                    this.editObjectiveGoalform.patchValue({
-                        userId: userId,
-                        goalId: goalId,
-                        functional_objective:
-                            this.dropdwonGoallistSelection.find(
-                                (dept) => dept.name === functional_objective
-                            ),
-                        // functional_objective: functional_objective,
-                        performance_indicator: performance_indicator,
-                        target: target,
-                        formula: formula,
-                        programs: programs,
-                        responsible_persons: responsible_persons,
-                        clients: clients,
-                        frequency_monitoring: frequency_monitoring,
-                        data_source: data_source,
-                        budget: budget,
-                        remarks: remarks,
-                    });
-                    this.selectedfrequencyOptions = {
-                        name: frequency_monitoring,
-                        code: frequency_monitoring,
-                    };
-
-                    await this.onFrequencyChange(
-                        await frequency_monitoring,
-                        wholeData
-                    );
-                    // Update the form control value
-                    this.editObjectiveGoalform
-                        .get('frequency_monitoring')
-                        .setValue(frequency_monitoring);
-                    //add delay to prepare the forms
-                    setTimeout(() => {
-                        this.editObjectiveGoalDialogCard = true;
-                    }, 300);
-                },
-                error: (error) => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'Failed to Goallist Dropdown',
-                    }); // Display error message
-                },
-                complete: () => {},
-            });
     }
 
     async onFrequencyChange(event: any, data?: any) {
@@ -375,10 +284,13 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
 
     updateSubObjectiveGoalDialogExec(form: any) {
         form.value.id = this.tobeUpdatedSubGoal;
-        form.value.functional_objective = form.value.functional_objective.name;
-        let data = {
-            ...form.value,
-        };
+        form.value.goalId = this.goal_ObjectId;
+        let data = {};
+        for (const key in form.value) {
+            if (form.value[key]) {
+                data[key] = form.value[key];
+            }
+        }
         console.log({ update_objective: data });
         this.obj
             .getRoute('put', 'objectives', 'updateObjectives', data)
@@ -414,6 +326,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     }
 
     onUpload(event: any, type: string, index: number) {
+        console.log('function fire:', this.counter++);
         console.log({ onUpload: { event, type, index } });
         this.showAddFilesComponent = true;
         this.parentAddnewFile = {

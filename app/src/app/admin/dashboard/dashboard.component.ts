@@ -106,17 +106,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             );
         }, 0);
 
-        console.log({
-            totalBudget: this.totalBudget,
-            totalSubBudget: this.totalSubBudget,
-        });
-
         this.knobValue = this.remainingBudget =
             (this.totalSubBudget !== 0 ? this.totalBudget : 0) -
             this.totalSubBudget;
-
-        console.log(this.knobValue);
-
         const goalsWithObjectives = (data.goals ?? []).filter(
             (goal) =>
                 goal.objectivesDetails && goal.objectivesDetails.length > 0
@@ -146,7 +138,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     async getAllCampusForDashboard() {
         await this.branch.getCampus().then((campus) => {
-            console.log({ getAllCampusForDashboard: campus });
             this.campusList = campus;
         });
     }
@@ -164,7 +155,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .getRoute('get', 'goals', 'getGoalsForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllGoalsNewGoals: data });
                 this.NewGoals = data.data;
             });
     }
@@ -198,7 +188,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe({
                 next: (data: any) => {
-                    console.log({ getAllObjectivesWithObjectives: data });
                     this.goals = data.goals || [];
                     this.thisBarCharts(data.goals);
                     this.processDashboardData(data);
@@ -230,7 +219,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     selectedGoal(goal: any) {
-        console.log({ selectedGoal: goal });
         this.selectedAgoal = true;
         this.selectedGoalData = goal;
 
@@ -243,8 +231,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 )
                 .pipe(takeUntil(this.getDashboardSubscription))
                 .subscribe((data: any) => {
-                    console.log({ getAllByIdObjectives: data });
-
                     let {
                         objectiveCompleted,
                         objectiveUncompleted,
@@ -260,7 +246,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     onChangeCampus(event: any = '') {
-        console.log({ onChangeCampus: event?.value });
         this.loading = true;
         this.selectedAgoal = false;
         this.goals = [];
@@ -283,7 +268,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     initCharts(data?: any) {
-        console.log({ initCharts: data });
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -356,7 +340,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     onChange($event: any) {
         this.selectedIndex = $event.index;
-        console.log($event.index);
     }
 
     getSelectedHeader() {
@@ -364,8 +347,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async thisBarCharts(data: any = []) {
-        console.log({ thisBarCharts: data });
-
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -406,10 +387,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             data: budgetData,
         });
 
-        console.log({
-            labels: labels,
-            datasets: datasets[0],
-        });
         this.barCharts = {
             labels: labels,
             datasets: datasets,

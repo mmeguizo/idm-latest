@@ -279,7 +279,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.getGoalSubscription),
                 tap((data: any) => {
-                    console.log(data.goals);
                     this.goals = data.goals;
                     this.loading = false;
                     resultSubject.next(true); // Emit true on success
@@ -298,7 +297,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 })
             )
             .subscribe(); // Trigger the observable
-        console.log({ resultSubject: resultSubject });
         return resultSubject; // Return the subject to the caller
     }
 
@@ -416,7 +414,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
-                    console.log({ getAllByIdObjectives: data });
+                    console.log({ getAllByIdObjectives_YYYYYYYYYYY: data });
 
                     this.objectiveDatas = data.Objectives;
 
@@ -688,24 +686,11 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     receivedUpdateObjective(editObjectiveMessageResults: any) {
-        const { success, id } = editObjectiveMessageResults;
-
+        console.log({ receivedUpdateObjective: editObjectiveMessageResults });
+        const { success, id: goalID } = editObjectiveMessageResults;
         //track if changes is made for the table to reload
         this.makeChanges = true;
-        this.getAllObjectivesWithObjectives().subscribe(
-            (isSuccessful: boolean) => {
-                if (isSuccessful) {
-                    this.makeChanges = false; // Reset makeChanges only if the operation was successful
-                } else {
-                    console.log('Failed to load objectives.');
-                    // Handle error scenario if needed
-                }
-            }
-        );
-        if (success) {
-            this.loading = true;
-            this.getObjectivesReload(id);
-        }
+        this.getObjectivesReload(goalID);
     }
 
     deleteGoalDialog(event: Event, _id: any) {

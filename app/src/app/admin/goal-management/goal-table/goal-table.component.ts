@@ -54,9 +54,6 @@ export class GoalTableComponent implements OnDestroy, OnChanges {
             const newGoal = changes['newGoalDataFromParent'].currentValue;
             // Check if newGoal.data exists and is an object
             if (newGoal.data && typeof newGoal.data === 'object') {
-                console.log(newGoal.data);
-                console.log(newGoal.data.id);
-
                 const existingGoalIndex = this.goals.findIndex(
                     (goal) => goal.id === newGoal.data.id
                 );
@@ -70,8 +67,6 @@ export class GoalTableComponent implements OnDestroy, OnChanges {
                 }
                 this.cdRef.detectChanges();
                 this.loading = false;
-
-                console.log(this.goals);
             } else {
                 console.error('Invalid newGoalDataFromParent format:', newGoal);
                 // Handle the error appropriately

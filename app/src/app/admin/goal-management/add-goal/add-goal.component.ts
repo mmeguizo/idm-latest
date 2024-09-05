@@ -64,11 +64,6 @@ export class AddGoalComponent implements OnInit {
 
             // Check if newData is not empty and has 'goals' and 'objectives'
             if (this.newData && this.newData.goals && this.newData.objectives) {
-                console.log(
-                    'Received editGoalNameData in child:',
-                    this.newData
-                );
-
                 // Patch the 'goals' field
                 this.addGoalform.patchValue({
                     goals: this.newData.goals,
@@ -123,10 +118,7 @@ export class AddGoalComponent implements OnInit {
     }
 
     addGoalExec(form: FormGroup) {
-        console.log({ addGoalExec: form.value });
-
         let newobjectives = [];
-        console.log({ updateGoal: form.value });
 
         let { goals, objectives } = form.value;
         newobjectives.push(
@@ -144,14 +136,11 @@ export class AddGoalComponent implements OnInit {
             objectives: newobjectives,
         };
 
-        console.log(data);
-
         this.goallistService
             .getRoute('post', 'goallists', 'addGoal', form.value)
             .pipe(takeUntil(this.goallistSubscription))
             .subscribe({
                 next: (data: any) => {
-                    console.log({ addGoalForm: data });
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Success',
@@ -181,7 +170,6 @@ export class AddGoalComponent implements OnInit {
             .pipe(takeUntil(this.goallistSubscription))
             .subscribe({
                 next: (data: any) => {
-                    console.log({ addGoalForm: data });
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Success',

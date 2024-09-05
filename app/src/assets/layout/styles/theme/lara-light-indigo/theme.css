@@ -62,8 +62,8 @@
     font-style: normal;
     font-named-instance: "Regular";
     src: url("./fonts/Inter-roman.var.woff2?v=3.19") format("woff2"),
-    url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap")
-        format("woff2");
+        url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap")
+            format("woff2");
 }
 @font-face {
     font-family: "Inter var";
@@ -72,8 +72,8 @@
     font-style: italic;
     font-named-instance: "Italic";
     src: url("./fonts/Inter-roman.var.woff2?v=3.19") format("woff2"),
-    url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap")
-        format("woff2");
+        url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap")
+            format("woff2");
 }
 :root {
     --blue-50: #f5f9ff;

@@ -4,6 +4,8 @@ const email = require("./validators/user-validators");
 const username = require("./validators/user-validators");
 const password = require("./validators/user-validators");
 const { Schema } = mongoose;
+const Objective = require("./objective");
+const ObjectId = mongoose.Types.ObjectId;
 
 const fileUpload = new Schema(
   {
@@ -47,5 +49,59 @@ const fileUpload = new Schema(
     timestamps: true,
   }
 );
+
+// sample
+// fileUpload.pre("save", function (next) {
+//   if (!this.isModified("password")) {
+//     return next();
+//   } else {
+//     bcrypt.genSalt(10, (err, salt) => {
+//       bcrypt.hash(this.password, salt, (err, hash) => {
+//         if (err) return next(err); // Ensure no errors
+//         this.password = hash; // Apply encryption to password
+//         next(err); // Exit middleware
+//       });
+//     });
+//   }
+// });
+
+fileUpload.pre("findOneAndUpdate", async function () {
+  const docToUpdate = await this.model.findOne(this.getQuery());
+  if (docToUpdate) {
+    const objectiveId = docToUpdate.objective_id;
+    const fileFields = [
+      "file_month_0",
+      "file_month_1",
+      "file_month_2",
+      "file_month_3",
+      "file_month_4",
+      "file_month_5",
+      "file_month_6",
+      "file_month_7",
+      "file_month_8",
+      "file_month_9",
+      "file_month_10",
+      "file_month_11",
+      "file_quarter_0",
+      "file_quarter_1",
+      "file_quarter_2",
+      "file_quarter_3",
+      "file_semi_annual_0",
+      "file_semi_annual_1",
+      "file_semi_annual_2",
+    ];
+
+    const updateData = {};
+    fileFields.forEach((field) => {
+      if (docToUpdate[field]) {
+        updateData[field] = "";
+      }
+    });
+
+    if (Object.keys(updateData).length > 0) {
+      await Objective.updateOne({ id: objectiveId }, { $set: updateData });
+    }
+  }
+});
 
 module.exports = mongoose.model("File", fileUpload);

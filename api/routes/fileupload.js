@@ -72,7 +72,6 @@ module.exports = (router) => {
                 if (err) {
                   reject(err);
                 } else {
-                  console.log({ fileAdd: data });
                   resolve(data);
                 }
               });
