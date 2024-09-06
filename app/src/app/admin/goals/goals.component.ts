@@ -331,60 +331,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe(async (data: any) => {
-                    // this.objectiveDatas = data.Objectives;
-                    this.objectiveDatas = data.Objectives.map(
-                        (objective: any) => {
-                            let completed = 0;
-                            if (objective.frequency_monitoring === 'yearly') {
-                                completed = (
-                                    Object.values(
-                                        objective.timetable
-                                    ) as number[]
-                                ).reduce(
-                                    (acc: number, val: number) => acc + val,
-                                    0
-                                );
-                            } else if (
-                                objective.frequency_monitoring === 'semi_annual'
-                            ) {
-                                completed = (
-                                    Object.values(
-                                        objective.timetable
-                                    ) as number[]
-                                ).reduce(
-                                    (acc: number, val: number) => acc + val,
-                                    0
-                                );
-                            } else if (
-                                objective.frequency_monitoring === 'quarterly'
-                            ) {
-                                completed = (
-                                    Object.values(
-                                        objective.timetable
-                                    ) as number[]
-                                ).reduce(
-                                    (acc: number, val: number) => acc + val,
-                                    0
-                                );
-                            }
-                            objective.completionPercentage =
-                                (completed / objective.target) * 100;
-                            objective.completedStars = Math.floor(
-                                objective.completionPercentage / 10
-                            );
-                            return objective;
-                        }
-                    );
-
-                    //initialize completion button
-                    for (
-                        let i = 0;
-                        i < this.objectiveDatas.length.length;
-                        i++
-                    ) {
-                        this.onclickCompletionButton[i] = false;
-                    }
-
+                    console.log(data.Objectives);
+                    this.objectiveDatas = data.Objectives;
                     this.loading = false;
                 });
         }

@@ -209,25 +209,100 @@ module.exports = (router) => {
     );
   });
 
-  router.get("/getAllByIdObjectives/:id", (req, res) => {
-    Objectives.find(
-      { deleted: false, goalId: req.params.id },
-      (err, Objectives) => {
-        if (err) {
-          return res.status(500).json({ success: false, message: err });
-        }
+  // router.get("/getAllByIdObjectives/:id", (req, res) => {
+  //   Objectives.find(
+  //     { deleted: false, goalId: req.params.id },
+  //     (err, Objectives) => {
+  //       if (err) {
+  //         return res.status(500).json({ success: false, message: err });
+  //       }
 
-        if (!Objectives || Objectives.length === 0) {
-          return res.json({
-            success: false,
-            message: "No Objectives found.",
-            Objectives: [],
-          });
-        }
-        return res.status(200).json({ success: true, Objectives });
+  //       if (!Objectives || Objectives.length === 0) {
+  //         return res.json({
+  //           success: false,
+  //           message: "No Objectives found.",
+  //           Objectives: [],
+  //         });
+  //       }
+  //       return res.status(200).json({ success: true, Objectives });
+  //     }
+  //   ).sort({ _id: -1 });
+  // });
+  router.get("/getAllByIdObjectives/:id", async (req, res) => {
+    try {
+      const objectives = await Objectives.find({
+        deleted: false,
+        goalId: req.params.id,
+      }).sort({ _id: -1 });
+
+      if (!objectives || objectives.length === 0) {
+        return res.json({
+          success: false,
+          message: "No Objectives found.",
+          Objectives: [],
+        });
       }
-    ).sort({ _id: -1 });
+
+      const updatedObjectives = await calculatePercentage(objectives);
+
+      // console.log(returnedData);
+      return res
+        .status(200)
+        .json({ success: true, Objectives: updatedObjectives });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
   });
+
+  router.get("/getObjectiveById/:id", async (req, res) => {
+    try {
+      const objective = await Objectives.findOne({ id: req.params.id });
+
+      if (!objective) {
+        return res.json({
+          success: false,
+          message: "Objective not found.",
+        });
+      }
+
+      res.json({
+        success: true,
+        data: objective,
+      });
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        message: "Internal server error Or Token Expired",
+      });
+    }
+  });
+
+  async function calculatePercentage(objectives) {
+    return await objectives.map((objective) => {
+      let total = 0;
+      const target = objective.target;
+      const updatedObjective = { ...objective._doc }; // Copy to prevent mutating the original
+
+      if (objective.frequency_monitoring === "yearly") {
+        for (let i = 0; i < 12; i++) {
+          total += objective[`month_${i}`] || 0;
+        }
+      } else if (objective.frequency_monitoring === "quarterly") {
+        for (let i = 0; i < 4; i++) {
+          total += objective[`quarter_${i}`] || 0;
+        }
+      } else if (objective.frequency_monitoring === "semi_annual") {
+        for (let i = 0; i < 2; i++) {
+          total += objective[`semi_annual_${i}`] || 0;
+        }
+      }
+
+      updatedObjective.completionPercentage = target
+        ? (total / target) * 100
+        : 0;
+      return updatedObjective;
+    });
+  }
 
   router.get("/getAllObjectives", (req, res) => {
     Objectives.find({ deleted: false }, (err, Objectives) => {

@@ -76,6 +76,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     parentAddnewFile: any;
     uploadInProgress: boolean = false;
     counter: number = 0;
+    objectiveData: any;
     constructor(
         private formBuilder: FormBuilder,
         private messageService: MessageService,
@@ -121,7 +122,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         // add this to make sure it will not detect the previous value only current value
         if (changes['updateObjective']?.currentValue) {
             const { editGoal, data } = changes['updateObjective']?.currentValue;
-
+            console.log({ ngOnChanges: data });
             if (editGoal && data) {
                 const {
                     id,
@@ -146,24 +147,16 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                 //need for the backend
                 this.tobeUpdatedSubGoal = id;
 
-                await this.onFrequencyChange(
-                    await frequency_monitoring,
-                    // wholeData //instead of wholedata to reflect deleted files or any
-                    wholeData
-                );
+                await this.getObjectiveById(id, frequency_monitoring);
+
                 // Update the form control value
-                this.editObjectiveGoalform
-                    .get('frequency_monitoring')
-                    .setValue(frequency_monitoring);
-                //add delay to prepare the forms
-                setTimeout(() => {
-                    this.editObjectiveGoalDialogCard = true;
-                }, 300);
             }
         }
     }
 
     async onFrequencyChange(event: any, data?: any) {
+        console.log({ onFrequencyChange: data });
+
         const frequency = event?.value?.name || event;
         this.selectedfrequencyOptions = {
             name: event?.value?.name || event,
@@ -179,6 +172,22 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         } else if (frequency === 'semi_annual') {
             await this.addSemiAnnualControls(await data);
         }
+    }
+
+    async getObjectiveById(id: string, frequency_monitoring: string) {
+        this.obj
+            .getRoute('get', 'objectives', `getObjectiveById/${id}`)
+            .pipe(takeUntil(this.updateObjectiveSubscription))
+            .subscribe((data: any) => {
+                this.onFrequencyChange(frequency_monitoring, data.data);
+                this.editObjectiveGoalform
+                    .get('frequency_monitoring')
+                    .setValue(frequency_monitoring);
+                //add delay to prepare the forms
+                setTimeout(() => {
+                    this.editObjectiveGoalDialogCard = true;
+                }, 300);
+            });
     }
 
     clearDynamicControls() {
@@ -237,6 +246,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     }
 
     async addSemiAnnualControls(data?: any) {
+        console.log({ addSemiAnnualControls: data });
         this.semi_annual.forEach((_, i) => {
             const monthValue = data ? data[`semi_annual_${i}`] || 0 : 0;
             const fileSemiAnnualValue = data
