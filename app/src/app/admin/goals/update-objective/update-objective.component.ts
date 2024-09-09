@@ -144,6 +144,8 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                 } = data;
                 this.goal_ObjectId = goalId;
 
+                console.log({ ngOnChangesupdateobjectives: data });
+
                 //need for the backend
                 this.tobeUpdatedSubGoal = id;
 
