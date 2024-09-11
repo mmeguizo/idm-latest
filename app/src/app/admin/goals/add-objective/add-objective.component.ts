@@ -212,13 +212,13 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             month_10: [0],
             month_11: [0],
 
+            quarter_0: [0],
             quarter_1: [0],
             quarter_2: [0],
             quarter_3: [0],
-            quarter_4: [0],
 
             semi_annual_1: [0],
-            semi_annual_2: [0],
+            semi_annual_0: [0],
         });
     }
 
@@ -249,7 +249,18 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
         this.addObjectiveGoalDialogCard = false;
         this.addObjectiveGoalform.reset();
     }
-    addSubObjectiveGoalDialogExec(e: any) {
+    async addSubObjectiveGoalDialogExec(e: any) {
+        let patterns = [];
+        if (e.value.frequency_monitoring === 'semi_annual') {
+            patterns.push('semi_annual_[i]');
+        }
+        if (e.value.frequency_monitoring === 'yearly') {
+            patterns.push('month_[i]');
+        }
+        if (e.value.frequency_monitoring === 'quarterly') {
+            patterns.push('quarter_[i]');
+        }
+
         const { addExecutionGoalId, formGroupDropdown, goal_ObjectId, USERID } =
             this;
 
@@ -263,46 +274,9 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             timetable: new Map(), // Initialize the timetable Map
         };
 
-        // Populate the timetable based on the selected frequency
-        if (data.frequency_monitoring === 'yearly') {
-            // Remove quarterly and semi_annual fields
-            for (let quarter = 1; quarter <= 4; quarter++) {
-                delete data[`quarter_${quarter}`];
-            }
-            for (let i = 0; i <= 2; i++) {
-                delete data[`semi_annual_${i}`];
-            }
-
-            for (let month = 0; month < 12; month++) {
-                data[`file_month_${month.toString()}`] = '';
-            }
-        } else if (data.frequency_monitoring === 'quarterly') {
-            // Remove yearly and semi_annual fields
-            for (let month = 0; month <= 12; month++) {
-                delete data[`month_${month}`];
-            }
-            for (let i = 0; i <= 2; i++) {
-                delete data[`semi_annual_${i}`];
-            }
-            for (let month = 0; month < 4; month++) {
-                data[`file_quarter_${month.toString()}`] = '';
-            }
-        } else if (data.frequency_monitoring === 'semi_annual') {
-            // Remove yearly and quarterly fields
-            for (let month = 0; month <= 12; month++) {
-                delete data[`month_${month}`];
-            }
-            for (let quarter = 1; quarter <= 4; quarter++) {
-                delete data[`quarter_${quarter}`];
-            }
-
-            for (let month = 0; month < 2; month++) {
-                data[`file_semi_annual_${month.toString()}`] = '';
-            }
-        }
-
+        const updatedData = await this.addGoalPeriods(data, patterns);
         this.obj
-            .getRoute('post', 'objectives', 'addObjectives', data)
+            .getRoute('post', 'objectives', 'addObjectives', updatedData)
             .pipe(takeUntil(this.addObjectiveSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
@@ -316,7 +290,7 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
                     this.addObjectiveGoalform.reset();
                     this.formGroupDropdown.reset();
                     this.goalDataRemainingBudget = 0;
-                    this.childAddObjectiveEvent.emit(data.data);
+                    this.childAddObjectiveEvent.emit(data.data.goalId);
                 } else {
                     this.messageService.add({
                         severity: 'warn',
@@ -327,5 +301,27 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
 
     onGoalChange(event: any) {
         // capture here the goallist id if needed
+    }
+
+    async addGoalPeriods(obj: any, patterns: string[]) {
+        const newObj = { ...obj }; // Create a copy of the original object
+
+        patterns.forEach((pattern) => {
+            const regex = new RegExp(`^${pattern.replace('[i]', '(\\d+)')}$`);
+
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    const match = key.match(regex);
+                    if (match) {
+                        const periodIndex = match[1];
+                        newObj[`goal_${pattern.replace('[i]', periodIndex)}`] =
+                            obj[key];
+                        newObj[key] = 0; // Set the value to 0
+                    }
+                }
+            }
+        });
+
+        return newObj;
     }
 }

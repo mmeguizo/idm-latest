@@ -24,20 +24,20 @@
                             *ngFor="let month of months; let i = index"
                         >
                             <label for="month_{{ i }}">{{ month }}</label>
-                            <p-inputNumber
-                                id="month_{{ i }}"
-                                formControlName="month_{{ i }}"
-                                [min]="0"
-                            ></p-inputNumber>
 
-                            <span
-                                *ngIf="
-                                    !editObjectiveGoalform.get(
-                                        'file_month_' + i
-                                    ).value
-                                "
-                                class="p-float-label p-input-icon-left"
-                            >
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Goal :
+                                    {{ objectiveDatas["goal_month_" + i] }}
+                                </p-inputGroupAddon>
+                                <p-inputNumber
+                                    id="month_{{ i }}"
+                                    formControlName="month_{{ i }}"
+                                    [min]="0"
+                                ></p-inputNumber>
+                            </p-inputGroup>
+
+                            <span class="p-float-label p-input-icon-left">
                                 <i class="pi pi-file-import"></i>
                                 <input
                                     type="text"
@@ -46,7 +46,11 @@
                                     formControlName="file_month_{{ i }}"
                                     (click)="onUpload($event, 'month', i)"
                                 />
-                                <label for="lefticon">Upload Files</label>
+                                <label for="lefticon">{{
+                                    objectiveDatas["file_month_" + [i]]
+                                        ? "Upload More.."
+                                        : "Upload Files"
+                                }}</label>
                             </span>
                             <i
                                 class="pi pi-check-circle text-teal-400 text-2xl pr-3 pb-2"
@@ -70,20 +74,19 @@
                             *ngFor="let quarter of [0, 1, 2, 3]; let i = index"
                         >
                             <label for="quarter_{{ i }}">Q{{ i + 1 }}</label>
-                            <p-inputNumber
-                                id="quarter_{{ i }}"
-                                formControlName="quarter_{{ i }}"
-                                [min]="0"
-                            ></p-inputNumber>
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Goal :
+                                    {{ objectiveDatas["goal_quarter_" + i] }}
+                                </p-inputGroupAddon>
+                                <p-inputNumber
+                                    id="quarter_{{ i }}"
+                                    formControlName="quarter_{{ i }}"
+                                    [min]="0"
+                                ></p-inputNumber>
+                            </p-inputGroup>
 
-                            <span
-                                *ngIf="
-                                    !editObjectiveGoalform.get(
-                                        'file_quarter_' + i
-                                    ).value
-                                "
-                                class="p-float-label p-input-icon-left"
-                            >
+                            <span class="p-float-label p-input-icon-left">
                                 <i class="pi pi-file-import"></i>
                                 <input
                                     type="text"
@@ -92,7 +95,11 @@
                                     formControlName="file_quarter_{{ i }}"
                                     (click)="onUpload($event, 'quarter', i)"
                                 />
-                                <label for="lefticon">Upload Files</label>
+                                <label for="lefticon">{{
+                                    objectiveDatas["file_quarter_" + [i]]
+                                        ? "Upload More.."
+                                        : "Upload Files"
+                                }}</label>
                             </span>
                             <i
                                 class="pi pi-check-circle text-teal-400 text-2xl pr-3 pb-2"
@@ -117,22 +124,24 @@
                             *ngFor="let period of [0, 1]; let i = index"
                         >
                             <label for="semi_annual_{{ i }}"
-                                >Semi{{ i + 1 }}</label
+                                >Semi-0{{ i + 1 }}</label
                             >
-                            <p-inputNumber
-                                id="semi_annual_{{ i }}"
-                                formControlName="semi_annual_{{ i }}"
-                                [min]="0"
-                            ></p-inputNumber>
 
-                            <span
-                                *ngIf="
-                                    !editObjectiveGoalform.get(
-                                        'file_semi_annual_' + i
-                                    ).value
-                                "
-                                class="p-float-label p-input-icon-left"
-                            >
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Goal :
+                                    {{
+                                        objectiveDatas["goal_semi_annual_" + i]
+                                    }}
+                                </p-inputGroupAddon>
+                                <p-inputNumber
+                                    id="semi_annual_{{ i }}"
+                                    formControlName="semi_annual_{{ i }}"
+                                    [min]="0"
+                                ></p-inputNumber>
+                            </p-inputGroup>
+
+                            <span class="p-float-label p-input-icon-left">
                                 <i class="pi pi-file-import"></i>
                                 <input
                                     type="text"
@@ -141,7 +150,11 @@
                                     formControlName="file_semi_annual_{{ i }}"
                                     (click)="onUpload($event, 'semi_annual', i)"
                                 />
-                                <label for="lefticon">Upload Files</label>
+                                <label for="lefticon">{{
+                                    objectiveDatas["file_semi_annual_" + [i]]
+                                        ? "Upload More.."
+                                        : "Upload Files"
+                                }}</label>
                             </span>
                             <i
                                 class="pi pi-check-circle text-teal-400 text-2xl pr-3 pb-2"

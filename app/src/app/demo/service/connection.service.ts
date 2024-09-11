@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class ConnectionService {
     //ngrok development
-    // public domain: string = 'https://a51f-136-158-184-122.ngrok-free.app ';
+    // public domain: string = 'https://unduly-enjoyed-parrot.ngrok-free.app/';
 
     //localhost dev
     public domain: string = 'http://localhost:3000';

@@ -21,7 +21,7 @@ import {
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { GoallistService } from 'src/app/demo/service/goallists.service';
 import { FileService } from 'src/app/demo/service/file.service';
-
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
     selector: 'app-update-objective',
     templateUrl: './update-objective.component.html',
@@ -60,6 +60,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     months: string[] = [];
     quarters: string[] = [];
     semi_annual: string[] = [];
+    file_semi_annual: string[] = [];
 
     // file service
     uploadedFiles: any[] = [];
@@ -77,13 +78,15 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     uploadInProgress: boolean = false;
     counter: number = 0;
     objectiveData: any;
+    objectiveDatas: any;
     constructor(
         private formBuilder: FormBuilder,
         private messageService: MessageService,
         private auth: AuthService,
         private obj: ObjectiveService,
         private goallistService: GoallistService,
-        private fileService: FileService
+        private fileService: FileService,
+        private cdr: ChangeDetectorRef
     ) {
         this.USERID = this.auth.getTokenUserID();
 
@@ -96,6 +99,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         // Initialize quarters array
         this.quarters = ['quarter_0', 'quarter_1', 'quarter_2', 'quarter_3'];
         this.semi_annual = ['semi_annual_0', 'semi_annual_1'];
+        this.file_semi_annual = ['file_semi_annual_0', 'file_semi_annual_1'];
     }
 
     ngOnInit() {
@@ -122,43 +126,17 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         // add this to make sure it will not detect the previous value only current value
         if (changes['updateObjective']?.currentValue) {
             const { editGoal, data } = changes['updateObjective']?.currentValue;
-            console.log({ ngOnChanges: data });
             if (editGoal && data) {
-                const {
-                    id,
-                    userId,
-                    goalId,
-                    functional_objective,
-                    performance_indicator,
-                    target,
-                    formula,
-                    programs,
-                    responsible_persons,
-                    clients,
-                    timetable,
-                    frequency_monitoring,
-                    data_source,
-                    budget,
-                    remarks,
-                    ...wholeData
-                } = data;
+                const { id, goalId, frequency_monitoring } = data;
                 this.goal_ObjectId = goalId;
-
-                console.log({ ngOnChangesupdateobjectives: data });
-
-                //need for the backend
                 this.tobeUpdatedSubGoal = id;
-
                 await this.getObjectiveById(id, frequency_monitoring);
-
                 // Update the form control value
             }
         }
     }
 
     async onFrequencyChange(event: any, data?: any) {
-        console.log({ onFrequencyChange: data });
-
         const frequency = event?.value?.name || event;
         this.selectedfrequencyOptions = {
             name: event?.value?.name || event,
@@ -181,6 +159,8 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             .getRoute('get', 'objectives', `getObjectiveById/${id}`)
             .pipe(takeUntil(this.updateObjectiveSubscription))
             .subscribe((data: any) => {
+                console.log({ getObjectiveById: data.data });
+                this.objectiveDatas = data.data;
                 this.onFrequencyChange(frequency_monitoring, data.data);
                 this.editObjectiveGoalform
                     .get('frequency_monitoring')
@@ -188,6 +168,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                 //add delay to prepare the forms
                 setTimeout(() => {
                     this.editObjectiveGoalDialogCard = true;
+                    this.cdr.detectChanges();
                 }, 300);
             });
     }
@@ -216,8 +197,13 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
 
     async addMonthlyControls(data?: any) {
         this.months.forEach((_, i) => {
+            this.editObjectiveGoalform.removeControl(`month_${i}`);
+            this.editObjectiveGoalform.removeControl(`file_month_${i}`);
+
             const monthValue = data ? data[`month_${i}`] || 0 : 0;
-            const fileMonthValue = data ? data[`file_month_${i}`] || '' : '';
+            const fileMonthValue = data[`file_month_${i}`]
+                ? '💾 File Added...'
+                : '';
             this.editObjectiveGoalform.addControl(
                 `month_${i}`,
                 new FormControl(monthValue, Validators.min(0))
@@ -232,9 +218,12 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     async addQuarterlyControls(data?: any) {
         // Add controls for quarters 0 to 3
         for (let quarter = 0; quarter <= 3; quarter++) {
+            this.editObjectiveGoalform.removeControl(`quarter_${quarter}`);
+            this.editObjectiveGoalform.removeControl(`file_quarter_${quarter}`);
+
             const quarterValue = data ? data[`quarter_${quarter}`] || 0 : 0;
-            const fileQuarterValue = data
-                ? data[`file_quarter_${quarter}`] || ''
+            const fileQuarterValue = data[`file_quarter_${quarter}`]
+                ? '💾 File Added...'
                 : '';
             this.editObjectiveGoalform.addControl(
                 `quarter_${quarter}`,
@@ -248,11 +237,14 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     }
 
     async addSemiAnnualControls(data?: any) {
-        console.log({ addSemiAnnualControls: data });
         this.semi_annual.forEach((_, i) => {
+            // Clear the previous values first
+            this.editObjectiveGoalform.removeControl(`semi_annual_${i}`);
+            this.editObjectiveGoalform.removeControl(`file_semi_annual_${i}`);
+
             const monthValue = data ? data[`semi_annual_${i}`] || 0 : 0;
-            const fileSemiAnnualValue = data
-                ? data[`file_semi_annual_${i}`] || ''
+            const fileSemiAnnualValue = data[`file_semi_annual_${i}`]
+                ? '💾 File Added...'
                 : '';
             this.editObjectiveGoalform.addControl(
                 `semi_annual_${i}`,
@@ -285,6 +277,8 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         });
     }
     clearEditObjectiveGoalDialogCardDatas() {
+        //reset the form so no data will be left off before getting a new one
+        // this.editObjectiveGoalform.reset();
         this.editObjectiveGoalDialogCard = false;
     }
 
@@ -313,6 +307,9 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                         success: true,
                         id: data.data?.goalId,
                     });
+                    //reset the form so no data will be left off before getting a new one
+                    // this.editObjectiveGoalform.reset();
+                    this.cdr.detectChanges();
                     //reset the flag
                     this.uploadSuccessFlag = false;
                 } else {
@@ -349,12 +346,13 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             event.frequencyFileNameForUpdate
         );
     }
-
     onFileUploadSuccess(controlName: string, fileName: string) {
         //hide the input and show the check icon
         this.uploadSuccessFlag = true;
         if (this.editObjectiveGoalform.contains(controlName)) {
-            this.editObjectiveGoalform.get(controlName).setValue(fileName);
+            this.editObjectiveGoalform
+                .get(controlName)
+                .setValue('🏷️ File added hit submit');
         } else {
             this.editObjectiveGoalform.addControl(
                 controlName,

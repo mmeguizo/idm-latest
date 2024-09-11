@@ -35,6 +35,19 @@ const objectivesSchema = new mongoose.Schema({
   month_10: { type: Number },
   month_11: { type: Number },
 
+  goal_month_0: { type: Number },
+  goal_month_1: { type: Number },
+  goal_month_2: { type: Number },
+  goal_month_3: { type: Number },
+  goal_month_4: { type: Number },
+  goal_month_5: { type: Number },
+  goal_month_6: { type: Number },
+  goal_month_7: { type: Number },
+  goal_month_8: { type: Number },
+  goal_month_9: { type: Number },
+  goal_month_10: { type: Number },
+  goal_month_11: { type: Number },
+
   file_month_0: { type: String },
   file_month_1: { type: String },
   file_month_2: { type: String },
@@ -53,6 +66,11 @@ const objectivesSchema = new mongoose.Schema({
   quarter_3: { type: Number },
   quarter_0: { type: Number },
 
+  goal_quarter_1: { type: Number },
+  goal_quarter_2: { type: Number },
+  goal_quarter_3: { type: Number },
+  goal_quarter_0: { type: Number },
+
   file_quarter_1: { type: String },
   file_quarter_2: { type: String },
   file_quarter_3: { type: String },
@@ -60,11 +78,12 @@ const objectivesSchema = new mongoose.Schema({
 
   semi_annual_0: { type: Number },
   semi_annual_1: { type: Number },
-  semi_annual_2: { type: Number },
+
+  goal_semi_annual_0: { type: Number },
+  goal_semi_annual_1: { type: Number },
 
   file_semi_annual_0: { type: String },
   file_semi_annual_1: { type: String },
-  file_semi_annual_2: { type: String },
 
   frequency_monitoring: {
     type: String,

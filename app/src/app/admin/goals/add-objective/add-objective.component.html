@@ -172,7 +172,9 @@
                             class="col-3"
                             *ngFor="let month of months; let i = index"
                         >
-                            <label for="month_{{ i }}">{{ month }}</label>
+                            <label for="month_{{ i }}"
+                                >Goal For the {{ month }}</label
+                            >
                             <p-inputNumber
                                 id="month_{{ i }}"
                                 formControlName="month_{{ i }}"
@@ -193,7 +195,9 @@
                             class="col-4"
                             *ngFor="let quarter of quarters; let i = index"
                         >
-                            <label for="quarter_{{ i }}">{{ quarter }}</label>
+                            <label for="quarter_{{ i }}"
+                                >Goal For the {{ quarter }}</label
+                            >
                             <p-inputNumber
                                 id="quarter_{{ i }}"
                                 formControlName="quarter_{{ i }}"
@@ -214,9 +218,9 @@
                             class="col-6"
                             *ngFor="let period of semi_annual; let i = index"
                         >
-                            <label for="semi_annual_{{ i }}">{{
-                                period
-                            }}</label>
+                            <label for="semi_annual_{{ i }}"
+                                >Goal For the {{ period }}</label
+                            >
                             <p-inputNumber
                                 id="semi_annual_{{ i }}"
                                 formControlName="semi_annual_{{ i }}"

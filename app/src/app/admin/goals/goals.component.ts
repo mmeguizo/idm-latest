@@ -331,8 +331,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe(async (data: any) => {
-                    console.log(data.Objectives);
                     this.objectiveDatas = data.Objectives;
+                    console.log({ getAllByIdObjectives: data.Objectives });
                     this.loading = false;
                 });
         }
@@ -346,7 +346,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
                     this.objectiveDatas = data.Objectives;
-
+                    console.log({ getObjectivesReload: data.Objectives });
                     let subBudget = data.Objectives.reduce((acc, e) => {
                         return acc + e.budget;
                     }, 0);
@@ -367,21 +367,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 });
         }
     }
-
-    // async getAllFilesFromObjectiveLoad(
-    //     id: string,
-    //     objectiveID: string
-    // ): Promise<Boolean> {
-    //     this.loading = true;
-    //     this.fileService
-    //         .getAllFilesFromObjective(id, objectiveID)
-    //         .pipe(takeUntil(this.getGoalSubscription))
-    //         .subscribe((data: any) => {
-    //             this.AllObjectivesFiles = data.data;
-    //             this.loading = false;
-    //         });
-    //     return true;
-    // }
 
     async getAllFilesFromObjectiveLoad(
         id: string,
@@ -943,18 +928,19 @@ export class GoalsComponent implements OnInit, OnDestroy {
         );
     }
 
-    receivedAddObjectiveEvent(newObjective: any) {
+    receivedAddObjectiveEvent(id: any) {
         //track if changes is made for the table to reload
         this.makeChanges = true;
-        this.getAllObjectivesWithObjectives().subscribe(
-            (isSuccessful: boolean) => {
-                if (isSuccessful) {
-                    this.makeChanges = false; // Reset makeChanges only if the operation was successful
-                } else {
-                    // Handle error scenario if needed
-                }
-            }
-        );
+        this.getObjectivesReload(id);
+        // this.getAllObjectivesWithObjectives().subscribe(
+        //     (isSuccessful: boolean) => {
+        //         if (isSuccessful) {
+        //             this.makeChanges = false; // Reset makeChanges only if the operation was successful
+        //         } else {
+        //             // Handle error scenario if needed
+        //         }
+        //     }
+        // );
     }
 
     ngAfterViewInit() {
