@@ -91,20 +91,6 @@ module.exports = (router) => {
             .catch((err) => {
               console.error("Error uploading file:", err);
             });
-
-          // res.json({
-          //   success: true,
-          //   message: "Files uploaded successfully!",
-          //   fileNames: [],
-          // });
-
-          // Promise.all(savePromises)
-          //   .then((data) => {
-          //     console.log("Files Saving success....:");
-          //   })
-          //   .catch((err) => {
-          //     console.error("Error uploading file:", err);
-          //   });
         } catch (err) {
           console.error("Error uploading file:", err);
         }
@@ -124,10 +110,6 @@ module.exports = (router) => {
 
       form.parse(req);
 
-      // res.json({
-      //   success: true,
-      //   message: "Files uploaded successfully!",
-      // });
       let params = JSON.stringify(req.params);
       let query = JSON.stringify(req.query);
       let body = JSON.stringify(req.body);
@@ -138,6 +120,128 @@ module.exports = (router) => {
       );
     }
   );
+
+  router.post("/addObjectiveFiles/:user_id/", async (req, res) => {
+    console.log({ addMultipleFiles: req.body });
+    let ReturnData = [];
+    let useFor = "files";
+    let form = new formidable.IncomingForm({ multiples: true });
+    form.maxFileSize = 2500 * 1024 * 1024; // Adjust max file size as needed
+    form.uploadDir = path.join(__dirname, "..", "images/files");
+
+    const uploadedFiles = []; // Array to store uploaded file details
+
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        console.error("Error parsing form:", err);
+        return res
+          .status(500)
+          .json({ success: false, message: "Error parsing form" });
+      }
+
+      const objectiveId = fields.objectiveId;
+      const frequencyFileName = fields.frequencyFileName;
+
+      console.log({
+        objectiveId,
+        frequencyFileName,
+      });
+
+      // Check if files.files is an array or a single object
+      const fileArray = Array.isArray(files.files)
+        ? files.files
+        : [files.files];
+
+      for (const file of fileArray) {
+        const newFileName = [
+          useFor,
+          Math.random(),
+          Math.random(),
+          Math.random(),
+        ].join("");
+        const ext = file.originalFilename.split(".").pop();
+        const finalFileName = `${md5(newFileName)}${ext ? `.${ext}` : ""}`;
+
+        try {
+          const filePath = file.filepath; // Assuming `filepath` property exists
+          const readStream = fs.createReadStream(filePath);
+
+          await new Promise((resolve, reject) => {
+            const fileStream = fs.createWriteStream(
+              path.join(form.uploadDir, finalFileName)
+            );
+            fileStream.on("error", (err) => reject(err));
+            fileStream.on("finish", () => resolve());
+            readStream.pipe(fileStream); // Pipe the read stream to the write stream
+          });
+
+          const fileData = {
+            id: uuidv4(),
+            user_id: req.params.user_id,
+            objective_id: objectiveId,
+            source: finalFileName,
+            for: "files",
+            filetype: file.mimetype.split("/")[0],
+          };
+
+          if (frequencyFileName) {
+            fileData[frequencyFileName] = finalFileName;
+          }
+
+          uploadedFiles.push(new File(fileData));
+        } catch (err) {
+          console.error("Error uploading file:", err);
+        }
+      }
+
+      try {
+        let savePromises = uploadedFiles.map((file) => {
+          return new Promise((resolve, reject) => {
+            file.save((err, data) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(data);
+              }
+            });
+          });
+        });
+
+        const data = await Promise.all(savePromises);
+        console.log("Files Saving success....:");
+        const fileNames = data.map((file) => file.source);
+        res.json({
+          success: true,
+          message: "Files uploaded successfully!",
+          fileNames: fileNames,
+        });
+      } catch (err) {
+        console.error("Error saving files:", err);
+        res.status(500).json({ success: false, message: "Error saving files" });
+      }
+    });
+
+    form.on("progress", (bytesReceived, bytesExpected) => {
+      console.log("Progress:", bytesReceived, bytesExpected);
+    });
+
+    form.on("error", (err) => {
+      console.error("An error occurred:", err);
+    });
+
+    form.on("end", async () => {
+      console.log("Finished uploading files");
+    });
+
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
+  });
 
   router.post("/addFile/:user_id", async (req, res) => {
     let useFor = "files";
@@ -402,40 +506,39 @@ module.exports = (router) => {
   router.get(
     "/getAllFilesFromObjective/:user_id/:objective_id",
 
-    (req, res) => {
-      const { user_id, objective_id } = req.params;
+    async (req, res) => {
+      try {
+        const { user_id, objective_id } = req.params;
 
-      console.log(req.params);
+        const files = await File.aggregate([
+          {
+            $match: {
+              status: true,
+              user_id: user_id,
+              objective_id: objective_id,
+              for: "files",
+            },
+          },
+          {
+            $lookup: {
+              as: "objectives",
+              from: "objectives",
+              foreignField: "id",
+              localField: "objective_id",
+            },
+          },
+          {
+            $unwind: {
+              path: "$objectives",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ]);
 
-      File.find(
-        {
-          user_id: user_id,
-          objective_id: objective_id,
-          for: "files",
-          status: true,
-        },
-        {
-          __v: 0.0,
-        },
-        (err, files) => {
-          if (err) {
-            return res.json({ success: false, message: err.message });
-          } else {
-            return res.json({ success: true, message: "Files", data: files });
-          }
-        }
-      ).sort({
-        date_added: -1,
-      });
-
-      let params = JSON.stringify(req.params);
-      let query = JSON.stringify(req.query);
-      let body = JSON.stringify(req.body);
-      logger.info(
-        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-          req.statusCode
-        }|${req.socket.remoteAddress}|${Date.now()}`
-      );
+        return res.json({ success: true, message: "Files", data: files });
+      } catch (err) {
+        return res.json({ success: false, message: err.message });
+      }
     }
   );
   router.get(
@@ -475,25 +578,3 @@ module.exports = (router) => {
 
   return router;
 };
-
-// fs.unlink(
-//   `${path.join(__dirname, "..", "images/files")}/${file}`,
-//   (err) => {
-//     if (err) {
-//       return res.json({
-//         success: false,
-//         message: "The server cant find the file.",
-//       });
-//     }
-//     // File.deleteOne({ id: id }, (err, results) => {
-//     //   if (err) {
-//     //     return res.json({ success: false, message: err.message });
-//     //   } else {
-//     //     return res.json({
-//     //       success: true,
-//     //       message: "The file has been remove.",
-//     //     });
-//     //   }
-//     // });
-//   }
-// );

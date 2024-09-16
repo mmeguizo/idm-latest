@@ -27,6 +27,7 @@ import { AddObjectiveComponent } from './goals/add-objective/add-objective.compo
 import { UpdateGoalComponent } from './goals/update-goal/update-goal.component';
 import { UpdateObjectiveComponent } from './goals/update-objective/update-objective.component';
 import { AddFilesComponent } from './goals/add-files/add-files.component';
+
 @NgModule({
     imports: [AdminRoutingModule, SharedModule, MarkdownModule.forRoot()],
     declarations: [

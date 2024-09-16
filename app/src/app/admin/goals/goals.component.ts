@@ -123,6 +123,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     // add files child component
     parentAddnewFile: any = {};
+    parentPrintFile: any = {};
 
     frequencyOptions = [
         { name: 'yearly', code: 'yearly' },
@@ -332,7 +333,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe(async (data: any) => {
                     this.objectiveDatas = data.Objectives;
-                    console.log({ getAllByIdObjectives: data.Objectives });
                     this.loading = false;
                 });
         }
@@ -346,7 +346,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
                     this.objectiveDatas = data.Objectives;
-                    console.log({ getObjectivesReload: data.Objectives });
                     let subBudget = data.Objectives.reduce((acc, e) => {
                         return acc + e.budget;
                     }, 0);
@@ -378,6 +377,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .getAllFilesFromObjective(id, objectiveID)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
+                    console.log(data.data);
                     this.AllObjectivesFiles = data.data;
                     this.loading = false;
                 });
@@ -411,14 +411,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
             goalId: this.subObjectiveGoalID,
             goal_ObjectId: this.goal_ObjectId,
         };
-        // this.addObjectiveGoalDialogCard = true;
     }
 
     addFiles(objectiveData: any) {
-        // alert(objectiveID);
-        // this.addObjectiveFileDialogCard = true;
-        // alert(JSON.stringify(objectiveData));
-
         this.parentAddnewFile = {
             addFile: true,
             objectiveId: this.childComponentAddfileObjectiveId,
@@ -552,7 +547,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     .subscribe(async (results: any) => {
                         if (results.success) {
                             this.getAllObjectivesWithObjectives();
-                            // this.getObjectives(goalIDs);
                             this.getObjectivesReload(goalIDs);
                             this.messageService.add({
                                 severity: 'success  ',
@@ -641,7 +635,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     .pipe(takeUntil(this.getGoalSubscription))
                     .subscribe((data: any) => {
                         if (data.success) {
-                            // this.getObjectives(goalId);
                             this.getObjectivesReload(goalId);
                             //tag is as changes so if close will recalculate the data
                             this.makeChanges = true;
@@ -726,17 +719,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.addObjectiveGoalform.reset();
     }
 
-    hidviewObjectRefetch() {
-        // this.obj
-        //     .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
-        //     .pipe(takeUntil(this.getGoalSubscription))
-        //     .subscribe((data: any) => {
-        //         this.objectiveDatas = data.Objectives;
-        //         // remove the data
-        //         this.hideviewObjectiveFileDialogCardID = null;
-        //         this.loading = false;
-        //     });
-    }
+    hidviewObjectRefetch() {}
 
     hideViewObjectiveTable(id?: string) {
         this.subGoalObjective = false;
@@ -766,6 +749,21 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
     hideViewFileHistoryDialogCard() {
         this.viewObjectiveFileHistoryDialogCard = false;
+    }
+
+    getFrequencyKeys(objectiveFile: any) {
+        let firstLetter: any;
+        let lastLetter: any;
+
+        const frequencyKeys = Object.keys(objectiveFile).filter((key) =>
+            key.includes('file_')
+        );
+        frequencyKeys.map((key) => {
+            firstLetter = key.replace('file_', '').replace(/_/g, ' ');
+            lastLetter =
+                parseInt(firstLetter.charAt(firstLetter.length - 1)) + 1;
+        });
+        return firstLetter.slice(0, -1) + lastLetter;
     }
     // viewObjectiveFileHistoryDialogCard
 
@@ -872,11 +870,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         );
     }
 
-    printTableNeeds(header?) {
-        this.printingHead = true;
-        this.printingOfficeName = header;
-    }
-
     receivedAddGoalEvent(addGoalMessageResults: any) {
         //track if changes is made for the table to reload
         this.makeChanges = true;
@@ -932,327 +925,21 @@ export class GoalsComponent implements OnInit, OnDestroy {
         //track if changes is made for the table to reload
         this.makeChanges = true;
         this.getObjectivesReload(id);
-        // this.getAllObjectivesWithObjectives().subscribe(
-        //     (isSuccessful: boolean) => {
-        //         if (isSuccessful) {
-        //             this.makeChanges = false; // Reset makeChanges only if the operation was successful
-        //         } else {
-        //             // Handle error scenario if needed
-        //         }
-        //     }
-        // );
     }
 
     ngAfterViewInit() {
         // Now you can safely call printTable
         // this.printTable();
     }
-    printTable(subOnjectiveHeaderData: any = '', name?: any, office?: any) {
-        let imageSrc = this.auth.domain + '/assets/layout/images/logo.png';
-        this.isPrintableVisible = true;
-        let print, win;
-        print = document.getElementById('print').innerHTML;
-        win = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
-        win.document.open();
-        win.document.write(`
-            <html lang="en">
-            <head>
-              <meta charset="UTF-8" />
-              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-              <title>Document</title>
-            </head>
-            <style>
-            * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 12px;
-          }
 
-          body {
-            width: 11in;
-            height: 8.5in;
-          }
-
-          @media print {
-            body {
-              padding: unset;
-              width: unset;
-              height: unset;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-            @page {
-              size: landscape;
-            }
-            margin: 1.5in 0in 0in 0in;
-          }
-
-          table {
-            border-collapse: collapse;
-            width: 100%;
-          }
-
-          table:not(:is(.nested-table)) {
-            border-top: 1px solid;
-            border-left: 1px solid;
-            table-layout: fixed;
-          }
-
-          table :is(th, td) {
-            padding: 4px 6px;
-            border-right: 1px solid;
-            border-bottom: 1px solid;
-          }
-
-          .nested-table {
-            tr {
-              td {
-                font-weight: 600;
-                &[rowspan="4"] {
-                  border-bottom: 0;
-                }
-                &:last-child {
-                  border-right: 0;
-                }
-              }
-              &:last-child {
-                td {
-                  &:last-child {
-                    border-bottom: 0;
-                  }
-                }
-              }
-            }
-          }
-
-          .logo {
-            border-right: 0;
-            img {
-              width: 80px;
-              height: 80px;
-              margin-left: auto;
-              display: block;
-            }
-            & + td {
-              & > div {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                > h1 {
-                  font-size: 26px;
-                }
-                > h5 {
-                  color: #064f7c;
-                }
-                > hr {
-                  margin-top: 8px;
-                  width: 80%;
-                  border: 1px solid;
-                }
-              }
-            }
-          }
-
-          tr.font-condensed {
-            & > th {
-              font-size: 18px;
-              padding: 8px 6px;
-              &:first-child {
-                background-color: #f57e3a;
-              }
-              &:nth-child(2) {
-                background-color: #057a40;
-              }
-              &:last-child {
-                background-color: #efdf10;
-              }
-            }
-            & + tr {
-              & > th {
-                padding: 8px;
-              }
-              & + tr {
-                & > th {
-                  padding: 0px 4px;
-                  font-stretch: condensed;
-                  font-size: 16px;
-                }
-                & + tr {
-                  & > th {
-                    padding: 2px;
-                  }
-                }
-              }
-            }
-          }
-
-          tbody.data-cells {
-            font-stretch: condensed;
-            & tr {
-              & > td {
-                height: 0;
-                & > div {
-                  height: 100%;
-                  display: flex;
-                  flex-direction: column;
-                  gap: 1rem;
-                  justify-content: space-evenly;
-                  text-align: center;
-                  & p {
-                    font-size: 14px;
-                  }
-                }
-              }
-            }
-          }
-
-          tfoot {
-            font-stretch: condensed;
-            & tr td {
-              padding: 0;
-              & > div {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                & > div {
-                  &:not(:last-child) {
-                    border-right: 1px solid;
-                  }
-                  & > div {
-                    font-size: 14px;
-                    padding: 3px 6px;
-                    &:not(:last-child) {
-                      border-bottom: 1px solid;
-                    }
-                    &:nth-child(2) {
-                      text-align: center;
-                      font-size: 16px;
-                      padding-top: 32px;
-                      font-weight: 600;
-                      padding-bottom: 0px;
-                    }
-                    &:last-child {
-                      text-align: center;
-                      font-size: 14px;
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-
-
-          .p-0 {
-            padding: 0px;
-          }
-
-          .text-align-end {
-            text-align: end;
-          }
-
-          .border-x-0 {
-            border-left: 1px solid white;
-            border-right: 1px solid white;
-          }
-
-          .font-condensed {
-            font-stretch: condensed;
-          }
-
-            </style>
-            <body>
-              <div id="tobeprinted">
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="p-0" rowspan="4" colspan="10">
-                        <table class="nested-table">
-                          <tr>
-                            <td rowspan="4" class="logo">
-                              <img src="${imageSrc}" alt="CHMSU Logo" />
-                            </td>
-                            <td rowspan="4">
-                              <div>
-                                <h1>Carlos Hilado Memorial State University</h1>
-                                <h5>Alijis Campus . Binalbagan Campus . Fortune Towne Campus . Talisay Campus</h5>
-                                <hr />
-                              </div>
-                            </td>
-                            <td>Revision No.</td>
-                          </tr>
-                          <tr>
-                            <td>Date of Revision</td>
-                          </tr>
-                          <tr>
-                            <td>Date of Effectivity</td>
-                          </tr>
-                          <tr>
-                            <td>Page No.</td>
-                          </tr>
-                        </table>
-                      </th>
-                      <th>&nbsp;</th>
-                    </tr>
-                    <tr>
-                      <th>&nbsp;</th>
-                    </tr>
-                    <tr>
-                      <th>&nbsp;</th>
-                    </tr>
-                    <tr>
-                      <th class="text-align-end">Page 2</th>
-                    </tr>
-                    <tr class="font-condensed">
-                   <th colspan="5">${
-                       subOnjectiveHeaderData.toUpperCase() ||
-                       this.printingOfficeName.toUpperCase()
-                   }</th>
-                      <th colspan="5">QUALITY OBJECTIVES AND ACTION PLAN</th>
-                      <th class="text-align-end">CY</th>
-                    </tr>
-                    <tr>
-                      <th class="border-x-0" colspan="11"></th>
-                    </tr>
-                    <tr>
-                      <th class="border-x-0" colspan="11"></th>
-                    </tr>
-                  </thead>
-                  <body onload="window.print();window.close()">${print}</body>
-                  <tfoot>
-                    <tr>
-                      <td colspan="11">
-                        <div>
-                          <div>
-                            <div>Prepared by:</div>
-                            <div>${this.nameValue.toLocaleUpperCase()}</div>
-                            <div>${this.officeValue.toLocaleUpperCase()}</div>
-                          </div>
-                          <div>
-                            <div>Reviewed and verified by:</div>
-                            <div>YRIKA MARIE R. DUSARAN, PhDTM</div>
-                            <div>Director for Quality Management</div>
-                          </div>
-                          <div>
-                            <div>Approved by:</div>
-                            <div>ROSALINDA S. TUVILLA</div>
-                            <div>Vice President for Administrator and Finance</div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </body>
-          </html>
-              `);
-        win.document.close();
-        this.isPrintableVisible = false;
-        this.printingOfficeName = '';
-        this.nameValue = '';
-        this.officeValue = '';
+    printDocument() {
+        //   this.printingHead = true;
+        this.parentPrintFile = {
+            printFile: true,
+            objectData: this.objectiveDatas,
+            printingHead: true,
+            subOnjectiveHeaderData: this.subOnjectiveHeaderData?.department,
+            printingOfficeName: this.printingOfficeName,
+        };
     }
 }

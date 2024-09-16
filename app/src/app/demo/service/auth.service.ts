@@ -127,8 +127,6 @@ export class AuthService {
     login(user?: any) {
         return this.http.post(this.domain + '/authentication/login', user).pipe(
             catchError((error: HttpErrorResponse) => {
-                console.log(error);
-                console.error(error);
                 return throwError(error);
             })
         );
@@ -376,7 +374,6 @@ export class AuthService {
     }
 
     getRoute(endpoint: any, model?: any, apiName?: any, data?: any) {
-        console.log('getRoute', { endpoint, model, apiName, data });
         this.createAuthenticationHeaders();
         const url = `${this.connection.domain}/${model}/${apiName}`;
         return this.http

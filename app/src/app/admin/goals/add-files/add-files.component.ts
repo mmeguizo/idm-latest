@@ -59,6 +59,8 @@ export class AddFilesComponent implements OnInit, OnDestroy {
             this.objectiveIDforFile = addFileTrigger?.objectiveId;
             this.frequencyFileName = addFileTrigger?.frequencyFileName;
         }
+
+        console.log('addFileTrigger', addFileTrigger);
     }
 
     ngOnInit() {
@@ -91,12 +93,14 @@ export class AddFilesComponent implements OnInit, OnDestroy {
         }
 
         this.fileService
-            .addMultipleFiles(
-                this.USERID,
-                this.objectiveIDforFile,
-                this.uploadedFiles,
-                this.frequencyFileName ? this.frequencyFileName : ''
-            )
+            .addObjectiveFiles({
+                user_id: this.USERID,
+                objectiveId: this.objectiveIDforFile,
+                files: this.uploadedFiles,
+                frequencyFileName: this.frequencyFileName
+                    ? this.frequencyFileName
+                    : '',
+            })
             .pipe(takeUntil(this.getAddFilesComponentSubscription))
             .subscribe({
                 next: (data: any) => {

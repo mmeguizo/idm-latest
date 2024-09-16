@@ -274,6 +274,66 @@ export class FileService {
             );
     }
 
+    addObjectiveFiles(data: any) {
+        this.createAuthenticationHeaders();
+        const formData: FormData = new FormData();
+
+        const { user_id, files, objectiveId, frequencyFileName } = data;
+
+        for (let file of files) {
+            formData.append('files', file, file.name);
+        }
+        formData.append('objectiveId', objectiveId);
+        formData.append('frequencyFileName', frequencyFileName);
+
+        console.log(frequencyFileName, 'frequencyFileName');
+        console.log(objectiveId, 'objectiveId');
+        return this.http
+            .post(
+                this.cs.domain + `/fileupload/addObjectiveFiles/${user_id}`,
+                formData,
+                { headers: this.options, responseType: 'json' }
+            )
+            .pipe(
+                catchError((error: HttpErrorResponse) => {
+                    console.error(`API Error (${error.status}):`, error.error);
+                    if (error.status === 401 || error.status === 403) {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'You are unauthorized!',
+                        });
+                        this.auth.logout();
+                    } else if (error.status === 500) {
+                        // Internal server error Or Token Expired
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'Internal server error Or Token Expired. Please try again later.',
+                        });
+
+                        this.auth.logout();
+                    } else if (error.status === 404) {
+                        // Not found error
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'The requested resource was not found.',
+                        });
+                    } else {
+                        // Other errors
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error,
+                        });
+                    }
+
+                    return throwError(error);
+                })
+            );
+    }
+
     addMultipleFiles(
         id: string,
         objectiveIDforFile: string,

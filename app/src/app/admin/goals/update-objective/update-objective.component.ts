@@ -159,7 +159,6 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             .getRoute('get', 'objectives', `getObjectiveById/${id}`)
             .pipe(takeUntil(this.updateObjectiveSubscription))
             .subscribe((data: any) => {
-                console.log({ getObjectiveById: data.data });
                 this.objectiveDatas = data.data;
                 this.onFrequencyChange(frequency_monitoring, data.data);
                 this.editObjectiveGoalform
