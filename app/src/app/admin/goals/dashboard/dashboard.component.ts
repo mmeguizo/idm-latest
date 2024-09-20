@@ -33,28 +33,8 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     completedObjectives: any;
     myChart: any;
     goalCount: any;
-    donutData: {
-        labels: any[];
-        datasets: {
-            label: string;
-            backgroundColor: string;
-            borderColor: string;
-            data: any[];
-        }[];
-    };
-    donutOptions: {
-        plugins: { legend: { labels: { fontColor: string } } };
-        scales: {
-            x: {
-                ticks: { color: string; font: { weight: number } };
-                grid: { display: boolean; drawBorder: boolean };
-            };
-            y: {
-                ticks: { color: string };
-                grid: { color: string; drawBorder: boolean };
-            };
-        };
-    };
+    donutData: any;
+    donutOptions: any;
     goalForTables: any;
 
     constructor(
@@ -124,6 +104,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .getRoute('get', 'goals', `getObjectivesViewTable`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data?: any) => {
+                console.log({ getObjectiveViewPieChart: data });
                 this.initBarCharts(data?.data);
             });
     }
@@ -132,11 +113,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
         this.dashboardSubscription.unsubscribe();
     }
     initBarCharts(goal?: any) {
-        let objectivesData = goal?.map((e) => e.objectives);
-        let objectivesDataTrue = goal?.map((e) =>
-            e.objectives.filter((x) => x.deleted == false)
-        );
-
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -145,37 +121,47 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
         const surfaceBorder =
             documentStyle.getPropertyValue('--surface-border');
 
+        // Function to generate random color
+
+        const getIncrementalColor = () => {
+            const randomColor = [
+                Math.floor(Math.random() * 256), // Red
+                Math.floor(Math.random() * 256), // Green
+                Math.floor(Math.random() * 256), // Blue
+            ];
+
+            // Return the color in rgba format with fixed alpha of 0.5
+            return `rgba(${randomColor[0]}, ${randomColor[1]}, ${randomColor[2]}, 0.5)`;
+        };
+
+        const datasets = goal.map((goal) => {
+            const backgroundColors = goal.objectives.map(() =>
+                getIncrementalColor()
+            );
+            const borderColors = backgroundColors.map((color) => color);
+
+            return {
+                label: goal.goals,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                data: goal.objectives.map((obj) => obj.budget),
+            };
+        });
+
+        const labels = goal.flatMap((goal) => goal.objectives.map((obj) => ''));
+
         this.donutData = {
-            labels: [...goal?.map((e) => e.goals)],
-            datasets: [
-                {
-                    label: 'Goals',
-                    backgroundColor:
-                        documentStyle.getPropertyValue('--primary-500'),
-                    borderColor:
-                        documentStyle.getPropertyValue('--primary-500'),
-                    data: [...goal?.map((e) => 1)],
-                },
-                {
-                    label: 'Objectives',
-                    backgroundColor:
-                        documentStyle.getPropertyValue('--primary-200'),
-                    borderColor:
-                        documentStyle.getPropertyValue('--primary-200'),
-                    data: [
-                        ...objectivesDataTrue.map((e) =>
-                            e.length ? e.length : 0
-                        ),
-                    ],
-                },
-            ],
+            labels: labels,
+            datasets: datasets,
         };
 
         this.donutOptions = {
+            maintainAspectRatio: false,
+            aspectRatio: 0.8,
             plugins: {
                 legend: {
                     labels: {
-                        fontColor: textColor,
+                        color: textColor,
                     },
                 },
             },
@@ -188,7 +174,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                         },
                     },
                     grid: {
-                        display: false,
+                        color: surfaceBorder,
                         drawBorder: false,
                     },
                 },

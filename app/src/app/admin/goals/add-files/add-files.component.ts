@@ -18,7 +18,7 @@ import {
     FormGroup,
 } from '@angular/forms';
 import { AuthService } from 'src/app/demo/service/auth.service';
-
+import { validateFileType } from 'src/app/utlis/file-utils';
 @Component({
     selector: 'app-add-files',
     templateUrl: './add-files.component.html',
@@ -59,8 +59,6 @@ export class AddFilesComponent implements OnInit, OnDestroy {
             this.objectiveIDforFile = addFileTrigger?.objectiveId;
             this.frequencyFileName = addFileTrigger?.frequencyFileName;
         }
-
-        console.log('addFileTrigger', addFileTrigger);
     }
 
     ngOnInit() {
@@ -83,7 +81,7 @@ export class AddFilesComponent implements OnInit, OnDestroy {
             this.uploadedFiles.push(file);
         }
 
-        if (!this.validateFileType(this.uploadedFiles)) {
+        if (!validateFileType(this.uploadedFiles)) {
             this.messageService.add({
                 severity: 'error',
                 summary: 'File Unsupported',
@@ -135,40 +133,5 @@ export class AddFilesComponent implements OnInit, OnDestroy {
                 },
                 complete: () => {},
             });
-    }
-
-    validateFileType(files: any) {
-        const allowedTypes = [
-            'image/jpeg',
-            'image/png',
-            'image/svg+xml',
-            'image/gif',
-            'image/x-jif',
-            'image/x-jiff',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/rtf',
-            'application/pdf',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/csv',
-            'application/vnd.ms-powerpoint',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'text/plain',
-            'application/zip',
-            'image/x-photoshop',
-            'image/vnd.dxf',
-            'audio/mpeg',
-            'audio/wav',
-            'audio/aac',
-        ];
-        for (const file of files) {
-            if (!allowedTypes.includes(file.type)) {
-                console.log(`Invalid file type: ${file.type}`); // Log the type of any file that fails validation
-                return false;
-            }
-        }
-
-        return true;
     }
 }

@@ -25,6 +25,7 @@ import { CampusService } from 'src/app/demo/service/campus.service';
 import { Role } from 'src/app/interface/role.interface';
 import { PdfService } from 'src/app/demo/service/pdf.service';
 import { Campus } from 'src/app/interface/campus-location.interface';
+import { validateFileType, getIcon } from 'src/app/utlis/file-utils';
 
 @Component({
     selector: 'app-goals',
@@ -774,7 +775,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             this.uploadedFiles.push(file);
         }
 
-        if (!this.validateFileType(this.uploadedFiles)) {
+        if (!validateFileType(this.uploadedFiles)) {
             this.messageService.add({
                 severity: 'error',
                 summary: 'File Unsupported',
@@ -857,79 +858,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     // viewObjectiveFileHistoryDialogCard
 
     getIcon(name: string) {
-        const fileExtension = name.split('.').pop();
-        switch (fileExtension) {
-            case 'jpg':
-            case 'jpeg':
-            case 'png':
-            case 'gif':
-            case 'svg':
-                return 'pi pi-image';
-            case 'doc':
-            case 'docx':
-            case 'rtf':
-                return 'pi pi-file-word';
-            case 'pdf':
-                return 'pi pi-file-pdf';
-            case 'xls':
-            case 'xlsx':
-                return 'pi pi-file-excel';
-            case 'csv':
-                return 'pi pi-file-csv';
-            case 'ppt':
-            case 'pptx':
-                return 'pi pi-file-powerpoint';
-            case 'txt':
-                return 'pi pi-ticket';
-            case 'zip':
-                return 'pi pi-file-zip';
-            case 'psd':
-                return 'pi pi-image';
-            case 'dxf':
-                return 'pi pi-image';
-            case 'mp3':
-            case 'wav':
-            case 'aac':
-                return 'pi pi-volume-up';
-            default:
-                return 'pi pi-file';
-        }
-    }
-
-    //validate file type
-    validateFileType(files: any) {
-        const allowedTypes = [
-            'image/jpeg',
-            'image/png',
-            'image/svg+xml',
-            'image/gif',
-            'image/x-jif',
-            'image/x-jiff',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/rtf',
-            'application/pdf',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/csv',
-            'application/vnd.ms-powerpoint',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'text/plain',
-            'application/zip',
-            'image/x-photoshop',
-            'image/vnd.dxf',
-            'audio/mpeg',
-            'audio/wav',
-            'audio/aac',
-        ];
-        for (const file of files) {
-            if (!allowedTypes.includes(file.type)) {
-                console.log(`Invalid file type: ${file.type}`); // Log the type of any file that fails validation
-                return false;
-            }
-        }
-
-        return true;
+        return getIcon(name);
     }
 
     customTitleCase(str: string): string {

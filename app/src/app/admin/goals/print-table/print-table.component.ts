@@ -42,20 +42,17 @@ export class PrintTableComponent implements OnInit {
         this.objectiveDatas = objectData;
         this.subOnjectiveHeaderData = subOnjectiveHeaderData;
         this.printingHead = printingHead;
+    }
 
-        console.log(changes['printFile']?.currentValue);
+    getFrequencyKeys(frequency_monitoring: string) {
+        // Replace underscores with spaces
+        return frequency_monitoring.replace(/_/g, ' ');
     }
 
     printPdf() {
         this.isPrintableVisible = true;
-        console.log({
-            data: this.objectiveDatas,
-            namevalue: this.nameValue,
-            officeValue: this.officeValue,
-        });
         let print, win;
         print = document.getElementById('print').innerHTML;
-        console.log(print);
         win = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
         win.document.open();
         win.document.write(`
@@ -270,7 +267,7 @@ export class PrintTableComponent implements OnInit {
                 <table>
                   <thead>
                     <tr>
-                      <th class="p-0" rowspan="4" colspan="10">
+                      <th class="p-0" rowspan="4" colspan="9">
                         <table class="nested-table">
                           <tr>
                             <td rowspan="4" class="logo">
@@ -312,20 +309,20 @@ export class PrintTableComponent implements OnInit {
                        this.subOnjectiveHeaderData?.toUpperCase() ||
                        this.printingOfficeName?.toUpperCase()
                    }</th>
-                      <th colspan="5">QUALITY OBJECTIVES AND ACTION PLAN</th>
-                      <th class="text-align-end">CY</th>
+                      <th colspan="4">QUALITY OBJECTIVES AND ACTION PLAN</th>
+                      <th class="text-align-end" colspan="1">CY</th>
                     </tr>
                     <tr>
-                      <th class="border-x-0" colspan="11"></th>
+                      <th class="border-x-0" colspan="10"></th>
                     </tr>
                     <tr>
-                      <th class="border-x-0" colspan="11"></th>
+                      <th class="border-x-0" colspan="10"></th>
                     </tr>
                   </thead>
                   <body onload="window.print();window.close()">${print}</body>
                   <tfoot>
                     <tr>
-                      <td colspan="11">
+                      <td colspan="10">
                         <div>
                           <div>
                             <div>Prepared by:</div>

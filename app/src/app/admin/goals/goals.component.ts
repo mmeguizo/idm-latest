@@ -32,6 +32,7 @@ import { FileService } from 'src/app/demo/service/file.service';
 import { FileUpload } from 'primeng/fileupload';
 import { CampusService } from 'src/app/demo/service/campus.service';
 import { PrintTableComponent } from './print-table/print-table.component';
+import { getIcon } from 'src/app/utlis/file-utils';
 
 @Component({
     selector: 'app-goals',
@@ -267,6 +268,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 takeUntil(this.getGoalSubscription),
                 tap((data: any) => {
                     this.goals = data.goals;
+                    console.log(data);
                     this.loading = false;
                     resultSubject.next(true); // Emit true on success
                     resultSubject.complete(); // Complete the subject
@@ -377,7 +379,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .getAllFilesFromObjective(id, objectiveID)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
-                    console.log(data.data);
                     this.AllObjectivesFiles = data.data;
                     this.loading = false;
                 });
@@ -420,75 +421,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         };
     }
 
-    addSubObjectiveGoalDialogExec(e: any) {
-        e.value.userId = this.USERID;
-        e.value.goalId = this.subObjectiveGoalID;
-        e.value.goal_Id = this.goal_ObjectId;
-        e.value.frequency_monitoring =
-            this.formGroupDropdown.value.selectedDropdown.name;
-        e.value.createdBy = this.USERID;
-        this.obj
-            .getRoute('post', 'objectives', 'addObjectives', e.value)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    this.addObjectiveGoalDialogCard = false;
-                    //close the objective table
-                    // this.subGoalObjective = false;
-                    this.getAllObjectivesWithObjectives();
-                    this.getObjectivesReload(this.subObjectiveGoalID);
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
-                    //fix the error becomes null after adding new objective
-                    this.goal_ObjectId = data.data.goal_Id;
-                    // clear the data
-                    this.addObjectiveGoalform.reset();
-                    this.formGroupDropdown.reset();
-                    this.goalDataRemainingBudget = 0;
-                } else {
-                    this.messageService.add({
-                        severity: 'warn  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
-    }
-
-    updateGoalDialogExec(form: any) {
-        let data = {
-            id: this.updateGoalID,
-            goals: form.value.goals,
-            budget: form.value.budget,
-            department: this.formGroupDemo.value.selectDepartment.name,
-            campus: this.formGroupCampus.value.selectedCampus.name,
-        };
-        this.goal
-            .getRoute('put', 'goals', 'updateGoals', data)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    this.getAllObjectivesWithObjectives();
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
-                    this.updateGoalDialogCard = false;
-                    this.updateGoalform.reset();
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
-    }
-
     addGoal() {
         this.parentAddnewGoal = { addGoal: true };
     }
@@ -508,83 +440,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
         };
     }
 
-    updateObjectiveComplete(
-        event: Event,
-        data: any,
-        index = 0,
-        completeStatus: any
-    ) {
-        this.onclickCompletionButton[index] = true;
-        let goalIDs = data.goalId;
-
-        //create an index of boolean to match the button on the table
-        // if not all buttons will load too
-
-        this.confirmationService.confirm({
-            key: 'updateObjectiveComplete',
-            target: event.target as EventTarget,
-            message: `Marking Objective ${
-                completeStatus
-                    ? 'as Incomplete'
-                    : ' as Complete? Will Lock Files'
-            }, Are You Sure?`,
-            header: 'Confirmation',
-            icon: 'pi pi-exclamation-triangle',
-            acceptIcon: 'none',
-            rejectIcon: 'none',
-            rejectButtonStyleClass: 'p-button-text',
-            accept: () => {
-                this.obj
-                    .getRoute(
-                        'put',
-                        'objectives',
-                        'updateobjectivecompletion',
-                        {
-                            id: data.id,
-                        }
-                    )
-                    .pipe(takeUntil(this.getGoalSubscription))
-                    .subscribe(async (results: any) => {
-                        if (results.success) {
-                            this.getAllObjectivesWithObjectives();
-                            this.getObjectivesReload(goalIDs);
-                            this.messageService.add({
-                                severity: 'success  ',
-                                summary: 'Done',
-                                detail: results.message,
-                                life: 5000,
-                            });
-                            // this saves the objectid instead of refetch by closing the dialog it will run hideview to refetch
-                            this.hideviewObjectiveFileDialogCardID = goalIDs;
-                            // this.hideviewObjectiveFileDialogCard(goalIDs);
-                        } else {
-                            this.messageService.add({
-                                severity: 'error  ',
-                                summary: 'Error',
-                                detail: results.message,
-                            });
-                        }
-                    });
-                // this.onclickCompletionButton = false;
-                this.onclickCompletionButton[index] = false;
-            },
-            reject: () => {
-                this.onclickCompletionButton[index] = false;
-                this.messageService.add({
-                    severity: 'info',
-                    summary: 'Done',
-                    detail: 'Nothing happens',
-                    life: 3000,
-                });
-            },
-        });
-    }
-
     receivedUpdateObjective(editObjectiveMessageResults: any) {
         const { success, id: goalID } = editObjectiveMessageResults;
         //track if changes is made for the table to reload
         this.makeChanges = true;
         this.getObjectivesReload(goalID);
+        this.getAllObjectivesWithObjectives();
     }
 
     deleteGoalDialog(event: Event, _id: any) {
@@ -768,79 +629,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     // viewObjectiveFileHistoryDialogCard
 
     getIcon(name: string) {
-        const fileExtension = name.split('.').pop();
-        switch (fileExtension) {
-            case 'jpg':
-            case 'jpeg':
-            case 'png':
-            case 'gif':
-            case 'svg':
-                return 'pi pi-image';
-            case 'doc':
-            case 'docx':
-            case 'rtf':
-                return 'pi pi-file-word';
-            case 'pdf':
-                return 'pi pi-file-pdf';
-            case 'xls':
-            case 'xlsx':
-                return 'pi pi-file-excel';
-            case 'csv':
-                return 'pi pi-file-csv';
-            case 'ppt':
-            case 'pptx':
-                return 'pi pi-file-powerpoint';
-            case 'txt':
-                return 'pi pi-ticket';
-            case 'zip':
-                return 'pi pi-file-zip';
-            case 'psd':
-                return 'pi pi-image';
-            case 'dxf':
-                return 'pi pi-image';
-            case 'mp3':
-            case 'wav':
-            case 'aac':
-                return 'pi pi-volume-up';
-            default:
-                return 'pi pi-file';
-        }
-    }
-
-    //validate file type
-    validateFileType(files: any) {
-        const allowedTypes = [
-            'image/jpeg',
-            'image/png',
-            'image/svg+xml',
-            'image/gif',
-            'image/x-jif',
-            'image/x-jiff',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/rtf',
-            'application/pdf',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/csv',
-            'application/vnd.ms-powerpoint',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'text/plain',
-            'application/zip',
-            'image/x-photoshop',
-            'image/vnd.dxf',
-            'audio/mpeg',
-            'audio/wav',
-            'audio/aac',
-        ];
-        for (const file of files) {
-            if (!allowedTypes.includes(file.type)) {
-                console.log(`Invalid file type: ${file.type}`); // Log the type of any file that fails validation
-                return false;
-            }
-        }
-
-        return true;
+        return getIcon(name);
     }
 
     customTitleCase(str: string): string {
@@ -943,3 +732,78 @@ export class GoalsComponent implements OnInit, OnDestroy {
         };
     }
 }
+
+/*
+  updateObjectiveComplete(
+        event: Event,
+        data: any,
+        index = 0,
+        completeStatus: any
+    ) {
+        this.onclickCompletionButton[index] = true;
+        let goalIDs = data.goalId;
+
+        //create an index of boolean to match the button on the table
+        // if not all buttons will load too
+
+        this.confirmationService.confirm({
+            key: 'updateObjectiveComplete',
+            target: event.target as EventTarget,
+            message: `Marking Objective ${
+                completeStatus
+                    ? 'as Incomplete'
+                    : ' as Complete? Will Lock Files'
+            }, Are You Sure?`,
+            header: 'Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            acceptIcon: 'none',
+            rejectIcon: 'none',
+            rejectButtonStyleClass: 'p-button-text',
+            accept: () => {
+                this.obj
+                    .getRoute(
+                        'put',
+                        'objectives',
+                        'updateobjectivecompletion',
+                        {
+                            id: data.id,
+                        }
+                    )
+                    .pipe(takeUntil(this.getGoalSubscription))
+                    .subscribe(async (results: any) => {
+                        if (results.success) {
+                            this.getAllObjectivesWithObjectives();
+                            this.getObjectivesReload(goalIDs);
+                            this.messageService.add({
+                                severity: 'success  ',
+                                summary: 'Done',
+                                detail: results.message,
+                                life: 5000,
+                            });
+                            // this saves the objectid instead of refetch by closing the dialog it will run hideview to refetch
+                            this.hideviewObjectiveFileDialogCardID = goalIDs;
+                            // this.hideviewObjectiveFileDialogCard(goalIDs);
+                        } else {
+                            this.messageService.add({
+                                severity: 'error  ',
+                                summary: 'Error',
+                                detail: results.message,
+                            });
+                        }
+                    });
+                // this.onclickCompletionButton = false;
+                this.onclickCompletionButton[index] = false;
+            },
+            reject: () => {
+                this.onclickCompletionButton[index] = false;
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Done',
+                    detail: 'Nothing happens',
+                    life: 3000,
+                });
+            },
+        });
+    }
+
+*/

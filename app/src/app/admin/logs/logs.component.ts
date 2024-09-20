@@ -56,6 +56,7 @@ export class LogsComponent {
             )
             .pipe(takeUntil(this.getdepartmenttSubscription))
             .subscribe((data: any) => {
+                console.log(data);
                 this.logs = data.data[0];
                 this.loading = false;
             });

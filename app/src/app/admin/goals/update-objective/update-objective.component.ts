@@ -143,7 +143,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             code: event?.value?.name || event,
         };
         // Clear existing dynamic controls
-        this.clearDynamicControls();
+        await this.clearDynamicControls();
 
         if (frequency === 'yearly') {
             await this.addMonthlyControls(await data);
@@ -172,7 +172,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             });
     }
 
-    clearDynamicControls() {
+    async clearDynamicControls() {
         // Clear monthly controls
         this.months.forEach((_, i) => {
             if (this.editObjectiveGoalform.contains(`month_${i}`)) {
@@ -288,6 +288,15 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         for (const key in form.value) {
             if (form.value[key]) {
                 data[key] = form.value[key];
+                if (
+                    key.includes('file') &&
+                    key.includes(form.value.frequency_monitoring)
+                ) {
+                    data[key] = '💾 File Added...';
+                    if (!key.includes(form.value.frequency_monitoring)) {
+                        delete data[key];
+                    }
+                }
             }
         }
         this.obj

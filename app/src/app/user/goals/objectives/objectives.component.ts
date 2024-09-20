@@ -23,6 +23,7 @@ import { FileService } from 'src/app/demo/service/file.service';
 import { AuthService } from 'src/app/demo/service/auth.service';
 import { GoalService } from 'src/app/demo/service/goal.service';
 import { Role } from 'src/app/interface/role.interface';
+import { validateFileType, getIcon } from 'src/app/utlis/file-utils';
 
 @Component({
     selector: 'app-objectives',
@@ -269,7 +270,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             this.uploadedFiles.push(file);
         }
 
-        if (!this.validateFileType(this.uploadedFiles)) {
+        if (!validateFileType(this.uploadedFiles)) {
             this.messageService.add({
                 severity: 'error',
                 summary: 'File Unsupported',
@@ -390,41 +391,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             });
     }
 
-    validateFileType(files: any) {
-        const allowedTypes = [
-            'image/jpeg',
-            'image/png',
-            'image/svg+xml',
-            'image/gif',
-            'image/x-jif',
-            'image/x-jiff',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/rtf',
-            'application/pdf',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/csv',
-            'application/vnd.ms-powerpoint',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'text/plain',
-            'application/zip',
-            'image/x-photoshop',
-            'image/vnd.dxf',
-            'audio/mpeg',
-            'audio/wav',
-            'audio/aac',
-        ];
-        for (const file of files) {
-            if (!allowedTypes.includes(file.type)) {
-                console.log(`Invalid file type: ${file.type}`); // Log the type of any file that fails validation
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     viewFilesHistory(objectiveData: any) {
         this.viewObjectiveFileHistoryDialogCard = true;
         this.getAllFilesHistoryFromObjectiveLoad(this.USERID, objectiveData.id);
@@ -448,43 +414,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
         this.viewObjectiveFileHistoryDialogCard = false;
     }
     getIcon(name: string) {
-        const fileExtension = name.split('.').pop();
-        switch (fileExtension) {
-            case 'jpg':
-            case 'jpeg':
-            case 'png':
-            case 'gif':
-            case 'svg':
-                return 'pi pi-image';
-            case 'doc':
-            case 'docx':
-            case 'rtf':
-                return 'pi pi-file-word';
-            case 'pdf':
-                return 'pi pi-file-pdf';
-            case 'xls':
-            case 'xlsx':
-                return 'pi pi-file-excel';
-            case 'csv':
-                return 'pi pi-file-csv';
-            case 'ppt':
-            case 'pptx':
-                return 'pi pi-file-powerpoint';
-            case 'txt':
-                return 'pi pi-ticket';
-            case 'zip':
-                return 'pi pi-file-zip';
-            case 'psd':
-                return 'pi pi-image';
-            case 'dxf':
-                return 'pi pi-image';
-            case 'mp3':
-            case 'wav':
-            case 'aac':
-                return 'pi pi-volume-up';
-            default:
-                return 'pi pi-file';
-        }
+        return getIcon(name);
     }
 
     deleteSubGoal(id: string, goalId: string) {

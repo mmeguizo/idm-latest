@@ -48,7 +48,7 @@
             <th>Programs, Projects or Activities</th>
             <th>Responsible Persons & Partners</th>
             <th>Target Participants or Clients</th>
-            <th>Timetable</th>
+            <!-- <th>Timetable</th> -->
             <th>Frequency of Monitoring</th>
             <th>Means of Verification (Data Source)</th>
             <th>Budget</th>
@@ -63,11 +63,13 @@
             <td>{{ obj.programs | titlecase }}</td>
             <td>{{ obj.responsible_persons | titlecase }}</td>
             <td>{{ obj.clients | titlecase }}</td>
-            <td>
+            <!-- <td>
                 {{ obj.timetable[0] | date : "MMM d yyyy" }} -
                 {{ obj.timetable[1] | date : "MMM d yyyy" }}
+            </td> -->
+            <td>
+                {{ getFrequencyKeys(obj.frequency_monitoring) | titlecase }}
             </td>
-            <td>{{ obj.frequency_monitoring | titlecase }}</td>
             <td>{{ obj.data_source | titlecase }}</td>
             <td>{{ obj.budget | peso }}</td>
         </tr>

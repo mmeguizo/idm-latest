@@ -80,7 +80,6 @@ module.exports = (router) => {
 
           Promise.all(savePromises)
             .then((data) => {
-              console.log("Files Saving success....:");
               const fileNames = data.map((file) => file.source);
               res.json({
                 success: true,
@@ -96,9 +95,9 @@ module.exports = (router) => {
         }
       });
 
-      form.on("progress", (bytesReceived, bytesExpected) => {
-        console.log("Progress:", bytesReceived, bytesExpected);
-      });
+      // form.on("progress", (bytesReceived, bytesExpected) => {
+      //   console.log("Progress:", bytesReceived, bytesExpected);
+      // });
 
       form.on("error", (err) => {
         console.error("An error occurred:", err);
