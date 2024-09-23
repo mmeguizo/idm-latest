@@ -8,10 +8,6 @@ const { v4: uuidv4 } = require("uuid");
 const chatHistories = new Map();
 module.exports = (router) => {
   router.post("/chat-with-gemini", async (req, res) => {
-    console.log({
-      "chat-with-gemini": req.body,
-    });
-
     try {
       const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash",

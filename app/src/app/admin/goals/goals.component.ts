@@ -7,7 +7,15 @@ import {
     ChangeDetectorRef,
     EventEmitter,
 } from '@angular/core';
-import { Subject, pipe, takeUntil } from 'rxjs';
+import {
+    Subject,
+    pipe,
+    takeUntil,
+    tap,
+    catchError,
+    Observable,
+    throwError,
+} from 'rxjs';
 import { Table } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { GoalService } from 'src/app/demo/service/goal.service';
@@ -24,6 +32,7 @@ import { FileService } from 'src/app/demo/service/file.service';
 import { FileUpload } from 'primeng/fileupload';
 import { CampusService } from 'src/app/demo/service/campus.service';
 import { PrintTableComponent } from './print-table/print-table.component';
+import { getIcon } from 'src/app/utlis/file-utils';
 
 @Component({
     selector: 'app-goals',
@@ -45,7 +54,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     //table columns
     cols!: any;
-    loading = true;
+    loading = false;
 
     //variables used in the component
     userID: string;
@@ -112,6 +121,22 @@ export class GoalsComponent implements OnInit, OnDestroy {
     parentAddnewObjective: any = {};
     printFlag: boolean;
     goallistsId: string;
+
+    // add files child component
+    parentAddnewFile: any = {};
+    parentPrintFile: any = {};
+
+    frequencyOptions = [
+        { name: 'yearly', code: 'yearly' },
+        { name: 'quarterly', code: 'quarterly' },
+        { name: 'semi_annual', code: 'semi_annual' },
+    ];
+
+    months: string[] = [];
+    quarters: string[] = [];
+    semi_annual: string[] = [];
+    makeChanges: boolean;
+    childComponentAddfileObjectiveId: any;
 
     constructor(
         private messageService: MessageService,
@@ -233,22 +258,42 @@ export class GoalsComponent implements OnInit, OnDestroy {
             });
     }
 
-    getAllObjectivesWithObjectives() {
+    getAllObjectivesWithObjectives(): Subject<boolean> {
+        const resultSubject = new Subject<boolean>(); // Create a new Subject to emit success or failure
+
+        this.loading = true;
         this.goal
             .getRoute('get', 'goals', 'getAllObjectivesWithObjectives')
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                console.log(data.goals);
-                this.goals = data.goals;
-                this.loading = false;
-            });
+            .pipe(
+                takeUntil(this.getGoalSubscription),
+                tap((data: any) => {
+                    this.goals = data.goals;
+                    console.log(data);
+                    this.loading = false;
+                    resultSubject.next(true); // Emit true on success
+                    resultSubject.complete(); // Complete the subject
+                }),
+                catchError((error) => {
+                    this.loading = false; // Set loading to false on error
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error getAllObjectivesWithObjectives',
+                        detail: error.message,
+                    });
+                    resultSubject.next(false); // Emit false on error
+                    resultSubject.complete(); // Complete the subject
+                    return throwError(error); // Re-throw the error if necessary
+                })
+            )
+            .subscribe(); // Trigger the observable
+        return resultSubject; // Return the subject to the caller
     }
+
     getAllDept() {
         this.dept
             .getRoute('get', 'department', 'getAllDepartmentDropdown')
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllDept: data.data });
                 this.deptDropdownValue = data?.data[0];
             });
     }
@@ -261,15 +306,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         goalDataRemainingBudget: number = 0,
         goalData: any = []
     ) {
-        console.log({
-            id,
-            objectId,
-            subHeader,
-            goalDataRemainingBudget,
-            goallistsId,
-            goalData,
-        });
-
+        this.loading = true;
         //passed data needed for the subgoal table or adding table modal
         this.subObjectiveGoalID = id;
         this.goallistsId = goallistsId;
@@ -284,31 +321,20 @@ export class GoalsComponent implements OnInit, OnDestroy {
             goalDataRemainingBudget ||
             this.subOnjectiveHeaderData?.remainingBudget;
         this.goalBudget = this.subOnjectiveHeaderData?.budget;
-        console.log({ subOnjectiveHeaderData: this.subOnjectiveHeaderData });
 
         this.subObjectiveHeaders = this.customTitleCase(
             subHeader || this.subObjectiveHeaders || ''
         );
 
         //get all goals with subobjective
+        this.loading = false;
         if (id) {
             this.loading = true;
             this.obj
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
-                .subscribe((data: any) => {
-                    console.log({ getAllByIdObjectives: data });
-
+                .subscribe(async (data: any) => {
                     this.objectiveDatas = data.Objectives;
-                    //initialize completion button
-                    for (
-                        let i = 0;
-                        i < this.objectiveDatas.length.length;
-                        i++
-                    ) {
-                        this.onclickCompletionButton[i] = false;
-                    }
-
                     this.loading = false;
                 });
         }
@@ -321,16 +347,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
-                    console.log({ getAllByIdObjectives: data });
-
                     this.objectiveDatas = data.Objectives;
-
                     let subBudget = data.Objectives.reduce((acc, e) => {
                         return acc + e.budget;
                     }, 0);
 
                     this.goalDataRemainingBudget = this.goalBudget - subBudget;
-                    this.changeDetectorRef.detectChanges();
                     //initialize completion button
                     for (
                         let i = 0;
@@ -340,7 +362,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
                         this.onclickCompletionButton[i] = false;
                     }
 
+                    this.changeDetectorRef.detectChanges();
                     this.loading = false;
+                    this.makeChanges = false;
                 });
         }
     }
@@ -348,17 +372,23 @@ export class GoalsComponent implements OnInit, OnDestroy {
     async getAllFilesFromObjectiveLoad(
         id: string,
         objectiveID: string
-    ): Promise<Boolean> {
-        this.loading = true;
-        this.fileService
-            .getAllFilesFromObjective(id, objectiveID)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                this.AllObjectivesFiles = data.data;
-                this.loading = false;
-            });
-        return true;
+    ): Promise<boolean> {
+        try {
+            this.loading = true;
+            this.fileService
+                .getAllFilesFromObjective(id, objectiveID)
+                .pipe(takeUntil(this.getGoalSubscription))
+                .subscribe((data: any) => {
+                    this.AllObjectivesFiles = data.data;
+                    this.loading = false;
+                });
+            return true;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
     }
+
     async getAllFilesHistoryFromObjectiveLoad(
         id: string,
         objectiveID: string
@@ -369,101 +399,29 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.AllObjectivesHistoryFiles = data.data;
+                this.changeDetectorRef.detectChanges();
                 this.loading = false;
             });
         return true;
     }
 
     addSubGoal(data?: any) {
-        console.log({ addSubGoal: data });
         this.parentAddnewObjective = {
             addObjective: true,
             goallistsId: this.goallistsId,
             goalId: this.subObjectiveGoalID,
             goal_ObjectId: this.goal_ObjectId,
         };
-        // this.addObjectiveGoalDialogCard = true;
     }
 
     addFiles(objectiveData: any) {
-        // alert(objectiveID);
-        this.addObjectiveFileDialogCard = true;
-        // alert(JSON.stringify(objectiveData));
-    }
-
-    addSubObjectiveGoalDialogExec(e: any) {
-        e.value.userId = this.USERID;
-        e.value.goalId = this.subObjectiveGoalID;
-        e.value.goal_Id = this.goal_ObjectId;
-        e.value.frequency_monitoring =
-            this.formGroupDropdown.value.selectedDropdown.name;
-        e.value.createdBy = this.USERID;
-        this.obj
-            .getRoute('post', 'objectives', 'addObjectives', e.value)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                console.log({ addSubObjectiveGoalDialogExec: data });
-
-                if (data.success) {
-                    this.addObjectiveGoalDialogCard = false;
-                    //close the objective table
-                    // this.subGoalObjective = false;
-                    this.getAllObjectivesWithObjectives();
-                    this.getObjectivesReload(this.subObjectiveGoalID);
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
-                    //fix the error becomes null after adding new objective
-                    this.goal_ObjectId = data.data.goal_Id;
-                    // clear the data
-                    this.addObjectiveGoalform.reset();
-                    this.formGroupDropdown.reset();
-                    this.goalDataRemainingBudget = 0;
-                } else {
-                    this.messageService.add({
-                        severity: 'warn  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
-    }
-
-    updateGoalDialogExec(form: any) {
-        let data = {
-            id: this.updateGoalID,
-            goals: form.value.goals,
-            budget: form.value.budget,
-            department: this.formGroupDemo.value.selectDepartment.name,
-            campus: this.formGroupCampus.value.selectedCampus.name,
+        this.parentAddnewFile = {
+            addFile: true,
+            objectiveId: this.childComponentAddfileObjectiveId,
         };
-        this.goal
-            .getRoute('put', 'goals', 'updateGoals', data)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    this.getAllObjectivesWithObjectives();
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
-                    this.updateGoalDialogCard = false;
-                    this.updateGoalform.reset();
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
     }
 
     addGoal() {
-        console.log('adding goal');
         this.parentAddnewGoal = { addGoal: true };
     }
 
@@ -476,115 +434,18 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     updateSubGoal(data: any) {
-        console.log(data);
-
         this.parentupdateObjective = {
             editGoal: true,
             data,
         };
     }
 
-    updateObjectiveComplete(
-        event: Event,
-        data: any,
-        index = 0,
-        completeStatus: any
-    ) {
-        this.onclickCompletionButton[index] = true;
-        let goalIDs = data.goalId;
-
-        //create an index of boolean to match the button on the table
-        // if not all buttons will load too
-
-        this.confirmationService.confirm({
-            key: 'updateObjectiveComplete',
-            target: event.target as EventTarget,
-            message: `Marking Objective ${
-                completeStatus
-                    ? 'as Incomplete'
-                    : ' as Complete? Will Lock Files'
-            }, Are You Sure?`,
-            header: 'Confirmation',
-            icon: 'pi pi-exclamation-triangle',
-            acceptIcon: 'none',
-            rejectIcon: 'none',
-            rejectButtonStyleClass: 'p-button-text',
-            accept: () => {
-                this.obj
-                    .getRoute(
-                        'put',
-                        'objectives',
-                        'updateobjectivecompletion',
-                        {
-                            id: data.id,
-                        }
-                    )
-                    .pipe(takeUntil(this.getGoalSubscription))
-                    .subscribe(async (results: any) => {
-                        if (results.success) {
-                            this.getAllObjectivesWithObjectives();
-                            // this.getObjectives(goalIDs);
-                            this.getObjectivesReload(goalIDs);
-                            this.messageService.add({
-                                severity: 'success  ',
-                                summary: 'Done',
-                                detail: results.message,
-                                life: 5000,
-                            });
-                            // this saves the objectid instead of refetch by closing the dialog it will run hideview to refetch
-                            this.hideviewObjectiveFileDialogCardID = goalIDs;
-                            // this.hideviewObjectiveFileDialogCard(goalIDs);
-                        } else {
-                            this.messageService.add({
-                                severity: 'error  ',
-                                summary: 'Error',
-                                detail: results.message,
-                            });
-                        }
-                    });
-                // this.onclickCompletionButton = false;
-                this.onclickCompletionButton[index] = false;
-            },
-            reject: () => {
-                this.onclickCompletionButton[index] = false;
-                this.messageService.add({
-                    severity: 'info',
-                    summary: 'Done',
-                    detail: 'Nothing happens',
-                    life: 3000,
-                });
-            },
-        });
-    }
-
-    updateSubObjectiveGoalDialogExec(form: any) {
-        form.value.id = this.tobeUpdatedSubGoal;
-        form.value.frequency_monitoring =
-            this.formGroupDropdown.value.selectedDropdown.name;
-        this.obj
-            .getRoute('put', 'objectives', 'updateObjectives', form.value)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    //close the objective table
-                    this.addObjectiveGoalDialogCard = false;
-                    // this.subGoalObjective = false;
-                    this.getAllObjectivesWithObjectives();
-                    this.getObjectivesReload(this.subObjectiveGoalID);
-                    this.addObjectiveGoalDialogCard = false;
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
+    receivedUpdateObjective(editObjectiveMessageResults: any) {
+        const { success, id: goalID } = editObjectiveMessageResults;
+        //track if changes is made for the table to reload
+        this.makeChanges = true;
+        this.getObjectivesReload(goalID);
+        this.getAllObjectivesWithObjectives();
     }
 
     deleteGoalDialog(event: Event, _id: any) {
@@ -635,7 +496,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     .pipe(takeUntil(this.getGoalSubscription))
                     .subscribe((data: any) => {
                         if (data.success) {
-                            this.getObjectives(goalId);
+                            this.getObjectivesReload(goalId);
+                            //tag is as changes so if close will recalculate the data
+                            this.makeChanges = true;
                             this.loading = false;
                             this.messageService.add({
                                 severity: 'success  ',
@@ -699,7 +562,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
         // alert(objectiveID);
         this.viewObjectiveFileDialogCard = true;
         this.objectiveIDforFile = objectiveData.id;
-
+        //use this when triggering the child component for adding file
+        this.childComponentAddfileObjectiveId = objectiveData.id;
         // alert(JSON.stringify(objectiveData));
         this.getAllFilesFromObjectiveLoad(this.USERID, objectiveData.id);
     }
@@ -709,54 +573,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.getAllFilesHistoryFromObjectiveLoad(this.USERID, objectiveData.id);
     }
 
-    onUpload(event: any) {
-        for (const file of event.files) {
-            this.uploadedFiles.push(file);
-        }
-
-        if (!this.validateFileType(this.uploadedFiles)) {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'File Unsupported',
-                detail: 'Unsupported file type! Please select only images, documents, or spreadsheets',
-            });
-            event.preventDefault();
-        }
-
-        this.fileService
-            .addMultipleFiles(
-                this.USERID,
-                this.objectiveIDforFile,
-                this.uploadedFiles
-            )
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                // after adding files it did not add the new files just reload, clear the data to fix the issue
-                this.AllObjectivesFiles = [];
-                this.getAllFilesFromObjectiveLoad(
-                    this.USERID,
-                    this.objectiveIDforFile
-                );
-                if (data.success) {
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'View the files',
-                        detail: 'Files added successfully',
-                    });
-                    this.addObjectiveFileDialogCard = false;
-                    this.addFileForm.reset();
-                    this.uploadedFiles = [];
-                    this.viewObjectiveFileDialogCard = false;
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
-    }
-
     clearAddObjectiveGoalDialogCardDatas() {
         this.addObjectiveGoalDialogCard = false;
         this.updateObjectiveGoalFlag = false;
@@ -764,26 +580,27 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.addObjectiveGoalform.reset();
     }
 
-    hidviewObjectRefetch(id) {
-        this.obj
-            .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                this.objectiveDatas = data.Objectives;
-                // remove the data
-                this.hideviewObjectiveFileDialogCardID = null;
-                this.loading = false;
-            });
-    }
+    hidviewObjectRefetch() {}
 
     hideViewObjectiveTable(id?: string) {
         this.subGoalObjective = false;
         this.subObjectiveGoalID = null;
         this.objectiveDatas = [];
-        //after they click the switch it and close the dialog will refetch
-        if (id) {
-            this.hidviewObjectRefetch(id);
+        if (this.makeChanges) {
+            this.getAllObjectivesWithObjectives().subscribe(
+                (isSuccessful: boolean) => {
+                    if (isSuccessful) {
+                        this.makeChanges = false; // Reset makeChanges only if the operation was successful
+                    } else {
+                        // Handle error scenario if needed
+                    }
+                }
+            );
         }
+        //after they click the switch it and close the dialog will refetch
+        // if (id) {
+        //     this.hidviewObjectRefetch(id);
+        // }
     }
 
     hideViewFileDialogCard() {
@@ -794,82 +611,25 @@ export class GoalsComponent implements OnInit, OnDestroy {
     hideViewFileHistoryDialogCard() {
         this.viewObjectiveFileHistoryDialogCard = false;
     }
+
+    getFrequencyKeys(objectiveFile: any) {
+        let firstLetter: any;
+        let lastLetter: any;
+
+        const frequencyKeys = Object.keys(objectiveFile).filter((key) =>
+            key.includes('file_')
+        );
+        frequencyKeys.map((key) => {
+            firstLetter = key.replace('file_', '').replace(/_/g, ' ');
+            lastLetter =
+                parseInt(firstLetter.charAt(firstLetter.length - 1)) + 1;
+        });
+        return firstLetter.slice(0, -1) + lastLetter;
+    }
     // viewObjectiveFileHistoryDialogCard
 
     getIcon(name: string) {
-        const fileExtension = name.split('.').pop();
-        switch (fileExtension) {
-            case 'jpg':
-            case 'jpeg':
-            case 'png':
-            case 'gif':
-            case 'svg':
-                return 'pi pi-image';
-            case 'doc':
-            case 'docx':
-            case 'rtf':
-                return 'pi pi-file-word';
-            case 'pdf':
-                return 'pi pi-file-pdf';
-            case 'xls':
-            case 'xlsx':
-                return 'pi pi-file-excel';
-            case 'csv':
-                return 'pi pi-file-csv';
-            case 'ppt':
-            case 'pptx':
-                return 'pi pi-file-powerpoint';
-            case 'txt':
-                return 'pi pi-ticket';
-            case 'zip':
-                return 'pi pi-file-zip';
-            case 'psd':
-                return 'pi pi-image';
-            case 'dxf':
-                return 'pi pi-image';
-            case 'mp3':
-            case 'wav':
-            case 'aac':
-                return 'pi pi-volume-up';
-            default:
-                return 'pi pi-file';
-        }
-    }
-
-    //validate file type
-    validateFileType(files: any) {
-        const allowedTypes = [
-            'image/jpeg',
-            'image/png',
-            'image/svg+xml',
-            'image/gif',
-            'image/x-jif',
-            'image/x-jiff',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/rtf',
-            'application/pdf',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/csv',
-            'application/vnd.ms-powerpoint',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'text/plain',
-            'application/zip',
-            'image/x-photoshop',
-            'image/vnd.dxf',
-            'audio/mpeg',
-            'audio/wav',
-            'audio/aac',
-        ];
-        for (const file of files) {
-            if (!allowedTypes.includes(file.type)) {
-                console.log(`Invalid file type: ${file.type}`); // Log the type of any file that fails validation
-                return false;
-            }
-        }
-
-        return true;
+        return getIcon(name);
     }
 
     customTitleCase(str: string): string {
@@ -899,343 +659,151 @@ export class GoalsComponent implements OnInit, OnDestroy {
         );
     }
 
-    printTableNeeds(header?) {
-        this.printingHead = true;
-        this.printingOfficeName = header;
-    }
-
     receivedAddGoalEvent(addGoalMessageResults: any) {
+        //track if changes is made for the table to reload
+        this.makeChanges = true;
         if (addGoalMessageResults.success) {
-            this.getAllObjectivesWithObjectives();
+            this.getAllObjectivesWithObjectives().subscribe(
+                (isSuccessful: boolean) => {
+                    if (isSuccessful) {
+                        this.makeChanges = false; // Reset makeChanges only if the operation was successful
+                    } else {
+                        // Handle error scenario if needed
+                    }
+                }
+            );
         }
+    }
+    receivedAddFileEvent(addNewFileEvent: any) {
+        const { USERID, objectiveId, viewObjectiveFileDialogCard } =
+            addNewFileEvent;
+
+        this.loading = true;
+        this.getAllFilesFromObjectiveLoad(USERID, objectiveId)
+            .then((data: any) => {
+                if (data.success) {
+                    // Run the code below if the return is true
+                    this.viewObjectiveFileDialogCard =
+                        viewObjectiveFileDialogCard;
+                    this.loading = false;
+                } else {
+                    // Notify if the return is false
+                    // Handle error scenario if needed
+                }
+            })
+            .catch((error: any) => {
+                // Handle error scenario if needed
+            });
     }
 
     receivedEditGoalEvent(editGoalMessageResults: any) {
-        console.log({ editGoalMessageResults });
-
-        if (editGoalMessageResults.success) {
-            this.getAllObjectivesWithObjectives();
-        }
+        //track if changes is made for the table to reload
+        this.makeChanges = true;
+        this.getAllObjectivesWithObjectives().subscribe(
+            (isSuccessful: boolean) => {
+                if (isSuccessful) {
+                    this.makeChanges = false; // Reset makeChanges only if the operation was successful
+                } else {
+                    // Handle error scenario if needed
+                }
+            }
+        );
     }
-    receivedUpdateObjective(editObjectiveMessageResults: any) {
-        console.log({ receivedUpdateObjective: editObjectiveMessageResults });
-        this.getObjectivesReload(editObjectiveMessageResults.id);
-    }
 
-    receivedAddObjectiveEvent(newObjective: any) {
-        this.getObjectivesReload(newObjective.goalId);
+    receivedAddObjectiveEvent(id: any) {
+        //track if changes is made for the table to reload
+        this.makeChanges = true;
+        this.getObjectivesReload(id);
     }
 
     ngAfterViewInit() {
         // Now you can safely call printTable
         // this.printTable();
     }
-    printTable(subOnjectiveHeaderData: any = '', name?: any, office?: any) {
-        let imageSrc = this.auth.domain + '/assets/layout/images/logo.png';
-        this.isPrintableVisible = true;
-        let print, win;
-        print = document.getElementById('print').innerHTML;
-        win = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
-        win.document.open();
-        win.document.write(`
-            <html lang="en">
-            <head>
-              <meta charset="UTF-8" />
-              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-              <title>Document</title>
-            </head>
-            <style>
-            * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 12px;
-          }
 
-          body {
-            width: 11in;
-            height: 8.5in;
-          }
-
-          @media print {
-            body {
-              padding: unset;
-              width: unset;
-              height: unset;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-            @page {
-              size: landscape;
-            }
-            margin: 1.5in 0in 0in 0in;
-          }
-
-          table {
-            border-collapse: collapse;
-            width: 100%;
-          }
-
-          table:not(:is(.nested-table)) {
-            border-top: 1px solid;
-            border-left: 1px solid;
-            table-layout: fixed;
-          }
-
-          table :is(th, td) {
-            padding: 4px 6px;
-            border-right: 1px solid;
-            border-bottom: 1px solid;
-          }
-
-          .nested-table {
-            tr {
-              td {
-                font-weight: 600;
-                &[rowspan="4"] {
-                  border-bottom: 0;
-                }
-                &:last-child {
-                  border-right: 0;
-                }
-              }
-              &:last-child {
-                td {
-                  &:last-child {
-                    border-bottom: 0;
-                  }
-                }
-              }
-            }
-          }
-
-          .logo {
-            border-right: 0;
-            img {
-              width: 80px;
-              height: 80px;
-              margin-left: auto;
-              display: block;
-            }
-            & + td {
-              & > div {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                > h1 {
-                  font-size: 26px;
-                }
-                > h5 {
-                  color: #064f7c;
-                }
-                > hr {
-                  margin-top: 8px;
-                  width: 80%;
-                  border: 1px solid;
-                }
-              }
-            }
-          }
-
-          tr.font-condensed {
-            & > th {
-              font-size: 18px;
-              padding: 8px 6px;
-              &:first-child {
-                background-color: #f57e3a;
-              }
-              &:nth-child(2) {
-                background-color: #057a40;
-              }
-              &:last-child {
-                background-color: #efdf10;
-              }
-            }
-            & + tr {
-              & > th {
-                padding: 8px;
-              }
-              & + tr {
-                & > th {
-                  padding: 0px 4px;
-                  font-stretch: condensed;
-                  font-size: 16px;
-                }
-                & + tr {
-                  & > th {
-                    padding: 2px;
-                  }
-                }
-              }
-            }
-          }
-
-          tbody.data-cells {
-            font-stretch: condensed;
-            & tr {
-              & > td {
-                height: 0;
-                & > div {
-                  height: 100%;
-                  display: flex;
-                  flex-direction: column;
-                  gap: 1rem;
-                  justify-content: space-evenly;
-                  text-align: center;
-                  & p {
-                    font-size: 14px;
-                  }
-                }
-              }
-            }
-          }
-
-          tfoot {
-            font-stretch: condensed;
-            & tr td {
-              padding: 0;
-              & > div {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                & > div {
-                  &:not(:last-child) {
-                    border-right: 1px solid;
-                  }
-                  & > div {
-                    font-size: 14px;
-                    padding: 3px 6px;
-                    &:not(:last-child) {
-                      border-bottom: 1px solid;
-                    }
-                    &:nth-child(2) {
-                      text-align: center;
-                      font-size: 16px;
-                      padding-top: 32px;
-                      font-weight: 600;
-                      padding-bottom: 0px;
-                    }
-                    &:last-child {
-                      text-align: center;
-                      font-size: 14px;
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-
-
-          .p-0 {
-            padding: 0px;
-          }
-
-          .text-align-end {
-            text-align: end;
-          }
-
-          .border-x-0 {
-            border-left: 1px solid white;
-            border-right: 1px solid white;
-          }
-
-          .font-condensed {
-            font-stretch: condensed;
-          }
-
-            </style>
-            <body>
-              <div id="tobeprinted">
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="p-0" rowspan="4" colspan="10">
-                        <table class="nested-table">
-                          <tr>
-                            <td rowspan="4" class="logo">
-                              <img src="${imageSrc}" alt="CHMSU Logo" />
-                            </td>
-                            <td rowspan="4">
-                              <div>
-                                <h1>Carlos Hilado Memorial State University</h1>
-                                <h5>Alijis Campus . Binalbagan Campus . Fortune Towne Campus . Talisay Campus</h5>
-                                <hr />
-                              </div>
-                            </td>
-                            <td>Revision No.</td>
-                          </tr>
-                          <tr>
-                            <td>Date of Revision</td>
-                          </tr>
-                          <tr>
-                            <td>Date of Effectivity</td>
-                          </tr>
-                          <tr>
-                            <td>Page No.</td>
-                          </tr>
-                        </table>
-                      </th>
-                      <th>&nbsp;</th>
-                    </tr>
-                    <tr>
-                      <th>&nbsp;</th>
-                    </tr>
-                    <tr>
-                      <th>&nbsp;</th>
-                    </tr>
-                    <tr>
-                      <th class="text-align-end">Page 2</th>
-                    </tr>
-                    <tr class="font-condensed">
-                   <th colspan="5">${
-                       subOnjectiveHeaderData.toUpperCase() ||
-                       this.printingOfficeName.toUpperCase()
-                   }</th>
-                      <th colspan="5">QUALITY OBJECTIVES AND ACTION PLAN</th>
-                      <th class="text-align-end">CY</th>
-                    </tr>
-                    <tr>
-                      <th class="border-x-0" colspan="11"></th>
-                    </tr>
-                    <tr>
-                      <th class="border-x-0" colspan="11"></th>
-                    </tr>
-                  </thead>
-                  <body onload="window.print();window.close()">${print}</body>
-                  <tfoot>
-                    <tr>
-                      <td colspan="11">
-                        <div>
-                          <div>
-                            <div>Prepared by:</div>
-                            <div>${this.nameValue.toLocaleUpperCase()}</div>
-                            <div>${this.officeValue.toLocaleUpperCase()}</div>
-                          </div>
-                          <div>
-                            <div>Reviewed and verified by:</div>
-                            <div>YRIKA MARIE R. DUSARAN, PhDTM</div>
-                            <div>Director for Quality Management</div>
-                          </div>
-                          <div>
-                            <div>Approved by:</div>
-                            <div>ROSALINDA S. TUVILLA</div>
-                            <div>Vice President for Administrator and Finance</div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </body>
-          </html>
-              `);
-        win.document.close();
-        this.isPrintableVisible = false;
-        this.printingOfficeName = '';
-        this.nameValue = '';
-        this.officeValue = '';
+    printDocument() {
+        //   this.printingHead = true;
+        this.parentPrintFile = {
+            printFile: true,
+            objectData: this.objectiveDatas,
+            printingHead: true,
+            subOnjectiveHeaderData: this.subOnjectiveHeaderData?.department,
+            printingOfficeName: this.printingOfficeName,
+        };
     }
 }
+
+/*
+  updateObjectiveComplete(
+        event: Event,
+        data: any,
+        index = 0,
+        completeStatus: any
+    ) {
+        this.onclickCompletionButton[index] = true;
+        let goalIDs = data.goalId;
+
+        //create an index of boolean to match the button on the table
+        // if not all buttons will load too
+
+        this.confirmationService.confirm({
+            key: 'updateObjectiveComplete',
+            target: event.target as EventTarget,
+            message: `Marking Objective ${
+                completeStatus
+                    ? 'as Incomplete'
+                    : ' as Complete? Will Lock Files'
+            }, Are You Sure?`,
+            header: 'Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            acceptIcon: 'none',
+            rejectIcon: 'none',
+            rejectButtonStyleClass: 'p-button-text',
+            accept: () => {
+                this.obj
+                    .getRoute(
+                        'put',
+                        'objectives',
+                        'updateobjectivecompletion',
+                        {
+                            id: data.id,
+                        }
+                    )
+                    .pipe(takeUntil(this.getGoalSubscription))
+                    .subscribe(async (results: any) => {
+                        if (results.success) {
+                            this.getAllObjectivesWithObjectives();
+                            this.getObjectivesReload(goalIDs);
+                            this.messageService.add({
+                                severity: 'success  ',
+                                summary: 'Done',
+                                detail: results.message,
+                                life: 5000,
+                            });
+                            // this saves the objectid instead of refetch by closing the dialog it will run hideview to refetch
+                            this.hideviewObjectiveFileDialogCardID = goalIDs;
+                            // this.hideviewObjectiveFileDialogCard(goalIDs);
+                        } else {
+                            this.messageService.add({
+                                severity: 'error  ',
+                                summary: 'Error',
+                                detail: results.message,
+                            });
+                        }
+                    });
+                // this.onclickCompletionButton = false;
+                this.onclickCompletionButton[index] = false;
+            },
+            reject: () => {
+                this.onclickCompletionButton[index] = false;
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Done',
+                    detail: 'Nothing happens',
+                    life: 3000,
+                });
+            },
+        });
+    }
+
+*/

@@ -1,5 +1,5 @@
 <div class="grid">
-    <div class="col-12 xl:col-6">
+    <div class="col-12">
         <div class="card">
             <h5>Goals with Objectives</h5>
             @if(donutData){
@@ -18,15 +18,15 @@
         </div>
     </div>
 
-    <div class="col-12 xl:col-6">
+    <div class="col-12 lg:col-6 xl:col-3">
         <p-card header="Goal Summary">
-            <div class="flex flex-column align-items-center">
+            <div class="align-items-center">
                 <p-progressBar
                     [value]="(objectiveBudget / goalForTables) * 100"
                     [showValue]="false"
                 ></p-progressBar>
                 <p
-                    class="mt-3 text-center text-6xl"
+                    class="text-center text-base"
                     style="
                         font-family: 'Figtree', 'Roboto', 'Noto Sans Hebrew',
                             'Noto Kufi Arabic', 'Noto Sans JP', sans-serif;
@@ -34,30 +34,23 @@
                 >
                     {{ goalForTables | peso }}
                 </p>
-                <p class="text-2xl text-color-secondary">Total Budget</p>
-                <p class="mt-3 text-xl">{{ goalCount }} Goals</p>
-                <p class="mt-3 text-xl">
+                <!-- <p class="text-sm font-medium">Total Budget</p> -->
+                <p class="text-xs font-medium">Goals :{{ goalCount }}</p>
+                <p class="text-xs font-light">
                     Remaining Budget:
                     {{ goalForTables - objectiveBudget | peso }}
                 </p>
             </div>
         </p-card>
-        <div class="my-6"></div>
-        <p-card header="Objective Summary Budget">
-            <div class="flex flex-column align-items-center">
-                <div *ngIf="!loading"></div>
-                <p
-                    class="mt-3 text-center text-6xl"
-                    style="
-                        font-family: 'Figtree', 'Roboto', 'Noto Sans Hebrew',
-                            'Noto Kufi Arabic', 'Noto Sans JP', sans-serif;
-                    "
-                >
-                    {{ objectiveBudget | peso }}
-                </p>
-                <p class="text-2xl text-color-secondary">Total Budget</p>
-            </div>
-        </p-card>
+    </div>
+    <div class="col-12 lg:col-6 xl:col-3">
+        <p-card header="To Do card"> </p-card>
+    </div>
+    <div class="col-12 lg:col-6 xl:col-3">
+        <p-card header="To Do card"> </p-card>
+    </div>
+    <div class="col-12 lg:col-6 xl:col-3">
+        <p-card header="To Do card"> </p-card>
     </div>
 
     <div class="col-12">

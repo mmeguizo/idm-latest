@@ -38,7 +38,6 @@ export class ObjectiveService {
     }
 
     getRoute(endpoint: any, model?: any, apiName?: any, data?: any) {
-        console.log('getRoute', { endpoint, model, apiName, data });
         this.createAuthenticationHeaders();
         const url = `${this.cs.domain}/${model}/${apiName}`;
         return this.http

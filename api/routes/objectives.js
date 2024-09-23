@@ -5,6 +5,7 @@ const Goals = require("../models/goals");
 const Files = require("../models/fileupload");
 const { logger } = require("../middleware/logger");
 const objective = require("../models/objective");
+const { log } = require("winston");
 
 module.exports = (router) => {
   const formatCurrency = (amount) => {
@@ -208,25 +209,100 @@ module.exports = (router) => {
     );
   });
 
-  router.get("/getAllByIdObjectives/:id", (req, res) => {
-    Objectives.find(
-      { deleted: false, goalId: req.params.id },
-      (err, Objectives) => {
-        if (err) {
-          return res.status(500).json({ success: false, message: err });
-        }
+  // router.get("/getAllByIdObjectives/:id", (req, res) => {
+  //   Objectives.find(
+  //     { deleted: false, goalId: req.params.id },
+  //     (err, Objectives) => {
+  //       if (err) {
+  //         return res.status(500).json({ success: false, message: err });
+  //       }
 
-        if (!Objectives || Objectives.length === 0) {
-          return res.json({
-            success: false,
-            message: "No Objectives found.",
-            Objectives: [],
-          });
-        }
-        return res.status(200).json({ success: true, Objectives });
+  //       if (!Objectives || Objectives.length === 0) {
+  //         return res.json({
+  //           success: false,
+  //           message: "No Objectives found.",
+  //           Objectives: [],
+  //         });
+  //       }
+  //       return res.status(200).json({ success: true, Objectives });
+  //     }
+  //   ).sort({ _id: -1 });
+  // });
+  router.get("/getAllByIdObjectives/:id", async (req, res) => {
+    try {
+      const objectives = await Objectives.find({
+        deleted: false,
+        goalId: req.params.id,
+      }).sort({ _id: -1 });
+
+      if (!objectives || objectives.length === 0) {
+        return res.json({
+          success: false,
+          message: "No Objectives found.",
+          Objectives: [],
+        });
       }
-    ).sort({ _id: -1 });
+
+      const updatedObjectives = await calculatePercentage(objectives);
+
+      // console.log(returnedData);
+      return res
+        .status(200)
+        .json({ success: true, Objectives: updatedObjectives });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
   });
+
+  router.get("/getObjectiveById/:id", async (req, res) => {
+    try {
+      const objective = await Objectives.findOne({ id: req.params.id });
+
+      if (!objective) {
+        return res.json({
+          success: false,
+          message: "Objective not found.",
+        });
+      }
+
+      res.json({
+        success: true,
+        data: objective,
+      });
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        message: "Internal server error Or Token Expired",
+      });
+    }
+  });
+
+  async function calculatePercentage(objectives) {
+    return await objectives.map((objective) => {
+      let total = 0;
+      const target = objective.target;
+      const updatedObjective = { ...objective._doc }; // Copy to prevent mutating the original
+
+      if (objective.frequency_monitoring === "yearly") {
+        for (let i = 0; i < 12; i++) {
+          total += objective[`month_${i}`] || 0;
+        }
+      } else if (objective.frequency_monitoring === "quarterly") {
+        for (let i = 0; i < 4; i++) {
+          total += objective[`quarter_${i}`] || 0;
+        }
+      } else if (objective.frequency_monitoring === "semi_annual") {
+        for (let i = 0; i < 2; i++) {
+          total += objective[`semi_annual_${i}`] || 0;
+        }
+      }
+
+      updatedObjective.completionPercentage = target
+        ? (total / target) * 100
+        : 0;
+      return updatedObjective;
+    });
+  }
 
   router.get("/getAllObjectives", (req, res) => {
     Objectives.find({ deleted: false }, (err, Objectives) => {
@@ -270,87 +346,56 @@ module.exports = (router) => {
     let totalSubGoalBudget = 0;
     let goalObjectiveNumber = [];
 
-    let goalData = await Goals.findOne({ id: goalId }).select({
-      budget: 1,
-      objectives: 1,
-      objectiveBudget: 1,
-    });
-
-    totalSubGoalBudget = goalData.objectiveBudget
-      .map((e) => e.budget)
-      .reduce((a, b) => a + b, 0);
-
-    goalBudget = goalData.budget;
-
-    if (!objectivesData) {
-      return res.json({
-        success: false,
-        message: "You must provide an Objectives and Action Plan Information",
-      });
-    }
-
-    if (objectiveBudget > goalBudget - totalSubGoalBudget) {
-      return res.json({
-        success: false,
-        message: `Objective Budget must not exceed ${formatCurrency(
-          goalBudget - totalSubGoalBudget
-        )} of the remaining Goal Budget `,
-      });
-    }
-
-    const ObjectivesDataRequest = {
-      id: uuidv4(),
-      ...objectivesData,
-    };
-
     try {
-      //create new Objectives
-      let newObjectives = await Objectives.create(ObjectivesDataRequest);
-      res.json({
-        success: true,
-        message: "Objectives Added Successfully",
-        data: newObjectives,
+      let goalData = await Goals.findOne({ id: goalId }).select({
+        budget: 1,
+        objectives: 1,
+        objectiveBudget: 1,
       });
-      //update the goal model with budget and objectives id
 
-      try {
-        // Update the goal model with budget and objectives id
-        await Goals.updateOne(
-          { id: req.body.goalId },
+      totalSubGoalBudget = goalData.objectiveBudget
+        .map((e) => e.budget)
+        .reduce((a, b) => a + b, 0);
+
+      goalBudget = goalData.budget;
+
+      if (!objectivesData) {
+        return res.status(400).json({ message: "Invalid data" });
+      }
+
+      if (objectiveBudget > goalBudget - totalSubGoalBudget) {
+        return res.status(400).json({ message: "Budget exceeds limit" });
+      }
+
+      const ObjectivesDataRequest = {
+        id: uuidv4(),
+        ...objectivesData,
+      };
+
+      const newObjective = new Objectives(ObjectivesDataRequest);
+      let results = await newObjective.save();
+
+      if (results) {
+        await Goals.findOneAndUpdate(
+          { id: goalId },
           {
             $push: {
-              objectives: newObjectives.id,
+              objectives: results.id,
               objectiveBudget: {
-                id: newObjectives.id,
-                budget: ObjectivesDataRequest.budget,
+                id: results.id,
+                budget: objectiveBudget,
               },
             },
           }
         );
-      } catch (updateError) {
-        console.error("Error updating goal with new objectives:", updateError);
-        // Optional: Send an additional response or log the error.
       }
 
-      /*
-          await Goals.updateOne(
-        { id: req.body.goalId },
-        {
-          $push: {
-            objectives: newObjectives.id,
-            objectiveBudget: {
-              id: newObjectives.id,
-              budget: objectivesData.budget,
-            },
-          },
-        }
-      );
-      */
+      res.status(201).json({ success: true, data: newObjective });
     } catch (error) {
-      res.json({
-        success: false,
-        message: "Could not add  Objectives and Action Plan Error : " + error,
-      });
+      logger.error(error);
+      console.log(error);
+
+      res.status(500).json({ success: false, message: "Server Error" });
     }
   });
 
@@ -474,40 +519,27 @@ module.exports = (router) => {
   });
 
   router.put("/updateObjectives", async (req, res) => {
-    let { id, goalId, budget: objectiveBudget, ...ObjectivesData } = req.body;
+    const { id, ...updateData } = req.body;
 
-    let goal = await Goals.findOne({
-      id: goalId,
-      deleted: false,
-    }).select({
-      id: 1,
-      budget: 1,
-      objectives: 1,
-    });
+    try {
+      const result = await Objectives.updateOne({ id }, updateData);
 
-    let { budget: goalBudget, objectives: goalObjectives } = goal;
-
-    Objectives.findOneAndUpdate(
-      { id: id },
-      req.body,
-      { new: true },
-      (err, response) => {
-        if (err) return res.json({ success: false, message: err.message });
-        if (response) {
-          res.json({
-            success: true,
-            message: "Objectives Information has been updated!",
-            data: response,
-          });
-        } else {
-          res.json({
-            success: true,
-            message: "No Objectives has been modified!",
-            data: response,
-          });
-        }
+      if (result.nModified === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Objective not found",
+        });
       }
-    );
+
+      res.json({
+        success: true,
+        message: "Objective updated successfully",
+        result,
+        data: req.body,
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
   });
 
   //**********************USer Routes ********************** */
@@ -599,8 +631,6 @@ module.exports = (router) => {
   );
 
   router.get("/getAllByIdObjectives/:id/:userId", (req, res) => {
-    console.log({ getAllByIdObjectives: [req.params.id, req.params.userId] });
-
     Objectives.find(
       { deleted: false, goalId: req.params.id, createdBy: req.params.userId },
       (err, Objectives) => {
@@ -817,3 +847,89 @@ module.exports = (router) => {
 
   return router;
 };
+
+/*
+old code in updatating the objectis  5-09-24
+ router.put("/updateObjectives", async (req, res) => {
+    let { id, goalId, budget: objectiveBudget, ...ObjectivesData } = req.body;
+
+    let goal = await Goals.findOne({
+      id: goalId,
+      deleted: false,
+    }).select({
+      id: 1,
+      budget: 1,
+      objectives: 1,
+    });
+
+    let { budget: goalBudget, objectives: goalObjectives } = goal;
+    console.log(req.body);
+
+    Objectives.findOneAndDelete({ id: id }, (err, existingDocument) => {
+      if (err) return res.json({ success: false, message: err.message });
+
+      if (existingDocument) {
+        // Create a new object for insertion, ensuring all required fields are present
+        const newDocumentData = {
+          ...req.body,
+          id: existingDocument.id, // Preserve the original id
+          _id: existingDocument._id, // Preserve the original _id
+          createdBy: req.body.createdBy || existingDocument.createdBy, // Ensure `createdBy` is set
+          goal_Id: req.body.goal_Id || existingDocument.goal_Id, // Ensure `goal_Id` is set
+        };
+
+        // Log the data for debugging purposes
+        // console.log("Existing Document:", existingDocument);
+        // console.log("New Document Data:", newDocumentData);
+
+        // Ensure all required fields are present before creating the new document
+        if (!newDocumentData.createdBy || !newDocumentData.goal_Id) {
+          return res.json({
+            success: false,
+            message:
+              "`createdBy` and `goal_Id` are required fields and must be provided.",
+          });
+        }
+
+        // Insert the new document with the updated data
+        Objectives.create(newDocumentData, (err, newDocument) => {
+          if (err) return res.json({ success: false, message: err.message });
+
+          res.json({
+            success: true,
+            message: "Objectives Information has been completely replaced!",
+            data: newDocument,
+          });
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "Objective not found!",
+        });
+      }
+    });
+
+    // Objectives.findOneAndUpdate(
+    //   { id: id }, // Match the document with the specified id
+    //   { $set: { ...req.body, id: undefined, _id: undefined } }, // Update all fields except 'id' and '_id'
+    //   { new: true }, // Return the modified document
+    //   (err, response) => {
+    //     if (err) return res.json({ success: false, message: err.message });
+
+    //     if (response) {
+    //       res.json({
+    //         success: true,
+    //         message: "Objectives Information has been updated!",
+    //         data: response,
+    //       });
+    //     } else {
+    //       res.json({
+    //         success: true,
+    //         message: "No Objectives has been modified!",
+    //         data: response,
+    //       });
+    //     }
+    //   }
+    // );
+  });
+*/

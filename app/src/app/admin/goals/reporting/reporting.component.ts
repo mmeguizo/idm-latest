@@ -64,11 +64,6 @@ export class ReportingComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe({
                 next: (data: any) => {
-                    console.log({
-                        getAllObjectivesWithObjectivesForBarChartsDashboard:
-                            data,
-                    });
-
                     this.multi = data.multi;
                     // this.changeDetectorRef.detectChanges();
                 },

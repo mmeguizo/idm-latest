@@ -146,8 +146,6 @@ export class AiComponent implements OnInit, AfterViewChecked {
     }
 
     onCityChange(event: any) {
-        console.log(event.value.code);
-
         if (event.value.code === 'newChat') {
             // Check if the selected option is "New Chat"
             this.newChat();

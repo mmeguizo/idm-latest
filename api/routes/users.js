@@ -239,8 +239,6 @@ module.exports = (router) => {
   router.put("/updateUser", async (req, res) => {
     const { username, email, department, id, campus } = req.body;
 
-    console.log(req.body);
-
     User.findOneAndUpdate(
       { id: id },
       { username, email, department, campus },

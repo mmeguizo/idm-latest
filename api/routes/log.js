@@ -14,35 +14,33 @@ module.exports = (router) => {
             method: {
               $ne: "GET",
             },
-            // "user.id": {
-            //   $ne: req.params.id,
-            // },
+            deleted: false,
           },
         },
-        {
-          $lookup: {
-            as: "goals",
-            from: "goals",
-            foreignField: "_id",
-            localField: "body._id",
-          },
-        },
-        {
-          $lookup: {
-            as: "objectives",
-            from: "objectives",
-            foreignField: "id",
-            localField: "body.id",
-          },
-        },
-        {
-          $lookup: {
-            as: "ParamsObjectives",
-            from: "objectives",
-            foreignField: "id",
-            localField: "params.objective_id",
-          },
-        },
+        // {
+        //   $lookup: {
+        //     as: "goals",
+        //     from: "goals",
+        //     foreignField: "_id",
+        //     localField: "body._id",
+        //   },
+        // },
+        // {
+        //   $lookup: {
+        //     as: "objectives",
+        //     from: "objectives",
+        //     foreignField: "id",
+        //     localField: "body.id",
+        //   },
+        // },
+        // {
+        //   $lookup: {
+        //     as: "ParamsObjectives",
+        //     from: "objectives",
+        //     foreignField: "id",
+        //     localField: "params.objective_id",
+        //   },
+        // },
         {
           $sort: {
             createdAt: -1,

@@ -191,20 +191,20 @@
                             ></p-chip>
                             <p-overlayPanel #op>
                                 <p-card
-                                    [header]="goal.budget | peso"
+                                    [header]="goal?.budget | peso"
                                     [subheader]="
                                         'Budget Utilization:  ' +
-                                        (goal.remainingPercentage || 0) +
+                                        (goal?.remainingPercentage || 0) +
                                         '%' +
                                         ' | ' +
                                         ' Remaining: ' +
-                                        (goal.remainingBudget || '0' | peso)
+                                        (goal?.remainingBudget || '0' | peso)
                                     "
                                     [style]="{ width: '400px' }"
                                 >
                                     <div
                                         *ngFor="
-                                            let obj of goal.objectivesDetails
+                                            let obj of goal?.objectivesDetails
                                         "
                                         class="mb-1"
                                     >
@@ -213,21 +213,25 @@
                                                 class="pi pi-money-bill bg-green-400"
                                             ></i>
                                             {{
-                                                obj.clients.substring(0, 12) +
-                                                    "...." | titlecase
+                                                obj?.clients?.length > 12
+                                                    ? obj.clients.substring(
+                                                          0,
+                                                          12
+                                                      ) + "...."
+                                                    : (obj.clients | titlecase)
                                             }}
                                             :
                                         </span>
                                         <span
-                                            >{{ obj.budget | peso }} -
+                                            >{{ obj?.budget | peso }} -
                                             <p-tag
                                                 [severity]="
-                                                    obj.complete
+                                                    obj?.complete
                                                         ? 'success'
                                                         : 'warning'
                                                 "
                                                 [value]="
-                                                    obj.complete
+                                                    obj?.complete
                                                         ? 'Completed'
                                                         : 'In Progress'
                                                 "
@@ -263,7 +267,7 @@
                             <div class="col">
                                 <p-progressBar
                                     [color]="'#1da750'"
-                                    [value]="goal.CompletePercentage"
+                                    [value]="goal.completion_percentage"
                                     [showValue]="true"
                                 ></p-progressBar>
                             </div>
@@ -374,9 +378,9 @@
                 [paginator]="true"
                 [globalFilterFields]="[
                     '',
+                    'target',
                     'functional_objective',
                     'performance_indicator',
-                    'target',
                     'formula',
                     'programs',
                     'department',
@@ -417,7 +421,7 @@
                         <p-button
                             icon="pi pi-file-pdf"
                             (click)="
-                                printTableNeeds(
+                                printDocument(
                                     subOnjectiveHeaderData?.department || ''
                                 )
                             "
@@ -445,6 +449,26 @@
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
+                                Percentage Complete
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Target
+                                <p-columnFilter
+                                    type="text"
+                                    field="target"
+                                    display="menu"
+                                    placeholder="Search by Target"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
                                 Functional Objective
                                 <p-columnFilter
                                     type="text"
@@ -467,19 +491,7 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Target
-                                <p-columnFilter
-                                    type="text"
-                                    field="target"
-                                    display="menu"
-                                    placeholder="Search by Target"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
+
                         <th style="min-width: 12rem">
                             <div
                                 class="flex justify-content-between align-items-center"
@@ -532,7 +544,7 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-                        <th style="min-width: 12rem">
+                        <!-- <th style="min-width: 12rem">
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
@@ -544,7 +556,7 @@
                                     placeholder="Search by Timetable"
                                 ></p-columnFilter>
                             </div>
-                        </th>
+                        </th> -->
                         <th style="min-width: 4rem">
                             <div
                                 class="flex justify-content-between align-items-center"
@@ -652,6 +664,34 @@
                     let-rowIndex="rowIndex"
                 >
                     <tr>
+                        <!-- <td>
+                            <span>percentage</span>
+                        </td> -->
+                        <td>
+                            <!-- <p-rating
+                                [ngModel]="objectiveData.completedStars"
+                                [readonly]="true"
+                                [cancel]="false"
+                                [stars]="objectiveData.target"
+                            ></p-rating> -->
+                            <p-progressBar
+                                [color]="'#1da750'"
+                                [value]="objectiveData.completionPercentage"
+                            />
+                            <!-- @for(star of [].constructor( objectiveData.target );
+                            track objectiveData.id ){ @if(
+                            objectiveData.target.length >
+                            objectiveData.completedStars ){
+                            <i class="pi pi-star text-yellow-200 text-sm"></i>
+                            } @else {
+                            <i
+                                class="pi pi-star-fill text-gray-800 text-sm"
+                            ></i>
+                            } } / {{ objectiveData.target }} -->
+                        </td>
+                        <td>
+                            {{ objectiveData.target }}
+                        </td>
                         <td>
                             {{ objectiveData.functional_objective | titlecase }}
                         </td>
@@ -660,9 +700,7 @@
                                 objectiveData.performance_indicator | titlecase
                             }}
                         </td>
-                        <td>
-                            {{ objectiveData.target | titlecase }}
-                        </td>
+
                         <td>
                             {{ objectiveData.formula | titlecase }}
                         </td>
@@ -676,15 +714,7 @@
                         <td>
                             {{ objectiveData.clients | titlecase }}
                         </td>
-                        <td>
-                            {{
-                                objectiveData.timetable[0] | date : "shortDate"
-                            }}
-                            -
-                            {{
-                                objectiveData.timetable[1] | date : "shortDate"
-                            }}
-                        </td>
+
                         <td>
                             {{ objectiveData.frequency_monitoring | titlecase }}
                         </td>
@@ -702,6 +732,17 @@
                         </td>
                         <td>
                             <p-button
+                                [text]="true"
+                                [raised]="true"
+                                severity="help"
+                                icon="
+                                  pi pi-external-link
+                                "
+                                label="View"
+                                [(loading)]="onclickCompletionButton[rowIndex]"
+                                (click)="updateSubGoal(objectiveData)"
+                            ></p-button>
+                            <!-- <p-button
                                 [text]="true"
                                 [raised]="true"
                                 [severity]="
@@ -724,7 +765,7 @@
                                         objectiveData.complete
                                     )
                                 "
-                            ></p-button>
+                            ></p-button> -->
                             <p-confirmPopup
                                 #confirmPopupRef
                                 key="updateObjectiveComplete"
@@ -749,11 +790,11 @@
                         </td>
                         <td>
                             <div class="options-users">
-                                <i
+                                <!-- <i
                                     (click)="updateSubGoal(objectiveData)"
                                     class="pi pi-file-edit text-xl"
                                     style="color: #0ea5e9; cursor: pointer"
-                                ></i>
+                                ></i> -->
                                 <i
                                     (click)="
                                         deleteSubGoal(
@@ -828,7 +869,10 @@
                 [rowHover]="true"
                 styleClass="p-datatable-gridlines"
                 [paginator]="true"
-                [globalFilterFields]="['name', 'code', 'options']"
+                [globalFilterFields]="[
+                    'objectives.functional_objective',
+                    'date_added'
+                ]"
                 responsiveLayout="scroll"
                 [tableStyle]="{ 'min-width': '50rem' }"
             >
@@ -875,6 +919,20 @@
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
+                                Objectives
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Frequency File
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
                                 File
                             </div>
                         </th>
@@ -897,6 +955,16 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-AllObjectivesFile>
                     <tr>
+                        <td>
+                            {{
+                                AllObjectivesFile?.objectives
+                                    ?.functional_objective | titlecase
+                            }}
+                        </td>
+                        <td>
+                            {{ getFrequencyKeys(AllObjectivesFile) }}
+                        </td>
+
                         <td>
                             <a
                                 [href]="
@@ -980,32 +1048,11 @@
 </p-dialog>
 <!-- add files form dialog -->
 
-<p-dialog
-    styleClass="addObjective"
-    header="Drag and Drop Files"
-    [(visible)]="addObjectiveFileDialogCard"
-    [style]="{ width: '50rem' }"
-    [modal]="true"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-    position="top"
+<app-add-files
+    [addNewFile]="parentAddnewFile"
+    (childAddFile)="receivedAddFileEvent($event)"
 >
-    <div class="p-fluid">
-        <form [formGroup]="addFileForm">
-            <p-fileUpload
-                name="files"
-                (uploadHandler)="onUpload($event)"
-                customUpload="true"
-                multiple="true"
-                maxFileSize="20000000"
-                formControlName="files"
-                ngDefaultControl
-                [files]="uploadedFiles"
-            >
-            </p-fileUpload>
-        </form>
-    </div>
-    &nbsp;&nbsp;
-</p-dialog>
+</app-add-files>
 
 <!-- view file History table list -->
 <p-dialog
@@ -1188,79 +1235,6 @@
     </ng-template>
 </p-dialog>
 
+<app-print-table [printFile]="parentPrintFile"> </app-print-table>
+
 <!-- Printing functions  -->
-<p-dialog
-    header="Office Head"
-    [modal]="true"
-    [(visible)]="printingHead"
-    [style]="{ width: '25rem' }"
->
-    <span class="p-text-secondary block mb-5">Update your information.</span>
-    <div class="flex align-items-center gap-3 mb-3">
-        <label for="username" class="font-semibold w-6rem">Name</label>
-        <input
-            pInputText
-            #nameInput
-            id="name"
-            placeholder="e.g Benrie Nufable, PHD. TM"
-            class="flex-auto"
-            autocomplete="off"
-            [(ngModel)]="nameValue"
-        />
-    </div>
-    <div class="flex align-items-center gap-3 mb-5">
-        <label for="email" class="font-semibold w-6rem">Office</label>
-        <input
-            pInputText
-            id="office"
-            #officeInput
-            placeholder="e.g MIS Head - DPO"
-            class="flex-auto"
-            autocomplete="off"
-            [(ngModel)]="officeValue"
-        />
-    </div>
-    <div class="flex justify-content-end gap-2">
-        <p-button
-            label="Cancel"
-            severity="secondary"
-            (onClick)="printingHead = false"
-        />
-        <p-button label="Save" (onClick)="printTable(); printingHead = false" />
-    </div>
-</p-dialog>
-<table id="print" [ngClass]="{ hidden: !isPrintableVisible }">
-    <thead>
-        <tr>
-            <th>Functional Objectives</th>
-            <th>Performance Indicators</th>
-            <th>Target</th>
-            <th>Formula</th>
-            <th>Programs, Projects or Activities</th>
-            <th>Responsible Persons & Partners</th>
-            <th>Target Participants or Clients</th>
-            <th>Timetable</th>
-            <th>Frequency of Monitoring</th>
-            <th>Means of Verification (Data Source)</th>
-            <th>Budget</th>
-        </tr>
-    </thead>
-    <tbody *ngIf="objectiveDatas?.length != 0">
-        <tr *ngFor="let obj of objectiveDatas; let i = index">
-            <td>{{ obj.functional_objective | titlecase }}</td>
-            <td>{{ obj.performance_indicator | titlecase }}</td>
-            <td>{{ obj.target | titlecase }}</td>
-            <td>{{ obj.formula | titlecase }}</td>
-            <td>{{ obj.programs | titlecase }}</td>
-            <td>{{ obj.responsible_persons | titlecase }}</td>
-            <td>{{ obj.clients | titlecase }}</td>
-            <td>
-                {{ obj.timetable[0] | date : "MMM d yyyy" }} -
-                {{ obj.timetable[1] | date : "MMM d yyyy" }}
-            </td>
-            <td>{{ obj.frequency_monitoring | titlecase }}</td>
-            <td>{{ obj.data_source | titlecase }}</td>
-            <td>{{ obj.budget | peso }}</td>
-        </tr>
-    </tbody>
-</table>

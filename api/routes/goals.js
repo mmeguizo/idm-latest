@@ -170,16 +170,83 @@ module.exports = (router) => {
                       programs: "$$od.programs",
                       responsible_persons: "$$od.responsible_persons",
                       clients: "$$od.clients",
-                      timetable: "$$od.timetable",
+                      remarks: "$$od.remarks",
+                      month_0: "$$od.month_0",
+                      month_1: "$$od.month_1",
+                      month_2: "$$od.month_2",
+                      month_3: "$$od.month_3",
+                      month_4: "$$od.month_4",
+                      month_5: "$$od.month_5",
+                      month_6: "$$od.month_6",
+                      month_7: "$$od.month_7",
+                      month_8: "$$od.month_8",
+                      month_9: "$$od.month_9",
+                      month_10: "$$od.month_10",
+                      month_11: "$$od.month_11",
+                      file_month_0: "$$od.file_month_0",
+                      file_month_1: "$$od.file_month_1",
+                      file_month_2: "$$od.file_month_2",
+                      file_month_3: "$$od.file_month_3",
+                      file_month_4: "$$od.file_month_4",
+                      file_month_5: "$$od.file_month_5",
+                      file_month_6: "$$od.file_month_6",
+                      file_month_7: "$$od.file_month_7",
+                      file_month_8: "$$od.file_month_8",
+                      file_month_9: "$$od.file_month_9",
+                      file_month_10: "$$od.file_month_10",
+                      file_month_11: "$$od.file_month_11",
+
+                      goal_month_0: "$$od.goal_month_0",
+                      goal_month_1: "$$od.goal_month_1",
+                      goal_month_2: "$$od.goal_month_2",
+                      goal_month_3: "$$od.goal_month_3",
+                      goal_month_4: "$$od.goal_month_4",
+                      goal_month_5: "$$od.goal_month_5",
+                      goal_month_6: "$$od.goal_month_6",
+                      goal_month_7: "$$od.goal_month_7",
+                      goal_month_8: "$$od.goal_month_8",
+                      goal_month_9: "$$od.goal_month_9",
+                      goal_month_10: "$$od.goal_month_10",
+                      goal_month_11: "$$od.goal_month_11",
+
+                      quarter_1: "$$od.quarter_1",
+                      quarter_2: "$$od.quarter_2",
+                      quarter_3: "$$od.quarter_3",
+                      quarter_0: "$$od.quarter_0",
+
+                      file_quarter_1: "$$od.file_quarter_1",
+                      file_quarter_2: "$$od.file_quarter_2",
+                      file_quarter_3: "$$od.file_quarter_3",
+                      file_quarter_0: "$$od.file_quarter_0",
+
+                      goal_quarter_1: "$$od.goal_quarter_1",
+                      goal_quarter_2: "$$od.goal_quarter_2",
+                      goal_quarter_3: "$$od.goal_quarter_3",
+                      goal_quarter_0: "$$od.goal_quarter_0",
+
+                      semi_annual_0: "$$od.semi_annual_0",
+                      semi_annual_1: "$$od.semi_annual_1",
+                      semi_annual_2: "$$od.semi_annual_2",
+
+                      file_semi_annual_0: "$$od.file_semi_annual_0",
+                      file_semi_annual_1: "$$od.file_semi_annual_1",
+                      file_semi_annual_2: "$$od.file_semi_annual_2",
+
+                      goal_semi_annual_0: "$$od.goal_semi_annual_0",
+                      goal_semi_annual_1: "$$od.goal_semi_annual_1",
+                      goal_semi_annual_2: "$$od.goal_semi_annual_2",
+
                       frequency_monitoring: "$$od.frequency_monitoring",
+                      timetable: "$$od.timetable",
+                      complete: "$$od.complete",
                       data_source: "$$od.data_source",
                       budget: "$$od.budget",
-                      createdBy: "$$od.createdBy",
-                      deleted: "$$od.deleted",
                       date_added: "$$od.date_added",
+                      createdBy: "$$od.createdBy",
+                      updateby: "$$od.updateby",
+                      updateDate: "$$od.updateDate",
                       createdAt: "$$od.createdAt",
-                      __v: "$$od.__v",
-                      complete: "$$od.complete",
+                      deleted: "$$od.deleted",
                     },
                   },
                 },
@@ -359,42 +426,125 @@ module.exports = (router) => {
   );
 
   async function CalculateBudgetAndCompletion(data) {
-    return await data.map(async (goal) => {
-      //calculate percentage and remaining
-      let totalObjectiveBudget = 0;
-      goal.remainingBudget = goal.budget;
+    return await Promise.all(
+      data.map(async (goal) => {
+        // Calculate percentage and remaining
+        let totalObjectiveBudget = 0;
+        goal.remainingBudget = goal.budget;
 
-      //calculate completed goals percentage
-      let completionCounterArray = [];
+        // Calculate completed goals percentage
+        let totalCompletion = 0;
+        let totalObjectives = 0;
 
-      if (goal.objectivesDetails !== null) {
-        for (let e of goal.objectivesDetails) {
-          //calculate percentage and remaining
-          goal.remainingBudget -= e.budget;
-          totalObjectiveBudget += e.budget;
-          completionCounterArray.push(e.complete);
-          //calculate completed goals percentage
+        if (goal.objectivesDetails !== null) {
+          for (let e of goal.objectivesDetails) {
+            // Calculate percentage and remaining
+            goal.remainingBudget -= e.budget;
+            totalObjectiveBudget += e.budget;
+
+            // Calculate completed goals percentage
+            let objectiveCompletion = 0;
+            let count = 0;
+            let goalSum = 0;
+
+            if (e.frequency_monitoring === "yearly") {
+              for (let i = 0; i < 12; i++) {
+                const key = `month_${i}`;
+                if (e[key] !== undefined) {
+                  goalSum += e[key];
+                  count++;
+                }
+              }
+            } else if (e.frequency_monitoring === "quarterly") {
+              for (let i = 0; i < 4; i++) {
+                const key = `quarter_${i}`;
+                if (e[key] !== undefined) {
+                  goalSum += e[key];
+                  count++;
+                }
+              }
+            } else if (e.frequency_monitoring === "semi_annual") {
+              for (let i = 0; i < 2; i++) {
+                const key = `semi_annual_${i}`;
+                if (e[key] !== undefined) {
+                  goalSum += e[key];
+                  count++;
+                }
+              }
+            }
+
+            if (count > 0) {
+              objectiveCompletion = (goalSum / e.target) * 100;
+              totalCompletion += objectiveCompletion;
+              totalObjectives++;
+            }
+
+            // Add complete key to each objective
+            e.complete = goalSum === e.target;
+          }
+
+          // Calculate percentage and remaining
+          goal.budgetMinusAllObjectiveBudget = totalObjectiveBudget;
+          goal.remainingPercentage = (
+            (goal.budgetMinusAllObjectiveBudget / goal.budget) *
+            100
+          ).toFixed(2);
+
+          goal.searchDate = await formatIsoDate(goal.createdAt);
+
+          // Add completion percentage to the root of the goal
+          if (totalObjectives > 0) {
+            goal.completion_percentage = Math.round(
+              totalCompletion / totalObjectives
+            );
+          } else {
+            goal.completion_percentage = 0;
+          }
+
+          // Add complete key based on completion percentage
+          goal.complete = goal.completion_percentage === 100;
         }
-
-        //calculate percentage and remaining
-        goal.budgetMinusAllObjectiveBudget = totalObjectiveBudget;
-        goal.remainingPercentage = (
-          (goal.budgetMinusAllObjectiveBudget / goal.budget) *
-          100
-        ).toFixed(2);
-
-        //calculate completed goals percentage
-        let numberOfTrueValues = completionCounterArray.filter(
-          (value) => value === true
-        ).length; // Count the number of true values in the array
-        let totalValues = completionCounterArray.length; // Count the total number of values in the array
-        let percentage = Math.round((numberOfTrueValues / totalValues) * 100); // Calculate the percentage
-        goal.CompletePercentage = percentage; // Assign the percentage to the goal object
-        goal.searchDate = await formatIsoDate(goal.createdAt);
-      }
-      return goal;
-    });
+        return goal;
+      })
+    );
   }
+  // async function CalculateBudgetAndCompletion(data) {
+  //   return await data.map(async (goal) => {
+  //     //calculate percentage and remaining
+  //     let totalObjectiveBudget = 0;
+  //     goal.remainingBudget = goal.budget;
+
+  //     //calculate completed goals percentage
+  //     let completionCounterArray = [];
+
+  //     if (goal.objectivesDetails !== null) {
+  //       for (let e of goal.objectivesDetails) {
+  //         //calculate percentage and remaining
+  //         goal.remainingBudget -= e.budget;
+  //         totalObjectiveBudget += e.budget;
+  //         completionCounterArray.push(e.complete);
+  //         //calculate completed goals percentage
+  //       }
+
+  //       //calculate percentage and remaining
+  //       goal.budgetMinusAllObjectiveBudget = totalObjectiveBudget;
+  //       goal.remainingPercentage = (
+  //         (goal.budgetMinusAllObjectiveBudget / goal.budget) *
+  //         100
+  //       ).toFixed(2);
+
+  //       //calculate completed goals percentage
+  //       let numberOfTrueValues = completionCounterArray.filter(
+  //         (value) => value === true
+  //       ).length; // Count the number of true values in the array
+  //       let totalValues = completionCounterArray.length; // Count the total number of values in the array
+  //       let percentage = Math.round((numberOfTrueValues / totalValues) * 100); // Calculate the percentage
+  //       goal.CompletePercentage = percentage; // Assign the percentage to the goal object
+  //       goal.searchDate = await formatIsoDate(goal.createdAt);
+  //     }
+  //     return goal;
+  //   });
+  // }
 
   async function formatIsoDate(isoDateString) {
     const date = new Date(isoDateString);

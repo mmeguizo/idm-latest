@@ -21,7 +21,7 @@
                         [(ngModel)]="customFunctionalName"
                         [editable]="false"
                         (onChange)="onGoalChange($event)"
-                    />
+                    ></p-dropdown>
                 </div>
                 <div class="field">
                     <label htmlFor="name1">Performance Indicator</label>
@@ -32,7 +32,7 @@
                         autocomplete="off"
                         [ngClass]="
                             addObjectiveGoalform?.get('performance_indicator')
-                                .touched &&
+                                ?.touched &&
                             addObjectiveGoalform?.controls[
                                 'performance_indicator'
                             ].errors?.required
@@ -45,7 +45,7 @@
                 </div>
                 <div class="field">
                     <label htmlFor="name1">Target</label>
-                    <input
+                    <!-- <input
                         pInputText
                         id="target"
                         class="flex-auto"
@@ -59,7 +59,21 @@
                         "
                         formControlName="target"
                         required
-                    />
+                    /> -->
+                    <p-inputNumber
+                        mode="decimal"
+                        [showButtons]="true"
+                        [min]="0"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('target').touched &&
+                            addObjectiveGoalform?.controls['target'].errors
+                                ?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="target"
+                    >
+                    </p-inputNumber>
                 </div>
                 <div class="field">
                     <label htmlFor="name1">Formula</label>
@@ -106,7 +120,7 @@
                         autocomplete="off"
                         [ngClass]="
                             addObjectiveGoalform?.get('responsible_persons')
-                                .touched &&
+                                ?.touched &&
                             addObjectiveGoalform?.controls[
                                 'responsible_persons'
                             ].errors?.required
@@ -135,25 +149,87 @@
                         required
                     />
                 </div>
-                <div class="field">
-                    <label htmlFor="name1">Timetable</label>
-                    <p-calendar
-                        formControlName="timetable"
-                        selectionMode="range"
-                        [readonlyInput]="true"
-                    />
-                </div>
+
                 <div class="field">
                     <label htmlFor="department">Frequency Monitoring</label>
-                    <form [formGroup]="formGroupDropdown">
-                        <p-dropdown
-                            formControlName="selectedDropdown"
-                            [options]="dropdwonSelection"
-                            optionLabel="name"
-                            placeholder="Select a Frequency"
-                        />
-                    </form>
+                    <p-dropdown
+                        formControlName="frequency_monitoring"
+                        [options]="frequencyOptions"
+                        optionLabel="name"
+                        placeholder="Select a Frequency"
+                        (onChange)="onFrequencyChange($event)"
+                    ></p-dropdown>
                 </div>
+
+                <div
+                    *ngIf="
+                        addObjectiveGoalform.get('frequency_monitoring')
+                            .value === 'yearly'
+                    "
+                >
+                    <div class="grid">
+                        <div
+                            class="col-3"
+                            *ngFor="let month of months; let i = index"
+                        >
+                            <label for="month_{{ i }}"
+                                >Goal For the {{ month }}</label
+                            >
+                            <p-inputNumber
+                                id="month_{{ i }}"
+                                formControlName="month_{{ i }}"
+                                [min]="0"
+                            ></p-inputNumber>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    *ngIf="
+                        addObjectiveGoalform.get('frequency_monitoring')
+                            .value === 'quarterly'
+                    "
+                >
+                    <div class="grid">
+                        <div
+                            class="col-4"
+                            *ngFor="let quarter of quarters; let i = index"
+                        >
+                            <label for="quarter_{{ i }}"
+                                >Goal For the {{ quarter }}</label
+                            >
+                            <p-inputNumber
+                                id="quarter_{{ i }}"
+                                formControlName="quarter_{{ i }}"
+                                [min]="0"
+                            ></p-inputNumber>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    *ngIf="
+                        addObjectiveGoalform.get('frequency_monitoring')
+                            .value === 'semi_annual'
+                    "
+                >
+                    <div class="grid">
+                        <div
+                            class="col-6"
+                            *ngFor="let period of semi_annual; let i = index"
+                        >
+                            <label for="semi_annual_{{ i }}"
+                                >Goal For the {{ period }}</label
+                            >
+                            <p-inputNumber
+                                id="semi_annual_{{ i }}"
+                                formControlName="semi_annual_{{ i }}"
+                                [min]="0"
+                            ></p-inputNumber>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="field">
                     <label htmlFor="name1"
                         >Means of Verification(Data Source)</label
@@ -194,18 +270,21 @@
                         pInputTextarea
                     ></textarea>
                 </div>
+
+                <div class="flex justify-space-between gap-2">
+                    <p-button
+                        label="Cancel"
+                        severity="secondary"
+                        (click)="clearAddObjectiveGoalDialogCardDatas()"
+                    ></p-button>
+                    <p-button
+                        label="Save"
+                        (click)="
+                            addSubObjectiveGoalDialogExec(addObjectiveGoalform)
+                        "
+                    ></p-button>
+                </div>
             </form>
         </div>
-    </div>
-    <div class="flex justify-space-between gap-2">
-        <p-button
-            label="Cancel"
-            severity="secondary"
-            (click)="clearAddObjectiveGoalDialogCardDatas()"
-        />
-        <p-button
-            label="Save"
-            (click)="addSubObjectiveGoalDialogExec(addObjectiveGoalform)"
-        />
     </div>
 </p-dialog>

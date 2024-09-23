@@ -23,6 +23,7 @@ import { FileService } from 'src/app/demo/service/file.service';
 import { AuthService } from 'src/app/demo/service/auth.service';
 import { GoalService } from 'src/app/demo/service/goal.service';
 import { Role } from 'src/app/interface/role.interface';
+import { validateFileType, getIcon } from 'src/app/utlis/file-utils';
 
 @Component({
     selector: 'app-objectives',
@@ -74,7 +75,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log('test');
         // this.getAllobjectives();
         this.getAllobjectivesGoalsUsers();
         this.createaddFileForm();
@@ -106,7 +106,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             .getRoute('get', 'objectives', 'getAllObjectives/' + this.USERID)
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe(async (data: any) => {
-                console.log({ getAllobjectives: data.Objectives });
                 this.objectiveDatas = await data.Objectives;
                 for (let i = 0; i < this.objectiveDatas.length; i++) {
                     this.onclickCompletionButton[i] = false;
@@ -127,7 +126,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
                 this.objectiveDatas = data.data;
-                console.log({ getAllobjectivesGoalsUsers: data });
                 this.loading = false;
             });
     }
@@ -236,9 +234,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
         this.viewObjectiveFileDialogCard = true;
         this.objectiveIDforFile = objectiveData.id;
 
-        console.log(objectiveData);
-        console.log(this.objectiveIDforFile);
-
         // alert(JSON.stringify(objectiveData));
         this.getAllFilesFromObjectiveLoad(this.USERID, objectiveData.id);
     }
@@ -264,8 +259,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             .getAllFilesFromObjective(id, objectiveID)
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllFilesFromObjectiveLoad: data });
-
                 this.AllObjectivesFiles = data.data;
                 this.loading = false;
             });
@@ -273,13 +266,11 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
     }
 
     onUpload(event: any) {
-        console.log('clicked upload');
-
         for (const file of event.files) {
             this.uploadedFiles.push(file);
         }
 
-        if (!this.validateFileType(this.uploadedFiles)) {
+        if (!validateFileType(this.uploadedFiles)) {
             this.messageService.add({
                 severity: 'error',
                 summary: 'File Unsupported',
@@ -400,89 +391,6 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             });
     }
 
-    validateFileType(files: any) {
-        const allowedTypes = [
-            'image/jpeg',
-            'image/png',
-            'image/svg+xml',
-            'image/gif',
-            'image/x-jif',
-            'image/x-jiff',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/rtf',
-            'application/pdf',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/csv',
-            'application/vnd.ms-powerpoint',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'text/plain',
-            'application/zip',
-            'image/x-photoshop',
-            'image/vnd.dxf',
-            'audio/mpeg',
-            'audio/wav',
-            'audio/aac',
-        ];
-        for (const file of files) {
-            if (!allowedTypes.includes(file.type)) {
-                console.log(`Invalid file type: ${file.type}`); // Log the type of any file that fails validation
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    // show(data: any) {
-    //     this.ref = this.dialogService.open(data, {
-    //         header: 'Select a Product',
-    //         width: '50vw',
-    //         contentStyle: { overflow: 'auto' },
-    //         breakpoints: {
-    //             '960px': '75vw',
-    //             '640px': '90vw',
-    //         },
-    //         templates: {
-    //             footer: Footer,
-    //         },
-    //     });
-
-    //     this.ref.onClose.subscribe((data: any) => {
-    //         console.log('this is close');
-
-    //         // let summary_and_detail;
-    //         // if (data) {
-    //         //     const buttonType = data?.buttonType;
-    //         //     summary_and_detail = buttonType
-    //         //         ? {
-    //         //               summary: 'No Product Selected',
-    //         //               detail: `Pressed '${buttonType}' button`,
-    //         //           }
-    //         //         : { summary: 'Product Selected', detail: data?.name };
-    //         // } else {
-    //         //     summary_and_detail = {
-    //         //         summary: 'No Product Selected',
-    //         //         detail: 'Pressed Close button',
-    //         //     };
-    //         // }
-    //         // this.messageService.add({
-    //         //     severity: 'info',
-    //         //     ...summary_and_detail,
-    //         //     life: 3000,
-    //         // });
-    //     });
-
-    //     this.ref.onMaximize.subscribe((value) => {
-    //         this.messageService.add({
-    //             severity: 'info',
-    //             summary: 'Maximized',
-    //             detail: `maximized: ${value.maximized}`,
-    //         });
-    //     });
-    // }
-
     viewFilesHistory(objectiveData: any) {
         this.viewObjectiveFileHistoryDialogCard = true;
         this.getAllFilesHistoryFromObjectiveLoad(this.USERID, objectiveData.id);
@@ -506,43 +414,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
         this.viewObjectiveFileHistoryDialogCard = false;
     }
     getIcon(name: string) {
-        const fileExtension = name.split('.').pop();
-        switch (fileExtension) {
-            case 'jpg':
-            case 'jpeg':
-            case 'png':
-            case 'gif':
-            case 'svg':
-                return 'pi pi-image';
-            case 'doc':
-            case 'docx':
-            case 'rtf':
-                return 'pi pi-file-word';
-            case 'pdf':
-                return 'pi pi-file-pdf';
-            case 'xls':
-            case 'xlsx':
-                return 'pi pi-file-excel';
-            case 'csv':
-                return 'pi pi-file-csv';
-            case 'ppt':
-            case 'pptx':
-                return 'pi pi-file-powerpoint';
-            case 'txt':
-                return 'pi pi-ticket';
-            case 'zip':
-                return 'pi pi-file-zip';
-            case 'psd':
-                return 'pi pi-image';
-            case 'dxf':
-                return 'pi pi-image';
-            case 'mp3':
-            case 'wav':
-            case 'aac':
-                return 'pi pi-volume-up';
-            default:
-                return 'pi pi-file';
-        }
+        return getIcon(name);
     }
 
     deleteSubGoal(id: string, goalId: string) {

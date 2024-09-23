@@ -17,7 +17,6 @@ export class AuthGuard implements CanActivate {
             const currentTime = Math.floor(Date.now() / 1000);
             const isExpired = exp < currentTime;
             if (isExpired) {
-                console.log('Token is expired!');
                 // Handle expired token (e.g., refresh token, redirect to login)
                 this.message.add({
                     severity: 'danger  ',

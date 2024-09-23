@@ -23,9 +23,6 @@ export class AuthInterceptor implements HttpInterceptor {
     ): Observable<HttpEvent<any>> {
         // Get the token from wherever you're storing it (e.g., local storage)
         const token = this.authService.getToken();
-
-        console.log({ AuthInterceptor: token });
-
         // If there's a token, add it to the Authorization header
         if (token) {
             request = request.clone({

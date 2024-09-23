@@ -36,8 +36,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.getAllGoals();
         this.getAllObjectives();
         this.getObjectiveViewPieChart();
-
-        console.log(this.userId);
     }
     ngOnDestroy() {
         this.getDashboardSubscription.unsubscribe();
@@ -48,7 +46,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .getRoute('get', 'goals', `getGoalsForUserDashboard/${this.userId}`)
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllGoals: data });
                 this.goals = data.data[0];
             });
     }
@@ -62,7 +59,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             )
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllObjectives: data });
                 this.objectivesData = data.data[0];
                 this.initChartsDoughnut({
                     complete: data.data[0].objectiveCompleted,
@@ -76,7 +72,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .getRoute('get', 'goals', `getObjectivesViewTable/${this.userId}`)
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data?: any) => {
-                console.log({ getObjectiveViewPieChart: data });
                 this.initBarCharts(data?.data);
             });
     }

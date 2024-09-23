@@ -7,9 +7,7 @@ import {
     Output,
     EventEmitter,
 } from '@angular/core';
-
 import { AuthService } from 'src/app/demo/service/auth.service';
-
 import { Subject, pipe, takeUntil } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import {
@@ -43,6 +41,16 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
     goalDataRemainingBudget: number = 0;
     addExecutionGoalId: string;
     addExecutionGoal_Id: any;
+    frequencyOptions = [
+        { name: 'yearly', code: 'yearly' },
+        { name: 'quarterly', code: 'quarterly' },
+        { name: 'semi_annual', code: 'semi_annual' },
+    ];
+
+    months: string[] = [];
+    quarters: string[] = [];
+    semi_annual: string[] = [];
+
     constructor(
         private formBuilder: FormBuilder,
         private messageService: MessageService,
@@ -51,6 +59,24 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
         private goallistService: GoallistService
     ) {
         this.USERID = this.auth.getTokenUserID();
+
+        for (let month = 0; month < 12; month++) {
+            this.months.push(
+                new Date(0, month).toLocaleString('default', { month: 'short' })
+            );
+        }
+
+        // Initialize quarters array
+        this.quarters = [
+            'Q1 (Jan-Mar)',
+            'Q2 (Apr-Jun)',
+            'Q3 (Jul-Sep)',
+            'Q4 (Oct-Dec)',
+        ];
+        this.semi_annual = [
+            '(Jan-Feb-Mar-Apr-May-Jun)',
+            '(Jul-Aug-Sep-Oct-Nov-Dec)',
+        ];
     }
 
     ngOnInit() {
@@ -67,6 +93,7 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             { name: 'biannually', code: 'Biannually' },
         ];
     }
+
     ngOnDestroy(): void {
         this.addObjectiveSubscription.next();
         this.addObjectiveSubscription.complete();
@@ -87,10 +114,75 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             }, 0);
         }
     }
+    onFrequencyChange(event: any) {
+        const frequency = event.value.name;
+
+        // Clear existing dynamic controls
+        this.clearDynamicControls();
+
+        if (frequency === 'yearly') {
+            this.addMonthlyControls();
+        } else if (frequency === 'quarterly') {
+            this.addQuarterlyControls();
+        } else if (frequency === 'semi_annual') {
+            this.addSemiAnnualControls();
+        }
+
+        // Update the form control value
+        this.addObjectiveGoalform
+            .get('frequency_monitoring')
+            .setValue(frequency);
+    }
+
+    clearDynamicControls() {
+        this.months.forEach((_, i) => {
+            if (this.addObjectiveGoalform.contains(`month_${i}`)) {
+                this.addObjectiveGoalform.removeControl(`month_${i}`);
+            }
+        });
+        this.quarters.forEach((_, i) => {
+            if (this.addObjectiveGoalform.contains(`quarter_${i}`)) {
+                this.addObjectiveGoalform.removeControl(`quarter_${i}`);
+            }
+        });
+        this.semi_annual.forEach((_, i) => {
+            if (this.addObjectiveGoalform.contains(`semi_annual_${i}`)) {
+                this.addObjectiveGoalform.removeControl(`semi_annual_${i}`);
+            }
+        });
+    }
+
+    addMonthlyControls() {
+        this.months.forEach((_, i) => {
+            this.addObjectiveGoalform.addControl(
+                `month_${i}`,
+                new FormControl(0, Validators.min(0))
+            );
+        });
+    }
+
+    addQuarterlyControls() {
+        this.quarters.forEach((_, i) => {
+            this.addObjectiveGoalform.addControl(
+                `quarter_${i}`,
+                new FormControl(0, Validators.min(0))
+            );
+        });
+    }
+
+    addSemiAnnualControls() {
+        this.semi_annual.forEach((_, i) => {
+            this.addObjectiveGoalform.addControl(
+                `semi_annual_${i}`,
+                new FormControl(0, Validators.min(0))
+            );
+        });
+    }
+
+    ngAfterViewInit() {}
 
     createAddObjectiveGoalform() {
         this.addObjectiveGoalform = this.formBuilder.group({
-            // department: ['', [Validators.required]],
             userId: ['', [Validators.required]],
             goalId: ['', [Validators.required]],
             functional_objective: ['', [Validators.required]],
@@ -100,11 +192,33 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             programs: ['', [Validators.required]],
             responsible_persons: ['', [Validators.required]],
             clients: ['', [Validators.required]],
-            timetable: ['', [Validators.required]],
+            timetable: ['', [Validators.required]], // You might want to adjust this later
             frequency_monitoring: ['', [Validators.required]],
             data_source: ['', [Validators.required]],
             remarks: ['', [Validators.required]],
             budget: ['', [Validators.required]],
+
+            // Add form controls for monthly and quarterly timetable values
+            month_0: [0],
+            month_1: [0],
+            month_2: [0],
+            month_3: [0],
+            month_4: [0],
+            month_5: [0],
+            month_6: [0],
+            month_7: [0],
+            month_8: [0],
+            month_9: [0],
+            month_10: [0],
+            month_11: [0],
+
+            quarter_0: [0],
+            quarter_1: [0],
+            quarter_2: [0],
+            quarter_3: [0],
+
+            semi_annual_1: [0],
+            semi_annual_0: [0],
         });
     }
 
@@ -125,7 +239,7 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
                         severity: 'error',
                         summary: 'Error',
                         detail: 'Failed to Goallist Dropdown',
-                    }); // Display error message
+                    });
                 },
                 complete: () => {},
             });
@@ -135,8 +249,18 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
         this.addObjectiveGoalDialogCard = false;
         this.addObjectiveGoalform.reset();
     }
+    async addSubObjectiveGoalDialogExec(e: any) {
+        let patterns = [];
+        if (e.value.frequency_monitoring === 'semi_annual') {
+            patterns.push('semi_annual_[i]');
+        }
+        if (e.value.frequency_monitoring === 'yearly') {
+            patterns.push('month_[i]');
+        }
+        if (e.value.frequency_monitoring === 'quarterly') {
+            patterns.push('quarter_[i]');
+        }
 
-    addSubObjectiveGoalDialogExec(e: any) {
         const { addExecutionGoalId, formGroupDropdown, goal_ObjectId, USERID } =
             this;
 
@@ -144,39 +268,32 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             ...e.value,
             functional_objective: e.value.functional_objective.name,
             userId: USERID,
-            goalId: addExecutionGoalId, // Final goalId value
+            goalId: addExecutionGoalId,
             goal_Id: this.addExecutionGoal_Id,
-            frequency_monitoring: formGroupDropdown.value.selectedDropdown.name,
             createdBy: USERID,
+            timetable: new Map(), // Initialize the timetable Map
         };
 
-        console.log({ addObjectives: data });
-
+        const updatedData = await this.addGoalPeriods(data, patterns);
         this.obj
-            .getRoute('post', 'objectives', 'addObjectives', data)
+            .getRoute('post', 'objectives', 'addObjectives', updatedData)
             .pipe(takeUntil(this.addObjectiveSubscription))
             .subscribe((data: any) => {
-                console.log({ addSubObjectiveGoalDialogExec: data });
-
                 if (data.success) {
                     this.addObjectiveGoalDialogCard = false;
                     this.messageService.add({
-                        severity: 'success  ',
+                        severity: 'success',
                         summary: 'Done',
                         detail: data.message,
                     });
-                    //fix the error becomes null after adding new objective
                     this.goal_ObjectId = data.data.goal_Id;
-                    // clear the data
                     this.addObjectiveGoalform.reset();
                     this.formGroupDropdown.reset();
                     this.goalDataRemainingBudget = 0;
-                    this.childAddObjectiveEvent.emit(data.data);
+                    this.childAddObjectiveEvent.emit(data.data.goalId);
                 } else {
                     this.messageService.add({
-                        severity: 'warn  ',
-                        summary: 'Error',
-                        detail: data.message,
+                        severity: 'warn',
                     });
                 }
             });
@@ -184,5 +301,27 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
 
     onGoalChange(event: any) {
         // capture here the goallist id if needed
+    }
+
+    async addGoalPeriods(obj: any, patterns: string[]) {
+        const newObj = { ...obj }; // Create a copy of the original object
+
+        patterns.forEach((pattern) => {
+            const regex = new RegExp(`^${pattern.replace('[i]', '(\\d+)')}$`);
+
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    const match = key.match(regex);
+                    if (match) {
+                        const periodIndex = match[1];
+                        newObj[`goal_${pattern.replace('[i]', periodIndex)}`] =
+                            obj[key];
+                        newObj[key] = 0; // Set the value to 0
+                    }
+                }
+            }
+        });
+
+        return newObj;
     }
 }

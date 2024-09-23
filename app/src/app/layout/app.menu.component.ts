@@ -58,21 +58,21 @@ export class AppMenuComponent implements OnInit {
                                     icon: 'pi pi-align-justify',
                                     routerLink: ['/admin/goals'],
                                 },
-                                {
-                                    label: 'Objectives Tables',
-                                    icon: 'pi pi-flag',
-                                    routerLink: ['/admin/goals/objectives'],
-                                },
-                                {
-                                    label: 'Calendar',
-                                    icon: 'pi pi-calendar-plus',
-                                    routerLink: ['/admin/goals/calendar'],
-                                },
-                                {
-                                    label: 'Charts',
-                                    icon: 'pi pi-chart-line',
-                                    routerLink: ['/admin/goals/reporting'],
-                                },
+                                // {
+                                //     label: 'Objectives Tables',
+                                //     icon: 'pi pi-flag',
+                                //     routerLink: ['/admin/goals/objectives'],
+                                // },
+                                // {
+                                //     label: 'Calendar',
+                                //     icon: 'pi pi-calendar-plus',
+                                //     routerLink: ['/admin/goals/calendar'],
+                                // },
+                                // {
+                                //     label: 'Charts',
+                                //     icon: 'pi pi-chart-line',
+                                //     routerLink: ['/admin/goals/reporting'],
+                                // },
                             ],
                         },
                     ],

@@ -1,5 +1,44 @@
-<table #printTable [ngClass]="{ hidden: !isPrintableVisible }">
-    @if(isPrintableVisible && objectiveDatas?.length != 0 ){
+<p-dialog
+    header="Office Head"
+    [modal]="true"
+    [(visible)]="printingHead"
+    [style]="{ width: '25rem' }"
+>
+    <span class="p-text-secondary block mb-5">Update your information.</span>
+    <div class="flex align-items-center gap-3 mb-3">
+        <label for="username" class="font-semibold w-6rem">Name</label>
+        <input
+            pInputText
+            #nameInput
+            id="name"
+            placeholder="e.g Benrie Nufable, PHD. TM"
+            class="flex-auto"
+            autocomplete="off"
+            [(ngModel)]="nameValue"
+        />
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <label for="email" class="font-semibold w-6rem">Office</label>
+        <input
+            pInputText
+            id="office"
+            #officeInput
+            placeholder="e.g MIS Head - DPO"
+            class="flex-auto"
+            autocomplete="off"
+            [(ngModel)]="officeValue"
+        />
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancel"
+            severity="secondary"
+            (onClick)="printingHead = false"
+        />
+        <p-button label="Save" (onClick)="printPdf(); printingHead = false" />
+    </div>
+</p-dialog>
+<table id="print" [ngClass]="{ hidden: !isPrintableVisible }">
     <thead>
         <tr>
             <th>Functional Objectives</th>
@@ -9,52 +48,30 @@
             <th>Programs, Projects or Activities</th>
             <th>Responsible Persons & Partners</th>
             <th>Target Participants or Clients</th>
-            <th>Timetable</th>
+            <!-- <th>Timetable</th> -->
             <th>Frequency of Monitoring</th>
             <th>Means of Verification (Data Source)</th>
             <th>Budget</th>
         </tr>
     </thead>
-    <tbody id="tableBody" *ngIf="objectiveDatas?.length != 0">
+    <tbody *ngIf="objectiveDatas?.length != 0">
         <tr *ngFor="let obj of objectiveDatas; let i = index">
-            <td>{{ obj?.functional_objective | titlecase }}</td>
-            <td>{{ obj?.performance_indicator | titlecase }}</td>
-            <td>{{ obj?.target | titlecase }}</td>
-            <td>{{ obj?.formula | titlecase }}</td>
-            <td>{{ obj?.programs | titlecase }}</td>
-            <td>{{ obj?.responsible_persons | titlecase }}</td>
-            <td>{{ obj?.clients | titlecase }}</td>
+            <td>{{ obj.functional_objective | titlecase }}</td>
+            <td>{{ obj.performance_indicator | titlecase }}</td>
+            <td>{{ obj.target }}</td>
+            <td>{{ obj.formula | titlecase }}</td>
+            <td>{{ obj.programs | titlecase }}</td>
+            <td>{{ obj.responsible_persons | titlecase }}</td>
+            <td>{{ obj.clients | titlecase }}</td>
+            <!-- <td>
+                {{ obj.timetable[0] | date : "MMM d yyyy" }} -
+                {{ obj.timetable[1] | date : "MMM d yyyy" }}
+            </td> -->
             <td>
-                {{ obj?.timetable[0] | date : "MMM d yyyy" }} -
-                {{ obj?.timetable[1] | date : "MMM d yyyy" }}
+                {{ getFrequencyKeys(obj.frequency_monitoring) | titlecase }}
             </td>
-            <td>{{ obj?.frequency_monitoring | titlecase }}</td>
-            <td>{{ obj?.data_source | titlecase }}</td>
-            <td>{{ obj?.budget | peso }}</td>
+            <td>{{ obj.data_source | titlecase }}</td>
+            <td>{{ obj.budget | peso }}</td>
         </tr>
     </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="11">
-                <div>
-                    <div>
-                        <div>Prepared by:</div>
-                        <div>{{ nameValue?.toLocaleUpperCase() || "" }}</div>
-                        <div>{{ officeValue?.toLocaleUpperCase() || "" }}</div>
-                    </div>
-                    <div>
-                        <div>Reviewed and verified by:</div>
-                        <div>YRIKA MARIE R. DUSARAN, PhDTM</div>
-                        <div>Director for Quality Management</div>
-                    </div>
-                    <div>
-                        <div>Approved by:</div>
-                        <div>ROSALINDA S. TUVILLA</div>
-                        <div>Vice President for Administrator and Finance</div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </tfoot>
-    }
 </table>

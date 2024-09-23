@@ -59,7 +59,7 @@ import { OrderListModule } from 'primeng/orderlist';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-
+import { RatingModule } from 'primeng/rating';
 const pipes = [
     dataFilterPipe,
     NumberWithCommas,
@@ -126,6 +126,7 @@ const pipes = [
         OrderListModule,
         ProgressSpinnerModule,
         ConfirmDialogModule,
+        RatingModule,
         // BoldReportViewerModule,
         ...pipes,
         // FileUpload
