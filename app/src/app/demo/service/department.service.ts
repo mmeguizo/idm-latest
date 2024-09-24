@@ -53,11 +53,7 @@ export class DepartmentService {
             })
             .pipe(
                 catchError((error: HttpErrorResponse) => {
-                    console.error(`API Error (${error.status}):`, error.error);
-
-                    console.log('catchError', error);
-
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }

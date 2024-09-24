@@ -23,7 +23,11 @@ const userSchema = new Schema({
   },
   department: { type: String, required: true, default: "ICT" },
   campus: { type: String, required: true },
-  role: { type: String, default: "user" },
+  role: {
+    type: String,
+    enum: ["admin", "president", "vice-president", "director", "office-head"],
+    default: "office-head",
+  },
   status: { type: String, default: "pending" },
   deleted: { type: Boolean, default: false },
   password: {

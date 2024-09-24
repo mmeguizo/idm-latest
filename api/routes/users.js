@@ -89,18 +89,19 @@ module.exports = (router) => {
   });
 
   router.post("/addUser", (req, res) => {
-    const { email, username, password, confirm, department } = req.body;
+    const { email, username, password, confirm, department, role } = req.body;
     if (
       !email ||
       !username ||
       !password ||
       !department ||
+      !role ||
       password !== confirm
     ) {
       return res.json({
         success: false,
         message:
-          "You must provide an email, username, department, password and matching password",
+          "You must provide an email, username, department, role, password and matching password",
       });
     }
 
@@ -111,7 +112,7 @@ module.exports = (router) => {
       password: req.body.password,
       department: req.body.department,
       campus: req.body.campus,
-      // role: req.body.role.toLowerCase(),
+      role: req.body.role.toLowerCase(),
     };
 
     User.create(userData)
@@ -119,7 +120,12 @@ module.exports = (router) => {
         res.json({
           success: true,
           message: "This user is successfully Registered ",
-          data: { email: data.email, username: data.username, department },
+          data: {
+            email: data.email,
+            username: data.username,
+            department,
+            role,
+          },
         });
       })
       .catch((err) => {
@@ -237,29 +243,68 @@ module.exports = (router) => {
   });
 
   router.put("/updateUser", async (req, res) => {
-    const { username, email, department, id, campus } = req.body;
+    let data = req.body;
+    let userData = {};
 
-    User.findOneAndUpdate(
-      { id: id },
-      { username, email, department, campus },
-      { upsert: false },
-      (err, response) => {
-        if (err) return res.json({ success: false, message: err.message });
-        if (response) {
-          res.json({
-            success: true,
-            message: "User Information has been updated!",
-            data: response,
-          });
-        } else {
-          res.json({
-            success: true,
-            message: "No User has been modified!",
-            data: response,
+    console.log({ updateUser: data });
+
+    try {
+      const user = await User.findOne({ id: req.body.id });
+
+      if (!user) {
+        return res.json({ success: false, message: "User not found" });
+      }
+
+      if (data.confirm !== data.password) {
+        return res.json({
+          success: false,
+          message: "Passwords do not match",
+        });
+      }
+
+      if (data.password && data.password.trim() !== "") {
+        const checkPassword = await bcrypt.compare(
+          data.old_password,
+          user.password
+        );
+        if (!checkPassword) {
+          return res.json({
+            success: false,
+            message: "Incorrect old password",
           });
         }
+
+        const hashedPassword = await hash.encryptPassword(data.password);
+        userData.password = hashedPassword;
       }
-    );
+
+      userData.role = data.role;
+      userData.username = data.username;
+      userData.email = data.email;
+      userData.campus = data.campus;
+      userData.department = data.department;
+
+      const response = await User.findOneAndUpdate({ id: data.id }, userData, {
+        new: true,
+      });
+
+      console.log({ userData, response });
+
+      if (response) {
+        res.json({
+          success: true,
+          message: "User information has been updated!",
+          data: response,
+        });
+      } else {
+        res.json({
+          success: true,
+          message: "No user has been modified!",
+        });
+      }
+    } catch (err) {
+      res.json({ success: false, message: err.message });
+    }
   });
 
   router.put("/updateProfile", async (req, res) => {

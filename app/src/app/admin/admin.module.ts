@@ -27,6 +27,8 @@ import { AddObjectiveComponent } from './goals/add-objective/add-objective.compo
 import { UpdateGoalComponent } from './goals/update-goal/update-goal.component';
 import { UpdateObjectiveComponent } from './goals/update-objective/update-objective.component';
 import { AddFilesComponent } from './goals/add-files/add-files.component';
+import { AddUserComponent } from './users/add-user/add-user.component';
+import { EditUserComponent } from './users/edit-user/edit-user.component';
 
 @NgModule({
     imports: [AdminRoutingModule, SharedModule, MarkdownModule.forRoot()],
@@ -50,6 +52,8 @@ import { AddFilesComponent } from './goals/add-files/add-files.component';
         UpdateGoalComponent,
         UpdateObjectiveComponent,
         AddFilesComponent,
+        AddUserComponent,
+        EditUserComponent,
     ],
     providers: [FileUpload],
 })

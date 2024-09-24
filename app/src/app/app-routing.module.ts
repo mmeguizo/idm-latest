@@ -93,6 +93,20 @@ import { NotfoundComponent } from './notfound/notfound.component';
                     ],
                 },
                 {
+                    path: 'office-head',
+                    component: AppLayoutComponent,
+                    children: [
+                        {
+                            path: '',
+                            loadChildren: () =>
+                                import('./office-head/office-head.module').then(
+                                    (m) => m.OfficeHeadModule
+                                ),
+                            canActivate: [AuthGuard],
+                        },
+                    ],
+                },
+                {
                     path: 'landing',
                     loadChildren: () =>
                         import('./demo/components/landing/landing.module').then(

@@ -84,7 +84,7 @@ export class GoallistService {
                         console.log(error);
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }

@@ -8,88 +8,106 @@ import { ConnectionService } from './connection.service';
 import { AuthService } from './auth.service';
 import { MessageService } from 'primeng/api';
 import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { BaseService } from './base.service';
+import { Observable, throwError } from 'rxjs';
+
 @Injectable({
     providedIn: 'root',
 })
-export class UserService {
-    public authToken;
-    public options;
+export class UserService extends BaseService {
+    //  public authToken;
+    //  public options;
     picture: HttpHeaders;
 
     constructor(
-        public auth: AuthService,
-        public cs: ConnectionService,
-        private http: HttpClient,
-        private messageService: MessageService
+        protected override http: HttpClient,
+        protected override messageService: MessageService,
+        protected override auth: AuthService,
+        protected override cs: ConnectionService
     ) {
-        this.getAllUsers();
+        super(http, messageService, auth, cs);
     }
 
-    createAuthenticationHeaders() {
-        this.loadToken();
-        this.options = new HttpHeaders({
-            'Content-Type': 'application/json',
-            Accept: 'image/jpeg',
-            authorization: this.authToken,
-        });
+    // override createAuthenticationHeaders() {
+    //     this.loadToken();
+    //     this.options = new HttpHeaders({
+    //         'Content-Type': 'application/json',
+    //         Accept: 'image/jpeg',
+    //         authorization: this.authToken,
+    //     });
+    // }
+
+    // override loadToken() {
+    //     const token = localStorage.getItem('token');
+    //     this.authToken = token;
+    // }
+    protected override createAuthenticationHeaders() {
+        super.createAuthenticationHeaders(); // Call the method from BaseService
     }
 
-    loadToken() {
-        const token = localStorage.getItem('token');
-        this.authToken = token;
+    protected override loadToken() {
+        super.loadToken(); // Call the method from BaseService
     }
 
-    getRoute(endpoint: any, model?: any, apiName?: any, data?: any) {
-        this.createAuthenticationHeaders();
-        let url = `${this.cs.domain}/${model}/${apiName}`;
-
-        if (endpoint === 'get' && apiName === 'profile') {
-            url = `${this.cs.domain}/${model}/${apiName}/${data}`;
-        }
-
-        const requestConfig = {
-            body: data,
-            headers: this.options,
-        };
-
-        return this.http.request(endpoint, url, requestConfig).pipe(
-            catchError((error: HttpErrorResponse) => {
-                console.error(`API Error (${error.status}):`, error.error);
-                if (error.status === 401 || error.status === 403) {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'You are unauthorized!',
-                    });
-                    this.auth.logout();
-                } else if (error.status === 500) {
-                    // Internal server error Or Token Expired
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'Internal server error Or Token Expired. Please try again later.',
-                    });
-                } else if (error.status === 404) {
-                    // Not found error
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'The requested resource was not found.',
-                    });
-                } else {
-                    // Other errors
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error.error,
-                    });
-                }
-
-                return throwError(error);
-            })
-        );
+    fetch(
+        domain: string,
+        model: string,
+        call: string,
+        data?: any
+    ): Observable<any> {
+        return this.getRoute(domain, model, call, data);
     }
+
+    // getRoute(endpoint: any, model?: any, apiName?: any, data?: any) {
+    //     this.createAuthenticationHeaders();
+    //     let url = `${this.cs.domain}/${model}/${apiName}`;
+
+    //     if (endpoint === 'get' && apiName === 'profile') {
+    //         url = `${this.cs.domain}/${model}/${apiName}/${data}`;
+    //     }
+
+    //     const requestConfig = {
+    //         body: data,
+    //         headers: this.options,
+    //     };
+
+    //     return this.http.request(endpoint, url, requestConfig).pipe(
+    //         catchError((error: HttpErrorResponse) => {
+    //             console.error(`API Error (${error.status}):`, error.error);
+    //             if (error.status === 401 || error.status === 403) {
+    //                 this.messageService.add({
+    //                     severity: 'error',
+    //                     summary: 'Error',
+    //                     detail: 'You are unauthorized!',
+    //                 });
+    //                 this.auth.logout();
+    //             } else if (error.status === 500) {
+    //                 // Internal server error Or Token Expired
+    //                 this.messageService.add({
+    //                     severity: 'error',
+    //                     summary: 'Error',
+    //                     detail: 'Internal server error Or Token Expired. Please try again later.',
+    //                 });
+    //             } else if (error.status === 404) {
+    //                 // Not found error
+    //                 this.messageService.add({
+    //                     severity: 'error',
+    //                     summary: 'Error',
+    //                     detail: 'The requested resource was not found.',
+    //                 });
+    //             } else {
+    //                 // Other errors
+    //                 this.messageService.add({
+    //                     severity: 'error',
+    //                     summary: 'Error',
+    //                     detail: error.error,
+    //                 });
+    //             }
+
+    //             return throwError(() => error);
+    //         })
+    //     );
+    // }
     getAllUsers() {
         this.createAuthenticationHeaders();
         return this.http
@@ -131,7 +149,7 @@ export class UserService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -183,23 +201,8 @@ export class UserService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
 }
-
-/*
- getRoute(endpoint: any, model?: any, apiName?: any, data?: any) {
-    console.log("getRoute", { endpoint, model, apiName, data });
-    this.createAuthenticationHeaders();
-    let url = `${this.cs.domain}/${model}/${apiName}`;
-    if (endpoint == "get" && apiName === "profile") {
-      url = `${this.cs.domain}/${model}/${apiName}/${data}`;
-    }
-    return this.http.request(endpoint, url, {
-      body: data,
-      headers: this.options,
-    });
-  }
-*/

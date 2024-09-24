@@ -1,0 +1,147 @@
+<p-dialog
+    header="Add User"
+    id="tester"
+    [(visible)]="addUserDialogCard"
+    [modal]="true"
+    showEffect="fade"
+    [style]="{ width: '19vw' }"
+    [breakpoints]="{ '1199px': '19vw', '890px': '25vw', '500px': '30vw' }"
+    [draggable]="false"
+    [resizable]="false"
+>
+    <div class="card p-fluid">
+        <form [formGroup]="Addform">
+            <div class="field">
+                <label for="username">Username</label>
+                <input
+                    pInputText
+                    id="username"
+                    class="flex-auto"
+                    autocomplete="off"
+                    [ngClass]="
+                        Addform?.get('username').touched &&
+                        Addform?.controls['username'].errors?.required
+                            ? 'ng-invalid ng-dirty'
+                            : ''
+                    "
+                    formControlName="username"
+                    required
+                />
+            </div>
+            <div class="flex align-items-center gap-3">
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input
+                        pInputText
+                        id="email"
+                        class="flex-auto"
+                        [ngClass]="
+                            Addform?.get('email').touched &&
+                            Addform?.controls['email'].errors?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="email"
+                        autocomplete="off"
+                        required
+                    />
+                    <div
+                        *ngIf="
+                            (Addform.get('email').hasError('required') &&
+                                Addform.get('email').touched) ||
+                            Addform.get('email').hasError('email') ||
+                            Addform.get('email').hasError('pattern')
+                        "
+                        class="bg-red-500 text-white p-2 rounded"
+                    >
+                        <span
+                            *ngIf="
+                                Addform.get('email').touched &&
+                                form.get('email').hasError('required')
+                            "
+                        >
+                            You must enter an email address.
+                        </span>
+                        <span *ngIf="Addform.get('email').hasError('email')"
+                            >Please enter a valid email address.</span
+                        >
+                        <span *ngIf="Addform.get('email').hasError('pattern')"
+                            >Only Chmsu addresses (chmsu.edu.ph) are
+                            accepted.</span
+                        >
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <p-password
+                    id="password"
+                    class="flex-auto"
+                    autocomplete="off"
+                    [ngClass]="
+                        Addform?.get('password').touched &&
+                        Addform?.controls['password'].errors?.required
+                            ? 'ng-invalid ng-dirty'
+                            : ''
+                    "
+                    formControlName="password"
+                    required
+                />
+            </div>
+            <div class="field">
+                <label for="confirm">Confirm Password</label>
+                <p-password
+                    id="confirm"
+                    class="flex-auto"
+                    [ngClass]="
+                        Addform?.get('confirm').touched &&
+                        Addform?.controls['confirm'].errors?.required
+                            ? 'ng-invalid ng-dirty'
+                            : ''
+                    "
+                    formControlName="confirm"
+                    autocomplete="off"
+                    required
+                />
+            </div>
+            <div class="field">
+                <label htmlFor="department">Role</label>
+                <p-dropdown
+                    formControlName="role"
+                    [options]="roleOptions"
+                    placeholder="Select a Role"
+                />
+            </div>
+            <div class="field">
+                <label htmlFor="department">Campus</label>
+                <form [formGroup]="formGroupCampus">
+                    <p-dropdown
+                        formControlName="selectedCampus"
+                        [options]="deptDropdownCampusValue"
+                        optionLabel="name"
+                        placeholder="Select a Campus"
+                    />
+                </form>
+            </div>
+            <div class="field">
+                <form [formGroup]="formGroupDemo">
+                    <p-dropdown
+                        formControlName="selectDepartment"
+                        [options]="deptDropdownValue"
+                        optionLabel="name"
+                        placeholder="Select a Department"
+                    />
+                </form>
+            </div>
+            <div class="field footer-button-adduser">
+                <p-button
+                    label="Cancel"
+                    severity="secondary"
+                    (click)="addUserDialogCard = false"
+                />
+                &nbsp;&nbsp;
+                <p-button label="Save" (click)="addUserFunction(Addform)" />
+            </div>
+        </form>
+    </div>
+</p-dialog>

@@ -80,7 +80,7 @@ export class ObjectiveService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }

@@ -82,7 +82,7 @@ export class FileService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -129,7 +129,7 @@ export class FileService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -176,7 +176,7 @@ export class FileService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -222,7 +222,7 @@ export class FileService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -269,7 +269,7 @@ export class FileService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -329,7 +329,7 @@ export class FileService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -390,7 +390,7 @@ export class FileService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -438,7 +438,7 @@ export class FileService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -485,7 +485,7 @@ export class FileService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -533,7 +533,7 @@ export class FileService {
                             });
                         }
 
-                        return throwError(error);
+                        return throwError(() => error);
                     })
                 );
         } else if (endpoint == 'post') {
@@ -577,7 +577,7 @@ export class FileService {
                             });
                         }
 
-                        return throwError(error);
+                        return throwError(() => error);
                     })
                 );
         } else {
@@ -621,7 +621,7 @@ export class FileService {
                             });
                         }
 
-                        return throwError(error);
+                        return throwError(() => error);
                     })
                 );
         }

@@ -83,7 +83,7 @@ export class AiService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }

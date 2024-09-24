@@ -127,7 +127,7 @@ export class AuthService {
     login(user?: any) {
         return this.http.post(this.domain + '/authentication/login', user).pipe(
             catchError((error: HttpErrorResponse) => {
-                return throwError(error);
+                return throwError(() => error);
             })
         );
     }
@@ -236,7 +236,7 @@ export class AuthService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -283,7 +283,7 @@ export class AuthService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
@@ -416,7 +416,7 @@ export class AuthService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }

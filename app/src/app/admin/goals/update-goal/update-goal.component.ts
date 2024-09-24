@@ -122,7 +122,7 @@ export class UpdateGoalComponent implements OnInit, OnDestroy {
 
     getAllCampuses() {
         this.campus
-            .getRoute('get', 'campus', 'getAllCampus')
+            .fetch('get', 'campus', 'getAllCampus')
             .pipe(takeUntil(this.updateGoalSubscription))
             .subscribe((data: any) => {
                 this.deptDropdownCampusValue = data.data[0];

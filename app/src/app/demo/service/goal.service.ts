@@ -80,7 +80,7 @@ export class GoalService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }

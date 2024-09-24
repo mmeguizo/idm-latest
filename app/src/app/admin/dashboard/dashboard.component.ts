@@ -12,7 +12,6 @@ import { DepartmentService } from 'src/app/demo/service/department.service';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { IdepartmentDropdown } from 'src/app/interface/department.interface';
 import { IcampusDropdown } from 'src/app/interface/campus.interface';
-import { CampusService } from 'src/app/demo/service/campus.service';
 import { BranchService } from 'src/app/demo/service/branch.service';
 import { MessageService } from 'primeng/api';
 import { TabView, TabPanel } from 'primeng/tabview';
@@ -74,7 +73,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private goalService: GoalService,
         private dept: DepartmentService,
         private obj: ObjectiveService,
-        private campus: CampusService,
         private branch: BranchService,
         private messageService: MessageService,
         private changeDetectorRef: ChangeDetectorRef
@@ -144,7 +142,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     async getAllusers() {
         await this.userService
-            .getRoute('get', 'users', 'getAllUsersForDashboard')
+            .fetch('get', 'users', 'getAllUsersForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
                 this.users = data.data[0];

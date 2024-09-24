@@ -30,10 +30,9 @@ import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { DepartmentService } from 'src/app/demo/service/department.service';
 import { FileService } from 'src/app/demo/service/file.service';
 import { FileUpload } from 'primeng/fileupload';
-import { CampusService } from 'src/app/demo/service/campus.service';
 import { PrintTableComponent } from './print-table/print-table.component';
 import { getIcon } from 'src/app/utlis/file-utils';
-
+import { CampusService } from 'src/app/demo/service/campus.service';
 @Component({
     selector: 'app-goals',
     templateUrl: './goals.component.html',
@@ -251,7 +250,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     getAllCampuses() {
         this.camp
-            .getRoute('get', 'campus', 'getAllCampus')
+            .fetch('get', 'campus', 'getAllCampus')
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.deptDropdownCampusValue = data.data[0];
@@ -268,7 +267,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 takeUntil(this.getGoalSubscription),
                 tap((data: any) => {
                     this.goals = data.goals;
-                    console.log(data);
                     this.loading = false;
                     resultSubject.next(true); // Emit true on success
                     resultSubject.complete(); // Complete the subject
@@ -282,7 +280,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     });
                     resultSubject.next(false); // Emit false on error
                     resultSubject.complete(); // Complete the subject
-                    return throwError(error); // Re-throw the error if necessary
+                    return throwError(() => error); // Re-throw the error if necessary
                 })
             )
             .subscribe(); // Trigger the observable
