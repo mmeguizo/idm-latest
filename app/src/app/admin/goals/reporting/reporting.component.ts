@@ -56,7 +56,7 @@ export class ReportingComponent implements OnInit, OnDestroy {
         this.loading = true;
         this.multi = [];
         this.goalService
-            .getRoute(
+            .fetch(
                 'get',
                 'goals',
                 `getAllObjectivesWithObjectivesForBarChartsDashboard/${campus}`

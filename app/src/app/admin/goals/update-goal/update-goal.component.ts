@@ -140,7 +140,7 @@ export class UpdateGoalComponent implements OnInit, OnDestroy {
             campus: this.formGroupCampus.value.selectedCampus.name,
         };
         this.goal
-            .getRoute('put', 'goals', 'updateGoals', data)
+            .fetch('put', 'goals', 'updateGoals', data)
             .pipe(takeUntil(this.updateGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {

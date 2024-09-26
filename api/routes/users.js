@@ -14,14 +14,24 @@ module.exports = (router) => {
         deleted: false,
         role: "admin",
       });
-      let userCount = await User.countDocuments({
+      let vicePresidentCount = await User.countDocuments({
         deleted: false,
-        role: "user",
+        role: "vice-president",
+      });
+      let directorCount = await User.countDocuments({
+        deleted: false,
+        role: "director",
+      });
+      let officeHeadCount = await User.countDocuments({
+        deleted: false,
+        role: "office-head",
       });
       let documentCount = await User.countDocuments({ deleted: false });
       data.push({
         admin: adminCount,
-        user: userCount,
+        vice_president: vicePresidentCount,
+        director: directorCount,
+        office_head: officeHeadCount,
         document: documentCount,
       });
       res.json({ success: true, data: data });
@@ -245,9 +255,6 @@ module.exports = (router) => {
   router.put("/updateUser", async (req, res) => {
     let data = req.body;
     let userData = {};
-
-    console.log({ updateUser: data });
-
     try {
       const user = await User.findOne({ id: req.body.id });
 
@@ -287,9 +294,6 @@ module.exports = (router) => {
       const response = await User.findOneAndUpdate({ id: data.id }, userData, {
         new: true,
       });
-
-      console.log({ userData, response });
-
       if (response) {
         res.json({
           success: true,

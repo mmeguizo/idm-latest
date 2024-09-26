@@ -414,7 +414,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             accept: () => {
                 this.loading = true;
                 this.goal
-                    .getRoute('put', 'objectives', 'setInactiveObjectives', {
+                    .fetch('put', 'objectives', 'setInactiveObjectives', {
                         id: id,
                     })
                     .pipe(takeUntil(this.objectiveSubscription))

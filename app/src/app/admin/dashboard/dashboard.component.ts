@@ -150,10 +150,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     async getAllGoals() {
         await this.goalService
-            .getRoute('get', 'goals', 'getGoalsForDashboard')
+            .fetch('get', 'goals', 'getGoalsForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                this.NewGoals = data.data;
+                this.NewGoals = data.data[0];
             });
     }
 
@@ -178,7 +178,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     async getAllObjectivesWithObjectives(campus?: string) {
         this.loading = true;
         this.goalService
-            .getRoute(
+            .fetch(
                 'get',
                 'goals',
                 `getAllObjectivesWithObjectivesForDashboard/${campus}`

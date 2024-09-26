@@ -311,7 +311,6 @@ export class UsersComponent implements OnInit, OnDestroy {
 
     receivedEditUserEvent(event: any) {
         if (event.addEditedUser) {
-            console.log('receivedEditUserEvent', event.data);
             this.getAllusers();
         }
     }

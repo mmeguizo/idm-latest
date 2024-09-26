@@ -285,9 +285,6 @@ export class FileService {
         }
         formData.append('objectiveId', objectiveId);
         formData.append('frequencyFileName', frequencyFileName);
-
-        console.log(frequencyFileName, 'frequencyFileName');
-        console.log(objectiveId, 'objectiveId');
         return this.http
             .post(
                 this.cs.domain + `/fileupload/addObjectiveFiles/${user_id}`,
@@ -341,7 +338,6 @@ export class FileService {
         uploadobjective?: any
     ) {
         this.createAuthenticationHeaders();
-        console.log({ addMultipleFiles: files });
         const formData: FormData = new FormData();
 
         for (let file of files) {

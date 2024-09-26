@@ -239,7 +239,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     getAllObjectivesWithObjectives() {
         this.goal
-            .getRoute(
+            .fetch(
                 'get',
                 'goals',
                 'getAllObjectivesWithObjectives/' + this.USERID
@@ -395,7 +395,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         };
 
         this.goal
-            .getRoute('post', 'goals', 'addGoals', data)
+            .fetch('post', 'goals', 'addGoals', data)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
@@ -464,7 +464,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             campus: this.userCampus,
         };
         this.goal
-            .getRoute('put', 'goals', 'updateGoals', data)
+            .fetch('put', 'goals', 'updateGoals', data)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
@@ -660,7 +660,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.goal
-                    .getRoute('put', 'goals', 'deleteGoals', { _id: _id })
+                    .fetch('put', 'goals', 'deleteGoals', { _id: _id })
                     .pipe(takeUntil(this.getGoalSubscription))
                     .subscribe((data: any) => {
                         if (data.success) {
@@ -693,7 +693,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             accept: () => {
                 this.loading = true;
                 this.goal
-                    .getRoute('put', 'objectives', 'setInactiveObjectives', {
+                    .fetch('put', 'objectives', 'setInactiveObjectives', {
                         id: id,
                     })
                     .pipe(takeUntil(this.getGoalSubscription))

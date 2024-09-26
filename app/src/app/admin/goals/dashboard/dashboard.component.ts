@@ -65,7 +65,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getGoals() {
         this.goal
-            .getRoute('get', 'goals', 'getGoalsForDashboard')
+            .fetch('get', 'goals', 'getGoalsForDashboard')
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.goalForTables =
@@ -94,7 +94,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getObjectiveViewPieChart() {
         this.goalService
-            .getRoute('get', 'goals', `getObjectivesViewTable`)
+            .fetch('get', 'goals', `getObjectivesViewTable`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data?: any) => {
                 this.initBarCharts(data?.data);

@@ -171,7 +171,7 @@ export class AddingGoalComponent implements OnInit, OnDestroy {
         }
 
         this.goal
-            .getRoute('post', 'goals', 'addGoals', data)
+            .fetch('post', 'goals', 'addGoals', data)
             .pipe(takeUntil(this.addGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {

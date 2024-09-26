@@ -181,8 +181,6 @@ export class AppTopBarComponent implements OnInit {
             .fetch('get', 'users', 'profile', this.id)
             .pipe(takeUntil(this.getSubscription))
             .subscribe((data: any) => {
-                console.log({ getUserData: data });
-
                 this.form = this.formBuilder.group({
                     username: [data.user.username, [Validators.required]],
                     email: [data.user.email, [Validators.required]],

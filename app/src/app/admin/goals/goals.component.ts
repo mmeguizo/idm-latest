@@ -262,7 +262,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
         this.loading = true;
         this.goal
-            .getRoute('get', 'goals', 'getAllObjectivesWithObjectives')
+            .fetch('get', 'goals', 'getAllObjectivesWithObjectives')
             .pipe(
                 takeUntil(this.getGoalSubscription),
                 tap((data: any) => {
@@ -455,7 +455,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.goal
-                    .getRoute('put', 'goals', 'deleteGoals', { _id: _id })
+                    .fetch('put', 'goals', 'deleteGoals', { _id: _id })
                     .pipe(takeUntil(this.getGoalSubscription))
                     .subscribe((data: any) => {
                         if (data.success) {
@@ -488,7 +488,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             accept: () => {
                 this.loading = true;
                 this.goal
-                    .getRoute('put', 'objectives', 'setInactiveObjectives', {
+                    .fetch('put', 'objectives', 'setInactiveObjectives', {
                         id: id,
                     })
                     .pipe(takeUntil(this.getGoalSubscription))
@@ -730,78 +730,3 @@ export class GoalsComponent implements OnInit, OnDestroy {
         };
     }
 }
-
-/*
-  updateObjectiveComplete(
-        event: Event,
-        data: any,
-        index = 0,
-        completeStatus: any
-    ) {
-        this.onclickCompletionButton[index] = true;
-        let goalIDs = data.goalId;
-
-        //create an index of boolean to match the button on the table
-        // if not all buttons will load too
-
-        this.confirmationService.confirm({
-            key: 'updateObjectiveComplete',
-            target: event.target as EventTarget,
-            message: `Marking Objective ${
-                completeStatus
-                    ? 'as Incomplete'
-                    : ' as Complete? Will Lock Files'
-            }, Are You Sure?`,
-            header: 'Confirmation',
-            icon: 'pi pi-exclamation-triangle',
-            acceptIcon: 'none',
-            rejectIcon: 'none',
-            rejectButtonStyleClass: 'p-button-text',
-            accept: () => {
-                this.obj
-                    .getRoute(
-                        'put',
-                        'objectives',
-                        'updateobjectivecompletion',
-                        {
-                            id: data.id,
-                        }
-                    )
-                    .pipe(takeUntil(this.getGoalSubscription))
-                    .subscribe(async (results: any) => {
-                        if (results.success) {
-                            this.getAllObjectivesWithObjectives();
-                            this.getObjectivesReload(goalIDs);
-                            this.messageService.add({
-                                severity: 'success  ',
-                                summary: 'Done',
-                                detail: results.message,
-                                life: 5000,
-                            });
-                            // this saves the objectid instead of refetch by closing the dialog it will run hideview to refetch
-                            this.hideviewObjectiveFileDialogCardID = goalIDs;
-                            // this.hideviewObjectiveFileDialogCard(goalIDs);
-                        } else {
-                            this.messageService.add({
-                                severity: 'error  ',
-                                summary: 'Error',
-                                detail: results.message,
-                            });
-                        }
-                    });
-                // this.onclickCompletionButton = false;
-                this.onclickCompletionButton[index] = false;
-            },
-            reject: () => {
-                this.onclickCompletionButton[index] = false;
-                this.messageService.add({
-                    severity: 'info',
-                    summary: 'Done',
-                    detail: 'Nothing happens',
-                    life: 3000,
-                });
-            },
-        });
-    }
-
-*/

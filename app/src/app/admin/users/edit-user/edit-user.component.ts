@@ -67,9 +67,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
 
     ngOnChanges(changes: SimpleChanges) {
         const data = changes['updateUser']?.currentValue?.data;
-
-        console.log('SimpleChanges', data);
-
         this.editNewUserEventFromParent = changes['updateUser']?.currentValue;
         if (
             this.editNewUserEventFromParent &&
@@ -157,8 +154,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
             password: form.value.password.trim(),
             confirm: form.value.confirm.trim(),
         };
-
-        console.log(data);
         this.user
             .fetch('put', 'users', 'updateUser', data)
             .pipe(takeUntil(this.getUserSubscription))

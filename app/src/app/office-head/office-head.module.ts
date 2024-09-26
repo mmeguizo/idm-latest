@@ -19,17 +19,23 @@ import { AiComponent } from './ai/ai.component';
 import { OfficeHeadRoutingModule } from './office-head-routing.module';
 import { OfficeHeadComponent } from './office-head.component';
 import { GoalDashboardComponent } from './goal/dashboard/dashboard.component';
+import { GoalComponent } from './goal/goal.component';
+import { GoalTableComponent } from './goal/goal-table/goal-table.component';
+import { AddGoalComponent } from './goal/add-goal/add-goal.component';
+import { EditGoalComponent } from './goal/edit-goal/edit-goal.component';
+import { DeleteFilesComponent } from './goal/delete-files/delete-files.component';
 
 @NgModule({
-    imports: [OfficeHeadRoutingModule, SharedModule],
+    imports: [OfficeHeadRoutingModule, SharedModule, DeleteFilesComponent],
     declarations: [
-        // UserComponnt,
+        EditGoalComponent,
         DashboardComponent,
         OfficeHeadComponent,
-        // GoalsComponent,
-        // ObjectivesComponent,
+        GoalComponent,
+        AddGoalComponent,
         GoalDashboardComponent,
         AiComponent,
+        GoalTableComponent,
     ],
     providers: [FileUpload],
 })
