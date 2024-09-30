@@ -100,7 +100,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
     getAllobjectives() {
         this.loading = true;
         this.obj
-            .getRoute('get', 'objectives', 'getAllObjectives')
+            .fetch('get', 'objectives', 'getAllObjectives')
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
                 this.objectiveDatas = data.Objectives;
@@ -116,11 +116,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
     getAllobjectivesGoalsUsers() {
         this.loading = true;
         this.obj
-            .getRoute(
-                'get',
-                'objectives',
-                'getAllByIdObjectivesWithGoalsAndUsers'
-            )
+            .fetch('get', 'objectives', 'getAllByIdObjectivesWithGoalsAndUsers')
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
                 this.objectiveDatas = data.data;
@@ -172,14 +168,9 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             accept: () => {
                 this.loading = true;
                 this.obj
-                    .getRoute(
-                        'put',
-                        'objectives',
-                        'updateobjectivecompletion',
-                        {
-                            id: data.id,
-                        }
-                    )
+                    .fetch('put', 'objectives', 'updateobjectivecompletion', {
+                        id: data.id,
+                    })
                     .pipe(takeUntil(this.objectiveSubscription))
                     .subscribe(async (results: any) => {
                         if (results.success) {
@@ -350,7 +341,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
         form.value.frequency_monitoring =
             this.formGroupDropdown.value.selectedDropdown.name;
         this.obj
-            .getRoute('put', 'objectives', 'updateObjectives', form.value)
+            .fetch('put', 'objectives', 'updateObjectives', form.value)
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
@@ -414,7 +405,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             accept: () => {
                 this.loading = true;
                 this.goal
-                    .getRoute('put', 'objectives', 'setInactiveObjectives', {
+                    .fetch('put', 'objectives', 'setInactiveObjectives', {
                         id: id,
                     })
                     .pipe(takeUntil(this.objectiveSubscription))

@@ -118,7 +118,68 @@ export class AppMenuComponent implements OnInit {
                     ],
                 },
             ];
-        } else {
+        }
+
+        if (this.role === 'office-head') {
+            this.model = [
+                {
+                    label: 'Home',
+                    items: [
+                        {
+                            label: 'Dashboard',
+                            icon: 'pi pi-fw pi-home',
+                            routerLink: ['/office-head/dashboard'],
+                        },
+                    ],
+                },
+                {
+                    label: 'Goals',
+                    items: [
+                        {
+                            label: 'Goals',
+                            icon: 'pi pi-caret-down',
+                            // routerLink: ['/office-head/goal'],
+                            items: [
+                                {
+                                    label: 'Dashboard',
+                                    icon: 'pi pi-compass',
+                                    routerLink: ['/office-head/goal/dashboard'],
+                                },
+                                {
+                                    label: 'Goals',
+                                    icon: 'pi pi-align-justify',
+                                    routerLink: ['/office-head/goal'],
+                                },
+                                // {
+                                //     label: 'Objectives',
+                                //     icon: 'pi pi-flag',
+                                //     routerLink: [
+                                //         '/office-head/goals/objectives',
+                                //     ],
+                                // },
+                                // {
+                                //     label: 'Calendar',
+                                //     icon: 'pi pi-calendar-plus',
+                                //     routerLink: ['/office-head/goals/calendar'],
+                                // },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    label: 'Ai Helper',
+                    items: [
+                        {
+                            label: 'Gemini',
+                            icon: 'pi pi-google',
+                            routerLink: ['/office-head/ai'],
+                        },
+                    ],
+                },
+            ];
+        }
+
+        if (this.role === 'user') {
             this.model = [
                 {
                     label: 'Home',

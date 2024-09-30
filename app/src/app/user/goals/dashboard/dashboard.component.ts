@@ -78,7 +78,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .then((data) => (this.products = data));
 
         this.obj
-            .getRoute(
+            .fetch(
                 'get',
                 'objectives',
                 `getAllObjectivesForDashboard/${this.USERID}`
@@ -191,7 +191,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getGoals() {
         this.goal
-            .getRoute('get', 'goals', `getGoalsForDashboard/${this.USERID}`)
+            .fetch('get', 'goals', `getGoalsForDashboard/${this.USERID}`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.goalForTables =
@@ -203,11 +203,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getAllObjectives() {
         this.obj
-            .getRoute(
-                'get',
-                'objectives',
-                `getAllObjectivesBudget/${this.USERID}`
-            )
+            .fetch('get', 'objectives', `getAllObjectivesBudget/${this.USERID}`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.objectiveBudget = data.data;
@@ -215,7 +211,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     }
     getAllObjectivesForTable() {
         this.obj
-            .getRoute(
+            .fetch(
                 'get',
                 'goals',
                 `getAllObjectivesWithObjectives/${this.USERID}`
@@ -228,7 +224,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getObjectiveViewPieChart() {
         this.goalService
-            .getRoute('get', 'goals', `getObjectivesViewTable/${this.USERID}`)
+            .fetch('get', 'goals', `getObjectivesViewTable/${this.USERID}`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data?: any) => {
                 this.initBarCharts(data?.data);

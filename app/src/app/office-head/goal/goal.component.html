@@ -1,0 +1,24 @@
+<p-confirmPopup key="deleteGoal"></p-confirmPopup>
+<app-goal-table
+    [addedaGoal]="parentEmitAddnewGoal"
+    [editedAGoal]="parentEmitEditGoal"
+    [deletedAGoal]="parentEmitDeleteGoal"
+    (addNewGoalButtonClick)="receivedAddNewGoalButtonClick($event)"
+    (editGoalButtonClick)="receivedEditGoalButtonClick($event)"
+    (getObjectiveButtonClick)="receivedGetObjectiveButtonClick($event)"
+></app-goal-table>
+<app-add-goal
+    [addNewGoal]="parentAddnewGoal"
+    (childAddGoalEvent)="receivedAddGoalEvent($event)"
+></app-add-goal>
+
+<app-edit-goal
+    [editGoal]="parentEditGoal"
+    (childEditGoalEvent)="receivedEditGoalEvent($event)"
+></app-edit-goal>
+
+<app-objective-table
+    [getObjective]="parentGetObjective"
+    (childGetObjectiveEvent)="receivedGetObjectiveEvent($event)"
+>
+</app-objective-table>

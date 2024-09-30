@@ -67,6 +67,14 @@ export class UsersComponent implements OnInit, OnDestroy {
     citiesDemo: { name: string; code: string }[];
     formGroupDemo: any;
     formGroupCampus: any;
+
+    // add chidren
+    parentAddNewUser: any;
+    parentUpdateUser: {
+        updateUser: string;
+        updateUserCard: boolean;
+        data: any;
+    };
     constructor(
         private user: UserService,
         public auth: AuthService,
@@ -97,7 +105,7 @@ export class UsersComponent implements OnInit, OnDestroy {
         ];
 
         this.createForm();
-        this.createFormAddUser();
+        // this.createFormAddUser();
 
         this.formGroupDemo = new FormGroup({
             selectDepartment: new FormControl(),
@@ -117,7 +125,7 @@ export class UsersComponent implements OnInit, OnDestroy {
 
     getAllCampuses() {
         this.camp
-            .getRoute('get', 'campus', 'getAllCampus')
+            .fetch('get', 'campus', 'getAllCampus')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
                 this.deptDropdownCampusValue = data.data[0];
@@ -125,33 +133,34 @@ export class UsersComponent implements OnInit, OnDestroy {
     }
     getAllDepartmentDropdown() {
         this.camp
-            .getRoute('get', 'department', 'getAllDepartmentDropdown')
+            .fetch('get', 'department', 'getAllDepartmentDropdown')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
                 this.deptDropdownValue = data.data[0];
             });
     }
-    createFormAddUser() {
-        this.Addform = this.AddUserFormBuilder.group({
-            username: ['', [Validators.required]],
-            email: [
-                '',
-                [
-                    Validators.required,
-                    Validators.email,
-                    Validators.pattern('^.+@chmsu.edu.ph$'),
-                ],
-            ],
-            department: new FormControl(),
-            password: ['', [Validators.required]],
-            confirm: ['', [Validators.required]],
-        });
-    }
+
+    // createFormAddUser() {
+    //     this.Addform = this.AddUserFormBuilder.group({
+    //         username: ['', [Validators.required]],
+    //         email: [
+    //             '',
+    //             [
+    //                 Validators.required,
+    //                 Validators.email,
+    //                 Validators.pattern('^.+@chmsu.edu.ph$'),
+    //             ],
+    //         ],
+    //         department: new FormControl(),
+    //         password: ['', [Validators.required]],
+    //         confirm: ['', [Validators.required]],
+    //     });
+    // }
 
     getAllusers() {
         this.loading = true;
         this.user
-            .getRoute(
+            .fetch(
                 'get',
                 'users',
                 `getAllUsersExceptLoggedIn/${this.auth.getTokenUserID()}`
@@ -180,30 +189,6 @@ export class UsersComponent implements OnInit, OnDestroy {
         this.filter.nativeElement.value = '';
     }
 
-    updateUser(data) {
-        this.selectedDept = data.department;
-        this.selectedRole = data.role;
-
-        this.formGroupDemo.setValue({
-            selectDepartment: this.deptDropdownValue.find(
-                (dept) => dept.name === data.department
-            ),
-        });
-        this.formGroupCampus.setValue({
-            selectedCampus: this.deptDropdownCampusValue.find(
-                (dept) => dept.name === data.campus
-            ),
-        });
-        this.form.setValue({
-            username: data.username,
-            email: data.email,
-            department: data.department,
-        });
-
-        this.updateUserCard = true;
-        this.updateUserId = data.id;
-    }
-
     updateUserExecution(form) {
         let data = {
             id: this.updateUserId,
@@ -215,7 +200,7 @@ export class UsersComponent implements OnInit, OnDestroy {
         };
 
         this.user
-            .getRoute('put', 'users', 'updateUser', data)
+            .fetch('put', 'users', 'updateUser', data)
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
@@ -242,7 +227,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     }
     deleteUserExec() {
         this.user
-            .getRoute('put', 'users', 'setInactiveUser', {
+            .fetch('put', 'users', 'setInactiveUser', {
                 id: this.deleteUserId,
             })
             .pipe(takeUntil(this.getUserSubscription))
@@ -272,7 +257,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     changeUserStatuExecution(id?: any) {
         this.changeStatusCard = false;
         this.user
-            .getRoute('put', 'users', 'changeUserStatus', {
+            .fetch('put', 'users', 'changeUserStatus', {
                 id: this.changeStatusId,
             })
             .pipe(takeUntil(this.getUserSubscription))
@@ -305,58 +290,6 @@ export class UsersComponent implements OnInit, OnDestroy {
             });
     }
 
-    addUser(form: any) {
-        let data = {
-            username: form.value.username,
-            email: form.value.email,
-            department: this.formGroupDemo.value.selectDepartment.name,
-            campus: this.formGroupCampus.value.selectedCampus.name,
-            password: form.value.password,
-            confirm: form.value.confirm,
-        };
-
-        // if username || email || password || confirm is empty
-        if (
-            !data.username ||
-            !data.email ||
-            !data.password ||
-            !data.confirm ||
-            !data.department
-        ) {
-            return this.messageService.add({
-                severity: 'error  ',
-                summary: 'Error',
-                detail: 'Please fill in all required fields.',
-            });
-        }
-
-        this.user
-            .getRoute('post', 'users', 'addUser', data)
-            .pipe(takeUntil(this.getUserSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    this.getAllusers();
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
-                    this.addUserDialogCard = false;
-                    this.Addform.reset();
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
-    }
-
-    addUserDialogButton() {
-        this.addUserDialogCard = true;
-    }
-
     getErrorMessage(formControlName: string) {
         if (this.Addform.get(formControlName)?.hasError('required')) {
             return 'You must enter a value.';
@@ -366,5 +299,34 @@ export class UsersComponent implements OnInit, OnDestroy {
             return 'Only Chmsu addresses (chmsu.edu.ph) are accepted.';
         }
         return '';
+    }
+
+    updateUser(data) {
+        this.parentUpdateUser = {
+            updateUser: 'updateUser',
+            updateUserCard: true,
+            data: data,
+        };
+    }
+
+    receivedEditUserEvent(event: any) {
+        if (event.addEditedUser) {
+            this.getAllusers();
+        }
+    }
+
+    // add user child component
+    addUserDialogButton() {
+        this.parentAddNewUser = {
+            addNewUser: 'addNewUser',
+            addUserDialogCard: true,
+        };
+        // this.addUserDialogCard = true;
+    }
+
+    receivedAddUserEvent(event: any) {
+        if (event.addNewUser) {
+            this.getAllusers();
+        }
     }
 }

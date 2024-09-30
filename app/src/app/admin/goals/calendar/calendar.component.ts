@@ -69,7 +69,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     getAllobjectivesGoalsUsers() {
         this.loading = true;
         this.obj
-            .getRoute('get', 'objectives', 'getObjectiveForCalendar')
+            .fetch('get', 'objectives', 'getObjectiveForCalendar')
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe(
                 (data: any) => {

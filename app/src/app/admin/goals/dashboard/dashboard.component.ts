@@ -1,16 +1,9 @@
-import {
-    Component,
-    OnInit,
-    OnDestroy,
-    ElementRef,
-    ViewChild,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { GoalService } from 'src/app/demo/service/goal.service';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { ProductService } from 'src/app/demo/service/product.service';
 import { Product } from 'src/app/demo/api/product';
-import { Chart } from 'chart.js';
 interface expandedRows {
     [key: string]: boolean;
 }
@@ -72,7 +65,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getGoals() {
         this.goal
-            .getRoute('get', 'goals', 'getGoalsForDashboard')
+            .fetch('get', 'goals', 'getGoalsForDashboard')
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.goalForTables =
@@ -84,7 +77,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getAllObjectives() {
         this.obj
-            .getRoute('get', 'objectives', `getAllObjectivesBudget`)
+            .fetch('get', 'objectives', `getAllObjectivesBudget`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.objectiveBudget = data.data;
@@ -92,7 +85,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     }
     getAllObjectivesForTable() {
         this.obj
-            .getRoute('get', 'goals', `getAllObjectivesWithObjectives`)
+            .fetch('get', 'goals', `getAllObjectivesWithObjectives`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.goals = data.goals;
@@ -101,10 +94,9 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getObjectiveViewPieChart() {
         this.goalService
-            .getRoute('get', 'goals', `getObjectivesViewTable`)
+            .fetch('get', 'goals', `getObjectivesViewTable`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data?: any) => {
-                console.log({ getObjectiveViewPieChart: data });
                 this.initBarCharts(data?.data);
             });
     }

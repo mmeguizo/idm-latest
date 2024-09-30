@@ -230,7 +230,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     getAllCampuses() {
         this.camp
-            .getRoute('get', 'campus', 'getAllCampus')
+            .fetch('get', 'campus', 'getAllCampus')
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.deptDropdownCampusValue = data.data[0];
@@ -239,7 +239,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     getAllObjectivesWithObjectives() {
         this.goal
-            .getRoute(
+            .fetch(
                 'get',
                 'goals',
                 'getAllObjectivesWithObjectives/' + this.USERID
@@ -290,7 +290,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         if (id) {
             this.loading = true;
             this.obj
-                .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
+                .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
                     this.objectiveDatas = data.Objectives;
@@ -312,7 +312,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         if (id) {
             this.loading = true;
             this.obj
-                .getRoute(
+                .fetch(
                     'get',
                     'objectives',
                     `getAllByIdObjectives/${id}/${this.USERID}`
@@ -395,7 +395,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         };
 
         this.goal
-            .getRoute('post', 'goals', 'addGoals', data)
+            .fetch('post', 'goals', 'addGoals', data)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
@@ -425,7 +425,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             this.formGroupDropdown.value.selectedDropdown.name;
         e.value.createdBy = this.USERID;
         this.obj
-            .getRoute('post', 'objectives', 'addObjectives', e.value)
+            .fetch('post', 'objectives', 'addObjectives', e.value)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
@@ -464,7 +464,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             campus: this.userCampus,
         };
         this.goal
-            .getRoute('put', 'goals', 'updateGoals', data)
+            .fetch('put', 'goals', 'updateGoals', data)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
@@ -575,14 +575,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
             rejectButtonStyleClass: 'p-button-text',
             accept: () => {
                 this.obj
-                    .getRoute(
-                        'put',
-                        'objectives',
-                        'updateobjectivecompletion',
-                        {
-                            id: data.id,
-                        }
-                    )
+                    .fetch('put', 'objectives', 'updateobjectivecompletion', {
+                        id: data.id,
+                    })
                     .pipe(takeUntil(this.getGoalSubscription))
                     .subscribe(async (results: any) => {
                         if (results.success) {
@@ -626,7 +621,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         form.value.frequency_monitoring =
             this.formGroupDropdown.value.selectedDropdown.name;
         this.obj
-            .getRoute('put', 'objectives', 'updateObjectives', form.value)
+            .fetch('put', 'objectives', 'updateObjectives', form.value)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
@@ -660,7 +655,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.goal
-                    .getRoute('put', 'goals', 'deleteGoals', { _id: _id })
+                    .fetch('put', 'goals', 'deleteGoals', { _id: _id })
                     .pipe(takeUntil(this.getGoalSubscription))
                     .subscribe((data: any) => {
                         if (data.success) {
@@ -693,7 +688,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             accept: () => {
                 this.loading = true;
                 this.goal
-                    .getRoute('put', 'objectives', 'setInactiveObjectives', {
+                    .fetch('put', 'objectives', 'setInactiveObjectives', {
                         id: id,
                     })
                     .pipe(takeUntil(this.getGoalSubscription))
@@ -827,7 +822,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     hidviewObjectRefetch(id) {
         this.obj
-            .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
+            .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.objectiveDatas = data.Objectives;

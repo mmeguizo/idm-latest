@@ -74,7 +74,7 @@ export class AddingGoalComponent implements OnInit, OnDestroy {
     // campus dropdown
     getAllCampuses() {
         this.camp
-            .getRoute('get', 'campus', 'getAllCampus')
+            .fetch('get', 'campus', 'getAllCampus')
             .pipe(takeUntil(this.addGoalSubscription))
             .subscribe({
                 next: (data: any) => {
@@ -171,7 +171,7 @@ export class AddingGoalComponent implements OnInit, OnDestroy {
         }
 
         this.goal
-            .getRoute('post', 'goals', 'addGoals', data)
+            .fetch('post', 'goals', 'addGoals', data)
             .pipe(takeUntil(this.addGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {

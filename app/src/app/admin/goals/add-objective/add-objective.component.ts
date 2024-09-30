@@ -276,7 +276,7 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
 
         const updatedData = await this.addGoalPeriods(data, patterns);
         this.obj
-            .getRoute('post', 'objectives', 'addObjectives', updatedData)
+            .fetch('post', 'objectives', 'addObjectives', updatedData)
             .pipe(takeUntil(this.addObjectiveSubscription))
             .subscribe((data: any) => {
                 if (data.success) {

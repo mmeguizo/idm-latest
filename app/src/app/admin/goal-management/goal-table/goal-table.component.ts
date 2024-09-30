@@ -82,7 +82,7 @@ export class GoalTableComponent implements OnDestroy, OnChanges {
         }
         this.loading = true;
         this.goalService
-            .getRoute('get', 'goallists', 'getAllGoalLists')
+            .fetch('get', 'goallists', 'getAllGoalLists')
             .pipe(takeUntil(this.goalTableSubscription))
             .subscribe({
                 next: (data: any) => {
@@ -117,7 +117,7 @@ export class GoalTableComponent implements OnDestroy, OnChanges {
                 accept: () => {
                     this.loading = true;
                     this.goalService
-                        .getRoute('put', 'goallists', 'deleteGoalLists', {
+                        .fetch('put', 'goallists', 'deleteGoalLists', {
                             id: id,
                         })
                         .pipe(takeUntil(this.goalTableSubscription))

@@ -12,7 +12,6 @@ import { DepartmentService } from 'src/app/demo/service/department.service';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { IdepartmentDropdown } from 'src/app/interface/department.interface';
 import { IcampusDropdown } from 'src/app/interface/campus.interface';
-import { CampusService } from 'src/app/demo/service/campus.service';
 import { BranchService } from 'src/app/demo/service/branch.service';
 import { MessageService } from 'primeng/api';
 import { TabView, TabPanel } from 'primeng/tabview';
@@ -74,7 +73,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         private goalService: GoalService,
         private dept: DepartmentService,
         private obj: ObjectiveService,
-        private campus: CampusService,
         private branch: BranchService,
         private messageService: MessageService,
         private changeDetectorRef: ChangeDetectorRef
@@ -144,7 +142,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     async getAllusers() {
         await this.userService
-            .getRoute('get', 'users', 'getAllUsersForDashboard')
+            .fetch('get', 'users', 'getAllUsersForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
                 this.users = data.data[0];
@@ -152,10 +150,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     async getAllGoals() {
         await this.goalService
-            .getRoute('get', 'goals', 'getGoalsForDashboard')
+            .fetch('get', 'goals', 'getGoalsForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                this.NewGoals = data.data;
+                this.NewGoals = data.data[0];
             });
     }
 
@@ -170,7 +168,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     async getAllObjectives() {
         await this.obj
-            .getRoute('get', 'objectives', `getAllObjectivesForDashboard`)
+            .fetch('get', 'objectives', `getAllObjectivesForDashboard`)
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
                 this.objectivesData = data.data[0] || [];
@@ -180,7 +178,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     async getAllObjectivesWithObjectives(campus?: string) {
         this.loading = true;
         this.goalService
-            .getRoute(
+            .fetch(
                 'get',
                 'goals',
                 `getAllObjectivesWithObjectivesForDashboard/${campus}`
@@ -222,7 +220,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         if (goal) {
             this.obj
-                .getRoute(
+                .fetch(
                     'get',
                     'objectives',
                     `getAllObjectivesForDashboardPie/${goal.id}`

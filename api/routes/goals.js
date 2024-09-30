@@ -62,7 +62,7 @@ module.exports = (router) => {
   router.get("/getGoalsForDashboard", async (req, res) => {
     let data = [];
     try {
-      let goalCount = await Goals.countDocuments();
+      let goalCount = await Goals.countDocuments({ deleted: false });
       let goalDeletedCount = await Goals.countDocuments({ deleted: true });
       let goalAmountTotal = await Goals.aggregate([
         {

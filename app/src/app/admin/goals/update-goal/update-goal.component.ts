@@ -122,7 +122,7 @@ export class UpdateGoalComponent implements OnInit, OnDestroy {
 
     getAllCampuses() {
         this.campus
-            .getRoute('get', 'campus', 'getAllCampus')
+            .fetch('get', 'campus', 'getAllCampus')
             .pipe(takeUntil(this.updateGoalSubscription))
             .subscribe((data: any) => {
                 this.deptDropdownCampusValue = data.data[0];
@@ -140,7 +140,7 @@ export class UpdateGoalComponent implements OnInit, OnDestroy {
             campus: this.formGroupCampus.value.selectedCampus.name,
         };
         this.goal
-            .getRoute('put', 'goals', 'updateGoals', data)
+            .fetch('put', 'goals', 'updateGoals', data)
             .pipe(takeUntil(this.updateGoalSubscription))
             .subscribe((data: any) => {
                 if (data.success) {

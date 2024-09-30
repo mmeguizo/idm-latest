@@ -126,12 +126,12 @@ export class AppTopBarComponent implements OnInit {
         public user: UserService,
         public formBuilder: FormBuilder
     ) {
-        this.id = this.auth.getTokenUserID() || '';
         this.name = this.auth.getTokenUsername() || '';
         this.profile_pic = this.auth.getUserProfilePic() || 'no-photo.png';
     }
 
     ngOnInit() {
+        this.id = this.auth.getTokenUserID() || '';
         this.Listitems = [
             {
                 // icon: 'pi pi-fw pi-cog',
@@ -178,7 +178,7 @@ export class AppTopBarComponent implements OnInit {
 
     getUserData() {
         this.user
-            .getRoute('get', 'users', 'profile', this.id)
+            .fetch('get', 'users', 'profile', this.id)
             .pipe(takeUntil(this.getSubscription))
             .subscribe((data: any) => {
                 this.form = this.formBuilder.group({
@@ -228,7 +228,7 @@ export class AppTopBarComponent implements OnInit {
         }
 
         this.user
-            .getRoute('put', 'users', 'updateProfile', data)
+            .fetch('put', 'users', 'updateProfile', data)
             .pipe(takeUntil(this.getSubscription))
             .subscribe((data: any) => {
                 if (data.success) {

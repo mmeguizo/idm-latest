@@ -78,7 +78,7 @@ export class RouteService {
                         });
                     }
 
-                    return throwError(error);
+                    return throwError(() => error);
                 })
             );
     }
