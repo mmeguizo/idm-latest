@@ -168,7 +168,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     async getAllObjectives() {
         await this.obj
-            .getRoute('get', 'objectives', `getAllObjectivesForDashboard`)
+            .fetch('get', 'objectives', `getAllObjectivesForDashboard`)
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
                 this.objectivesData = data.data[0] || [];
@@ -220,7 +220,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         if (goal) {
             this.obj
-                .getRoute(
+                .fetch(
                     'get',
                     'objectives',
                     `getAllObjectivesForDashboardPie/${goal.id}`

@@ -329,7 +329,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         if (id) {
             this.loading = true;
             this.obj
-                .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
+                .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe(async (data: any) => {
                     this.objectiveDatas = data.Objectives;
@@ -342,7 +342,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         if (id) {
             this.loading = true;
             this.obj
-                .getRoute('get', 'objectives', `getAllByIdObjectives/${id}`)
+                .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
                     this.objectiveDatas = data.Objectives;

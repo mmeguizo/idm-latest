@@ -25,6 +25,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
     @Output() addNewGoalButtonClick = new EventEmitter<any>();
     @Output() editGoalButtonClick = new EventEmitter<any>();
     @Output() deleteGoalButtonClick = new EventEmitter<any>();
+    @Output() getObjectiveButtonClick = new EventEmitter<any>();
 
     goals: any[] = [];
     loading: boolean = false;
@@ -107,15 +108,6 @@ export class GoalTableComponent implements OnInit, OnDestroy {
         });
     }
 
-    // deleteGoalDialog(event: Event, _id: any) {
-    //     console.log('deleteGoalDialog', event, _id);
-
-    //     this.deleteGoalButtonClick.emit({
-    //         deleteGoal: true,
-    //         goal_id: _id,
-    //         event: event.target,
-    //     });
-    // }
     deleteGoalDialog(event: Event, _id: any) {
         this.confirmationService.confirm({
             key: 'deleteGoal',
@@ -144,6 +136,24 @@ export class GoalTableComponent implements OnInit, OnDestroy {
                         }
                     });
             },
+        });
+    }
+
+    getObjectives(
+        id: string,
+        _id: string,
+        listsId: any,
+        goal: any,
+        remainingBudget: any,
+        goalData: any
+    ) {
+        this.getObjectiveButtonClick.emit({
+            id: id,
+            _id: _id,
+            listsId: listsId,
+            goal: goal,
+            remainingBudget: remainingBudget,
+            goalData: goalData,
         });
     }
 }

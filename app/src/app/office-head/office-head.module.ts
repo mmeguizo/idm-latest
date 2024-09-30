@@ -24,6 +24,7 @@ import { GoalTableComponent } from './goal/goal-table/goal-table.component';
 import { AddGoalComponent } from './goal/add-goal/add-goal.component';
 import { EditGoalComponent } from './goal/edit-goal/edit-goal.component';
 import { DeleteFilesComponent } from './goal/delete-files/delete-files.component';
+import { ObjectiveTableComponent } from './goal/objective-table/objective-table.component';
 
 @NgModule({
     imports: [OfficeHeadRoutingModule, SharedModule, DeleteFilesComponent],
@@ -36,6 +37,7 @@ import { DeleteFilesComponent } from './goal/delete-files/delete-files.component
         GoalDashboardComponent,
         AiComponent,
         GoalTableComponent,
+        ObjectiveTableComponent,
     ],
     providers: [FileUpload],
 })

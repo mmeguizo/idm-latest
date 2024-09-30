@@ -52,7 +52,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     getAllObjectives() {
         this.obj
-            .getRoute(
+            .fetch(
                 'get',
                 'objectives',
                 `getAllObjectivesForDashboard/${this.userId}`

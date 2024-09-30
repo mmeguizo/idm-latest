@@ -156,7 +156,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
 
     async getObjectiveById(id: string, frequency_monitoring: string) {
         this.obj
-            .getRoute('get', 'objectives', `getObjectiveById/${id}`)
+            .fetch('get', 'objectives', `getObjectiveById/${id}`)
             .pipe(takeUntil(this.updateObjectiveSubscription))
             .subscribe((data: any) => {
                 this.objectiveDatas = data.data;
@@ -300,7 +300,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             }
         }
         this.obj
-            .getRoute('put', 'objectives', 'updateObjectives', data)
+            .fetch('put', 'objectives', 'updateObjectives', data)
             .pipe(takeUntil(this.updateObjectiveSubscription))
             .subscribe((data: any) => {
                 if (data.success) {

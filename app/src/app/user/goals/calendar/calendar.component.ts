@@ -70,23 +70,17 @@ export class CalendarComponent implements OnInit, OnDestroy {
     getAllobjectivesGoalsUsers() {
         this.loading = true;
         this.obj
-            .getRoute(
+            .fetch(
                 'get',
                 'objectives',
                 `getObjectiveForCalendar/${this.userId}`
             )
             .pipe(takeUntil(this.objectiveSubscription))
-            .subscribe(
-                (data: any) => {
-                    const events = this.transformEvents(data.data);
-                    this.updateCalendarEvents(events);
-                    this.loading = false;
-                },
-                (error) => {
-                    console.error('Error fetching events', error);
-                    this.loading = false;
-                }
-            );
+            .subscribe((data: any) => {
+                const events = this.transformEvents(data.data);
+                this.updateCalendarEvents(events);
+                this.loading = false;
+            });
     }
 
     transformEvents(data: any[]): any[] {

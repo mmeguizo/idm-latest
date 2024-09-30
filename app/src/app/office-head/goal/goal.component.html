@@ -5,6 +5,7 @@
     [deletedAGoal]="parentEmitDeleteGoal"
     (addNewGoalButtonClick)="receivedAddNewGoalButtonClick($event)"
     (editGoalButtonClick)="receivedEditGoalButtonClick($event)"
+    (getObjectiveButtonClick)="receivedGetObjectiveButtonClick($event)"
 ></app-goal-table>
 <app-add-goal
     [addNewGoal]="parentAddnewGoal"
@@ -15,3 +16,9 @@
     [editGoal]="parentEditGoal"
     (childEditGoalEvent)="receivedEditGoalEvent($event)"
 ></app-edit-goal>
+
+<app-objective-table
+    [getObjective]="parentGetObjective"
+    (childGetObjectiveEvent)="receivedGetObjectiveEvent($event)"
+>
+</app-objective-table>

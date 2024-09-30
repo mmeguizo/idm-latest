@@ -77,7 +77,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getAllObjectives() {
         this.obj
-            .getRoute('get', 'objectives', `getAllObjectivesBudget`)
+            .fetch('get', 'objectives', `getAllObjectivesBudget`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.objectiveBudget = data.data;
@@ -85,7 +85,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     }
     getAllObjectivesForTable() {
         this.obj
-            .getRoute('get', 'goals', `getAllObjectivesWithObjectives`)
+            .fetch('get', 'goals', `getAllObjectivesWithObjectives`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.goals = data.goals;

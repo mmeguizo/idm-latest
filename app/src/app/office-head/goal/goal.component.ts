@@ -29,6 +29,10 @@ export class GoalComponent implements OnInit, OnDestroy {
     parentEmitDeleteGoal: object = {};
     parentDeleteGoal: object = {};
 
+    //get objective
+    parentGetObjective: object = {};
+    parentEmitGetObjective: object = {};
+
     ConfirmationService;
     constructor(
         private confirmationService: ConfirmationService,
@@ -69,5 +73,31 @@ export class GoalComponent implements OnInit, OnDestroy {
             editGoal: event.editGoal,
             goal: event.goal,
         };
+    }
+
+    receivedGetObjectiveButtonClick(event: any) {
+        const {
+            id: id,
+            _id: _id,
+            listsId: listsId,
+            goal: goal,
+            remainingBudget: remainingBudget,
+            goalData: goalData,
+        } = event;
+        this.parentGetObjective = {
+            getObjective: true,
+            id: id,
+            _id: _id,
+            listsId: listsId,
+            goal: goal,
+            remainingBudget: remainingBudget,
+            goalData: goalData,
+        };
+    }
+
+    receivedGetObjectiveEvent(event: any) {
+        // this.parentEmitGetObjective = {
+        //     getObjective: true,
+        // };
     }
 }
