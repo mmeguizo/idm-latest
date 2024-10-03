@@ -739,10 +739,11 @@
                                   pi pi-external-link
                                 "
                                 label="View"
-                                [(loading)]="onclickCompletionButton[rowIndex]"
                                 (click)="updateSubGoal(objectiveData)"
                             ></p-button>
-                            <!-- <p-button
+                            <!--
+                              [(loading)]="onclickCompletionButton[rowIndex]"
+                            <p-button
                                 [text]="true"
                                 [raised]="true"
                                 [severity]="

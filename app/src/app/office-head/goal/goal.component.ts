@@ -33,7 +33,20 @@ export class GoalComponent implements OnInit, OnDestroy {
     parentGetObjective: object = {};
     parentEmitGetObjective: object = {};
 
+    // add objective
+    parentAddnewObjective: object = {};
+    parentEmitAddObjective: object = {};
+
     ConfirmationService;
+    parentEmitSuccessAddObjective: {
+        addedNewObjective: boolean;
+        success: boolean;
+        data: any;
+    };
+    parentEditObjective: { editObjective: any; data: any };
+    parentEditSuccessObjective: { success: Boolean; id: string };
+    parentAddnewFile: any;
+    parentViewFiles: { viewFiles: any; data: any };
     constructor(
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
@@ -100,4 +113,74 @@ export class GoalComponent implements OnInit, OnDestroy {
         //     getObjective: true,
         // };
     }
+
+    // add objective
+    receivedAddObjectiveEvent(event: any) {
+        const { addObjective, goallistsId, goalId, goal_ObjectId, data } =
+            event;
+        if (event?.addObjective) {
+            this.parentEmitAddObjective = {
+                addedNewObjective: true,
+                addObjective,
+                goallistsId,
+                goalId,
+                goal_ObjectId,
+                data,
+            };
+        }
+    }
+
+    receivedAddSuccessObjectiveEvent(event: any) {
+        const { addedNewObjective, success, data } = event;
+        if (success) {
+            this.parentEmitSuccessAddObjective = {
+                addedNewObjective,
+                success,
+                data,
+            };
+        }
+    }
+
+    receivedEditObjectiveEvent(event: any) {
+        const { editObjective, data } = event;
+        this.parentEditObjective = {
+            editObjective: editObjective,
+            data: data,
+        };
+    }
+
+    receivedUpdateObjective(event: any) {
+        const { success, id: goalID } = event;
+        if (success) {
+            this.parentEditSuccessObjective = {
+                success: success,
+                id: goalID,
+            };
+        }
+    }
+
+    receivedAddFileEvent(event: any) {
+        const {
+            USERID,
+            objectiveId,
+            viewObjectiveFileDialogCard,
+            frequencyFileNameForUpdate,
+            frequencyFileName,
+        } = event;
+    }
+
+    receivedViewFilesButtonClick(event: any) {
+        console.log({ receivedViewFilesButtonClick: event });
+        const { viewFiles, data } = event;
+        this.parentViewFiles = {
+            viewFiles: viewFiles,
+            data: data,
+        };
+    }
 }
+
+/*
+addedNewObjective: true,
+                        success: true,
+                        data: data.data,
+*/

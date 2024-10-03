@@ -3,7 +3,6 @@ import {
     OnInit,
     OnDestroy,
     Input,
-    ChangeDetectorRef,
     SimpleChanges,
     Output,
     EventEmitter,
@@ -14,7 +13,7 @@ import {
     FormControl,
     FormGroup,
 } from '@angular/forms';
-import { Subject, pipe, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { DepartmentService } from 'src/app/demo/service/department.service';
 import { MessageService } from 'primeng/api';
 import { CampusService } from 'src/app/demo/service/campus.service';

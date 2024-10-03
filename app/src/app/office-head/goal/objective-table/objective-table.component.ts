@@ -3,10 +3,12 @@ import {
     OnInit,
     OnDestroy,
     Input,
+    ChangeDetectorRef,
     ElementRef,
     ViewChild,
     SimpleChanges,
     EventEmitter,
+    Output,
 } from '@angular/core';
 import {
     Subject,
@@ -43,6 +45,11 @@ import { customTitleCase } from 'src/app/utlis/custom-title-case';
 export class ObjectiveTableComponent implements OnInit, OnDestroy {
     private objectiveTableSubscription = new Subject<void>();
     @Input() getObjective = new EventEmitter<any>();
+    @Input() editObjective = new EventEmitter<any>();
+    @Input() addNewSuccessObjective = new EventEmitter<any>();
+    @Output() childAddObjectiveEvent = new EventEmitter<any>();
+    @Output() childEditObjectiveEvent = new EventEmitter<any>();
+    @Output() viewFilesEvent = new EventEmitter<any>();
 
     subGoalObjective: boolean = false;
     loading: boolean = false;
@@ -55,15 +62,19 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     goalDataRemainingBudget: any;
     goalBudget: any;
     subObjectiveHeaders: any;
-    objectiveDatas: any;
+    objectiveDatas: any[] = [];
+    addNewObjectiveTableTrigger: any;
+    editObjectiveTableTrigger: any;
+    // childAddObjectiveEvent: any;
     constructor(
         private objective: ObjectiveService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private auth: AuthService,
         private department: DepartmentService,
-        private file: FileService,
-        private campus: CampusService
+        private goal: GoalService,
+        private campus: CampusService,
+        private changeDetectorRef: ChangeDetectorRef
     ) {}
 
     ngOnInit() {
@@ -72,6 +83,8 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        this.objectiveTableSubscription.next();
+        this.objectiveTableSubscription.complete();
         this.objectiveTableSubscription.unsubscribe();
     }
 
@@ -80,6 +93,9 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     }
     ngOnChanges(changes: SimpleChanges) {
         this.getObjectiveTableTrigger = changes['getObjective']?.currentValue;
+        this.addNewObjectiveTableTrigger =
+            changes['addNewSuccessObjective']?.currentValue;
+        this.editObjectiveTableTrigger = changes['editObjective']?.currentValue;
 
         if (
             this.getObjectiveTableTrigger &&
@@ -116,17 +132,109 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
 
             this.getTableData(id);
         }
+
+        if (
+            this.addNewObjectiveTableTrigger &&
+            this.addNewObjectiveTableTrigger.addedNewObjective
+        ) {
+            this.loading = true;
+            this.getTableData(this.addNewObjectiveTableTrigger.data.goalId);
+        }
+
+        if (
+            this.editObjectiveTableTrigger?.success &&
+            this.editObjectiveTableTrigger?.id
+        ) {
+            const { success, id } = this.editObjectiveTableTrigger;
+            this.loading = success;
+            this.getTableData(id);
+        }
     }
     getTableData(id: string) {
+        //clear the table
+        // this.objectiveDatas = [];
         if (id) {
             this.loading = true;
             this.objective
                 .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.objectiveTableSubscription))
                 .subscribe(async (data: any) => {
-                    this.objectiveDatas = data.Objectives;
+                    this.objectiveDatas = await data.Objectives;
+                    this.changeDetectorRef.markForCheck();
                     this.loading = false;
                 });
         }
+    }
+
+    addSubGoal(data?: any) {
+        this.childAddObjectiveEvent.emit({
+            addObjective: true,
+            goallistsId: this.goallistsId,
+            goalId: this.subObjectiveGoalID,
+            goal_ObjectId: this.goal_ObjectId,
+            data: data,
+        });
+    }
+
+    deleteSubGoal(id: string, goalId: string) {
+        this.confirmationService.confirm({
+            key: 'deleteSubGoal',
+            target: event.target || new EventTarget(),
+            message: 'Deleting Objectives Will Delete All Files. Continue?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.loading = true;
+                this.goal
+                    .fetch('put', 'objectives', 'setInactiveObjectives', {
+                        id: id,
+                    })
+                    .pipe(takeUntil(this.objectiveTableSubscription))
+                    .subscribe((data: any) => {
+                        if (data.success) {
+                            //tag is as changes so if close will recalculate the data
+                            this.loading = false;
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Done',
+                                detail: data.message,
+                            });
+                            // Unsubscribe after getting the data
+                            this.getTableData(goalId);
+                            this.loading = false;
+                            this.changeDetectorRef.detectChanges();
+                        } else {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: data.message,
+                            });
+                            this.loading = false;
+                        }
+                    });
+            },
+            reject: () => {
+                this.loading = false;
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Done',
+                    detail: 'Delete Cancelled',
+                });
+            },
+        });
+    }
+
+    updateSubGoal(data: any) {
+        this.childEditObjectiveEvent.emit({
+            editObjective: true,
+            data: data,
+        });
+    }
+
+    viewFiles(objectives: any) {
+        console.log({ viewFiles: objectives });
+        this.viewFilesEvent.emit({
+            viewFiles: true,
+            data: objectives,
+        });
     }
 }

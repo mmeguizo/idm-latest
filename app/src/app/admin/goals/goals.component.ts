@@ -31,7 +31,7 @@ import { DepartmentService } from 'src/app/demo/service/department.service';
 import { FileService } from 'src/app/demo/service/file.service';
 import { FileUpload } from 'primeng/fileupload';
 import { PrintTableComponent } from './print-table/print-table.component';
-import { getIcon } from 'src/app/utlis/file-utils';
+import { getIcon, getFrequencyKeys } from 'src/app/utlis/file-utils';
 import { CampusService } from 'src/app/demo/service/campus.service';
 @Component({
     selector: 'app-goals',
@@ -352,13 +352,13 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
                     this.goalDataRemainingBudget = this.goalBudget - subBudget;
                     //initialize completion button
-                    for (
-                        let i = 0;
-                        i < this.objectiveDatas.length.length;
-                        i++
-                    ) {
-                        this.onclickCompletionButton[i] = false;
-                    }
+                    // for (
+                    //     let i = 0;
+                    //     i < this.objectiveDatas.length.length;
+                    //     i++
+                    // ) {
+                    //     this.onclickCompletionButton[i] = false;
+                    // }
 
                     this.changeDetectorRef.detectChanges();
                     this.loading = false;
@@ -611,19 +611,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     getFrequencyKeys(objectiveFile: any) {
-        let firstLetter: any;
-        let lastLetter: any;
-
-        const frequencyKeys = Object.keys(objectiveFile).filter((key) =>
-            key.includes('file_')
-        );
-        frequencyKeys.map((key) => {
-            firstLetter = key.replace('file_', '').replace(/_/g, ' ');
-            lastLetter =
-                parseInt(firstLetter.charAt(firstLetter.length - 1)) + 1;
-        });
-        return firstLetter.slice(0, -1) + lastLetter;
+        return getFrequencyKeys(objectiveFile);
     }
+
     // viewObjectiveFileHistoryDialogCard
 
     getIcon(name: string) {
