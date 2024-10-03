@@ -62,3 +62,17 @@ export function getIcon(name: string) {
     };
     return iconMapping[fileExtension] || 'pi pi-file';
 }
+
+export function getFrequencyKeys(objectiveFile: any) {
+    let firstLetter: any;
+    let lastLetter: any;
+
+    const frequencyKeys = Object.keys(objectiveFile).filter((key) =>
+        key.includes('file_')
+    );
+    frequencyKeys.map((key) => {
+        firstLetter = key.replace('file_', '').replace(/_/g, ' ');
+        lastLetter = parseInt(firstLetter.charAt(firstLetter.length - 1)) + 1;
+    });
+    return firstLetter.slice(0, -1) + lastLetter;
+}

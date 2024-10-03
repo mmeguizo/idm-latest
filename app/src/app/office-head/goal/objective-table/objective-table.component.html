@@ -223,19 +223,6 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-                        <!-- <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Timetable
-                                <p-columnFilter
-                                    type="text"
-                                    field="timetable"
-                                    display="menu"
-                                    placeholder="Search by Timetable"
-                                ></p-columnFilter>
-                            </div>
-                        </th> -->
                         <th style="min-width: 4rem">
                             <div
                                 class="flex justify-content-between align-items-center"
@@ -348,66 +335,72 @@
                         </td> -->
                         <td>
                             <!-- <p-rating
-                                [ngModel]="objectiveData.completedStars"
+                                [ngModel]="objectiveData?.completedStars"
                                 [readonly]="true"
                                 [cancel]="false"
-                                [stars]="objectiveData.target"
+                                [stars]="objectiveData?.target"
                             ></p-rating> -->
                             <p-progressBar
                                 [color]="'#1da750'"
-                                [value]="objectiveData.completionPercentage"
+                                [value]="
+                                    0 || objectiveData?.completionPercentage
+                                "
                             />
-                            <!-- @for(star of [].constructor( objectiveData.target );
-                            track objectiveData.id ){ @if(
-                            objectiveData.target.length >
-                            objectiveData.completedStars ){
+                            <!-- @for(star of [].constructor( objectiveData?.target );
+                            track objectiveData?.id ){ @if(
+                            objectiveData?.target.length >
+                            objectiveData?.completedStars ){
                             <i class="pi pi-star text-yellow-200 text-sm"></i>
                             } @else {
                             <i
                                 class="pi pi-star-fill text-gray-800 text-sm"
                             ></i>
-                            } } / {{ objectiveData.target }} -->
+                            } } / {{ objectiveData?.target }} -->
                         </td>
                         <td>
-                            {{ objectiveData.target }}
-                        </td>
-                        <td>
-                            {{ objectiveData.functional_objective | titlecase }}
+                            {{ objectiveData?.target }}
                         </td>
                         <td>
                             {{
-                                objectiveData.performance_indicator | titlecase
+                                objectiveData?.functional_objective | titlecase
+                            }}
+                        </td>
+                        <td>
+                            {{
+                                objectiveData?.performance_indicator | titlecase
                             }}
                         </td>
 
                         <td>
-                            {{ objectiveData.formula | titlecase }}
+                            {{ objectiveData?.formula | titlecase }}
                         </td>
                         <td>
-                            {{ objectiveData.programs | titlecase }}
-                        </td>
-
-                        <td>
-                            {{ objectiveData.responsible_persons | titlecase }}
-                        </td>
-                        <td>
-                            {{ objectiveData.clients | titlecase }}
+                            {{ objectiveData?.programs | titlecase }}
                         </td>
 
                         <td>
-                            {{ objectiveData.frequency_monitoring | titlecase }}
+                            {{ objectiveData?.responsible_persons | titlecase }}
                         </td>
                         <td>
-                            {{ objectiveData.data_source | titlecase }}
+                            {{ objectiveData?.clients | titlecase }}
+                        </td>
+
+                        <td>
+                            {{
+                                objectiveData?.frequency_monitoring | titlecase
+                            }}
                         </td>
                         <td>
-                            {{ objectiveData.budget | peso }}
+                            {{ objectiveData?.data_source | titlecase }}
                         </td>
                         <td>
-                            {{ objectiveData.createdAt | date : "mediumDate" }}
+                            {{ objectiveData?.budget | peso }}
                         </td>
                         <td>
-                            {{ objectiveData.remarks }}
+                            {{ objectiveData?.createdAt | date : "mediumDate" }}
+                        </td>
+                        <td>
+                            {{ objectiveData?.remarks }}
                         </td>
                         <td>
                             <p-button
@@ -418,30 +411,32 @@
                                   pi pi-external-link
                                 "
                                 label="View"
-                                [(loading)]="onclickCompletionButton[rowIndex]"
                                 (click)="updateSubGoal(objectiveData)"
                             ></p-button>
-                            <!-- <p-button
+                            <!--
+                             [(loading)]="onclickCompletionButton[rowIndex]"
+
+                            <p-button
                                 [text]="true"
                                 [raised]="true"
                                 [severity]="
-                                    objectiveData.complete
+                                    objectiveData?.complete
                                         ? 'success'
                                         : 'warning'
                                 "
                                 [icon]="
-                                    objectiveData.complete
+                                    objectiveData?.complete
                                         ? 'pi pi-check'
                                         : 'pi pi-times'
                                 "
-                                [label]="objectiveData.complete ? 'Yes' : 'No'"
+                                [label]="objectiveData?.complete ? 'Yes' : 'No'"
                                 [(loading)]="onclickCompletionButton[rowIndex]"
                                 (click)="
                                     updateObjectiveComplete(
                                         $event,
                                         objectiveData,
                                         rowIndex,
-                                        objectiveData.complete
+                                        objectiveData?.complete
                                     )
                                 "
                             ></p-button> -->
@@ -459,12 +454,12 @@
                                     class="pi pi-folder text-2xl hover:text-4xl text-yellow-400 transition ease-in-out duration-200 hover:pi-folder-open cursor-pointer"
                                 ></i>
                                 &nbsp; &nbsp;
-                                <i
+                                <!-- <i
                                     pTooltip="File History"
                                     tooltipPosition="top"
                                     (click)="viewFilesHistory(objectiveData)"
                                     class="pi pi-cog text-2xl hover:text-4xl text-yellow-400 transition ease-in-out duration-200 hover:pi-cog cursor-pointer"
-                                ></i>
+                                ></i> -->
                             </div>
                         </td>
                         <td>
@@ -477,8 +472,8 @@
                                 <i
                                     (click)="
                                         deleteSubGoal(
-                                            objectiveData.id,
-                                            objectiveData.goalId
+                                            objectiveData?.id,
+                                            objectiveData?.goalId
                                         )
                                     "
                                     class="pi pi-trash text-xl"
