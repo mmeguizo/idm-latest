@@ -5,7 +5,6 @@ const ObjectId = mongoose.Types.ObjectId;
 const Objectives = require("../models/objective");
 const { logger } = require("../middleware/logger");
 const userHistory = require("../models/userhistories");
-const { log } = require("console");
 const goals = require("../models/goals");
 
 module.exports = (router) => {
@@ -281,9 +280,6 @@ module.exports = (router) => {
           campus: req.params.campus,
         };
       }
-
-      console.log({ finalMatch: finalMatch });
-
       Goals.aggregate(
         [
           {
@@ -385,7 +381,6 @@ module.exports = (router) => {
 
         { allowDiskUse: true },
         async (err, Goals) => {
-          console.log({ getAllObjectivesWithObjectivesForDashboard: Goals });
           // Check if error was found or not
           if (err) {
             res.json({ success: false, message: err });
@@ -941,7 +936,6 @@ module.exports = (router) => {
   });
 
   router.get("/getAllObjectivesWithObjectives/:id", (req, res) => {
-    console.log(req.params.id);
     Goals.aggregate(
       [
         {
