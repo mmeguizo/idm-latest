@@ -5,6 +5,7 @@
     [addedaGoal]="parentEmitAddnewGoal"
     [editedAGoal]="parentEmitEditGoal"
     [deletedAGoal]="parentEmitDeleteGoal"
+    [editObjective]="parentEditSuccessObjective"
     (addNewGoalButtonClick)="receivedAddNewGoalButtonClick($event)"
     (editGoalButtonClick)="receivedEditGoalButtonClick($event)"
     (getObjectiveButtonClick)="receivedGetObjectiveButtonClick($event)"
@@ -36,6 +37,7 @@
 >
 </app-add-objective>
 
+<!-- files -->
 <app-add-files
     [addNewFile]="parentAddnewFile"
     (childAddFile)="receivedAddFileEvent($event)"
@@ -49,13 +51,3 @@
     (childUpdateObjective)="receivedUpdateObjective($event)"
 >
 </app-edit-objective>
-
-<!--
-
-  (childDeleteFile)="receivedDeleteFileEvent($event)"
-    (childEditObjective)="receivedEditObjectiveEvent($event)"
-    (childViewFile)="receivedViewFileEvent($event)"
-
-[editObjective]="parentEditObjective"
-    (childEditObjectiveEvent)="receivedEditObjectiveEvent($event)"
-[addNewObjective]="parentEmitSuccessAddObjective" -->

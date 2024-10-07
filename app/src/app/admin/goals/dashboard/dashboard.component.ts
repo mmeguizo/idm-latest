@@ -35,11 +35,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
         private goalService: GoalService,
         private obj: ObjectiveService,
         private productService: ProductService
-    ) {
-        this.getGoals();
-        this.getObjectiveViewPieChart();
-        this.getAllObjectives();
-    }
+    ) {}
 
     ngOnInit() {
         this.productService
@@ -47,6 +43,9 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .then((data) => (this.products = data));
 
         this.getAllObjectivesForTable();
+        this.getGoals();
+        this.getObjectiveViewPieChart();
+        this.getAllObjectives();
     }
 
     getCompletedObjectives(goal: any): number {
@@ -88,6 +87,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .fetch('get', 'goals', `getAllObjectivesWithObjectives`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
+                console.log('getAllObjectivesForTabledata', data);
                 this.goals = data.goals;
             });
     }

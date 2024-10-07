@@ -176,6 +176,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async getAllObjectivesWithObjectives(campus?: string) {
+        console.log({ getAllObjectivesWithObjectives: campus });
         this.loading = true;
         this.goalService
             .fetch(

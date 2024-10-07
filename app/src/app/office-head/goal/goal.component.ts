@@ -178,9 +178,3 @@ export class GoalComponent implements OnInit, OnDestroy {
         };
     }
 }
-
-/*
-addedNewObjective: true,
-                        success: true,
-                        data: data.data,
-*/

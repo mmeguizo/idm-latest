@@ -66,6 +66,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     addNewObjectiveTableTrigger: any;
     editObjectiveTableTrigger: any;
     // childAddObjectiveEvent: any;
+
     constructor(
         private objective: ObjectiveService,
         private messageService: MessageService,
@@ -145,6 +146,9 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
             this.editObjectiveTableTrigger?.success &&
             this.editObjectiveTableTrigger?.id
         ) {
+            console.log({
+                editObjectiveTableTrigger: this.editObjectiveTableTrigger,
+            });
             const { success, id } = this.editObjectiveTableTrigger;
             this.loading = success;
             this.getTableData(id);

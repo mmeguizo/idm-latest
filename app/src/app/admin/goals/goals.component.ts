@@ -268,8 +268,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 tap((data: any) => {
                     this.goals = data.goals;
                     this.loading = false;
-                    resultSubject.next(true); // Emit true on success
-                    resultSubject.complete(); // Complete the subject
+                    console.log('getAllObjectivesWithObjectives', data);
                 }),
                 catchError((error) => {
                     this.loading = false; // Set loading to false on error
@@ -278,14 +277,15 @@ export class GoalsComponent implements OnInit, OnDestroy {
                         summary: 'Error getAllObjectivesWithObjectives',
                         detail: error.message,
                     });
-                    resultSubject.next(false); // Emit false on error
-                    resultSubject.complete(); // Complete the subject
                     return throwError(() => error); // Re-throw the error if necessary
                 })
             )
             .subscribe(); // Trigger the observable
         return resultSubject; // Return the subject to the caller
     }
+
+    /*
+     */
 
     getAllDept() {
         this.dept

@@ -29,7 +29,6 @@ import { AddObjectiveComponent } from './goal/add-objective/add-objective.compon
 import { EditObjectiveComponent } from './goal/edit-objective/edit-objective.component';
 import { AddFilesComponent } from './goal/add-files/add-files.component';
 import { ViewFilesComponent } from './goal/view-files/view-files.component';
-
 @NgModule({
     imports: [OfficeHeadRoutingModule, SharedModule, DeleteFilesComponent],
     declarations: [

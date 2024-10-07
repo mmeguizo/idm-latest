@@ -19,6 +19,7 @@ import { AuthService } from 'src/app/demo/service/auth.service';
 })
 export class GoalTableComponent implements OnInit, OnDestroy {
     private getGoalTableSubscription = new Subject<void>();
+    @Input() editObjective = new EventEmitter<any>();
     @Input() addedaGoal = new EventEmitter<any>();
     @Input() editedAGoal = new EventEmitter<any>();
     @Input() deletedAGoal = new EventEmitter<any>();
@@ -33,6 +34,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
     addGoalTrigger: any;
     editGoalTrigger: any;
     deleteGoalTrigger: any;
+    editObjectiveTrigger: any;
 
     constructor(
         private goal: GoalService,
@@ -42,6 +44,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnChanges(changes: SimpleChanges) {
+        this.editObjectiveTrigger = changes['editObjective']?.currentValue;
         this.addGoalTrigger = changes['addedaGoal']?.currentValue;
         this.editGoalTrigger = changes['editedAGoal']?.currentValue;
         this.deleteGoalTrigger = changes['deletedAGoal']?.currentValue;
@@ -54,11 +57,16 @@ export class GoalTableComponent implements OnInit, OnDestroy {
         if (this.deleteGoalTrigger && this.deleteGoalTrigger.deleteAGoal) {
             this.goalsTableData(this.USERID);
         }
+        if (this.editObjectiveTrigger && this.editObjectiveTrigger.success) {
+            this.goalsTableData(this.USERID);
+        }
     }
 
     ngOnInit() {
         this.loading = true;
         this.USERID = this.auth.getTokenUserID();
+        console.log(this.auth.getTokenUserID());
+        console.log(this.USERID);
         this.goalsTableData(this.USERID);
     }
 
@@ -67,6 +75,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
     }
 
     goalsTableData(userId?: string) {
+        console.log(userId);
         const resultSubject = new Subject<boolean>();
         this.loading;
         this.goal
@@ -75,6 +84,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
                 takeUntil(this.getGoalTableSubscription),
                 tap((data: any) => {
                     this.goals = data.goals;
+                    console.log({ goalsTableData: this.goals });
                     this.loading = false;
                     resultSubject.next(true); // Emit true on success
                     resultSubject.complete(); // Complete the subject
