@@ -85,22 +85,123 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     transformEvents(data: any[]): any[] {
-        //   this.color = item.backgroundColor || this.COLORS[Math.floor(Math.random() * this.COLORS.length)]
-        return data.map((item) => ({
-            id: item.id,
-            user: item.users.username,
-            image_url: this.auth.domain + item.users.profile_pic,
-            title: item.goals.goals,
-            start: item.timetable[0],
-            end: item.timetable[1],
-            backgroundColor:
-                item.backgroundColor ||
-                this.COLORS[Math.floor(Math.random() * this.COLORS.length)],
-            borderColor:
-                item.backgroundColor ||
-                this.COLORS[Math.floor(Math.random() * this.COLORS.length)],
-            allDay: true,
-        }));
+        return data.map((item) => {
+            const title =
+                ` ${item.functional_objective.toUpperCase()} : ` +
+                this.getCurrentGoalAndActual(item);
+            console.log({
+                getCurrentGoalAndActual: this.getCurrentGoalAndActual(item),
+            });
+            let endDate = new Date(item.createdAt);
+            if (item.frequency_monitoring === 'yearly') {
+                // endDate.setFullYear(endDate.getFullYear() + 1);
+                endDate = this.getEndDateAfter12Months(item.createdAt);
+            } else if (item.frequency_monitoring === 'semi_annual') {
+                // endDate.setMonth(endDate.getMonth() + 6);
+                endDate = this.getEndDateAfter6Months(item.createdAt);
+            } else if (item.frequency_monitoring === 'quarterly') {
+                // endDate.setMonth(endDate.getMonth() + 3);
+                endDate = this.getEndDateAfter3Months(item.createdAt);
+            }
+
+            return {
+                id: item.id,
+                title: title,
+                start: item.createdAt,
+                end: endDate,
+                backgroundColor: item.completed ? '#1f6f78' : '#2c5d63',
+                borderColor: '#352f44',
+                allDay: true,
+                extendedProps: {
+                    user: item.users.username,
+                    imageUrl: this.auth.domain + item.users.profile_pic,
+                    goal:
+                        item.goal_quarter_0 ||
+                        item.goal_month_0 ||
+                        item.goal_semi_annual_0,
+                    actual:
+                        item.quarter_0 || item.month_0 || item.semi_annual_0,
+                },
+            };
+        });
+    }
+
+    getCurrentGoalAndActual(entry: any): string {
+        // Parse the createdAt date into a Date object
+        const createdAt = new Date(entry.createdAt);
+        const currentDate = new Date(); // Get the current date
+
+        // Calculate the difference in months from createdAt to currentDate
+        const diffMonths =
+            (currentDate.getFullYear() - createdAt.getFullYear()) * 12 +
+            currentDate.getMonth() -
+            createdAt.getMonth();
+        console.log({ diffMonths: diffMonths });
+        // Check the frequency_monitoring field
+        const frequency = entry.frequency_monitoring;
+
+        if (frequency === 'yearly') {
+            const currentMonth = diffMonths % 12; // Current month within the year
+            console.log({
+                currentMonth: currentMonth,
+            });
+            return `Goal: ${
+                entry[`goal_month_${currentMonth}`] ?? 'Not Available'
+            } | Actual: ${entry[`month_${currentMonth}`] ?? 'Not Available'}`;
+        } else if (frequency === 'quarterly') {
+            const currentQuarter = Math.floor(diffMonths / 3) % 4; // Calculate current quarter
+            console.log({
+                currentQuarter: currentQuarter,
+            });
+            return `Goal: ${
+                entry[`goal_quarter_${currentQuarter}`] ?? 'Not Available'
+            } | Actual: ${
+                entry[`quarter_${currentQuarter}`] ?? 'Not Available'
+            }`;
+        } else if (frequency === 'semi_annual') {
+            const currentHalf = Math.floor(diffMonths / 6) % 2; // Calculate current half of the year
+            console.log({
+                currentHalf: currentHalf,
+            });
+            return `Goal: ${
+                entry[`goal_semi_annual_${currentHalf}`] ?? 'Not Available'
+            } | Actual: ${
+                entry[`semi_annual_${currentHalf}`] ?? 'Not Available'
+            }`;
+        } else {
+            // Return a fallback message for undefined or unsupported frequency
+            return 'Frequency not supported or data not available';
+        }
+    }
+
+    getEndDateAfter12Months(createdAt) {
+        // Parse the input 'createdAt' into a Date object
+        let startDate = new Date(createdAt);
+        // Create a new Date object for the end date
+        let endDate = new Date(startDate);
+        // Add 12 months
+        endDate.setMonth(endDate.getMonth() + 12);
+        return endDate;
+    }
+
+    getEndDateAfter6Months(createdAt) {
+        // Parse the input 'createdAt' into a Date object
+        let startDate = new Date(createdAt);
+        // Create a new Date object for the end date
+        let endDate = new Date(startDate);
+        // Add 6 months
+        endDate.setMonth(endDate.getMonth() + 6);
+        return endDate;
+    }
+
+    getEndDateAfter3Months(createdAt) {
+        // Parse the input 'createdAt' into a Date object
+        let startDate = new Date(createdAt);
+        // Create a new Date object for the end date
+        let endDate = new Date(startDate);
+        // Add 3 months
+        endDate.setMonth(endDate.getMonth() + 3);
+        return endDate;
     }
 
     updateCalendarEvents(events: any[]) {
@@ -155,3 +256,53 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.changeDetector.detectChanges(); // workaround for pressionChangedAfterItHasBeenCheckedError
     }
 }
+
+/*
+
+
+ngOnInit() {
+    this.userId = this.auth.getTokenUserID();
+    this.loadCustomData();
+}
+
+loadCustomData() {
+    this.loading = true;
+    const data =
+    const events = this.transformEvents(data);
+    this.updateCalendarEvents(events);
+    this.loading = false;
+}
+
+transformEvents(data: any[]): any[] {
+    return data.map((item) => {
+        const goalAchieved = item.quarter_0 >= item.goal_quarter_0 || item.month_0 >= item.goal_month_0 || item.semi_annual_0 >= item.goal_semi_annual_0;
+        const title = `${item.goals.goals} - ${goalAchieved ? 'Achieved' : 'Pending'}`;
+        const color = goalAchieved ? '#28a745' : '#dc3545';
+
+        return {
+            id: item.id,
+            title: title,
+            start: item.timetable[0] || new Date(),
+            end: item.timetable[1] || new Date(),
+            backgroundColor: color,
+            borderColor: color,
+            allDay: true,
+            extendedProps: {
+                user: item.users.username,
+                imageUrl: this.auth.domain + item.users.profile_pic,
+                goal: item.goal_quarter_0 || item.goal_month_0 || item.goal_semi_annual_0,
+                actual: item.quarter_0 || item.month_0 || item.semi_annual_0,
+            }
+        };
+    });
+}
+
+updateCalendarEvents(events: any[]) {
+    this.calendarOptions.update((options) => ({
+        ...options,
+        events: events,
+    }));
+}
+
+
+*/
