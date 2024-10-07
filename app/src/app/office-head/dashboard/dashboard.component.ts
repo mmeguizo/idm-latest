@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     calendarOptions = signal<CalendarOptions>({
         plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
         headerToolbar: {
-            left: 'prev,next today',
+            // left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
         },
@@ -48,6 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         selectable: false,
         selectMirror: true,
         dayMaxEvents: false,
+        navLinks: false,
         select: this.handleDateSelect.bind(this),
         eventClick: this.handleEventClick.bind(this),
         eventsSet: this.handleEvents.bind(this),
@@ -125,7 +126,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             };
         });
     }
-
     getCurrentGoalAndActual(entry: any): string {
         // Parse the createdAt date into a Date object
         const createdAt = new Date(entry.createdAt);
@@ -136,43 +136,95 @@ export class DashboardComponent implements OnInit, OnDestroy {
             (currentDate.getFullYear() - createdAt.getFullYear()) * 12 +
             currentDate.getMonth() -
             createdAt.getMonth();
-        console.log({ diffMonths: diffMonths });
+
+        console.log({ diffMonths: diffMonths }); // Debugging: Show the difference in months
+
         // Check the frequency_monitoring field
         const frequency = entry.frequency_monitoring;
 
         if (frequency === 'yearly') {
-            const currentMonth = diffMonths % 12; // Current month within the year
-            console.log({
-                currentMonth: currentMonth,
-            });
+            // Use the current month index directly
+            const currentMonth = currentDate.getMonth() + 1;
+            console.log({ currentMonth: currentMonth }); // Debugging: Log current month index
+            console.log({ goalmonth: entry[`goal_month_${currentMonth}`] });
+            console.log({ actualmonth: entry[`month_${currentMonth}`] });
+
             return `Goal: ${
                 entry[`goal_month_${currentMonth}`] ?? 'Not Available'
             } | Actual: ${entry[`month_${currentMonth}`] ?? 'Not Available'}`;
         } else if (frequency === 'quarterly') {
-            const currentQuarter = Math.floor(diffMonths / 3) % 4; // Calculate current quarter
-            console.log({
-                currentQuarter: currentQuarter,
-            });
+            // Find the current quarter index (0 to 3)
+            const currentQuarter = Math.floor(diffMonths / 3) % 4;
+            console.log({ currentQuarter: currentQuarter }); // Debugging: Log current quarter index
+
             return `Goal: ${
                 entry[`goal_quarter_${currentQuarter}`] ?? 'Not Available'
             } | Actual: ${
                 entry[`quarter_${currentQuarter}`] ?? 'Not Available'
             }`;
         } else if (frequency === 'semi_annual') {
-            const currentHalf = Math.floor(diffMonths / 6) % 2; // Calculate current half of the year
-            console.log({
-                currentHalf: currentHalf,
-            });
+            // Find the current half-year index (0 or 1)
+            const currentHalf = Math.floor(diffMonths / 6) % 2;
+            console.log({ currentHalf: currentHalf }); // Debugging: Log current half-year index
+
             return `Goal: ${
                 entry[`goal_semi_annual_${currentHalf}`] ?? 'Not Available'
             } | Actual: ${
                 entry[`semi_annual_${currentHalf}`] ?? 'Not Available'
             }`;
         } else {
-            // Return a fallback message for undefined or unsupported frequency
+            // Return a fallback message for unsupported or undefined frequency
+            console.log('Frequency not supported or data missing');
             return 'Frequency not supported or data not available';
         }
     }
+    // getCurrentGoalAndActual(entry: any): string {
+    //     // Parse the createdAt date into a Date object
+    //     const createdAt = new Date(entry.createdAt);
+    //     const currentDate = new Date(); // Get the current date
+
+    //     // Calculate the difference in months from createdAt to currentDate
+    //     const diffMonths =
+    //         (currentDate.getFullYear() - createdAt.getFullYear()) * 12 +
+    //         currentDate.getMonth() -
+    //         createdAt.getMonth();
+    //     console.log({ diffMonths: diffMonths });
+    //     // Check the frequency_monitoring field
+    //     const frequency = entry.frequency_monitoring;
+
+    //     if (frequency === 'yearly') {
+    //         const currentMonth = diffMonths % 12; // Current month within the year
+    //         console.log({
+    //             currentMonth: currentMonth,
+    //         });
+    //         return `Goal: ${
+    //             entry[`goal_month_${currentMonth}`] ?? 'Not Available'
+    //         } | Actual: ${entry[`month_${currentMonth}`] ?? 'Not Available'}`;
+    //     } else if (frequency === 'quarterly') {
+    //         const currentQuarter = Math.floor(diffMonths / 3) % 4; // Calculate current quarter
+    //         console.log({
+    //             currentQuarter: currentQuarter,
+    //         });
+    //         return `Goal: ${
+    //             entry[`goal_quarter_${currentQuarter}`] ?? 'Not Available'
+    //         } | Actual: ${
+    //             entry[`quarter_${currentQuarter}`] ?? 'Not Available'
+    //         }`;
+    //     } else if (frequency === 'semi_annual') {
+    //         const currentHalf = Math.floor(diffMonths / 6) % 2; // Calculate current half of the year
+    //         console.log({
+    //             currentHalf: currentHalf,
+    //         });
+    //         return `Goal: ${
+    //             entry[`goal_semi_annual_${currentHalf}`] ?? 'Not Available'
+    //         } | Actual: ${
+    //             entry[`semi_annual_${currentHalf}`] ?? 'Not Available'
+    //         }`;
+    //     } else {
+    //         // Return a fallback message for undefined or unsupported frequency
+    //         return 'Frequency not supported or data not available';
+    //     }
+    // }
 
     getEndDateAfter12Months(createdAt) {
         // Parse the input 'createdAt' into a Date object
