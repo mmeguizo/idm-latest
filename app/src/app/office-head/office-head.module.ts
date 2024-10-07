@@ -7,7 +7,7 @@ import { NgModule } from '@angular/core';
 // import { ButtonModule } from 'primeng/button';
 // import { StyleClassModule } from 'primeng/styleclass';
 // import { PanelMenuModule } from 'primeng/panelmenu';
-import { DashboardComponent } from './dashboard/dashboard.component';
+// import { DashboardComponent } from './dashboard/dashboard.component';
 // import { UserComponent } from './user.component';
 // import { UserRoutingModule } from './user-routing.module';
 import { SharedModule } from '../shared/shared.module';
@@ -29,12 +29,11 @@ import { AddObjectiveComponent } from './goal/add-objective/add-objective.compon
 import { EditObjectiveComponent } from './goal/edit-objective/edit-objective.component';
 import { AddFilesComponent } from './goal/add-files/add-files.component';
 import { ViewFilesComponent } from './goal/view-files/view-files.component';
-
 @NgModule({
     imports: [OfficeHeadRoutingModule, SharedModule, DeleteFilesComponent],
     declarations: [
         EditGoalComponent,
-        DashboardComponent,
+        // DashboardComponent,
         OfficeHeadComponent,
         GoalComponent,
         AddGoalComponent,

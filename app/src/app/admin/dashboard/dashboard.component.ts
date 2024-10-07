@@ -176,6 +176,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async getAllObjectivesWithObjectives(campus?: string) {
+        console.log({ getAllObjectivesWithObjectives: campus });
         this.loading = true;
         this.goalService
             .fetch(
@@ -234,7 +235,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         completionPercentage,
                     } = data.data[0];
                     this.objectivesSideData = objectivesData;
-                    this.pieDataBool = objectivesData.length > 1 ? true : false;
+                    this.pieDataBool =
+                        objectivesData.length >= 1 ? true : false;
+                    console.log({
+                        getAllObjectivesForDashboardPie: {
+                            objectivesSideData: this.objectivesSideData.length,
+                            pieData: this.pieDataBool,
+                        },
+                    });
                     this.initCharts(objectivesData);
                     this.loading = false;
                 });
