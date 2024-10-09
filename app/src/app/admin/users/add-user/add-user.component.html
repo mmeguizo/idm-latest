@@ -4,13 +4,47 @@
     [(visible)]="addUserDialogCard"
     [modal]="true"
     showEffect="fade"
-    [style]="{ width: '19vw' }"
-    [breakpoints]="{ '1199px': '19vw', '890px': '25vw', '500px': '30vw' }"
+    [style]="{ width: '50vw' }"
+    [breakpoints]="{ '1199px': '50vw', '890px': '40vw', '500px': '30vw' }"
     [draggable]="false"
     [resizable]="false"
 >
     <div class="card p-fluid">
         <form [formGroup]="Addform">
+            <div class="field">
+                <label for="firstname">First Name</label>
+                <input
+                    pInputText
+                    id="firstname"
+                    class="flex-auto"
+                    autocomplete="off"
+                    [ngClass]="
+                        Addform?.get('firstname').touched &&
+                        Addform?.controls['firstname'].errors?.required
+                            ? 'ng-invalid ng-dirty'
+                            : ''
+                    "
+                    formControlName="firstname"
+                    required
+                />
+            </div>
+            <div class="field">
+                <label for="lastname">Last Name</label>
+                <input
+                    pInputText
+                    id="lastname"
+                    class="flex-auto"
+                    autocomplete="off"
+                    [ngClass]="
+                        Addform?.get('lastname').touched &&
+                        Addform?.controls['lastname'].errors?.required
+                            ? 'ng-invalid ng-dirty'
+                            : ''
+                    "
+                    formControlName="lastname"
+                    required
+                />
+            </div>
             <div class="field">
                 <label for="username">Username</label>
                 <input
@@ -28,48 +62,45 @@
                     required
                 />
             </div>
-            <div class="flex align-items-center gap-3">
-                <div class="field">
-                    <label for="email">Email</label>
-                    <input
-                        pInputText
-                        id="email"
-                        class="flex-auto"
-                        [ngClass]="
-                            Addform?.get('email').touched &&
-                            Addform?.controls['email'].errors?.required
-                                ? 'ng-invalid ng-dirty'
-                                : ''
-                        "
-                        formControlName="email"
-                        autocomplete="off"
-                        required
-                    />
-                    <div
+            <div class="field">
+                <label for="email">Email</label>
+                <input
+                    pInputText
+                    id="email"
+                    class="flex-auto"
+                    [ngClass]="
+                        Addform?.get('email').touched &&
+                        Addform?.controls['email'].errors?.required
+                            ? 'ng-invalid ng-dirty'
+                            : ''
+                    "
+                    formControlName="email"
+                    autocomplete="off"
+                    required
+                />
+                <div
+                    *ngIf="
+                        (Addform.get('email').hasError('required') &&
+                            Addform.get('email').touched) ||
+                        Addform.get('email').hasError('email') ||
+                        Addform.get('email').hasError('pattern')
+                    "
+                    class="bg-red-500 text-white p-2 rounded"
+                >
+                    <span
                         *ngIf="
-                            (Addform.get('email').hasError('required') &&
-                                Addform.get('email').touched) ||
-                            Addform.get('email').hasError('email') ||
-                            Addform.get('email').hasError('pattern')
+                            Addform.get('email').touched &&
+                            Addform.get('email').hasError('required')
                         "
-                        class="bg-red-500 text-white p-2 rounded"
                     >
-                        <span
-                            *ngIf="
-                                Addform.get('email').touched &&
-                                form.get('email').hasError('required')
-                            "
-                        >
-                            You must enter an email address.
-                        </span>
-                        <span *ngIf="Addform.get('email').hasError('email')"
-                            >Please enter a valid email address.</span
-                        >
-                        <span *ngIf="Addform.get('email').hasError('pattern')"
-                            >Only Chmsu addresses (chmsu.edu.ph) are
-                            accepted.</span
-                        >
-                    </div>
+                        You must enter an email address.
+                    </span>
+                    <span *ngIf="Addform.get('email').hasError('email')"
+                        >Please enter a valid email address.</span
+                    >
+                    <span *ngIf="Addform.get('email').hasError('pattern')"
+                        >Only Chmsu addresses (chmsu.edu.ph) are accepted.</span
+                    >
                 </div>
             </div>
             <div class="field">
@@ -109,9 +140,32 @@
                 <p-dropdown
                     formControlName="role"
                     [options]="roleOptions"
+                    optionLabel="name"
                     placeholder="Select a Role"
                 />
             </div>
+            <div class="field">
+                <label htmlFor="department">Vice Presidents</label>
+                <p-dropdown
+                    formControlName="vice_president"
+                    [options]="selectVP"
+                    optionLabel="fullname"
+                    placeholder="Select a VP"
+                />
+            </div>
+            <div class="field">
+                <form [formGroup]="formGroupDemo">
+                    <label htmlFor="department">Department</label>
+                    <p-dropdown
+                        formControlName="selectDepartment"
+                        [options]="deptDropdownValue"
+                        optionLabel="name"
+                        [editable]="true"
+                        placeholder="Search a Department"
+                    />
+                </form>
+            </div>
+
             <div class="field">
                 <label htmlFor="department">Campus</label>
                 <form [formGroup]="formGroupCampus">
@@ -123,16 +177,7 @@
                     />
                 </form>
             </div>
-            <div class="field">
-                <form [formGroup]="formGroupDemo">
-                    <p-dropdown
-                        formControlName="selectDepartment"
-                        [options]="deptDropdownValue"
-                        optionLabel="name"
-                        placeholder="Select a Department"
-                    />
-                </form>
-            </div>
+
             <div class="field footer-button-adduser">
                 <p-button
                     label="Cancel"

@@ -27,7 +27,7 @@ import { FormBuilder, Validators } from '@angular/forms';
   background-size: cover;
   background-position: center;
   margin: auto;
-
+position: relative;
 }
 
 .display-photo:hover::after {
@@ -35,17 +35,17 @@ import { FormBuilder, Validators } from '@angular/forms';
     color: white;
     background-color: green;
     position: absolute;
-    top: 73%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
     font-size: 3em;
-    padding-top: 17%;
-    padding-bottom: 12%;
-    padding-left: 17%;
-    padding-right: 18%;
     border-radius: 50%;
     opacity: 0.7;
+    width: 100%;
+    height: 100%;
     transition: opacity 0.2s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .display-photo:hover {
@@ -164,6 +164,8 @@ export class AppTopBarComponent implements OnInit {
 
     createForm() {
         this.form = this.formBuilder.group({
+            firstname: ['', [Validators.required]],
+            lastname: ['', [Validators.required]],
             username: ['', [Validators.required]],
             email: ['', [Validators.required]],
             old_password: ['', [Validators.required]],
@@ -182,6 +184,8 @@ export class AppTopBarComponent implements OnInit {
             .pipe(takeUntil(this.getSubscription))
             .subscribe((data: any) => {
                 this.form = this.formBuilder.group({
+                    firstname: [data.user.firstname, [Validators.required]],
+                    lastname: [data.user.lastname, [Validators.required]],
                     username: [data.user.username, [Validators.required]],
                     email: [data.user.email, [Validators.required]],
                     password: ['', [Validators.required]],

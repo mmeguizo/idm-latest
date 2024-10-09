@@ -33,7 +33,9 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
     // dropdown values
     deptDropdownCampusValue: any[] = [];
+    dropdownVPValue: any[] = [];
     deptDropdownValue: any[] = [];
+    selectVP: any[] = [];
     addUserDialogCard: boolean = false;
     roleOptions = ROLE_OPTIONS;
 
@@ -43,8 +45,12 @@ export class AddUserComponent implements OnInit, OnDestroy {
     Addform: FormGroup;
     formGroupCampus: FormGroup;
     formGroupDemo: FormGroup;
+    formGroupVP: FormGroup;
     ngOnInit() {
         this.createFormAddUser();
+        this.formGroupVP = new FormGroup({
+            selectVP: new FormControl(),
+        });
         this.formGroupDemo = new FormGroup({
             selectDepartment: new FormControl(),
         });
@@ -63,6 +69,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
                 this.addnewUserEventFromParent.addUserDialogCard;
             this.getAllCampuses();
             this.getAllDepartmentDropdown();
+            this.getAllVicePresident();
         }
     }
 
@@ -78,6 +85,8 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
     createFormAddUser() {
         this.Addform = this.AddUserFormBuilder.group({
+            firstname: ['', [Validators.required]],
+            lastname: ['', [Validators.required]],
             username: ['', [Validators.required]],
             email: [
                 '',
@@ -91,14 +100,30 @@ export class AddUserComponent implements OnInit, OnDestroy {
             password: ['', [Validators.required]],
             confirm: ['', [Validators.required]],
             role: ['', [Validators.required]],
+            vice_president: ['', [Validators.required]],
+            director: ['', [Validators.required]],
         });
     }
+
+    getAllVicePresident() {
+        this.user
+            .fetch('get', 'users', 'getAllVicePresident')
+            .pipe(takeUntil(this.getUserSubscription))
+            .subscribe((data: any) => {
+                this.selectVP = data.data[0];
+                console.log('getAllVicePresident', this.selectVP);
+            });
+    }
+
+    getAllDirectors() {}
 
     getAllCampuses() {
         this.camp
             .fetch('get', 'campus', 'getAllCampus')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
+                console.log('getAllCampuses', data);
+
                 this.deptDropdownCampusValue = data.data[0];
             });
     }
@@ -107,21 +132,26 @@ export class AddUserComponent implements OnInit, OnDestroy {
             .fetch('get', 'department', 'getAllDepartmentDropdown')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
+                console.log('getAllDepartmentDropdown', data);
+
                 this.deptDropdownValue = data.data[0];
             });
     }
 
     async addUserFunction(form: FormGroup): Promise<void> {
         let data = {
+            firstname: form.value.firstname,
+            lastname: form.value.lastname,
             username: form.value.username,
             email: form.value.email,
-            department: this.formGroupDemo.value.selectDepartment.name,
+            department: this.formGroupDemo.value.selectDepartment.code,
             campus: this.formGroupCampus.value.selectedCampus.name,
             password: form.value.password.trim(),
             confirm: form.value.confirm.trim(),
-            role: form.value.role,
+            role: form.value.role.code,
         };
 
+        console.log('addUserFunction', data);
         this.user
             .fetch('post', 'users', 'addUser', data)
             .pipe(takeUntil(this.getUserSubscription))

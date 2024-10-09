@@ -93,6 +93,34 @@ import { NotfoundComponent } from './notfound/notfound.component';
                     ],
                 },
                 {
+                    path: 'director',
+                    component: AppLayoutComponent,
+                    children: [
+                        {
+                            path: '',
+                            loadChildren: () =>
+                                import('./user/user.module').then(
+                                    (m) => m.UserModule
+                                ),
+                            canActivate: [AuthGuard],
+                        },
+                    ],
+                },
+                {
+                    path: 'vice-president',
+                    component: AppLayoutComponent,
+                    children: [
+                        {
+                            path: '',
+                            loadChildren: () =>
+                                import('./user/user.module').then(
+                                    (m) => m.UserModule
+                                ),
+                            canActivate: [AuthGuard],
+                        },
+                    ],
+                },
+                {
                     path: 'office-head',
                     component: AppLayoutComponent,
                     children: [

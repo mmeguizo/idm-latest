@@ -54,8 +54,45 @@
         [(visible)]="visible"
         [style]="{ width: '25rem' }"
         position="top"
+        autoZIndex="true"
     >
         <form [formGroup]="form">
+            <div class="flex align-items-center gap-3 mb-3">
+                <label for="firstname" class="font-semibold w-6rem"
+                    >First Name</label
+                >
+                <input
+                    pInputText
+                    id="firstname"
+                    class="flex-auto"
+                    autocomplete="off"
+                    [ngClass]="
+                        form?.get('firstname').touched &&
+                        form.controls['firstname'].errors?.required
+                            ? 'ng-invalid'
+                            : ''
+                    "
+                    formControlName="firstname"
+                />
+            </div>
+            <div class="flex align-items-center gap-3 mb-3">
+                <label for="lastname" class="font-semibold w-6rem"
+                    >Last Name</label
+                >
+                <input
+                    pInputText
+                    id="lastname"
+                    class="flex-auto"
+                    autocomplete="off"
+                    [ngClass]="
+                        form?.get('lastname').touched &&
+                        form.controls['lastname'].errors?.required
+                            ? 'ng-invalid'
+                            : ''
+                    "
+                    formControlName="lastname"
+                />
+            </div>
             <div class="flex align-items-center gap-3 mb-3">
                 <label for="username" class="font-semibold w-6rem"
                     >Username</label
