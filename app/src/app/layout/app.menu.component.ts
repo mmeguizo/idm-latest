@@ -179,6 +179,187 @@ export class AppMenuComponent implements OnInit {
             ];
         }
 
+        if (this.role === 'vice-president') {
+            this.model = [
+                {
+                    label: 'Home',
+                    items: [
+                        {
+                            label: 'Dashboard',
+                            icon: 'pi pi-fw pi-home',
+                            routerLink: ['/vice-president/dashboard'],
+                        },
+                    ],
+                },
+                {
+                    label: 'Goals',
+                    items: [
+                        {
+                            label: 'Goals',
+                            icon: 'pi pi-caret-down',
+                            // routerLink: ['/office-head/goal'],
+                            items: [
+                                {
+                                    label: 'Dashboard',
+                                    icon: 'pi pi-compass',
+                                    routerLink: [
+                                        '/vice-president/goal/dashboard',
+                                    ],
+                                },
+                                {
+                                    label: 'Goals',
+                                    icon: 'pi pi-align-justify',
+                                    routerLink: ['/vice-president/goal'],
+                                },
+                                // {
+                                //     label: 'Objectives',
+                                //     icon: 'pi pi-flag',
+                                //     routerLink: [
+                                //         '/office-head/goals/objectives',
+                                //     ],
+                                // },
+                                // {
+                                //     label: 'Calendar',
+                                //     icon: 'pi pi-calendar-plus',
+                                //     routerLink: ['/office-head/goals/calendar'],
+                                // },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    label: 'Ai Helper',
+                    items: [
+                        {
+                            label: 'Gemini',
+                            icon: 'pi pi-google',
+                            routerLink: ['/vice-president/ai'],
+                        },
+                    ],
+                },
+            ];
+        }
+
+        if (this.role === 'director') {
+            this.model = [
+                {
+                    label: 'Home',
+                    items: [
+                        {
+                            label: 'Dashboard',
+                            icon: 'pi pi-fw pi-home',
+                            routerLink: ['/director/dashboard'],
+                        },
+                    ],
+                },
+                {
+                    label: 'Goals',
+                    items: [
+                        {
+                            label: 'Goals',
+                            icon: 'pi pi-caret-down',
+                            // routerLink: ['/office-head/goal'],
+                            items: [
+                                {
+                                    label: 'Dashboard',
+                                    icon: 'pi pi-compass',
+                                    routerLink: ['/director/goals/dashboard'],
+                                },
+                                {
+                                    label: 'Goals',
+                                    icon: 'pi pi-align-justify',
+                                    routerLink: ['/director/goals'],
+                                },
+                                // {
+                                //     label: 'Objectives',
+                                //     icon: 'pi pi-flag',
+                                //     routerLink: [
+                                //         '/office-head/goals/objectives',
+                                //     ],
+                                // },
+                                // {
+                                //     label: 'Calendar',
+                                //     icon: 'pi pi-calendar-plus',
+                                //     routerLink: ['/office-head/goals/calendar'],
+                                // },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    label: 'Ai Helper',
+                    items: [
+                        {
+                            label: 'Gemini',
+                            icon: 'pi pi-google',
+                            routerLink: ['/director/ai'],
+                        },
+                    ],
+                },
+            ];
+        }
+
+        if (this.role === 'vice-president') {
+            this.model = [
+                {
+                    label: 'Home',
+                    items: [
+                        {
+                            label: 'Dashboard',
+                            icon: 'pi pi-fw pi-home',
+                            routerLink: ['/vice-president/dashboard'],
+                        },
+                    ],
+                },
+                {
+                    label: 'Goals',
+                    items: [
+                        {
+                            label: 'Goals',
+                            icon: 'pi pi-caret-down',
+                            // routerLink: ['/office-head/goal'],
+                            items: [
+                                {
+                                    label: 'Dashboard',
+                                    icon: 'pi pi-compass',
+                                    routerLink: [
+                                        '/vice-president/goals/dashboard',
+                                    ],
+                                },
+                                {
+                                    label: 'Goals',
+                                    icon: 'pi pi-align-justify',
+                                    routerLink: ['/vice-president/goals'],
+                                },
+                                // {
+                                //     label: 'Objectives',
+                                //     icon: 'pi pi-flag',
+                                //     routerLink: [
+                                //         '/office-head/goals/objectives',
+                                //     ],
+                                // },
+                                // {
+                                //     label: 'Calendar',
+                                //     icon: 'pi pi-calendar-plus',
+                                //     routerLink: ['/office-head/goals/calendar'],
+                                // },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    label: 'Ai Helper',
+                    items: [
+                        {
+                            label: 'Gemini',
+                            icon: 'pi pi-google',
+                            routerLink: ['/vice-president/ai'],
+                        },
+                    ],
+                },
+            ];
+        }
+
         if (this.role === 'user') {
             this.model = [
                 {
@@ -229,122 +410,6 @@ export class AppMenuComponent implements OnInit {
                             label: 'Gemini',
                             icon: 'pi pi-google',
                             routerLink: ['/user/ai'],
-                        },
-                    ],
-                },
-            ];
-        }
-        if (this.role === 'director') {
-            this.model = [
-                {
-                    label: 'Home',
-                    items: [
-                        {
-                            label: 'Dashboard',
-                            icon: 'pi pi-fw pi-home',
-                            routerLink: ['/director/dashboard'],
-                        },
-                    ],
-                },
-                {
-                    label: 'Goals',
-                    items: [
-                        {
-                            label: 'Goals',
-                            icon: 'pi pi-caret-down',
-                            items: [
-                                {
-                                    label: 'Dashboard',
-                                    icon: 'pi pi-compass',
-                                    routerLink: ['/director/goals/dashboard'],
-                                },
-                                {
-                                    label: 'Goals',
-                                    icon: 'pi pi-align-justify',
-                                    routerLink: ['/director/goals'],
-                                },
-                                {
-                                    label: 'Objectives',
-                                    icon: 'pi pi-flag',
-                                    routerLink: ['/director/goals/objectives'],
-                                },
-                                {
-                                    label: 'Calendar',
-                                    icon: 'pi pi-calendar-plus',
-                                    routerLink: ['/director/goals/calendar'],
-                                },
-                            ],
-                        },
-                    ],
-                },
-                {
-                    label: 'Ai Helper',
-                    items: [
-                        {
-                            label: 'Gemini',
-                            icon: 'pi pi-google',
-                            routerLink: ['/director/ai'],
-                        },
-                    ],
-                },
-            ];
-        }
-        if (this.role === 'vice-president') {
-            this.model = [
-                {
-                    label: 'Home',
-                    items: [
-                        {
-                            label: 'Dashboard',
-                            icon: 'pi pi-fw pi-home',
-                            routerLink: ['/vice-president/dashboard'],
-                        },
-                    ],
-                },
-                {
-                    label: 'Goals',
-                    items: [
-                        {
-                            label: 'Goals',
-                            icon: 'pi pi-caret-down',
-                            items: [
-                                {
-                                    label: 'Dashboard',
-                                    icon: 'pi pi-compass',
-                                    routerLink: [
-                                        '/vice-president/goals/dashboard',
-                                    ],
-                                },
-                                {
-                                    label: 'Goals',
-                                    icon: 'pi pi-align-justify',
-                                    routerLink: ['/vice-president/goals'],
-                                },
-                                {
-                                    label: 'Objectives',
-                                    icon: 'pi pi-flag',
-                                    routerLink: [
-                                        '/vice-president/goals/objectives',
-                                    ],
-                                },
-                                {
-                                    label: 'Calendar',
-                                    icon: 'pi pi-calendar-plus',
-                                    routerLink: [
-                                        '/vice-president/goals/calendar',
-                                    ],
-                                },
-                            ],
-                        },
-                    ],
-                },
-                {
-                    label: 'Ai Helper',
-                    items: [
-                        {
-                            label: 'Gemini',
-                            icon: 'pi pi-google',
-                            routerLink: ['/director/ai'],
                         },
                     ],
                 },

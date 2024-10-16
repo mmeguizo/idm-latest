@@ -8,6 +8,7 @@
     [breakpoints]="{ '1199px': '50vw', '890px': '40vw', '500px': '30vw' }"
     [draggable]="false"
     [resizable]="false"
+    (onHide)="resetForm()"
 >
     <div class="card p-fluid">
         <form [formGroup]="Addform">
@@ -117,6 +118,7 @@
                     "
                     formControlName="password"
                     required
+                    [toggleMask]="true"
                 />
             </div>
             <div class="field">
@@ -133,6 +135,7 @@
                     formControlName="confirm"
                     autocomplete="off"
                     required
+                    [toggleMask]="true"
                 />
             </div>
             <div class="field">
@@ -144,14 +147,27 @@
                     placeholder="Select a Role"
                 />
             </div>
-            <div class="field">
-                <label htmlFor="department">Vice Presidents</label>
-                <p-dropdown
-                    formControlName="vice_president"
-                    [options]="selectVP"
-                    optionLabel="fullname"
-                    placeholder="Select a VP"
-                />
+            <div class="field" *ngIf="!isVicePresident">
+                <form [formGroup]="formGroupVP">
+                    <label htmlFor="department">Vice Presidents</label>
+                    <p-dropdown
+                        formControlName="selectVP"
+                        [options]="selectVPDropdown"
+                        optionLabel="fullname"
+                        placeholder="Select a VP"
+                    />
+                </form>
+            </div>
+            <div class="field" *ngIf="!isDirector && !isVicePresident">
+                <form [formGroup]="formGroupDirector">
+                    <label htmlFor="department">Director </label>
+                    <p-dropdown
+                        formControlName="selectDirector"
+                        [options]="selectDirectorDropdown"
+                        optionLabel="fullname"
+                        placeholder="Select a Director"
+                    />
+                </form>
             </div>
             <div class="field">
                 <form [formGroup]="formGroupDemo">

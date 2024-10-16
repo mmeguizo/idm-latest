@@ -96,6 +96,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     valSwitch: boolean = false;
     USERID: string;
+    ROLE: string;
     hideviewObjectiveFileDialogCardID: any;
 
     // progress bar
@@ -150,6 +151,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         private changeDetectorRef: ChangeDetectorRef
     ) {
         this.USERID = this.auth.getTokenUserID();
+        this.ROLE = this.auth.getUserRole();
     }
 
     ngOnInit() {
@@ -255,6 +257,33 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .subscribe((data: any) => {
                 this.deptDropdownCampusValue = data.data[0];
             });
+    }
+
+    getAllObjectivesUnderDirector(role: string): Subject<boolean> {
+        const resultSubject = new Subject<boolean>(); // Create a new Subject to emit success or failure
+
+        this.loading = true;
+        this.goal
+            .fetch('get', 'goals', `getAllObjectivesUnderDirector/${role}`)
+            .pipe(
+                takeUntil(this.getGoalSubscription),
+                tap((data: any) => {
+                    this.goals = data.goals;
+                    this.loading = false;
+                    console.log('getAllObjectivesWithObjectives', data);
+                }),
+                catchError((error) => {
+                    this.loading = false; // Set loading to false on error
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error getAllObjectivesWithObjectives',
+                        detail: error.message,
+                    });
+                    return throwError(() => error); // Re-throw the error if necessary
+                })
+            )
+            .subscribe(); // Trigger the observable
+        return resultSubject; // Return the subject to the caller
     }
 
     getAllObjectivesWithObjectives(): Subject<boolean> {

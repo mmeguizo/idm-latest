@@ -6,6 +6,7 @@ const Objectives = require("../models/objective");
 const { logger } = require("../middleware/logger");
 const userHistory = require("../models/userhistories");
 const goals = require("../models/goals");
+const Users = require("../models/user");
 
 module.exports = (router) => {
   router.get("/getObjectivesViewTable", async (req, res) => {
@@ -88,6 +89,202 @@ module.exports = (router) => {
   });
 
   router.get("/getAllObjectivesWithObjectives", (req, res) => {
+    Goals.aggregate(
+      [
+        {
+          $match: {
+            deleted: false,
+          },
+        },
+        {
+          $lookup: {
+            from: "objectives",
+            let: { objectiveIds: { $ifNull: ["$objectives", []] } },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $in: ["$id", { $ifNull: ["$$objectiveIds", []] }] },
+                      { $eq: ["$deleted", false] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "objectivesDetails",
+          },
+        },
+        {
+          $lookup: {
+            as: "users",
+            from: "users",
+            foreignField: "id",
+            localField: "createdBy",
+          },
+        },
+        { $unwind: { path: "$users" } },
+        {
+          $addFields: {
+            objectivesDetails: {
+              $cond: {
+                if: { $eq: ["$objectivesDetails", []] },
+                then: null,
+                else: "$objectivesDetails",
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            id: 1,
+            goals: 1,
+            budget: 1,
+            department: 1,
+            campus: 1,
+            createdBy: 1,
+            deleted: 1,
+            date_added: 1,
+            createdAt: 1,
+            goallistsId: 1,
+            __v: 1,
+            updatedAt: 1,
+            complete: 1,
+            "users.id": 1,
+            "users.username": 1,
+            objectivesDetails: {
+              $map: {
+                input: { $ifNull: ["$objectivesDetails", []] },
+                as: "od",
+                in: {
+                  id: "$$od.id",
+                  functional_objective: "$$od.functional_objective",
+                  performance_indicator: "$$od.performance_indicator",
+                  target: "$$od.target",
+                  formula: "$$od.formula",
+                  programs: "$$od.programs",
+                  responsible_persons: "$$od.responsible_persons",
+                  clients: "$$od.clients",
+                  remarks: "$$od.remarks",
+                  month_0: "$$od.month_0",
+                  month_1: "$$od.month_1",
+                  month_2: "$$od.month_2",
+                  month_3: "$$od.month_3",
+                  month_4: "$$od.month_4",
+                  month_5: "$$od.month_5",
+                  month_6: "$$od.month_6",
+                  month_7: "$$od.month_7",
+                  month_8: "$$od.month_8",
+                  month_9: "$$od.month_9",
+                  month_10: "$$od.month_10",
+                  month_11: "$$od.month_11",
+                  file_month_0: "$$od.file_month_0",
+                  file_month_1: "$$od.file_month_1",
+                  file_month_2: "$$od.file_month_2",
+                  file_month_3: "$$od.file_month_3",
+                  file_month_4: "$$od.file_month_4",
+                  file_month_5: "$$od.file_month_5",
+                  file_month_6: "$$od.file_month_6",
+                  file_month_7: "$$od.file_month_7",
+                  file_month_8: "$$od.file_month_8",
+                  file_month_9: "$$od.file_month_9",
+                  file_month_10: "$$od.file_month_10",
+                  file_month_11: "$$od.file_month_11",
+                  goal_month_0: "$$od.goal_month_0",
+                  goal_month_1: "$$od.goal_month_1",
+                  goal_month_2: "$$od.goal_month_2",
+                  goal_month_3: "$$od.goal_month_3",
+                  goal_month_4: "$$od.goal_month_4",
+                  goal_month_5: "$$od.goal_month_5",
+                  goal_month_6: "$$od.goal_month_6",
+                  goal_month_7: "$$od.goal_month_7",
+                  goal_month_8: "$$od.goal_month_8",
+                  goal_month_9: "$$od.goal_month_9",
+                  goal_month_10: "$$od.goal_month_10",
+                  goal_month_11: "$$od.goal_month_11",
+                  quarter_1: "$$od.quarter_1",
+                  quarter_2: "$$od.quarter_2",
+                  quarter_3: "$$od.quarter_3",
+                  quarter_0: "$$od.quarter_0",
+                  file_quarter_1: "$$od.file_quarter_1",
+                  file_quarter_2: "$$od.file_quarter_2",
+                  file_quarter_3: "$$od.file_quarter_3",
+                  file_quarter_0: "$$od.file_quarter_0",
+                  goal_quarter_1: "$$od.goal_quarter_1",
+                  goal_quarter_2: "$$od.goal_quarter_2",
+                  goal_quarter_3: "$$od.goal_quarter_3",
+                  goal_quarter_0: "$$od.goal_quarter_0",
+                  semi_annual_0: "$$od.semi_annual_0",
+                  semi_annual_1: "$$od.semi_annual_1",
+                  semi_annual_2: "$$od.semi_annual_2",
+                  file_semi_annual_0: "$$od.file_semi_annual_0",
+                  file_semi_annual_1: "$$od.file_semi_annual_1",
+                  file_semi_annual_2: "$$od.file_semi_annual_2",
+                  goal_semi_annual_0: "$$od.goal_semi_annual_0",
+                  goal_semi_annual_1: "$$od.goal_semi_annual_1",
+                  goal_semi_annual_2: "$$od.goal_semi_annual_2",
+                  frequency_monitoring: "$$od.frequency_monitoring",
+                  timetable: "$$od.timetable",
+                  complete: "$$od.complete",
+                  data_source: "$$od.data_source",
+                  budget: "$$od.budget",
+                  date_added: "$$od.date_added",
+                  createdBy: "$$od.createdBy",
+                  updateby: "$$od.updateby",
+                  updateDate: "$$od.updateDate",
+                  createdAt: "$$od.createdAt",
+                  deleted: "$$od.deleted",
+                },
+              },
+            },
+          },
+        },
+      ],
+      { allowDiskUse: true },
+      async (err, Goals) => {
+        // Check if error was found or not
+        if (err) {
+          res.json({ success: false, message: err });
+        } else {
+          if (!Goals || Goals.length === 0) {
+            res.json({
+              success: false,
+              message: "No Goals found.",
+              Goals: [],
+            }); // Return error of no blogs found
+          } else {
+            let returnedData = await Promise.all(
+              await CalculateBudgetAndCompletion(Goals)
+            );
+
+            res.json({ success: true, goals: returnedData }); // Return success and blogs array
+          }
+        }
+      }
+    ).sort({ _id: -1 });
+
+    // ).sort({ _id: -1 }); // Sort blogs from newest to oldest
+  });
+
+  router.get("/getAllObjectivesUnderDirector/:director", (req, res) => {
+    let directorID = req.params.director;
+
+    const officeHeadId = Users.aggregate([
+      {
+        $match: {
+          director_id: directorID,
+        },
+      },
+      {
+        $project: {
+          id: 1,
+        },
+      },
+    ]);
+
+    console.log({ getAllObjectivesUnderDirector: officeHeadId });
+
     Goals.aggregate(
       [
         {
@@ -1110,6 +1307,191 @@ module.exports = (router) => {
       }
     ).sort({ _id: -1 });
   });
+
+  // router.get("/getAllObjectivesUnderADirector/:id", async (req, res) => {
+  //   const directorId = req.params.id;
+  //   const usersUnderThisDirector = await Users.find({
+  //     director_id: directorId,
+  //   }).select({ id: true });
+
+  //   // Extract the array of user ids
+  //   const userIds = usersUnderThisDirector.map((user) => user.id);
+  //   Goals.aggregate(
+  //     [
+  //       {
+  //         $match: {
+  //           deleted: false,
+  //           createdBy: {
+  //             $in: userIds,
+  //           },
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "objectives",
+  //           let: { objectiveIds: { $ifNull: ["$objectives", []] } },
+  //           pipeline: [
+  //             {
+  //               $match: {
+  //                 $expr: {
+  //                   $and: [
+  //                     { $in: ["$id", { $ifNull: ["$$objectiveIds", []] }] },
+  //                     { $eq: ["$deleted", false] },
+  //                   ],
+  //                 },
+  //               },
+  //             },
+  //           ],
+  //           as: "objectivesDetails",
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           as: "users",
+  //           from: "users",
+  //           foreignField: "id",
+  //           localField: "createdBy",
+  //         },
+  //       },
+  //       { $unwind: { path: "$users" } },
+  //       {
+  //         $addFields: {
+  //           objectivesDetails: {
+  //             $cond: {
+  //               if: { $eq: ["$objectivesDetails", []] },
+  //               then: null,
+  //               else: "$objectivesDetails",
+  //             },
+  //           },
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           _id: 1,
+  //           id: 1,
+  //           goals: 1,
+  //           budget: 1,
+  //           department: 1,
+  //           campus: 1,
+  //           createdBy: 1,
+  //           deleted: 1,
+  //           date_added: 1,
+  //           createdAt: 1,
+  //           goallistsId: 1,
+  //           __v: 1,
+  //           updatedAt: 1,
+  //           complete: 1,
+  //           "users.id": 1,
+  //           "users.username": 1,
+  //           objectivesDetails: {
+  //             $map: {
+  //               input: { $ifNull: ["$objectivesDetails", []] },
+  //               as: "od",
+  //               in: {
+  //                 id: "$$od.id",
+  //                 functional_objective: "$$od.functional_objective",
+  //                 performance_indicator: "$$od.performance_indicator",
+  //                 target: "$$od.target",
+  //                 formula: "$$od.formula",
+  //                 programs: "$$od.programs",
+  //                 responsible_persons: "$$od.responsible_persons",
+  //                 clients: "$$od.clients",
+  //                 remarks: "$$od.remarks",
+  //                 month_0: "$$od.month_0",
+  //                 month_1: "$$od.month_1",
+  //                 month_2: "$$od.month_2",
+  //                 month_3: "$$od.month_3",
+  //                 month_4: "$$od.month_4",
+  //                 month_5: "$$od.month_5",
+  //                 month_6: "$$od.month_6",
+  //                 month_7: "$$od.month_7",
+  //                 month_8: "$$od.month_8",
+  //                 month_9: "$$od.month_9",
+  //                 month_10: "$$od.month_10",
+  //                 month_11: "$$od.month_11",
+  //                 file_month_0: "$$od.file_month_0",
+  //                 file_month_1: "$$od.file_month_1",
+  //                 file_month_2: "$$od.file_month_2",
+  //                 file_month_3: "$$od.file_month_3",
+  //                 file_month_4: "$$od.file_month_4",
+  //                 file_month_5: "$$od.file_month_5",
+  //                 file_month_6: "$$od.file_month_6",
+  //                 file_month_7: "$$od.file_month_7",
+  //                 file_month_8: "$$od.file_month_8",
+  //                 file_month_9: "$$od.file_month_9",
+  //                 file_month_10: "$$od.file_month_10",
+  //                 file_month_11: "$$od.file_month_11",
+  //                 goal_month_0: "$$od.goal_month_0",
+  //                 goal_month_1: "$$od.goal_month_1",
+  //                 goal_month_2: "$$od.goal_month_2",
+  //                 goal_month_3: "$$od.goal_month_3",
+  //                 goal_month_4: "$$od.goal_month_4",
+  //                 goal_month_5: "$$od.goal_month_5",
+  //                 goal_month_6: "$$od.goal_month_6",
+  //                 goal_month_7: "$$od.goal_month_7",
+  //                 goal_month_8: "$$od.goal_month_8",
+  //                 goal_month_9: "$$od.goal_month_9",
+  //                 goal_month_10: "$$od.goal_month_10",
+  //                 goal_month_11: "$$od.goal_month_11",
+  //                 quarter_1: "$$od.quarter_1",
+  //                 quarter_2: "$$od.quarter_2",
+  //                 quarter_3: "$$od.quarter_3",
+  //                 quarter_0: "$$od.quarter_0",
+  //                 file_quarter_1: "$$od.file_quarter_1",
+  //                 file_quarter_2: "$$od.file_quarter_2",
+  //                 file_quarter_3: "$$od.file_quarter_3",
+  //                 file_quarter_0: "$$od.file_quarter_0",
+  //                 goal_quarter_1: "$$od.goal_quarter_1",
+  //                 goal_quarter_2: "$$od.goal_quarter_2",
+  //                 goal_quarter_3: "$$od.goal_quarter_3",
+  //                 goal_quarter_0: "$$od.goal_quarter_0",
+  //                 semi_annual_0: "$$od.semi_annual_0",
+  //                 semi_annual_1: "$$od.semi_annual_1",
+  //                 semi_annual_2: "$$od.semi_annual_2",
+  //                 file_semi_annual_0: "$$od.file_semi_annual_0",
+  //                 file_semi_annual_1: "$$od.file_semi_annual_1",
+  //                 file_semi_annual_2: "$$od.file_semi_annual_2",
+  //                 goal_semi_annual_0: "$$od.goal_semi_annual_0",
+  //                 goal_semi_annual_1: "$$od.goal_semi_annual_1",
+  //                 goal_semi_annual_2: "$$od.goal_semi_annual_2",
+  //                 frequency_monitoring: "$$od.frequency_monitoring",
+  //                 timetable: "$$od.timetable",
+  //                 complete: "$$od.complete",
+  //                 data_source: "$$od.data_source",
+  //                 budget: "$$od.budget",
+  //                 date_added: "$$od.date_added",
+  //                 createdBy: "$$od.createdBy",
+  //                 updateby: "$$od.updateby",
+  //                 updateDate: "$$od.updateDate",
+  //                 createdAt: "$$od.createdAt",
+  //                 deleted: "$$od.deleted",
+  //               },
+  //             },
+  //           },
+  //         },
+  //       },
+  //     ],
+  //     { allowDiskUse: true },
+  //     async (err, Goals) => {
+  //       if (err) {
+  //         res.json({ success: false, message: err });
+  //       } else {
+  //         if (!Goals || Goals.length === 0) {
+  //           res.json({
+  //             success: false,
+  //             message: "No Goals found.",
+  //             Goals: [],
+  //           });
+  //         } else {
+  //           let returnedData = await Promise.all(
+  //             await CalculateBudgetAndCompletion(Goals)
+  //           );
+  //           res.json({ success: true, goals: returnedData });
+  //         }
+  //       }
+  //     }
+  //   ).sort({ _id: -1 });
+  // });
 
   // router.get("/getAllObjectivesWithObjectives/:id", (req, res) => {
   //   Goals.aggregate(

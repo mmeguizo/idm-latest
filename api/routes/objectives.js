@@ -394,7 +394,6 @@ module.exports = (router) => {
     } catch (error) {
       logger.error(error);
       console.log(error);
-
       res.status(500).json({ success: false, message: "Server Error" });
     }
   });
@@ -520,10 +519,8 @@ module.exports = (router) => {
 
   router.put("/updateObjectives", async (req, res) => {
     const { id, ...updateData } = req.body;
-
     try {
       const result = await Objectives.updateOne({ id }, updateData);
-
       if (result.nModified === 0) {
         return res.status(404).json({
           success: false,

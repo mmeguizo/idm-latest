@@ -82,7 +82,7 @@ export class BaseService {
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error.error,
+                        detail: error.error.message,
                     });
                 }
                 return throwError(() => error);

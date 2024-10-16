@@ -15,8 +15,8 @@ const userSchema = new Schema(
       lowercase: true,
       validate: email.emailValidator,
     },
-    firstname: { type: String, required: false },
-    lastname: { type: String, required: false },
+    firstname: { type: String, required: true },
+    lastname: { type: String, required: true },
     username: {
       type: String,
       required: true,

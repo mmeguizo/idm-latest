@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 // import { NotfoundComponent } from './demo/components/notfound/notfound.component';
 import { AppLayoutComponent } from './layout/app.layout.component';
 import { AuthGuard } from './guard/auth.guard';
-import { NotAuthGuard } from './guard/notAuth.guard';
 import { NotfoundComponent } from './notfound/notfound.component';
 // import { DashboardModule } from './demo/components/dashboard/dashboard.module';
 @NgModule({
@@ -99,8 +98,8 @@ import { NotfoundComponent } from './notfound/notfound.component';
                         {
                             path: '',
                             loadChildren: () =>
-                                import('./user/user.module').then(
-                                    (m) => m.UserModule
+                                import('./director/director.module').then(
+                                    (m) => m.DirectorModule
                                 ),
                             canActivate: [AuthGuard],
                         },
@@ -113,9 +112,9 @@ import { NotfoundComponent } from './notfound/notfound.component';
                         {
                             path: '',
                             loadChildren: () =>
-                                import('./user/user.module').then(
-                                    (m) => m.UserModule
-                                ),
+                                import(
+                                    './vice-president/vice-president.module'
+                                ).then((m) => m.VicePresidentModule),
                             canActivate: [AuthGuard],
                         },
                     ],

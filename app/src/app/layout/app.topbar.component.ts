@@ -164,8 +164,8 @@ export class AppTopBarComponent implements OnInit {
 
     createForm() {
         this.form = this.formBuilder.group({
-            firstname: ['', [Validators.required]],
-            lastname: ['', [Validators.required]],
+            firstname: ['', [Validators.required, Validators.required]],
+            lastname: ['', [Validators.required, Validators.required]],
             username: ['', [Validators.required]],
             email: ['', [Validators.required]],
             old_password: ['', [Validators.required]],
@@ -230,6 +230,22 @@ export class AppTopBarComponent implements OnInit {
                 detail: 'Passwords do not match',
             });
         }
+
+        if (
+            form.value.firstname == null ||
+            (!form.value.firstname && !form.value.lastname) ||
+            form.value.lastname == null
+        ) {
+            return this.messageService.add({
+                severity: 'warn',
+                summary: 'Warning',
+                detail: 'First Name and Last Name are required',
+            });
+        }
+
+        console.log('updates', data);
+        console.log('updates', form.value.lastname);
+        console.log('updates', !form.value.lastname);
 
         this.user
             .fetch('put', 'users', 'updateProfile', data)
