@@ -16,7 +16,10 @@ module.exports = (router) => {
         });
         data.push(
           campus.map((e) => {
-            return { name: e.department, code: e.department };
+            return {
+              name: e.department.replace(/\b\w/g, (char) => char.toUpperCase()),
+              code: e.department,
+            };
           })
         );
         await res.json({
@@ -162,6 +165,78 @@ module.exports = (router) => {
           });
         }
       });
+
+    let params = JSON.stringify(req.params);
+    let query = JSON.stringify(req.query);
+    let body = JSON.stringify(req.body);
+    logger.info(
+      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+        req.statusCode
+      }|${req.socket.remoteAddress}|${Date.now()}`
+    );
+  });
+
+  router.post("/addDepartments", (req, res) => {
+    console.log("req.body", req.body);
+    const departments = req.body;
+    if (
+      !departments ||
+      !Array.isArray(departments) ||
+      departments.length === 0
+    ) {
+      return res.json({
+        success: false,
+        message: "You must provide an array of Department Names",
+      });
+    }
+
+    const departmentPromises = departments.map((departmentObj) => {
+      if (!departmentObj.department) {
+        return Promise.resolve({
+          success: false,
+          message: "Department Name is missing in one of the objects",
+        });
+      }
+
+      const departmentData = {
+        id: uuidv4(),
+        department: departmentObj.department.toLowerCase(),
+      };
+
+      return Department.create(departmentData)
+        .then((data) => ({
+          success: true,
+          message: "This department is successfully Added",
+          data: { department: data.department },
+        }))
+        .catch((err) => {
+          if (err.code === 11000) {
+            return {
+              success: false,
+              message: "Department Name already exists",
+              err: err.message,
+            };
+          } else if (err.errors) {
+            const errors = Object.keys(err.errors);
+            return { success: false, message: err.errors[errors[0]].message };
+          } else {
+            return {
+              success: false,
+              message: "Could not add department Error: " + err.message,
+            };
+          }
+        });
+    });
+
+    Promise.all(departmentPromises)
+      .then((results) => res.json(results))
+      .catch((err) =>
+        res.json({
+          success: false,
+          message: "An error occurred while adding departments",
+          err: err.message,
+        })
+      );
 
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);

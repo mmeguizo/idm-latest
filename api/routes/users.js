@@ -7,6 +7,69 @@ const { logger } = require("../middleware/logger");
 const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = (router) => {
+  router.get("/getAllVicePresident", async (req, res) => {
+    let data = [];
+    try {
+      let vicePresident = await User.find({
+        role: "vice-president",
+        deleted: false,
+      });
+
+      if (vicePresident.length > 0) {
+        data.push(
+          vicePresident.map((e) => {
+            return {
+              name: e.department.replace(/\b\w/g, (char) => char.toUpperCase()),
+              code: e.department,
+              id: e.id,
+              firstname: e.firstname,
+              lastname: e.lastname,
+              fullname:
+                e.firstname.replace(/\b\w/g, (char) => char.toUpperCase()) +
+                " " +
+                e.lastname.replace(/\b\w/g, (char) => char.toUpperCase()),
+              _id: e._id,
+            };
+          })
+        );
+      }
+      return res.status(200).json({ success: true, data: data });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error });
+    }
+  });
+  router.get("/getAllDirector", async (req, res) => {
+    let data = [];
+    try {
+      let directorData = await User.find({
+        role: "director",
+        deleted: false,
+      });
+      // Check if directorData has any items
+      if (directorData.length > 0) {
+        data.push(
+          directorData.map((e) => {
+            return {
+              name: e.department.replace(/\b\w/g, (char) => char.toUpperCase()),
+              code: e.department,
+              id: e.id,
+              firstname: e.firstname,
+              lastname: e.lastname,
+              fullname:
+                e.firstname.replace(/\b\w/g, (char) => char.toUpperCase()) +
+                " " +
+                e.lastname.replace(/\b\w/g, (char) => char.toUpperCase()),
+              _id: e._id,
+            };
+          })
+        );
+      }
+      return res.status(200).json({ success: true, data: data });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error });
+    }
+  });
+
   router.get("/getAllUsersForDashboard", async (req, res) => {
     let data = [];
     try {
@@ -61,15 +124,15 @@ module.exports = (router) => {
   router.get("/getAllUsersExceptLoggedIn/:id", (req, res) => {
     User.find(
       { id: { $ne: req.params.id }, deleted: false },
-      {
-        id: 1,
-        email: 1,
-        username: 1,
-        department: 1,
-        role: 1,
-        status: 1,
-        campus: 1,
-      },
+      // {
+      //   id: 1,
+      //   email: 1,
+      //   username: 1,
+      //   department: 1,
+      //   role: 1,
+      //   status: 1,
+      //   campus: 1,
+      // },
       (err, users) => {
         if (err) {
           res.json({ success: false, message: err });
@@ -99,11 +162,23 @@ module.exports = (router) => {
   });
 
   router.post("/addUser", (req, res) => {
-    const { email, username, password, confirm, department, role } = req.body;
+    console.log("addUser", req.body);
+    const {
+      email,
+      username,
+      password,
+      confirm,
+      department,
+      role,
+      firstname,
+      lastname,
+    } = req.body;
     if (
       !email ||
       !username ||
       !password ||
+      !firstname ||
+      !lastname ||
       !department ||
       !role ||
       password !== confirm
@@ -111,16 +186,22 @@ module.exports = (router) => {
       return res.json({
         success: false,
         message:
-          "You must provide an email, username, department, role, password and matching password",
+          "You must provide an email, username, department,firstname , lastname, role, password and matching password",
       });
     }
 
     const userData = {
       id: uuidv4(),
+      firstname: req.body.firstname.toLowerCase(),
+      lastname: req.body.lastname.toLowerCase(),
       email: req.body.email.toLowerCase(),
       username: req.body.username.toLowerCase(),
       password: req.body.password,
       department: req.body.department,
+      vice_president_name: req.body?.vice_president_name || " ",
+      vice_president_id: req.body?.vice_president_id || " ",
+      director_name: req.body.director_name || " ",
+      director_id: req.body?.director_id || "",
       campus: req.body.campus,
       role: req.body.role.toLowerCase(),
     };
@@ -131,8 +212,10 @@ module.exports = (router) => {
           success: true,
           message: "This user is successfully Registered ",
           data: {
-            email: data.email,
-            username: data.username,
+            email,
+            firstname,
+            lastname,
+            username,
             department,
             role,
           },
@@ -342,6 +425,8 @@ module.exports = (router) => {
           .encryptPassword(data.password)
           .then((hash) => {
             userData.role = data.role;
+            userData.firstname = data.firstname;
+            userData.lastname = data.lastname;
             userData.username = data.username;
             userData.email = data.email;
             userData.password = hash;
@@ -374,11 +459,12 @@ module.exports = (router) => {
           });
       }
     } else {
-      const { username, email, profile_pic, id } = req.body;
+      const { username, email, profile_pic, firstname, lastname, id } =
+        req.body;
 
       User.findOneAndUpdate(
         { id: id },
-        { username, email, profile_pic },
+        { username, email, profile_pic, firstname, lastname },
         { upsert: false },
         (err, response) => {
           if (err) return res.json({ success: false, message: err.message });
@@ -402,7 +488,7 @@ module.exports = (router) => {
 
   router.get("/profile/:id", (req, res) => {
     User.findOne({ id: req.params.id })
-      .select("username email profile_pic")
+      .select("firstname lastname username email profile_pic")
       .exec((err, user) => {
         if (err) {
           res.json({ success: false, message: err.message });

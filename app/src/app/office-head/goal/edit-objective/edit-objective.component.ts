@@ -116,6 +116,13 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
             { name: 'biannually', code: 'Biannually' },
         ];
         this.uploadSuccessFlag = false;
+
+        // Debugging
+        this.editObjectiveGoalform
+            .get('month_9')
+            .valueChanges.subscribe((value) => {
+                console.log('Month 0 value:', value);
+            });
     }
     ngOnDestroy(): void {
         this.updateObjectiveSubscription.next();
@@ -260,20 +267,20 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
     createeditObjectiveGoalform() {
         this.editObjectiveGoalform = this.formBuilder.group({
             // department: ['', [Validators.required]],
-            userId: ['', [Validators.required]],
-            goalId: ['', [Validators.required]],
-            functional_objective: ['', [Validators.required]],
-            performance_indicator: ['', [Validators.required]],
-            target: ['', [Validators.required]],
-            formula: ['', [Validators.required]],
-            programs: ['', [Validators.required]],
-            responsible_persons: ['', [Validators.required]],
-            clients: ['', [Validators.required]],
-            timetable: ['', [Validators.required]],
+            // userId: ['', [Validators.required]],
+            // goalId: ['', [Validators.required]],
+            // functional_objective: ['', [Validators.required]],
+            // performance_indicator: ['', [Validators.required]],
+            // target: ['', [Validators.required]],
+            // formula: ['', [Validators.required]],
+            // programs: ['', [Validators.required]],
+            // responsible_persons: ['', [Validators.required]],
+            // clients: ['', [Validators.required]],
+            // timetable: ['', [Validators.required]],
             frequency_monitoring: ['', [Validators.required]],
-            data_source: ['', [Validators.required]],
-            remarks: ['', [Validators.required]],
-            budget: ['', [Validators.required]],
+            // data_source: ['', [Validators.required]],
+            // remarks: ['', [Validators.required]],
+            // budget: ['', [Validators.required]],
         });
     }
     clearEditObjectiveGoalDialogCardDatas() {
@@ -287,7 +294,7 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
         form.value.goalId = this.goal_ObjectId;
         let data = {};
         for (const key in form.value) {
-            if (form.value[key]) {
+            if (form.value[key] !== undefined && form.value[key] !== null) {
                 data[key] = form.value[key];
                 if (
                     key.includes('file') &&

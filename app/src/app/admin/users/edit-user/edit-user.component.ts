@@ -32,6 +32,9 @@ export class EditUserComponent implements OnInit, OnDestroy {
     @Output() childEditUserEvent = new EventEmitter<object>();
     deptDropdownCampusValue: any[] = [];
     deptDropdownValue: any[] = [];
+    dropdownVPValue: any[] = [];
+    selectDiretor: any[] = [];
+    selectVP: any[] = [];
     updateUserCard: boolean = false;
     public form: FormGroup;
     formGroupDemo: FormGroup;
@@ -42,7 +45,9 @@ export class EditUserComponent implements OnInit, OnDestroy {
     selectedRole: string;
     updateUserId: string;
     roleOptions = ROLE_OPTIONS;
-
+    isVicePresident: boolean = false;
+    isDirector: boolean = false;
+    formGroupVP: FormGroup;
     constructor(
         public AddUserFormBuilder: FormBuilder,
         public auth: AuthService,
@@ -60,8 +65,12 @@ export class EditUserComponent implements OnInit, OnDestroy {
         this.formGroupCampus = new FormGroup({
             selectedCampus: new FormControl(),
         });
+        this.formGroupVP = new FormGroup({
+            selectVP: new FormControl(),
+        });
 
         this.getAllCampuses();
+        this.getAllVicePresident();
         this.getAllDepartmentDropdown();
     }
 
@@ -89,6 +98,10 @@ export class EditUserComponent implements OnInit, OnDestroy {
                 this.roleOptions.find((role) => role === data.role)
             );
 
+            this.form.controls['role'].setValue(
+                this.roleOptions.find((role) => role === data.role)
+            );
+
             this.formGroupCampus.setValue({
                 selectedCampus: this.deptDropdownCampusValue.find(
                     (dept) => dept.name === data.campus
@@ -96,6 +109,8 @@ export class EditUserComponent implements OnInit, OnDestroy {
             });
 
             this.form.setValue({
+                firstname: data.firstname,
+                lastname: data.lastname,
                 username: data.username,
                 email: data.email,
                 department: data.department,
@@ -112,6 +127,8 @@ export class EditUserComponent implements OnInit, OnDestroy {
 
     createForm() {
         this.form = this.formBuilder.group({
+            firstname: ['', [Validators.required], Validators.required],
+            lastname: ['', [Validators.required], Validators.required],
             username: ['', [Validators.required]],
             email: ['', [Validators.required]],
             department: ['', [Validators.required]],
@@ -119,7 +136,31 @@ export class EditUserComponent implements OnInit, OnDestroy {
             role: ['', [Validators.required]],
             password: ['', [Validators.required]],
             confirm: ['', [Validators.required]],
+            vice_president: ['', [Validators.required]],
+            director: ['', [Validators.required]],
+            office_head: ['', [Validators.required]],
         });
+    }
+
+    getAllVicePresident() {
+        this.user
+            .fetch('get', 'users', 'getAllVicePresident')
+            .pipe(takeUntil(this.getUserSubscription))
+            .subscribe((data: any) => {
+                this.selectVP = data.data[0] || [];
+                console.log('getAllVicePresident', this.selectVP);
+            });
+    }
+
+    getAllDirectors() {
+        this.user
+            .fetch('get', 'users', 'getAllDirector')
+            .pipe(takeUntil(this.getUserSubscription))
+            .subscribe((data: any) => {
+                console.log('getAllDirector', data);
+                this.selectDiretor = data.data[0] || [];
+                console.log('getAllDirector', this.selectDiretor);
+            });
     }
 
     getAllCampuses() {

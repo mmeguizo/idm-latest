@@ -5,38 +5,50 @@ const username = require("../models/validators/user-validators");
 const password = require("../models/validators/user-validators");
 const { Schema } = mongoose;
 
-const userSchema = new Schema({
-  id: { type: String, required: true, unique: true },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    validate: email.emailValidator,
+const userSchema = new Schema(
+  {
+    id: { type: String, required: true, unique: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      validate: email.emailValidator,
+    },
+    firstname: { type: String, required: true },
+    lastname: { type: String, required: true },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      validate: username.usernameValidators,
+    },
+    campus: { type: String, required: true },
+    department: { type: String, default: "" },
+    role: {
+      type: String,
+      enum: ["admin", "president", "vice-president", "director", "office-head"],
+      default: "office-head",
+    },
+
+    vice_president_id: { type: String, default: "" },
+    vice_president_name: { type: String, default: "" },
+    director_id: { type: String, default: "" },
+    director_name: { type: String, default: "" },
+    office_head_id: { type: String, default: "" },
+    office_head_name: { type: String, default: "" },
+    status: { type: String, default: "pending" },
+    deleted: { type: Boolean, default: false },
+    password: {
+      type: String,
+      required: true,
+      validate: password.passwordValidator,
+    },
+    profile_pic: { type: String, default: "no-photo.png" },
   },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    validate: username.usernameValidators,
-  },
-  department: { type: String, required: true, default: "ICT" },
-  campus: { type: String, required: true },
-  role: {
-    type: String,
-    enum: ["admin", "president", "vice-president", "director", "office-head"],
-    default: "office-head",
-  },
-  status: { type: String, default: "pending" },
-  deleted: { type: Boolean, default: false },
-  password: {
-    type: String,
-    required: true,
-    validate: password.passwordValidator,
-  },
-  profile_pic: { type: String, default: "no-photo.png" },
-});
+  { timestamps: true }
+);
 
 userSchema.pre("save", function (next) {
   if (!this.isModified("password")) {

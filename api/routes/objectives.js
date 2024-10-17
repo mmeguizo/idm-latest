@@ -298,7 +298,7 @@ module.exports = (router) => {
       }
 
       updatedObjective.completionPercentage = target
-        ? (total / target) * 100
+        ? Math.round((total / target) * 100)
         : 0;
       return updatedObjective;
     });
@@ -347,6 +347,14 @@ module.exports = (router) => {
     let goalObjectiveNumber = [];
 
     try {
+      const checkTargetVsGoal = await checkedGoalVStarget(objectivesData);
+
+      if (!checkTargetVsGoal) {
+        return res
+          .status(400)
+          .json({ message: "goal sets is larger than target" });
+      }
+
       let goalData = await Goals.findOne({ id: goalId }).select({
         budget: 1,
         objectives: 1,
@@ -394,10 +402,31 @@ module.exports = (router) => {
     } catch (error) {
       logger.error(error);
       console.log(error);
-
       res.status(500).json({ success: false, message: "Server Error" });
     }
   });
+
+  async function checkedGoalVStarget(data) {
+    let counter = 0;
+
+    if (data.frequency_monitoring === "yearly") {
+      for (let i = 0; i < 12; i++) {
+        counter += data[`goal_month_${i}`] || 0;
+      }
+    }
+    if (data.frequency_monitoring === "semi_annual") {
+      counter = data["goal_semi_annual_0"] + data["goal_semi_annual_1"];
+    }
+
+    if (data.frequency_monitoring === "quarterly") {
+      counter =
+        data["goal_quarter_0"] +
+        data["goal_quarter_1"] +
+        data["goal_quarter_2"] +
+        data["goal_quarter_3"];
+    }
+    return counter === data.target ? true : false;
+  }
 
   router.put("/deleteObjectives", (req, res) => {
     let data = req.body;
@@ -520,10 +549,8 @@ module.exports = (router) => {
 
   router.put("/updateObjectives", async (req, res) => {
     const { id, ...updateData } = req.body;
-
     try {
       const result = await Objectives.updateOne({ id }, updateData);
-
       if (result.nModified === 0) {
         return res.status(404).json({
           success: false,
