@@ -47,6 +47,7 @@ export class GoalComponent implements OnInit, OnDestroy {
     parentEditSuccessObjective: { success: Boolean; id: string };
     parentAddnewFile: any;
     parentViewFiles: { viewFiles: any; data: any };
+    parentViewFileHistory: { viewFilesHistory: any; data: any };
     constructor(
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
@@ -174,6 +175,14 @@ export class GoalComponent implements OnInit, OnDestroy {
         const { viewFiles, data } = event;
         this.parentViewFiles = {
             viewFiles: viewFiles,
+            data: data,
+        };
+    }
+    receivedViewFilesHistoryButtonClick(event: any) {
+        console.log({ receivedViewFilesHistoryButtonClick: event });
+        const { viewFilesHistory, data } = event;
+        this.parentViewFileHistory = {
+            viewFilesHistory: viewFilesHistory,
             data: data,
         };
     }

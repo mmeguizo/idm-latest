@@ -29,6 +29,7 @@
     (childAddObjectiveEvent)="receivedAddObjectiveEvent($event)"
     (childEditObjectiveEvent)="receivedEditObjectiveEvent($event)"
     (viewFilesEvent)="receivedViewFilesButtonClick($event)"
+    (viewFilesHistoryEvent)="receivedViewFilesHistoryButtonClick($event)"
 >
 </app-objective-table>
 <app-add-objective
@@ -44,7 +45,10 @@
 >
 </app-add-files>
 
-<app-view-files [viewFiles]="parentViewFiles"></app-view-files>
+<app-view-files [viewFiles]="parentViewFiles"> </app-view-files>
+
+<app-view-file-history [viewFilesHistory]="parentViewFileHistory">
+</app-view-file-history>
 
 <app-edit-objective
     [getObjective]="parentEditObjective"

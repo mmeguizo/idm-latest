@@ -29,6 +29,7 @@ import { AddObjectiveComponent } from './goal/add-objective/add-objective.compon
 import { EditObjectiveComponent } from './goal/edit-objective/edit-objective.component';
 import { AddFilesComponent } from './goal/add-files/add-files.component';
 import { ViewFilesComponent } from './goal/view-files/view-files.component';
+import { ViewFileHistoryComponent } from './goal/view-file-history/view-file-history.component';
 
 @NgModule({
     imports: [VicePresidentRoutingModule, SharedModule, DeleteFilesComponent],
@@ -46,6 +47,7 @@ import { ViewFilesComponent } from './goal/view-files/view-files.component';
         EditObjectiveComponent,
         AddFilesComponent,
         ViewFilesComponent,
+        ViewFileHistoryComponent,
     ],
     providers: [FileUpload],
 })

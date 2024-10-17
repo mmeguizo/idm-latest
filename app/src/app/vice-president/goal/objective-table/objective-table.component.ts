@@ -50,6 +50,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     @Output() childAddObjectiveEvent = new EventEmitter<any>();
     @Output() childEditObjectiveEvent = new EventEmitter<any>();
     @Output() viewFilesEvent = new EventEmitter<any>();
+    @Output() viewFilesHistoryEvent = new EventEmitter<any>();
 
     subGoalObjective: boolean = false;
     loading: boolean = false;
@@ -239,6 +240,13 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
         this.viewFilesEvent.emit({
             viewFiles: true,
             data: objectives,
+        });
+    }
+
+    viewFilesHistory(objectiveData: any) {
+        this.viewFilesHistoryEvent.emit({
+            viewFilesHistory: true,
+            data: objectiveData,
         });
     }
 }

@@ -264,7 +264,7 @@ module.exports = (router) => {
           } else {
             goal.completion_percentage = 0;
           }
-
+          console.log(goal.completion_percentage);
           // Add complete key based on completion percentage
           goal.complete = goal.completion_percentage === 100;
         }

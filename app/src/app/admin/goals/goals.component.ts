@@ -596,8 +596,13 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     viewFilesHistory(objectiveData: any) {
+        console.log({ viewFilesHistory: objectiveData });
+
         this.viewObjectiveFileHistoryDialogCard = true;
-        this.getAllFilesHistoryFromObjectiveLoad(this.USERID, objectiveData.id);
+        this.getAllFilesHistoryFromObjectiveLoad(
+            objectiveData?.users?.id,
+            objectiveData.id
+        );
     }
 
     clearAddObjectiveGoalDialogCardDatas() {
