@@ -23,6 +23,7 @@ const ai = require("./routes/ai")(router);
 const goallists = require("./routes/goallists")(router);
 const director_query = require("./routes/director_query")(router);
 const vice_president_query = require("./routes/vice_president_query")(router);
+const remarks = require("./routes/remark")(router);
 // const { logMiddleware } = require("./middleware/logger");
 
 mongoose.Promise = global.Promise;
@@ -71,6 +72,7 @@ app.use("/userhistory", userhistory);
 app.use("/goallists", goallists);
 app.use("/director_query", director_query);
 app.use("/vice_president_query", vice_president_query);
+app.use("/remark", remarks);
 app.use(
   "/profile_pic",
   express.static(path.join(__dirname, "../uploads/images"))

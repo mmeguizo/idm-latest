@@ -371,6 +371,12 @@ module.exports = (router) => {
         return res.status(400).json({ message: "Invalid data" });
       }
 
+      if (!objectivesData.frequency_monitoring) {
+        return res
+          .status(400)
+          .json({ message: "Frequency monitoring is required" });
+      }
+
       if (objectiveBudget > goalBudget - totalSubGoalBudget) {
         return res.status(400).json({ message: "Budget exceeds limit" });
       }

@@ -1,6 +1,40 @@
+/**
+ * @module vice_president_query
+ * @description This module defines routes related to querying objectives and files under a Vice President.
+ *
+ * @param {Object} router - Express router object.
+ *
+ * @route GET /getAllObjectivesUnderAVicePresident/:id
+ * @description Retrieves all objectives under a specific Vice President.
+ * @param {string} req.params.id - The ID of the Vice President.
+ * @returns {Object} JSON response containing success status and goals data.
+ *
+ * @function CalculateBudgetAndCompletion
+ * @description Calculates the budget and completion percentage for each goal.
+ * @param {Array} data - Array of goal objects.
+ * @returns {Array} Array of goal objects with calculated budget and completion percentage.
+ *
+ * @function formatIsoDate
+ * @description Formats an ISO date string to 'YYYY-MM-DD' format.
+ * @param {string} isoDateString - The ISO date string to format.
+ * @returns {string} Formatted date string.
+ *
+ * @route GET /getAllFilesFromObjective/:user_id/:objective_id
+ * @description Retrieves all files related to a specific objective.
+ * @param {string} req.params.user_id - The ID of the user.
+ * @param {string} req.params.objective_id - The ID of the objective.
+ * @returns {Object} JSON response containing success status and files data.
+ *
+ * @route GET /getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id
+ * @description Retrieves the history of all files related to a specific objective.
+ * @param {string} req.params.user_id - The ID of the user.
+ * @param {string} req.params.objective_id - The ID of the objective.
+ * @returns {Object} JSON response containing success status and files history data.
+ */
 const { first } = require("rxjs");
 const Goals = require("../models/goals");
 const Users = require("../models/user");
+const File = require("../models/fileupload");
 
 module.exports = (router) => {
   router.get("/getAllObjectivesUnderAVicePresident/:id", async (req, res) => {
@@ -280,6 +314,90 @@ module.exports = (router) => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
+
+  //******************** */
+  // FILES QUERY API
+
+  router.get(
+    "/getAllFilesFromObjective/:user_id/:objective_id",
+
+    async (req, res) => {
+      try {
+        const { user_id, objective_id } = req.params;
+
+        const fileOwnerObjectives = await Objectives.find({ id: objective_id });
+        const fileOwner = fileOwnerObjectives[0]?.userId;
+
+        const files = await File.aggregate([
+          {
+            $match: {
+              status: true,
+              user_id: fileOwner || user_id,
+              objective_id: objective_id,
+              for: "files",
+            },
+          },
+          {
+            $lookup: {
+              as: "objectives",
+              from: "objectives",
+              foreignField: "id",
+              localField: "objective_id",
+            },
+          },
+          {
+            $unwind: {
+              path: "$objectives",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ]);
+
+        return res.json({ success: true, message: "Files", data: files });
+      } catch (err) {
+        return res.json({ success: false, message: err.message });
+      }
+    }
+  );
+  router.get(
+    "/getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id",
+    async (req, res) => {
+      console.log("getAllFilesHistoryFromObjectiveLoad Hit");
+
+      try {
+        const { user_id, objective_id } = req.params;
+
+        const fileOwnerObjectives = await Objectives.find({ id: objective_id });
+        const fileOwner = fileOwnerObjectives[0]?.userId;
+
+        const filesData = await File.find(
+          {
+            user_id: fileOwner || user_id,
+            objective_id: objective_id,
+            for: "files",
+          },
+          {
+            __v: 0.0,
+          }
+        ).sort({
+          createdAt: -1,
+        });
+
+        res.json({ success: true, message: "Files", data: filesData });
+      } catch (err) {
+        res.json({ success: false, message: err.message });
+      }
+
+      let params = JSON.stringify(req.params);
+      let query = JSON.stringify(req.query);
+      let body = JSON.stringify(req.body);
+      logger.info(
+        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+          req.statusCode
+        }|${req.socket.remoteAddress}|${Date.now()}`
+      );
+    }
+  );
 
   //needed
   return router;

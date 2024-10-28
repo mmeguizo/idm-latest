@@ -29,6 +29,9 @@ import { EditObjectiveComponent } from './goal/edit-objective/edit-objective.com
 import { AddFilesComponent } from './goal/add-files/add-files.component';
 import { ViewFilesComponent } from './goal/view-files/view-files.component';
 import { DirectorComponent } from './director.component';
+import { ViewFileHistoryComponent } from './goal/view-file-history/view-file-history.component';
+import { PrintObjectiveTableComponent } from './goal/print-objective-table/print-objective-table.component';
+
 @NgModule({
     imports: [DirectorRoutingModule, SharedModule, DeleteFilesComponent],
     declarations: [
@@ -44,6 +47,8 @@ import { DirectorComponent } from './director.component';
         EditObjectiveComponent,
         AddFilesComponent,
         ViewFilesComponent,
+        ViewFileHistoryComponent,
+        PrintObjectiveTableComponent,
     ],
     providers: [FileUpload],
 })

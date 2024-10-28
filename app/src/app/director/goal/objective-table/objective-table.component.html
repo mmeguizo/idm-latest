@@ -101,7 +101,8 @@
                             icon="pi pi-file-pdf"
                             (click)="
                                 printDocument(
-                                    subOnjectiveHeaderData?.department || ''
+                                    subOnjectiveHeaderData?.department || '',
+                                    objectiveDatas
                                 )
                             "
                             severity="info"

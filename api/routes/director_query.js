@@ -1,5 +1,36 @@
+/**
+ * @fileoverview This file contains the routes for querying goals and files related to a director.
+ *
+ * @requires ../models/goals
+ * @requires ../models/user
+ *
+ * @param {Object} router - The router object to define routes.
+ *
+ * @route GET /getAllObjectivesUnderADirector/:id
+ * @param {string} req.params.id - The ID of the director.
+ * @returns {Object} res - The response object containing the goals and their details.
+ *
+ * @function CalculateBudgetAndCompletion
+ * @param {Array} data - The array of goals data.
+ * @returns {Promise<Array>} - The array of goals with calculated budget and completion.
+ *
+ * @function formatIsoDate
+ * @param {string} isoDateString - The ISO date string to format.
+ * @returns {string} - The formatted date string in YYYY-MM-DD format.
+ *
+ * @route GET /getAllFilesFromObjective/:user_id/:objective_id
+ * @param {string} req.params.user_id - The ID of the user.
+ * @param {string} req.params.objective_id - The ID of the objective.
+ * @returns {Object} res - The response object containing the files related to the objective.
+ *
+ * @route GET /getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id
+ * @param {string} req.params.user_id - The ID of the user.
+ * @param {string} req.params.objective_id - The ID of the objective.
+ * @returns {Object} res - The response object containing the files history related to the objective.
+ */
 const Goals = require("../models/goals");
 const Users = require("../models/user");
+const File = require("../models/fileupload");
 
 module.exports = (router) => {
   router.get("/getAllObjectivesUnderADirector/:id", async (req, res) => {
@@ -264,7 +295,6 @@ module.exports = (router) => {
           } else {
             goal.completion_percentage = 0;
           }
-          console.log(goal.completion_percentage);
           // Add complete key based on completion percentage
           goal.complete = goal.completion_percentage === 100;
         }
@@ -281,6 +311,87 @@ module.exports = (router) => {
     return `${year}-${month}-${day}`;
   }
 
+  /*
+FILES QUERY API
+*/
+  router.get(
+    "/getAllFilesFromObjective/:user_id/:objective_id",
+
+    async (req, res) => {
+      try {
+        const { user_id, objective_id } = req.params;
+
+        const fileOwnerObjectives = await Objectives.find({ id: objective_id });
+        const fileOwner = fileOwnerObjectives[0]?.userId;
+
+        const files = await File.aggregate([
+          {
+            $match: {
+              status: true,
+              user_id: fileOwner || user_id,
+              objective_id: objective_id,
+              for: "files",
+            },
+          },
+          {
+            $lookup: {
+              as: "objectives",
+              from: "objectives",
+              foreignField: "id",
+              localField: "objective_id",
+            },
+          },
+          {
+            $unwind: {
+              path: "$objectives",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ]);
+
+        return res.json({ success: true, message: "Files", data: files });
+      } catch (err) {
+        return res.json({ success: false, message: err.message });
+      }
+    }
+  );
+  router.get(
+    "/getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id",
+    async (req, res) => {
+      try {
+        const { user_id, objective_id } = req.params;
+
+        const fileOwnerObjectives = await Objectives.find({ id: objective_id });
+        const fileOwner = fileOwnerObjectives[0]?.userId;
+
+        const filesData = await File.find(
+          {
+            user_id: fileOwner || user_id,
+            objective_id: objective_id,
+            for: "files",
+          },
+          {
+            __v: 0.0,
+          }
+        ).sort({
+          createdAt: -1,
+        });
+
+        res.json({ success: true, message: "Files", data: filesData });
+      } catch (err) {
+        res.json({ success: false, message: err.message });
+      }
+
+      let params = JSON.stringify(req.params);
+      let query = JSON.stringify(req.query);
+      let body = JSON.stringify(req.body);
+      logger.info(
+        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+          req.statusCode
+        }|${req.socket.remoteAddress}|${Date.now()}`
+      );
+    }
+  );
   //needed
   return router;
 };

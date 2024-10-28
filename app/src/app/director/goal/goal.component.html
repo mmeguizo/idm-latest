@@ -29,6 +29,8 @@
     (childAddObjectiveEvent)="receivedAddObjectiveEvent($event)"
     (childEditObjectiveEvent)="receivedEditObjectiveEvent($event)"
     (viewFilesEvent)="receivedViewFilesButtonClick($event)"
+    (viewFilesHistoryEvent)="receivedViewFilesHistoryButtonClick($event)"
+    (printObjectiveTableEvent)="receivedPrintObjectiveTableEvent($event)"
 >
 </app-objective-table>
 <app-add-objective
@@ -51,3 +53,8 @@
     (childUpdateObjective)="receivedUpdateObjective($event)"
 >
 </app-edit-objective>
+
+<app-view-file-history [viewFilesHistory]="parentViewFileHistory">
+</app-view-file-history>
+<app-print-objective-table [printFile]="parentPrintFile">
+</app-print-objective-table>
