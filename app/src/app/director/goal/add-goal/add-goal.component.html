@@ -36,6 +36,9 @@
                             formControlName="selectDepartment"
                             [options]="deptDropdownValue"
                             optionLabel="name"
+                            [filter]="true"
+                            [showClear]="true"
+                            filterBy="name"
                             placeholder="Select a Department"
                         />
                     </form>

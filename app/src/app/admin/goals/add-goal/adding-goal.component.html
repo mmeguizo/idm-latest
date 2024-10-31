@@ -35,6 +35,9 @@
                         <p-dropdown
                             formControlName="selectDepartment"
                             [options]="deptDropdownValue"
+                            [filter]="true"
+                            [showClear]="true"
+                            filterBy="name"
                             optionLabel="name"
                             placeholder="Select a Department"
                         />

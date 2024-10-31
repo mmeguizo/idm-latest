@@ -214,16 +214,37 @@ module.exports = (router) => {
               Goals: [],
             });
           } else {
-            let returnedData = await Promise.all(
-              await CalculateBudgetAndCompletion(Goals)
-            );
-            res.json({ success: true, goals: returnedData });
+            // let returnedData = await Promise.all(
+            //   await CalculateBudgetAndCompletion(Goals),
+            //   await GetAllDepartmentDropdown(Goals)
+            // );
+            res.json({
+              success: true,
+              goals: await CalculateBudgetAndCompletion(Goals),
+              dropdown: await GetAllDepartmentDropdown(Goals),
+            });
           }
         }
       }
     ).sort({ _id: -1 });
   });
 
+  async function GetAllDepartmentDropdown(data) {
+    let departmentDropdown = [];
+    let departmentSet = new Set();
+
+    data.forEach((e) => {
+      if (!departmentSet.has(e.department)) {
+        departmentSet.add(e.department);
+        departmentDropdown.push({
+          name: e.department.replace(/\b\w/g, (char) => char.toUpperCase()),
+          code: e.department,
+        });
+      }
+    });
+
+    return departmentDropdown;
+  }
   async function CalculateBudgetAndCompletion(data) {
     return await Promise.all(
       data.map(async (goal) => {
@@ -396,6 +417,34 @@ module.exports = (router) => {
           req.statusCode
         }|${req.socket.remoteAddress}|${Date.now()}`
       );
+    }
+  );
+
+  router.get(
+    "/getAllDepartmentDropdown/:id",
+
+    async (req, res) => {
+      let data = [];
+      try {
+        let campus = await Department.find({
+          deleted: false,
+          status: "active",
+        });
+        data.push(
+          campus.map((e) => {
+            return {
+              name: e.department.replace(/\b\w/g, (char) => char.toUpperCase()),
+              code: e.department,
+            };
+          })
+        );
+        await res.json({
+          success: true,
+          data: data,
+        });
+      } catch (error) {
+        res.json({ success: false, message: error });
+      }
     }
   );
 
