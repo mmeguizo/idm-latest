@@ -116,13 +116,6 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
             { name: 'biannually', code: 'Biannually' },
         ];
         this.uploadSuccessFlag = false;
-
-        // Debugging
-        this.editObjectiveGoalform
-            .get('month_9')
-            .valueChanges.subscribe((value) => {
-                console.log('Month 0 value:', value);
-            });
     }
     ngOnDestroy(): void {
         this.updateObjectiveSubscription.next();

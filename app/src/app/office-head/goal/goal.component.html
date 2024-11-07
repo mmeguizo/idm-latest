@@ -29,6 +29,7 @@
     (childAddObjectiveEvent)="receivedAddObjectiveEvent($event)"
     (childEditObjectiveEvent)="receivedEditObjectiveEvent($event)"
     (viewFilesEvent)="receivedViewFilesButtonClick($event)"
+    (remarksEvent)="receivedRemarksEvent($event)"
 >
 </app-objective-table>
 <app-add-objective
@@ -51,3 +52,9 @@
     (childUpdateObjective)="receivedUpdateObjective($event)"
 >
 </app-edit-objective>
+
+<app-remarks
+    [remarksFromGoalParent]="parentRemarks"
+    (childRemarksEvent)="receivedRemarksEvent($event)"
+>
+</app-remarks>
