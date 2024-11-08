@@ -50,6 +50,7 @@ export class GoalComponent implements OnInit, OnDestroy {
     parentViewFileHistory: { viewFilesHistory: any; data: any };
     //print file
     parentPrintFile: any = {};
+    parentRemarks: any;
 
     constructor(
         private confirmationService: ConfirmationService,
@@ -197,6 +198,15 @@ export class GoalComponent implements OnInit, OnDestroy {
             printObjectiveTable: printObjectiveTable,
             data: data,
             header: header,
+        };
+    }
+
+    receivedRemarksEvent(event: any) {
+        console.log({ receivedRemarksEvent: event });
+        const { remarksDialogCard, data } = event;
+        this.parentRemarks = {
+            remarksDialogCard: remarksDialogCard,
+            data: data,
         };
     }
 }

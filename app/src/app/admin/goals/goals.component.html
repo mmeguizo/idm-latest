@@ -17,6 +17,7 @@
                 <!-- add user dialog -->
             </div>
             <p-table
+                id="goalTable"
                 #dt1
                 [value]="goals"
                 dataKey="id"
@@ -112,6 +113,7 @@
                                     let-filter="filterCallback"
                                 >
                                     <p-multiSelect
+                                        id="departmentSelectId"
                                         [ngModel]="value"
                                         [options]="deptDropdownValue"
                                         placeholder="Search by Department"

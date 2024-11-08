@@ -7,9 +7,38 @@ module.exports = (router) => {
     try {
       console.log({ id: req.params.objectiveId, remarks: "remarks" });
 
-      const remarks = await Remarks.find({
-        objectiveId: req.params.objectiveId,
-      });
+      const remarks = await Remarks.aggregate([
+        {
+          $match: {
+            objectiveId: req.params.objectiveId,
+            deleted: false,
+          },
+        },
+        {
+          $lookup: {
+            as: "users",
+            from: "users",
+            foreignField: "id",
+            localField: "userId",
+          },
+        },
+        {
+          $unwind: {
+            path: "$users",
+          },
+        },
+        {
+          $project: {
+            remarks: 1,
+            "users.firstname": 1,
+            "users.lastname": 1,
+            createdAt: 1,
+            userId: 1,
+            objectiveId: 1,
+            _id: 1,
+          },
+        },
+      ]).sort({ createdAt: -1 });
       res.status(200).json(remarks);
     } catch (err) {
       res.status(500).json({ error: err.message });
