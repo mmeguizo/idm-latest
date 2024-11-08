@@ -7,12 +7,11 @@ const formidable = require("formidable");
 const path = require("path");
 const ObjectId = mongoose.Types.ObjectId;
 let fs = require("fs");
-const { fail } = require("assert");
 let md5 = require("md5");
 const { logger } = require("../middleware/logger");
 const Logs = require("../models/logs");
-const { log } = require("console");
-
+const User = require("../models/user");
+const Objectives = require("../models/objective");
 module.exports = (router) => {
   router.post(
     "/addMultipleFiles/:user_id/:objective_id/:uploadObjectiveFilemonth",
@@ -509,11 +508,14 @@ module.exports = (router) => {
       try {
         const { user_id, objective_id } = req.params;
 
+        const fileOwnerObjectives = await Objectives.find({ id: objective_id });
+        const fileOwner = fileOwnerObjectives[0]?.userId;
+
         const files = await File.aggregate([
           {
             $match: {
               status: true,
-              user_id: user_id,
+              user_id: fileOwner || user_id,
               objective_id: objective_id,
               for: "files",
             },
@@ -542,27 +544,30 @@ module.exports = (router) => {
   );
   router.get(
     "/getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id",
-    (req, res) => {
-      const { user_id, objective_id } = req.params;
-      File.find(
-        {
-          user_id: user_id,
-          objective_id: objective_id,
-          for: "files",
-        },
-        {
-          __v: 0.0,
-        },
-        (err, files) => {
-          if (err) {
-            return res.json({ success: false, message: err.message });
-          } else {
-            return res.json({ success: true, message: "Files", data: files });
+    async (req, res) => {
+      try {
+        const { user_id, objective_id } = req.params;
+
+        const fileOwnerObjectives = await Objectives.find({ id: objective_id });
+        const fileOwner = fileOwnerObjectives[0]?.userId;
+
+        const filesData = await File.find(
+          {
+            user_id: fileOwner || user_id,
+            objective_id: objective_id,
+            for: "files",
+          },
+          {
+            __v: 0.0,
           }
-        }
-      ).sort({
-        createdAt: -1,
-      });
+        ).sort({
+          createdAt: -1,
+        });
+
+        res.json({ success: true, message: "Files", data: filesData });
+      } catch (err) {
+        res.json({ success: false, message: err.message });
+      }
 
       let params = JSON.stringify(req.params);
       let query = JSON.stringify(req.query);

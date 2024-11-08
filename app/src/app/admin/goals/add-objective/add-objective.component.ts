@@ -266,13 +266,15 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
 
         let data = {
             ...e.value,
-            functional_objective: e.value.functional_objective.name,
+            functional_objective: e.value?.functional_objective.name,
             userId: USERID,
             goalId: addExecutionGoalId,
             goal_Id: this.addExecutionGoal_Id,
             createdBy: USERID,
             timetable: new Map(), // Initialize the timetable Map
         };
+
+        console.log({ data });
 
         const updatedData = await this.addGoalPeriods(data, patterns);
         this.obj

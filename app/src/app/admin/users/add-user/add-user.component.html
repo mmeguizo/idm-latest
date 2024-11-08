@@ -176,7 +176,9 @@
                         formControlName="selectDepartment"
                         [options]="deptDropdownValue"
                         optionLabel="name"
-                        [editable]="true"
+                        [filter]="true"
+                        [showClear]="true"
+                        filterBy="name"
                         placeholder="Search a Department"
                     />
                 </form>

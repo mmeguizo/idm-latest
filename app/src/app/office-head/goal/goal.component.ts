@@ -46,6 +46,7 @@ export class GoalComponent implements OnInit, OnDestroy {
     parentEditObjective: { editObjective: any; data: any };
     parentEditSuccessObjective: { success: Boolean; id: string };
     parentAddnewFile: any;
+    parentRemarks: any;
     parentViewFiles: { viewFiles: any; data: any };
     constructor(
         private confirmationService: ConfirmationService,
@@ -174,6 +175,15 @@ export class GoalComponent implements OnInit, OnDestroy {
         const { viewFiles, data } = event;
         this.parentViewFiles = {
             viewFiles: viewFiles,
+            data: data,
+        };
+    }
+
+    receivedRemarksEvent(event: any) {
+        console.log({ receivedRemarksEvent: event });
+        const { remarksDialogCard, data } = event;
+        this.parentRemarks = {
+            remarksDialogCard: remarksDialogCard,
             data: data,
         };
     }

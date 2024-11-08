@@ -74,7 +74,7 @@ export class RouteService {
                         this.messageService.add({
                             severity: 'error',
                             summary: 'Error',
-                            detail: error.error,
+                            detail: error.error.message,
                         });
                     }
 

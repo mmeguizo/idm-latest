@@ -11,6 +11,7 @@ import { Subject, pipe, takeUntil, tap, catchError, throwError } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { GoalService } from 'src/app/demo/service/goal.service';
 import { AuthService } from 'src/app/demo/service/auth.service';
+import { DepartmentService } from 'src/app/demo/service/department.service';
 
 @Component({
     selector: 'app-goal-table',
@@ -35,12 +36,13 @@ export class GoalTableComponent implements OnInit, OnDestroy {
     editGoalTrigger: any;
     deleteGoalTrigger: any;
     editObjectiveTrigger: any;
-
+    deptDropdownValue: any[] = [];
     constructor(
         private goal: GoalService,
         private messageService: MessageService,
         private auth: AuthService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        private dept: DepartmentService
     ) {}
 
     ngOnChanges(changes: SimpleChanges) {
@@ -68,13 +70,16 @@ export class GoalTableComponent implements OnInit, OnDestroy {
         console.log(this.auth.getTokenUserID());
         console.log(this.USERID);
         this.goalsTableData(this.USERID);
+
+        //need polishing dont delete
+        // this.getAllDept(this.USERID);
     }
 
     ngOnDestroy() {
         this.getGoalTableSubscription.unsubscribe();
     }
 
-    goalsTableData(userId?: string) {
+    async goalsTableData(userId?: string) {
         console.log(userId);
         const resultSubject = new Subject<boolean>();
         this.loading;
@@ -88,7 +93,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
                 takeUntil(this.getGoalTableSubscription),
                 tap((data: any) => {
                     this.goals = data.goals;
-                    console.log({ goalsTableData: this.goals });
+                    this.deptDropdownValue = data?.dropdown;
                     this.loading = false;
                     resultSubject.next(true); // Emit true on success
                     resultSubject.complete(); // Complete the subject
@@ -169,5 +174,16 @@ export class GoalTableComponent implements OnInit, OnDestroy {
             remainingBudget: remainingBudget,
             goalData: goalData,
         });
+    }
+
+    //not in use yet but will be used to get all department dropdown under vice presidents department
+    async getAllDept(userId?: string) {
+        this.dept
+            .getRoute('get', 'department', `getAllDepartmentDropdown/${userId}`)
+            .pipe(takeUntil(this.getGoalTableSubscription))
+            .subscribe((data: any) => {
+                this.deptDropdownValue = data?.data[0];
+                console.log('getAllDept', this.deptDropdownValue);
+            });
     }
 }

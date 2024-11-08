@@ -322,6 +322,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.deptDropdownValue = data?.data[0];
+                console.log('getAllDept', this.deptDropdownValue);
             });
     }
 
@@ -738,11 +739,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         this.getObjectivesReload(id);
     }
 
-    ngAfterViewInit() {
-        // Now you can safely call printTable
-        // this.printTable();
-    }
-
     printDocument() {
         //   this.printingHead = true;
         this.parentPrintFile = {
@@ -752,5 +748,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
             subOnjectiveHeaderData: this.subOnjectiveHeaderData?.department,
             printingOfficeName: this.printingOfficeName,
         };
+    }
+
+    ngAfterViewInit() {
+        console.log(this.filter); // Logs the ElementRef of 'filter'
+        console.log(this.filter.nativeElement); // Logs the actual DOM element
     }
 }

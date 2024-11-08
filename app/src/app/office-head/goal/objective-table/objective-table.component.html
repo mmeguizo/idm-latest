@@ -400,7 +400,16 @@
                             {{ objectiveData?.createdAt | date : "mediumDate" }}
                         </td>
                         <td>
-                            {{ objectiveData?.remarks }}
+                            <p-button
+                                [text]="true"
+                                [raised]="true"
+                                severity="help"
+                                icon="
+                                  pi pi-comments
+                                "
+                                label="Remarks"
+                                (click)="openRemarksDialog(objectiveData)"
+                            ></p-button>
                         </td>
                         <td>
                             <p-button
@@ -413,33 +422,7 @@
                                 label="View"
                                 (click)="updateSubGoal(objectiveData)"
                             ></p-button>
-                            <!--
-                             [(loading)]="onclickCompletionButton[rowIndex]"
 
-                            <p-button
-                                [text]="true"
-                                [raised]="true"
-                                [severity]="
-                                    objectiveData?.complete
-                                        ? 'success'
-                                        : 'warning'
-                                "
-                                [icon]="
-                                    objectiveData?.complete
-                                        ? 'pi pi-check'
-                                        : 'pi pi-times'
-                                "
-                                [label]="objectiveData?.complete ? 'Yes' : 'No'"
-                                [(loading)]="onclickCompletionButton[rowIndex]"
-                                (click)="
-                                    updateObjectiveComplete(
-                                        $event,
-                                        objectiveData,
-                                        rowIndex,
-                                        objectiveData?.complete
-                                    )
-                                "
-                            ></p-button> -->
                             <p-confirmPopup
                                 #confirmPopupRef
                                 key="updateObjectiveComplete"

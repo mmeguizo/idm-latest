@@ -17,6 +17,7 @@
                 <!-- add user dialog -->
             </div>
             <p-table
+                id="goalTable"
                 #dt1
                 [value]="goals"
                 dataKey="id"
@@ -90,7 +91,7 @@
                         </th>
 
                         <th style="min-width: 12rem">
-                            <div
+                            <!-- <div
                                 class="flex justify-content-between align-items-center"
                             >
                                 Department
@@ -100,7 +101,41 @@
                                     display="menu"
                                     placeholder="Search by Department"
                                 ></p-columnFilter>
-                            </div>
+                            </div> -->
+                            <p-columnFilter
+                                field="department"
+                                matchMode="in"
+                                [showMenu]="false"
+                            >
+                                <ng-template
+                                    pTemplate="filter"
+                                    let-value
+                                    let-filter="filterCallback"
+                                >
+                                    <p-multiSelect
+                                        id="departmentSelectId"
+                                        [ngModel]="value"
+                                        [options]="deptDropdownValue"
+                                        placeholder="Search by Department"
+                                        (onChange)="filter($event.value)"
+                                        optionLabel="name"
+                                        optionValue="name"
+                                    >
+                                        <ng-template
+                                            let-option
+                                            pTemplate="item"
+                                        >
+                                            <div
+                                                class="inline-block vertical-align-middle"
+                                            >
+                                                <span class="ml-1 mt-1">
+                                                    {{ option.name }}
+                                                </span>
+                                            </div>
+                                        </ng-template>
+                                    </p-multiSelect>
+                                </ng-template>
+                            </p-columnFilter>
                         </th>
 
                         <th style="min-width: 12rem">
@@ -1093,17 +1128,6 @@
                             icon="pi pi-filter-slash"
                             (click)="clear(dt3)"
                         ></button>
-
-                        <!-- <p-button
-                            [disabled]="blockedPanel"
-                            icon="pi pi-upload"
-                            (click)="addFiles()"
-                            severity="success"
-                            [outlined]="true"
-                            pTooltip="Add Objectives"
-                            tooltipPosition="top"
-                        /> -->
-
                         <span class="p-input-icon-left mb-2">
                             <i class="pi pi-search"></i>
                             <input

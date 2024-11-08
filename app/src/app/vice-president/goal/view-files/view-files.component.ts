@@ -65,6 +65,7 @@ export class ViewFilesComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.viewFilesSubscription))
                 .subscribe((data: any) => {
                     this.AllObjectivesFiles = data.data;
+                    console.log('AllObjectivesFiles', this.AllObjectivesFiles);
                     this.loading = false;
                 });
             return true;

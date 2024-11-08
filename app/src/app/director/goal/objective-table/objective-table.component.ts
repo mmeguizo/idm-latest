@@ -50,6 +50,9 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     @Output() childAddObjectiveEvent = new EventEmitter<any>();
     @Output() childEditObjectiveEvent = new EventEmitter<any>();
     @Output() viewFilesEvent = new EventEmitter<any>();
+    @Output() viewFilesHistoryEvent = new EventEmitter<any>();
+    @Output() printObjectiveTableEvent = new EventEmitter<any>();
+    @Output() remarksEvent = new EventEmitter<any>();
 
     subGoalObjective: boolean = false;
     loading: boolean = false;
@@ -234,11 +237,40 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
         });
     }
 
+    viewFilesHistory(objectiveData: any) {
+        console.log({ viewFilesHistory: objectiveData });
+
+        this.viewFilesHistoryEvent.emit({
+            viewFilesHistory: true,
+            data: objectiveData,
+        });
+    }
+
     viewFiles(objectives: any) {
         console.log({ viewFiles: objectives });
         this.viewFilesEvent.emit({
             viewFiles: true,
             data: objectives,
+        });
+    }
+
+    printDocument(header: string, data: any) {
+        console.log({ printDocument: data, header });
+        //   this.printingHead = true;
+
+        this.printObjectiveTableEvent.emit({
+            printObjectiveTable: true,
+            data: data,
+            header: header,
+        });
+    }
+
+    openRemarksDialog(data: any) {
+        console.log({ openRemarksDialog: data });
+
+        this.remarksEvent.emit({
+            remarksDialogCard: true,
+            data: data,
         });
     }
 }

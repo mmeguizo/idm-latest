@@ -101,7 +101,8 @@
                             icon="pi pi-file-pdf"
                             (click)="
                                 printDocument(
-                                    subOnjectiveHeaderData?.department || ''
+                                    subOnjectiveHeaderData?.department || '',
+                                    objectiveDatas
                                 )
                             "
                             severity="info"
@@ -400,7 +401,17 @@
                             {{ objectiveData?.createdAt | date : "mediumDate" }}
                         </td>
                         <td>
-                            {{ objectiveData?.remarks }}
+                            <!-- {{ objectiveData?.remarks }} -->
+                            <p-button
+                                [text]="true"
+                                [raised]="true"
+                                severity="help"
+                                icon="
+                              pi pi-comments
+                            "
+                                label="Remarks"
+                                (click)="openRemarksDialog(objectiveData)"
+                            ></p-button>
                         </td>
                         <td>
                             <p-button
