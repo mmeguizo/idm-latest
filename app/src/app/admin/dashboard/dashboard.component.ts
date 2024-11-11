@@ -64,10 +64,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // charts data
 
     barCharts: any;
+    pieCharts: any;
 
     // tabview and panel
     selectedIndex = 0;
     @ViewChild(TabView) tabView: TabView;
+    PieChartOptions: {
+        plugins: {
+            legend: { labels: { usePointStyle: boolean; color: string } };
+        };
+    };
     constructor(
         public userService: UserService,
         private goalService: GoalService,
@@ -145,6 +151,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .fetch('get', 'users', 'getAllUsersForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
+                console.log(data.data);
                 this.users = data.data[0];
             });
     }
@@ -187,7 +194,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe({
                 next: (data: any) => {
+                    console.log({ getAllObjectivesWithObjectives: data });
                     this.goals = data.goals || [];
+                    this.pieChart(data.goals || this.goals || []);
                     this.thisBarCharts(data.goals);
                     this.processDashboardData(data);
                     this.loading = false;
@@ -348,6 +357,48 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     getSelectedHeader() {
         alert(this.tabView.tabs[this.selectedIndex].header);
+    }
+
+    async pieChart(data: any = []) {
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+
+        const labels = data.map((goal) => goal.department);
+        const budgets = data.map((goal) => goal.remainingBudget);
+        const backgroundColors = labels.map(() => {
+            const randomColor = `#${Math.floor(
+                Math.random() * 16777215
+            ).toString(16)}`;
+            return randomColor;
+        });
+        const hoverBackgroundColors = backgroundColors.map((color) => {
+            const hoverColor = `#${Math.floor(
+                Math.random() * 16777215
+            ).toString(16)}`;
+            return hoverColor;
+        });
+
+        this.pieCharts = data = {
+            labels: labels,
+            datasets: [
+                {
+                    data: budgets,
+                    backgroundColor: backgroundColors,
+                    hoverBackgroundColor: hoverBackgroundColors,
+                },
+            ],
+        };
+
+        this.PieChartOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+            },
+        };
     }
 
     async thisBarCharts(data: any = []) {

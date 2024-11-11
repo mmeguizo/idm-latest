@@ -26,10 +26,17 @@
                 </div>
             </div>
             @if (users) {
-            <span class="text-blue-500 font-medium"
-                >{{ users?.office_head || 0 }} Office Head</span
-            >
-            <br />
+            <span class="text-green-500 font-medium"
+                >{{ users?.office_head || 0 }}
+                <span class="text-500 font-medium"> HOD</span> |
+                {{ users?.director || 0 }}
+                <span class="text-500 font-medium"> DIR</span> |
+                {{ users?.vice_president || 0
+                }}<span class="text-500 font-medium"> VP</span> |
+                {{ users?.admin || 0 }}
+                <span class="text-500 font-medium">Admins</span>
+            </span>
+            <!-- <br />
             <span class="text-blue-500">
                 {{ users?.director || 0 }} Directors
             </span>
@@ -40,7 +47,7 @@
             <br />
             <span class="text-green-500">
                 {{ users?.admin || 0 }} Admins / President
-            </span>
+            </span> -->
             } @else {
             <p-skeleton width="12rem" height="2rem"></p-skeleton>
             }
@@ -172,6 +179,20 @@
             }
         </div>
     </div>
+    <div style="grid-column: span 2">
+        <div style="display: grid; grid-template-columns: 1fr 1fr">
+            <div class="card">tester</div>
+            <div class="card">tester</div>
+        </div>
+    </div>
+    <!-- <div class="row">
+        <div class="col-6">
+            <div class="card">tester</div>
+        </div>
+        <div class="col-6">
+            <div class="card">tester</div>
+        </div>
+    </div> -->
     <div class="col-12">
         <div class="card">
             <p-dropdown
@@ -412,7 +433,20 @@
                     </div>
                 </p-tabPanel>
                 <p-tabPanel
-                    header="Charts"
+                    header="Pie Charts"
+                    class="line-height-3 m-0"
+                    cache="false"
+                >
+                    <div class="card">
+                        <p-chart
+                            type="pie"
+                            [data]="pieCharts"
+                            [options]="PieChartOptions"
+                        />
+                    </div>
+                </p-tabPanel>
+                <p-tabPanel
+                    header="Vertical Charts"
                     class="line-height-3 m-0"
                     cache="false"
                 >
