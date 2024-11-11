@@ -26,44 +26,22 @@
                 <div
                     class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0"
                 >
-                    <i class="text-xl text-blue-500"></i>
-                    <!-- <i class="pi pi-user text-xl text-blue-500"></i> -->
-                    <span class="text-xs text-500 text-center"
-                        >{{ remark.users?.firstname | titlecase }}
-                    </span>
+                    <i class="pi pi-user text-xl text-blue-500"></i>
                 </div>
-                <div class="flex align-items-center justify-content-center">
-                    <span class="text-700 line-height-3">
-                        <sup class="text-xs text-500 text-left pt-3"
-                            >{{ remark.createdAt | date : "shortDate" }} :
-                        </sup>
-                        <span class="pt-3">
-                            {{ remark.remarks }}
-                        </span>
+                <span class="text-900 line-height-3">
+                    <span class="text-700">
+                        {{ remark.remarks }}
                     </span>
-                </div>
+                </span>
             </li>
             } @else {
-            <li
-                class="flex justify-content-between align-items-center py-2 border-bottom-1 surface-border"
-            >
+            <li class="flex justify-content-between align-items-center py-2">
                 <div
                     class="w-3rem h-3rem flex align-items-center justify-content-center bg-orange-100 border-circle mr-3 flex-shrink-0"
                 >
-                    <i class="text-xl text-orange-500"></i>
-                    <!-- <i class="pi pi-user text-xl text-orange-500"></i> -->
-                    <span class="text-xs text-500 text-center"
-                        >{{ remark.users?.firstname | titlecase }}
-                    </span>
+                    <i class="pi pi-user text-xl text-orange-500"></i>
                 </div>
-                <span class="text-700 line-height-3">
-                    <span class="">
-                        {{ remark.remarks }}
-                    </span>
-                    <sup class="text-xs text-500 text-right"
-                        >{{ remark.createdAt | date : "shortDate" }} :
-                    </sup>
-                </span>
+                <span class="text-700 line-height-3">{{ remark.remarks }}</span>
             </li>
             } }
 

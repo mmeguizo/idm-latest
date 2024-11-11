@@ -31,6 +31,7 @@ import { AddFilesComponent } from './goal/add-files/add-files.component';
 import { ViewFilesComponent } from './goal/view-files/view-files.component';
 import { ViewFileHistoryComponent } from './goal/view-file-history/view-file-history.component';
 import { PrintObjectiveTableComponent } from './goal/print-objective-table/print-objective-table.component';
+import { RemarksComponent } from './goal/remarks/remarks.component';
 
 @NgModule({
     imports: [VicePresidentRoutingModule, SharedModule, DeleteFilesComponent],
@@ -50,6 +51,7 @@ import { PrintObjectiveTableComponent } from './goal/print-objective-table/print
         ViewFilesComponent,
         ViewFileHistoryComponent,
         PrintObjectiveTableComponent,
+        RemarksComponent,
     ],
     providers: [FileUpload],
 })
