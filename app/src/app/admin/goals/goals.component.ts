@@ -6,6 +6,7 @@ import {
     ViewChild,
     ChangeDetectorRef,
     EventEmitter,
+    Output,
 } from '@angular/core';
 import {
     Subject,
@@ -42,7 +43,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     private getGoalSubscription = new Subject<void>();
     @ViewChild('filter') filter!: ElementRef;
     @ViewChild(PrintTableComponent) printTableComponent: PrintTableComponent;
-
+    @Output() remarksEvent = new EventEmitter<any>();
     //table data
     goals: any[] = [];
     Alldepts: any[] = [];
@@ -50,7 +51,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     AllObjectivesHistoryFiles: any[] = [];
     ViewBudget: any[] = [];
     deptDropdownCampusValue: any[] = [];
-
+    parentRemarks: any;
     //table columns
     cols!: any;
     loading = false;
@@ -753,5 +754,13 @@ export class GoalsComponent implements OnInit, OnDestroy {
     ngAfterViewInit() {
         console.log(this.filter); // Logs the ElementRef of 'filter'
         console.log(this.filter.nativeElement); // Logs the actual DOM element
+    }
+
+    openRemarksDialog(event: any) {
+        console.log({ receivedRemarksEvent: event });
+        this.parentRemarks = {
+            remarksDialogCard: true,
+            data: event,
+        };
     }
 }

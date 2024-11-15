@@ -36,7 +36,7 @@ export class GoalComponent implements OnInit, OnDestroy {
     // add objective
     parentAddnewObjective: object = {};
     parentEmitAddObjective: object = {};
-
+    parentRemarks: any;
     ConfirmationService;
     parentEmitSuccessAddObjective: {
         addedNewObjective: boolean;
@@ -197,6 +197,15 @@ export class GoalComponent implements OnInit, OnDestroy {
             printObjectiveTable: printObjectiveTable,
             data: data,
             header: header,
+        };
+    }
+
+    receivedRemarksEvent(event: any) {
+        console.log({ receivedRemarksEvent: event });
+        const { remarksDialogCard, data } = event;
+        this.parentRemarks = {
+            remarksDialogCard: remarksDialogCard,
+            data: data,
         };
     }
 }

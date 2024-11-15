@@ -763,7 +763,17 @@
                             {{ objectiveData.createdAt | date : "mediumDate" }}
                         </td>
                         <td>
-                            {{ objectiveData.remarks }}
+                            <!-- {{ objectiveData.remarks }} -->
+                            <p-button
+                                [text]="true"
+                                [raised]="true"
+                                severity="help"
+                                icon="
+                              pi pi-comments
+                            "
+                                label="Remarks"
+                                (click)="openRemarksDialog(objectiveData)"
+                            ></p-button>
                         </td>
                         <td>
                             <p-button
@@ -1263,3 +1273,6 @@
 <app-print-table [printFile]="parentPrintFile"> </app-print-table>
 
 <!-- Printing functions  -->
+<app-remarks [remarksFromGoalParent]="parentRemarks">
+    <!--  (childRemarksEvent)="receivedRemarksEvent($event)" -->
+</app-remarks>
