@@ -355,7 +355,6 @@
 
 <!-- main objective table  -->
 <p-dialog
-    [modal]="true"
     [(visible)]="subGoalObjective"
     [style]="{ width: '60rem', overflow: 'auto' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
@@ -699,30 +698,11 @@
                     let-rowIndex="rowIndex"
                 >
                     <tr>
-                        <!-- <td>
-                            <span>percentage</span>
-                        </td> -->
                         <td>
-                            <!-- <p-rating
-                                [ngModel]="objectiveData.completedStars"
-                                [readonly]="true"
-                                [cancel]="false"
-                                [stars]="objectiveData.target"
-                            ></p-rating> -->
                             <p-progressBar
                                 [color]="'#1da750'"
                                 [value]="objectiveData.completionPercentage"
                             />
-                            <!-- @for(star of [].constructor( objectiveData.target );
-                            track objectiveData.id ){ @if(
-                            objectiveData.target.length >
-                            objectiveData.completedStars ){
-                            <i class="pi pi-star text-yellow-200 text-sm"></i>
-                            } @else {
-                            <i
-                                class="pi pi-star-fill text-gray-800 text-sm"
-                            ></i>
-                            } } / {{ objectiveData.target }} -->
                         </td>
                         <td>
                             {{ objectiveData.target }}
@@ -786,32 +766,6 @@
                                 label="View"
                                 (click)="updateSubGoal(objectiveData)"
                             ></p-button>
-                            <!--
-                              [(loading)]="onclickCompletionButton[rowIndex]"
-                            <p-button
-                                [text]="true"
-                                [raised]="true"
-                                [severity]="
-                                    objectiveData.complete
-                                        ? 'success'
-                                        : 'warning'
-                                "
-                                [icon]="
-                                    objectiveData.complete
-                                        ? 'pi pi-check'
-                                        : 'pi pi-times'
-                                "
-                                [label]="objectiveData.complete ? 'Yes' : 'No'"
-                                [(loading)]="onclickCompletionButton[rowIndex]"
-                                (click)="
-                                    updateObjectiveComplete(
-                                        $event,
-                                        objectiveData,
-                                        rowIndex,
-                                        objectiveData.complete
-                                    )
-                                "
-                            ></p-button> -->
                             <p-confirmPopup
                                 #confirmPopupRef
                                 key="updateObjectiveComplete"
@@ -895,7 +849,6 @@
     [header]="
         blockedPanel ? 'Files Locked: Objective Marked Complete' : 'File List'
     "
-    [modal]="true"
     [(visible)]="viewObjectiveFileDialogCard"
     [style]="{ width: '60rem' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
@@ -1103,7 +1056,6 @@
 <!-- view file History table list -->
 <p-dialog
     [header]="'File HistoryList'"
-    [modal]="true"
     [(visible)]="viewObjectiveFileHistoryDialogCard"
     [style]="{ width: '60rem' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"

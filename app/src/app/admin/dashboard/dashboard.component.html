@@ -114,7 +114,7 @@
             </div>
 
             @if (objectivesData) {
-            <span class="text-500">Completed: </span>
+            <span class="text-500">Done: </span>
             <span class="text-green-500 font-medium"
                 >{{ objectivesData?.objectiveCompleted || 0 }} -
             </span>
@@ -339,8 +339,8 @@
                                             ></i>
                                             &nbsp;
                                             <p class="text-xs">
-                                                Not Started :
-                                                {{ notStartedGoals }}
+                                                Total Objectives:
+                                                {{ totalObjectivesCount }}
                                             </p>
                                         </div>
                                     </div>

@@ -363,6 +363,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe(async (data: any) => {
+                    console.log('getObjectives', data);
                     this.objectiveDatas = data.Objectives;
                     this.loading = false;
                 });
@@ -382,15 +383,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     }, 0);
 
                     this.goalDataRemainingBudget = this.goalBudget - subBudget;
-                    //initialize completion button
-                    // for (
-                    //     let i = 0;
-                    //     i < this.objectiveDatas.length.length;
-                    //     i++
-                    // ) {
-                    //     this.onclickCompletionButton[i] = false;
-                    // }
-
                     this.changeDetectorRef.detectChanges();
                     this.loading = false;
                     this.makeChanges = false;
@@ -598,8 +590,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     viewFilesHistory(objectiveData: any) {
-        console.log({ viewFilesHistory: objectiveData });
-
         this.viewObjectiveFileHistoryDialogCard = true;
         this.getAllFilesHistoryFromObjectiveLoad(
             objectiveData?.users?.id,
@@ -757,7 +747,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     openRemarksDialog(event: any) {
-        console.log({ receivedRemarksEvent: event });
         this.parentRemarks = {
             remarksDialogCard: true,
             data: event,

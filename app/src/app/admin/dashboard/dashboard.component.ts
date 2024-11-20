@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     completionPercentage: number = 0;
     completedGoals: number = 0;
     inProgressGoals: number = 0;
-    notStartedGoals: number;
+    totalObjectivesCount: number;
     knobValue: number;
     barChartType: string = 'line';
 
@@ -115,7 +115,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // this.thisBarCharts();
     }
 
-    processDashboardData(data) {
+    async processDashboardData(data) {
+        console.log({ processDashboardData: data });
+        // total of objectives
+
+        const objectives =
+            data.goals?.reduce(
+                (sum, goal) => sum + (goal.objectivesDetails?.length || 0),
+                0
+            ) || 0;
+
         this.totalBudget =
             data.goals?.reduce((sum, goal) => sum + (goal.budget || 0), 0) || 0;
 
@@ -129,32 +138,45 @@ export class DashboardComponent implements OnInit, OnDestroy {
             );
         }, 0);
 
+        // Calculate remaining budget
         this.knobValue = this.remainingBudget =
-            (this.totalSubBudget !== 0 ? this.totalBudget : 0) -
-            this.totalSubBudget;
+            this.totalBudget - (this.totalSubBudget || 0);
+
+        // Filter goals with objectives
         const goalsWithObjectives = (data.goals ?? []).filter(
-            (goal) =>
-                goal.objectivesDetails && goal.objectivesDetails.length > 0
+            (goal) => goal.objectivesDetails?.length > 0
         );
 
-        // Calculate completed goals
-        this.completedGoals = goalsWithObjectives.filter((goal) =>
-            goal.objectivesDetails.every((obj) => obj.complete)
-        ).length;
+        // Calculate completed, in-progress, and not-started goals
+        const { completedGoals, inProgressGoals } = goalsWithObjectives.reduce(
+            (acc, goal) => {
+                const objectives = goal.objectivesDetails || [];
 
-        // Calculate in-progress goals
-        this.inProgressGoals = goalsWithObjectives.filter((goal) =>
-            goal.objectivesDetails.some((obj) => !obj.complete)
-        ).length;
+                objectives.forEach((obj) => {
+                    if (obj.complete) {
+                        acc.completedGoals++;
+                    } else {
+                        acc.inProgressGoals++;
+                    }
+                });
 
-        // Calculate not started goals
-        this.notStartedGoals = data.goals?.length
-            ? data.goals.length - this.inProgressGoals - this.completedGoals
-            : 0;
+                return acc;
+            },
+            { completedGoals: 0, inProgressGoals: 0 }
+        );
 
-        // Correctly calculate completion percentage (using filtered goals with objectives)
+        // Assign calculated values
+        this.completedGoals = completedGoals;
+        this.inProgressGoals = inProgressGoals;
+
+        // Calculate totalObjectivesCount by subtracting completed and in-progress goals and no negative values
+        this.totalObjectivesCount = Math.abs(
+            this.completedGoals + this.inProgressGoals
+        );
+
+        // Correctly calculate completion percentage
         this.completionPercentage =
-            this.totalBudget > 0
+            goalsWithObjectives.length > 0
                 ? (this.completedGoals / goalsWithObjectives.length) * 100
                 : 0;
     }
@@ -218,7 +240,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // this.goalBarChartList = data.goalDropdown || [];
                     // this.pieChart(data.goals || this.goals || []);
                     // this.thisBarCharts(data.goals);
-                    // this.processDashboardData(data);
+                    this.processDashboardData(data);
                     this.loading = false;
                 },
                 error: (error) => {
@@ -291,6 +313,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         objectivesData,
                         completionPercentage,
                     } = data.data[0];
+                    console.log(data.data[0]);
                     this.objectivesSideData = objectivesData;
                     this.pieDataBool =
                         objectivesData.length >= 1 ? true : false;
@@ -316,7 +339,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.completionPercentage = 0;
         this.completedGoals = 0;
         this.inProgressGoals = 0;
-        this.notStartedGoals = 0;
+        this.totalObjectivesCount = 0;
         this.knobValue = 0;
         this.getAllObjectivesWithObjectives(event?.value?.name ?? '');
     }
@@ -335,6 +358,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async selectedBarChartDepartments(data: any) {
+        console.log({ selectedBarChartDepartments: data });
+
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -364,6 +389,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         ? goal.completion_percentage
                         : 0
                 );
+                console.log({ completedGoals });
                 incompleteGoals.push(
                     goal.completion_percentage < 100
                         ? goal.completion_percentage
@@ -566,6 +592,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         };
     }
     async thisBarCharts(data: any = []) {
+        console.log({ thisBarCharts: data });
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -577,6 +604,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const labelsObjectiveName = [];
         const labelsOfficeName = [];
         const actualBudget = [];
+        const actualBudgetCompleted = [];
         const budgetData = [];
         const monthData = [];
         const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
@@ -585,6 +613,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
             let objectiveName = goal.objectivesDetails.map(
                 (e) => e.functional_objective
             );
+            let objectiveCompleted = goal.objectivesDetails.map((e) => {
+                if (e.complete) {
+                    actualBudgetCompleted.push(goal.budget);
+                }
+            });
             if (goal.department && goal.budget && goal.date_added) {
                 const dateAdded = new Date(goal.date_added);
                 const monthAdded = dateAdded.getMonth() + 1; // Month (1-12)
@@ -610,6 +643,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 borderColor: 'rgb(153, 102, 255)',
                 data: actualBudget,
                 stack: 'combined',
+            },
+            {
+                label: 'Completed',
+                backgroundColor: 'rgba(153, 82, 255, 0.2)',
+                borderColor: 'rgb(153, 102, 255)',
+                data: actualBudgetCompleted,
+                // stack: 'combined',
+                type: 'bar',
             },
             // {
             //     label: 'Current Month',
@@ -658,84 +699,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             },
         };
     }
-    // async thisBarCharts(data: any = []) {
-    //     const documentStyle = getComputedStyle(document.documentElement);
-    //     const textColor = documentStyle.getPropertyValue('--text-color');
-    //     const textColorSecondary = documentStyle.getPropertyValue(
-    //         '--text-color-secondary'
-    //     );
-    //     const surfaceBorder =
-    //         documentStyle.getPropertyValue('--surface-border');
-
-    //     const labels = [];
-    //     const sublabels = [];
-    //     const datasets = [];
-    //     const budgetData = [];
-    //     const usedColors = new Set<string>(); //To keep track of used colors
-
-    //     data.forEach((goal) => {
-    //         if (goal.objectivesDetails) {
-    //             goal.objectivesDetails.map((obj) => {
-    //                 budgetData.push(obj.budget);
-    //                 labels.push(obj.functional_objective);
-    //             });
-    //         }
-    //     });
-
-    //     datasets.push({
-    //         label: 'Sub Goals',
-    //         backgroundColor: [
-    //             'rgba(255, 159, 64, 0.2)',
-    //             'rgba(75, 192, 192, 0.2)',
-    //             'rgba(54, 162, 235, 0.2)',
-    //             'rgba(153, 102, 255, 0.2)',
-    //         ],
-    //         borderColor: [
-    //             'rgb(255, 159, 64)',
-    //             'rgb(75, 192, 192)',
-    //             'rgb(54, 162, 235)',
-    //             'rgb(153, 102, 255)',
-    //         ],
-    //         data: budgetData,
-    //     });
-
-    //     this.barCharts = {
-    //         labels: labels,
-    //         datasets: datasets,
-    //     };
-
-    //     this.options = {
-    //         plugins: {
-    //             legend: {
-    //                 labels: {
-    //                     color: textColor,
-    //                 },
-    //             },
-    //         },
-    //         scales: {
-    //             y: {
-    //                 beginAtZero: true,
-    //                 ticks: {
-    //                     color: textColorSecondary,
-    //                 },
-    //                 grid: {
-    //                     color: surfaceBorder,
-    //                     drawBorder: false,
-    //                 },
-    //             },
-    //             x: {
-    //                 ticks: {
-    //                     color: textColorSecondary,
-    //                 },
-    //                 grid: {
-    //                     color: surfaceBorder,
-    //                     drawBorder: false,
-    //                 },
-    //             },
-    //         },
-    //     };
-    // }
-
     months(config) {
         var cfg = config || {};
         var count = cfg.count || 12;

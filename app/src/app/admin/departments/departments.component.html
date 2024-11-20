@@ -153,7 +153,6 @@
     header="Dialog"
     id="tester"
     [(visible)]="changeStatusCard"
-    [modal]="true"
     showEffect="fade"
     [style]="{ width: '20vw' }"
     [breakpoints]="{ '960px': '50vw' }"
@@ -174,7 +173,6 @@
 
 <p-dialog
     [header]="!updatingDept ? 'Add Department' : 'Update '"
-    [modal]="true"
     [(visible)]="cardCrudDialog"
     [style]="{ width: '25rem' }"
 >

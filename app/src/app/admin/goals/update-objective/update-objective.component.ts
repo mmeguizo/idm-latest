@@ -285,8 +285,9 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         form.value.id = this.tobeUpdatedSubGoal;
         form.value.goalId = this.goal_ObjectId;
         let data = {};
+        console.log({ updateSubObjectiveGoalDialogExec: form.value });
         for (const key in form.value) {
-            if (form.value[key]) {
+            if (form.value[key] !== '') {
                 data[key] = form.value[key];
                 if (
                     key.includes('file') &&
@@ -299,6 +300,8 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
                 }
             }
         }
+        console.log({ updateSubObjectiveGoalDialogExec: data });
+
         this.obj
             .fetch('put', 'objectives', 'updateObjectives', data)
             .pipe(takeUntil(this.updateObjectiveSubscription))

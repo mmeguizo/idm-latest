@@ -287,7 +287,7 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
         form.value.goalId = this.goal_ObjectId;
         let data = {};
         for (const key in form.value) {
-            if (form.value[key] !== undefined && form.value[key] !== null) {
+            if (form.value[key] !== '') {
                 data[key] = form.value[key];
                 if (
                     key.includes('file') &&
