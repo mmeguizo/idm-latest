@@ -126,21 +126,46 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             return `rgba(${randomColor[0]}, ${randomColor[1]}, ${randomColor[2]}, 0.5)`;
         };
 
-        const datasets = goal.map((goal) => {
-            const backgroundColors = goal.objectives.map(() =>
-                getIncrementalColor()
-            );
-            const borderColors = backgroundColors.map((color) => color);
-
-            return {
-                label: goal.goals,
-                backgroundColor: backgroundColors,
-                borderColor: borderColors,
-                data: goal.objectives.map((obj) => obj.budget),
-            };
+        console.log({ goal });
+        const labels = [];
+        const labelsDataset = [];
+        const dataInsideDatasets = [];
+        const totalBudget = [];
+        const CompletedDataInsideDatasets = [];
+        const completedLabels = [];
+        goal.map((t) => {
+            t.objectives.map((x: any) => {
+                labelsDataset.push(x.functional_objective);
+                dataInsideDatasets.push(x.budget);
+                totalBudget.push(x.totalBudget);
+                completedLabels.push(
+                    x.complete ? 'Completed' : 'Not Completed'
+                );
+                CompletedDataInsideDatasets.push(
+                    x.complete ? 'Completed' : 'Not Completed'
+                );
+                labels.push(x.functional_objective);
+            });
         });
+        const datasets = [
+            {
+                label: 'Budget of Objective',
+                data: dataInsideDatasets,
+                backgroundColor: getIncrementalColor(),
+                borderColor: getIncrementalColor(),
+                stack: 'combined',
+                type: 'bar',
+            },
+            {
+                label: 'Total Budget of the Goal',
+                data: totalBudget,
+                backgroundColor: getIncrementalColor(),
+                borderColor: getIncrementalColor(),
+                stack: 'combined',
+            },
+        ];
 
-        const labels = goal.flatMap((goal) => goal.objectives.map((obj) => ''));
+        console.log({ datasets, labels });
 
         this.donutData = {
             labels: labels,

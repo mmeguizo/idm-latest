@@ -31,6 +31,7 @@
     (viewFilesEvent)="receivedViewFilesButtonClick($event)"
     (viewFilesHistoryEvent)="receivedViewFilesHistoryButtonClick($event)"
     (printObjectiveTableEvent)="receivedPrintObjectiveTableEvent($event)"
+    (remarksEvent)="receivedRemarksEvent($event)"
 >
 </app-objective-table>
 <app-add-objective
@@ -58,3 +59,8 @@
 </app-edit-objective>
 <app-print-objective-table [printFile]="parentPrintFile">
 </app-print-objective-table>
+<app-remarks
+    [remarksFromGoalParent]="parentRemarks"
+    (childRemarksEvent)="receivedRemarksEvent($event)"
+>
+</app-remarks>

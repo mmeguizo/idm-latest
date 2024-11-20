@@ -30,6 +30,7 @@ import { EditObjectiveComponent } from './goal/edit-objective/edit-objective.com
 import { AddFilesComponent } from './goal/add-files/add-files.component';
 import { ViewFilesComponent } from './goal/view-files/view-files.component';
 import { RemarksComponent } from './goal/remarks/remarks.component';
+import { PrintObjectiveTableComponent } from './goal/print-objective-table/print-objective-table.component';
 
 @NgModule({
     imports: [OfficeHeadRoutingModule, SharedModule, DeleteFilesComponent],
@@ -48,6 +49,7 @@ import { RemarksComponent } from './goal/remarks/remarks.component';
         AddFilesComponent,
         ViewFilesComponent,
         RemarksComponent,
+        PrintObjectiveTableComponent,
     ],
     providers: [FileUpload],
 })

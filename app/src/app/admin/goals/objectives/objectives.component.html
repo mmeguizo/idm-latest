@@ -471,7 +471,6 @@
     [header]="
         blockedPanel ? 'Files Locked: Objective Marked Complete' : 'File List'
     "
-    [modal]="true"
     [(visible)]="viewObjectiveFileDialogCard"
     [style]="{ width: '60rem' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
@@ -649,7 +648,6 @@
     header="Drag and Drop Files"
     [(visible)]="addObjectiveFileDialogCard"
     [style]="{ width: '50rem' }"
-    [modal]="true"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     position="top"
 >
@@ -676,7 +674,6 @@
     [header]="'Add  Objectives'"
     [(visible)]="addObjectiveGoalDialogCard"
     [style]="{ width: '50rem' }"
-    [modal]="true"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     position="top"
     (onHide)="clearAddObjectiveGoalDialogCardDatas()"
@@ -867,7 +864,6 @@
                     </label>
                     <p-inputNumber
                         mode="decimal"
-                        [min]="0"
                         formControlName="budget"
                         [showButtons]="true"
                     >
@@ -895,7 +891,6 @@
 <!-- view file History table list -->
 <p-dialog
     [header]="'File History List'"
-    [modal]="true"
     [(visible)]="viewObjectiveFileHistoryDialogCard"
     [style]="{ width: '60rem' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"

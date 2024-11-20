@@ -3,7 +3,6 @@
     header="Add Objectives"
     [(visible)]="addObjectiveGoalDialogCard"
     [style]="{ width: '50rem' }"
-    [modal]="true"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     position="top"
     (onHide)="clearAddObjectiveGoalDialogCardDatas()"
@@ -63,7 +62,6 @@
                     <p-inputNumber
                         mode="decimal"
                         [showButtons]="true"
-                        [min]="0"
                         [ngClass]="
                             addObjectiveGoalform?.get('target').touched &&
                             addObjectiveGoalform?.controls['target'].errors
@@ -178,7 +176,6 @@
                             <p-inputNumber
                                 id="month_{{ i }}"
                                 formControlName="month_{{ i }}"
-                                [min]="0"
                             ></p-inputNumber>
                         </div>
                     </div>
@@ -201,7 +198,6 @@
                             <p-inputNumber
                                 id="quarter_{{ i }}"
                                 formControlName="quarter_{{ i }}"
-                                [min]="0"
                             ></p-inputNumber>
                         </div>
                     </div>
@@ -224,7 +220,6 @@
                             <p-inputNumber
                                 id="semi_annual_{{ i }}"
                                 formControlName="semi_annual_{{ i }}"
-                                [min]="0"
                             ></p-inputNumber>
                         </div>
                     </div>
@@ -254,7 +249,6 @@
                     <label htmlFor="name1"> budget </label>
                     <p-inputNumber
                         mode="decimal"
-                        [min]="0"
                         formControlName="budget"
                         [showButtons]="true"
                     >

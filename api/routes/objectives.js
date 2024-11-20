@@ -150,7 +150,7 @@ module.exports = (router) => {
   router.get("/getAllObjectivesForDashboard", async (req, res) => {
     let data = [];
     try {
-      let objectivesCount = await Objectives.countDocuments();
+      let objectivesCount = await Objectives.countDocuments({ deleted: false });
       let objectiveCompleted = await Objectives.countDocuments({
         complete: true,
         deleted: false,
@@ -209,25 +209,6 @@ module.exports = (router) => {
     );
   });
 
-  // router.get("/getAllByIdObjectives/:id", (req, res) => {
-  //   Objectives.find(
-  //     { deleted: false, goalId: req.params.id },
-  //     (err, Objectives) => {
-  //       if (err) {
-  //         return res.status(500).json({ success: false, message: err });
-  //       }
-
-  //       if (!Objectives || Objectives.length === 0) {
-  //         return res.json({
-  //           success: false,
-  //           message: "No Objectives found.",
-  //           Objectives: [],
-  //         });
-  //       }
-  //       return res.status(200).json({ success: true, Objectives });
-  //     }
-  //   ).sort({ _id: -1 });
-  // });
   router.get("/getAllByIdObjectives/:id", async (req, res) => {
     try {
       const objectives = await Objectives.find({
@@ -555,7 +536,53 @@ module.exports = (router) => {
 
   router.put("/updateObjectives", async (req, res) => {
     const { id, ...updateData } = req.body;
+
     try {
+      // Find the objective using the id
+      const objective = await Objectives.findOne({ id });
+      if (!objective) {
+        return res.status(404).json({
+          success: false,
+          message: "Objective not found",
+        });
+      }
+
+      // Check the goal_month_[i] : value and total
+      let isComplete = true;
+      if (objective.frequency_monitoring === "yearly") {
+        for (let i = 0; i < 12; i++) {
+          const key = `month_${i}`;
+          const goalKey = `goal_month_${i}`;
+          if (objective[goalKey] !== updateData[key]) {
+            isComplete = false;
+            break;
+          }
+        }
+      } else if (objective.frequency_monitoring === "quarterly") {
+        for (let i = 0; i < 4; i++) {
+          const key = `quarter_${i}`;
+          const goalKey = `goal_quarter_${i}`;
+          if (objective[goalKey] !== updateData[key]) {
+            isComplete = false;
+            break;
+          }
+        }
+      } else if (objective.frequency_monitoring === "semi_annual") {
+        for (let i = 0; i < 2; i++) {
+          const key = `semi_annual_${i}`;
+          const goalKey = `goal_semi_annual_${i}`;
+          if (objective[goalKey] !== updateData[key]) {
+            isComplete = false;
+            break;
+          }
+        }
+      }
+
+      // If the same total, change the complete to true and add it to the update data
+
+      updateData.complete = isComplete ? isComplete : false;
+
+      console.log(updateData);
       const result = await Objectives.updateOne({ id }, updateData);
       if (result.nModified === 0) {
         return res.status(404).json({

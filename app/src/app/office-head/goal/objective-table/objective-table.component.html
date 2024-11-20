@@ -1,5 +1,4 @@
 <p-dialog
-    [modal]="true"
     [(visible)]="subGoalObjective"
     [style]="{ width: '60rem', overflow: 'auto' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
@@ -101,7 +100,8 @@
                             icon="pi pi-file-pdf"
                             (click)="
                                 printDocument(
-                                    subOnjectiveHeaderData?.department || ''
+                                    subOnjectiveHeaderData?.department || '',
+                                    objectiveDatas
                                 )
                             "
                             severity="info"

@@ -36,18 +36,6 @@
                 {{ users?.admin || 0 }}
                 <span class="text-500 font-medium">Admins</span>
             </span>
-            <!-- <br />
-            <span class="text-blue-500">
-                {{ users?.director || 0 }} Directors
-            </span>
-            <br />
-            <span class="text-blue-500">
-                {{ users?.vice_president || 0 }} Vice President
-            </span>
-            <br />
-            <span class="text-green-500">
-                {{ users?.admin || 0 }} Admins / President
-            </span> -->
             } @else {
             <p-skeleton width="12rem" height="2rem"></p-skeleton>
             }
@@ -130,7 +118,7 @@
             <span class="text-green-500 font-medium"
                 >{{ objectivesData?.objectiveCompleted || 0 }} -
             </span>
-            <span class="text-500">Working: </span>
+            <span class="text-500">In-Progress: </span>
             <span class="text-red-500 font-medium"
                 >{{ objectivesData?.objectiveUncompleted || 0 }}
             </span>
@@ -179,20 +167,39 @@
             }
         </div>
     </div>
-    <div style="grid-column: span 2">
-        <div style="display: grid; grid-template-columns: 1fr 1fr">
-            <div class="card">tester</div>
-            <div class="card">tester</div>
+    <div class="col-12 lg:col-12 xl:col-6 cursor-pointer">
+        <div class="card flex flex-column align-items-center">
+            <p-chart
+                [responsive]="true"
+                type="pie"
+                [data]="pieCharts"
+                [options]="PieChartOptions"
+                width="40rem"
+                height="40rem"
+            ></p-chart>
         </div>
     </div>
-    <!-- <div class="row">
-        <div class="col-6">
-            <div class="card">tester</div>
+    <div class="col-12 lg:col-12 xl:col-6 cursor-pointer">
+        <div class="card flex flex-column align-items-center">
+            <p-dropdown
+                [options]="goalBarChartList"
+                [(ngModel)]="selectedBarDepartmentDropdown"
+                optionLabel="name"
+                [showClear]="true"
+                placeholder="Select Department"
+                (onChange)="onChangeDepartment($event)"
+                (onClear)="onClearDepartment()"
+            />
+            <p-chart
+                [responsive]="true"
+                width="40rem"
+                height="40rem"
+                [type]="barChartType"
+                [data]="barCharts"
+                [options]="options"
+            />
         </div>
-        <div class="col-6">
-            <div class="card">tester</div>
-        </div>
-    </div> -->
+    </div>
     <div class="col-12">
         <div class="card">
             <p-dropdown
@@ -332,8 +339,8 @@
                                             ></i>
                                             &nbsp;
                                             <p class="text-xs">
-                                                Not Started :
-                                                {{ notStartedGoals }}
+                                                Total Objectives:
+                                                {{ totalObjectivesCount }}
                                             </p>
                                         </div>
                                     </div>
@@ -432,7 +439,7 @@
                         </div>
                     </div>
                 </p-tabPanel>
-                <p-tabPanel
+                <!-- <p-tabPanel
                     header="Pie Charts"
                     class="line-height-3 m-0"
                     cache="false"
@@ -457,7 +464,7 @@
                             [options]="options"
                         />
                     </div>
-                </p-tabPanel>
+                </p-tabPanel> -->
             </p-tabView>
         </div>
     </div>

@@ -30,6 +30,7 @@
     (childEditObjectiveEvent)="receivedEditObjectiveEvent($event)"
     (viewFilesEvent)="receivedViewFilesButtonClick($event)"
     (remarksEvent)="receivedRemarksEvent($event)"
+    (printObjectiveTableEvent)="receivedPrintObjectiveTableEvent($event)"
 >
 </app-objective-table>
 <app-add-objective
@@ -52,6 +53,8 @@
     (childUpdateObjective)="receivedUpdateObjective($event)"
 >
 </app-edit-objective>
+<app-print-objective-table [printFile]="parentPrintFile">
+</app-print-objective-table>
 
 <app-remarks
     [remarksFromGoalParent]="parentRemarks"

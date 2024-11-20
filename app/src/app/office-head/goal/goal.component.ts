@@ -48,6 +48,7 @@ export class GoalComponent implements OnInit, OnDestroy {
     parentAddnewFile: any;
     parentRemarks: any;
     parentViewFiles: { viewFiles: any; data: any };
+    parentPrintFile: any = {};
     constructor(
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
@@ -80,6 +81,15 @@ export class GoalComponent implements OnInit, OnDestroy {
                 goal: event.data,
             };
         }
+    }
+
+    receivedPrintObjectiveTableEvent(event: any) {
+        const { header, data, printObjectiveTable } = event;
+        this.parentPrintFile = {
+            printObjectiveTable: printObjectiveTable,
+            data: data,
+            header: header,
+        };
     }
 
     receivedEditGoalButtonClick(event: any) {

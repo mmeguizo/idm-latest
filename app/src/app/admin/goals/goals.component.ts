@@ -6,6 +6,7 @@ import {
     ViewChild,
     ChangeDetectorRef,
     EventEmitter,
+    Output,
 } from '@angular/core';
 import {
     Subject,
@@ -42,7 +43,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     private getGoalSubscription = new Subject<void>();
     @ViewChild('filter') filter!: ElementRef;
     @ViewChild(PrintTableComponent) printTableComponent: PrintTableComponent;
-
+    @Output() remarksEvent = new EventEmitter<any>();
     //table data
     goals: any[] = [];
     Alldepts: any[] = [];
@@ -50,7 +51,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     AllObjectivesHistoryFiles: any[] = [];
     ViewBudget: any[] = [];
     deptDropdownCampusValue: any[] = [];
-
+    parentRemarks: any;
     //table columns
     cols!: any;
     loading = false;
@@ -362,6 +363,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe(async (data: any) => {
+                    console.log('getObjectives', data);
                     this.objectiveDatas = data.Objectives;
                     this.loading = false;
                 });
@@ -381,15 +383,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                     }, 0);
 
                     this.goalDataRemainingBudget = this.goalBudget - subBudget;
-                    //initialize completion button
-                    // for (
-                    //     let i = 0;
-                    //     i < this.objectiveDatas.length.length;
-                    //     i++
-                    // ) {
-                    //     this.onclickCompletionButton[i] = false;
-                    // }
-
                     this.changeDetectorRef.detectChanges();
                     this.loading = false;
                     this.makeChanges = false;
@@ -597,8 +590,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     viewFilesHistory(objectiveData: any) {
-        console.log({ viewFilesHistory: objectiveData });
-
         this.viewObjectiveFileHistoryDialogCard = true;
         this.getAllFilesHistoryFromObjectiveLoad(
             objectiveData?.users?.id,
@@ -753,5 +744,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
     ngAfterViewInit() {
         console.log(this.filter); // Logs the ElementRef of 'filter'
         console.log(this.filter.nativeElement); // Logs the actual DOM element
+    }
+
+    openRemarksDialog(event: any) {
+        this.parentRemarks = {
+            remarksDialogCard: true,
+            data: event,
+        };
     }
 }

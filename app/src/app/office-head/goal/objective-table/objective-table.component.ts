@@ -51,6 +51,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     @Output() childEditObjectiveEvent = new EventEmitter<any>();
     @Output() remarksEvent = new EventEmitter<any>();
     @Output() viewFilesEvent = new EventEmitter<any>();
+    @Output() printObjectiveTableEvent = new EventEmitter<any>();
 
     subGoalObjective: boolean = false;
     loading: boolean = false;
@@ -249,6 +250,16 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
         this.remarksEvent.emit({
             remarksDialogCard: true,
             data: data,
+        });
+    }
+
+    printDocument(header: string, data: any) {
+        console.log({ printDocument: data, header });
+        //   this.printingHead = true;
+        this.printObjectiveTableEvent.emit({
+            printObjectiveTable: true,
+            data: data,
+            header: header,
         });
     }
 }
