@@ -11,5 +11,5 @@ export class ConnectionService {
     public domain: string = 'http://localhost:3000';
 
     // if deployed online
-    // public domain: string = '';
+    //public domain: string = '';
 }

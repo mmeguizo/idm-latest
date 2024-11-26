@@ -404,14 +404,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const datasets = [
             {
                 label: 'Completed',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgb(75, 192, 192)',
+                borderColor: documentStyle.getPropertyValue('--blue-500'),
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4,
                 data: completedGoals,
             },
             {
                 label: 'In Progress',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
+                backgroundColor: documentStyle.getPropertyValue('--green-500'),
+                borderColor: 'white',
                 data: incompleteGoals,
             },
         ];
@@ -555,7 +557,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const textColor = documentStyle.getPropertyValue('--text-color');
 
         const labels = data.map((goal) => goal.department);
-        const budgets = data.map((goal) => goal.remainingBudget);
+        const budgets = data.map((goal) => goal.budget);
         const generateRandomColor = () => {
             const r = Math.floor(Math.random() * 256);
             const g = Math.floor(Math.random() * 256);
@@ -573,8 +575,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
             datasets: [
                 {
                     data: budgets,
-                    backgroundColor: backgroundColors,
-                    hoverBackgroundColor: hoverBackgroundColors,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--yellow-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--yellow-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                    ],
                 },
             ],
         };
@@ -631,23 +641,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const datasets = [
             {
                 label: 'Budget',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: documentStyle.getPropertyValue('--green-500'),
+                borderColor: 'white',
                 data: budgetData,
                 stack: 'combined',
                 type: 'bar',
             },
             {
                 label: 'Actual Budget',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
+                backgroundColor: documentStyle.getPropertyValue('--orange-500'),
                 data: actualBudget,
                 stack: 'combined',
             },
             {
                 label: 'Completed',
-                backgroundColor: 'rgba(153, 82, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
+                borderColor: documentStyle.getPropertyValue('--blue-500'),
                 data: actualBudgetCompleted,
                 // stack: 'combined',
                 type: 'bar',

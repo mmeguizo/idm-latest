@@ -37,6 +37,38 @@ const Users = require("../models/user");
 const File = require("../models/fileupload");
 
 module.exports = (router) => {
+  router.get("/getAllUsersForDashboardVP/:id", async (req, res) => {
+    try {
+      let directorCount = await Users.countDocuments({
+        deleted: false,
+        role: "director",
+        vice_president_id: req.params.id,
+      });
+
+      let officeHeadCount = await Users.countDocuments({
+        deleted: false,
+        role: "office-head",
+        vice_president_id: req.params.id,
+      });
+
+      let documentCount = await Users.countDocuments({
+        deleted: false,
+        vice_president_id: req.params.id,
+      });
+      res.status(200).json({
+        success: true,
+        data: {
+          director: directorCount,
+          office_head: officeHeadCount,
+          document: documentCount,
+        },
+      });
+      // res.status(200).json({ success: true, data: "yolo" });
+    } catch (error) {
+      res.status(404).json({ success: false, message: error });
+    }
+  });
+
   router.get("/getAllObjectivesUnderAVicePresident/:id", async (req, res) => {
     const VPId = req.params.id;
     const usersUnderThisVicePresident = await Users.find({
@@ -218,10 +250,34 @@ module.exports = (router) => {
             //   await CalculateBudgetAndCompletion(Goals),
             //   await GetAllDepartmentDropdown(Goals)
             // );
+            const calculatedGoals = await CalculateBudgetAndCompletion(Goals);
+            const departmentDropdown = await GetAllDepartmentDropdown(Goals);
+            const completedGoals = Goals.filter(
+              (goal) =>
+                goal.objectivesDetails &&
+                goal.objectivesDetails.some((e) => e.complete)
+            ).length;
+
+            const incompleteGoals = Goals.filter(
+              (goal) =>
+                goal.objectivesDetails &&
+                goal.objectivesDetails.some((e) => !e.complete)
+            ).length;
+            const goalCompleted = Goals.filter(
+              (goal) => goal.completion_percentage === 100
+            ).length;
+            const goalunCompleted = Goals.filter(
+              (goal) => goal.completion_percentage !== 100
+            ).length;
+
             res.json({
               success: true,
-              goals: await CalculateBudgetAndCompletion(Goals),
-              dropdown: await GetAllDepartmentDropdown(Goals),
+              goals: calculatedGoals,
+              completedGoals: goalCompleted,
+              uncompletedGoals: goalunCompleted,
+              dropdown: departmentDropdown,
+              completed: completedGoals,
+              Incompleted: incompleteGoals,
             });
           }
         }
@@ -298,9 +354,6 @@ module.exports = (router) => {
               totalCompletion += objectiveCompletion;
               totalObjectives++;
             }
-
-            // Add complete key to each objective
-            e.complete = goalSum === e.target;
           }
 
           // Calculate percentage and remaining

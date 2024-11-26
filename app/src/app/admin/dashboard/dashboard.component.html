@@ -1,4 +1,4 @@
-<div class="grid">
+<div class="grid p-fluid">
     <div
         class="col-12 lg:col-6 xl:col-3 cursor-pointer"
         routerLink="/admin/users"
@@ -169,13 +169,14 @@
     </div>
     <div class="col-12 lg:col-12 xl:col-6 cursor-pointer">
         <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Total Budget</h5>
             <p-chart
                 [responsive]="true"
                 type="pie"
                 [data]="pieCharts"
                 [options]="PieChartOptions"
-                width="40rem"
-                height="40rem"
+                width="30rem"
+                height="30rem"
             ></p-chart>
         </div>
     </div>
@@ -192,8 +193,8 @@
             />
             <p-chart
                 [responsive]="true"
-                width="40rem"
-                height="40rem"
+                width="30rem"
+                height="30rem"
                 [type]="barChartType"
                 [data]="barCharts"
                 [options]="options"

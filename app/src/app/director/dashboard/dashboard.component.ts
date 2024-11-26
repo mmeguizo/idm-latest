@@ -24,10 +24,35 @@ import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/demo/service/auth.service';
 import { CardModule } from 'primeng/card';
+import { UserService } from 'src/app/demo/service/user.service';
+import { SkeletonModule } from 'primeng/skeleton';
+import { ChartModule } from 'primeng/chart';
+import {
+    IcampusDropdown,
+    IdepartmentDashboardDropdown,
+} from 'src/app/interface/campus.interface';
+import { MessageService } from 'primeng/api';
+import { DropdownModule } from 'primeng/dropdown';
+import { IdepartmentDropdown } from 'src/app/interface/department.interface';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, CardModule, RouterOutlet, FullCalendarModule],
+    imports: [
+        CommonModule,
+        CardModule,
+        RouterOutlet,
+        FullCalendarModule,
+        CommonModule,
+        CardModule,
+        RouterOutlet,
+        FullCalendarModule,
+        SkeletonModule,
+        ChartModule,
+        DropdownModule,
+        ReactiveFormsModule,
+        FormsModule,
+    ],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
 })
@@ -56,16 +81,403 @@ export class DashboardComponent implements OnInit, OnDestroy {
     currentEvents = signal<EventApi[]>([]);
     loading = true;
     userId: string;
+    selectedBarDepartmentDropdown: IdepartmentDropdown | undefined;
+    getAllObjectivesUnderADirectorData: any;
+    goalBarChartList: IdepartmentDashboardDropdown[] | undefined;
+    PieChartOptions: any;
+    pieData: any;
+    pieDataBool: Boolean = false;
+    pieOptions: any;
+    objectivesSideData: any[];
+    selectedGoalData: any;
 
+    totalBudget: number = 0;
+    totalSubBudget: number = 0;
+    remainingBudget: number = 0;
+    completionPercentage: number = 0;
+    completedGoals: number = 0;
+    inProgressGoals: number = 0;
+    totalObjectivesCount: number;
+    knobValue: number;
+    barChartType: string = 'line';
+    options: any;
+    barCharts: any;
+    pieCharts: any;
+    completedGoalsFromApi: any;
+    uncompletedGoalsFromApi: any;
+    goals: any;
     constructor(
         private changeDetector: ChangeDetectorRef,
         private obj: ObjectiveService,
-        private auth: AuthService
+        private auth: AuthService,
+        public userService: UserService
     ) {}
 
     ngOnInit() {
         this.userId = this.auth.getTokenUserID();
         this.getAllobjectivesGoalsUsers();
+        this.userId = this.auth.getTokenUserID();
+        this.getAllobjectivesGoalsUsers();
+        this.getAllObjectivesUnderADirector();
+        // this.getAllusersUnderDirectors();
+    }
+
+    async onChangeDepartment(event: any = '') {
+        this.barCharts = [];
+        console.log({ onChangeDepartment: event.value });
+        if (event.value) {
+            const matchingGoals = this.goals.filter(
+                (goal) => goal.department === event.value.name
+            );
+            this.barChartType = 'bar';
+            console.log(this.barChartType);
+            console.log({ matchingGoals });
+            await this.selectedBarChartDepartments(matchingGoals);
+        }
+    }
+
+    async getAllObjectivesUnderADirector() {
+        await this.userService
+            .fetch(
+                'get',
+                'director_query',
+                `getAllObjectivesUnderADirectorV2/${this.userId}`
+            )
+            .pipe(takeUntil(this.objectiveSubscription))
+            .subscribe((data: any) => {
+                console.log({ getAllObjectivesUnderADirector: data });
+                this.getAllObjectivesUnderADirectorData = data;
+                this.completedGoalsFromApi = data.completedGoals;
+                this.uncompletedGoalsFromApi = data.uncompletedGoals;
+                this.pieChart(data.goals || []);
+                this.goals = data.goals || [];
+                this.goalBarChartList = data.dropdown || [];
+                this.pieChart(data.goals || this.goals || []);
+                this.thisBarCharts(data.goals);
+                this.processDashboardData(data);
+            });
+    }
+
+    async processDashboardData(data) {
+        console.log({ processDashboardData: data });
+        // total of objectives
+
+        const objectives =
+            data.goals?.reduce(
+                (sum, goal) => sum + (goal.objectivesDetails?.length || 0),
+                0
+            ) || 0;
+
+        this.totalBudget =
+            data.goals?.reduce((sum, goal) => sum + (goal.budget || 0), 0) || 0;
+
+        this.totalSubBudget = (data.goals ?? []).reduce((sum, goal) => {
+            return (
+                sum +
+                (goal.objectivesDetails?.reduce(
+                    (subSum, obj) => subSum + (obj.budget || 0),
+                    0
+                ) ?? 0)
+            );
+        }, 0);
+
+        // Calculate remaining budget
+        this.knobValue = this.remainingBudget =
+            this.totalBudget - (this.totalSubBudget || 0);
+
+        // Filter goals with objectives
+        const goalsWithObjectives = (data.goals ?? []).filter(
+            (goal) => goal.objectivesDetails?.length > 0
+        );
+
+        // Calculate completed, in-progress, and not-started goals
+        const { completedGoals, inProgressGoals } = goalsWithObjectives.reduce(
+            (acc, goal) => {
+                const objectives = goal.objectivesDetails || [];
+
+                objectives.forEach((obj) => {
+                    if (obj.complete) {
+                        acc.completedGoals++;
+                    } else {
+                        acc.inProgressGoals++;
+                    }
+                });
+
+                return acc;
+            },
+            { completedGoals: 0, inProgressGoals: 0 }
+        );
+
+        // Assign calculated values
+        this.completedGoals = completedGoals;
+        this.inProgressGoals = inProgressGoals;
+
+        // Calculate totalObjectivesCount by subtracting completed and in-progress goals and no negative values
+        this.totalObjectivesCount = Math.abs(
+            this.completedGoals + this.inProgressGoals
+        );
+
+        // Correctly calculate completion percentage
+        this.completionPercentage =
+            goalsWithObjectives.length > 0
+                ? (this.completedGoals / goalsWithObjectives.length) * 100
+                : 0;
+    }
+
+    async pieChart(data: any = []) {
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+
+        const labels = data.map((goal) => goal.department);
+        const budgets = data.map((goal) => goal.remainingBudget);
+        const generateRandomColor = () => {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgba(${r}, ${g}, ${b}, 0.2)`;
+        };
+
+        const backgroundColors = labels.map(() => generateRandomColor());
+        const hoverBackgroundColors = backgroundColors.map((color) =>
+            color.replace('0.2', '0.4')
+        );
+
+        this.pieCharts = data = {
+            labels: labels,
+            datasets: [
+                {
+                    data: budgets,
+                    backgroundColor: backgroundColors,
+                    hoverBackgroundColor: hoverBackgroundColors,
+                },
+            ],
+        };
+
+        this.PieChartOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+    }
+    async selectedBarChartDepartments(data: any) {
+        console.log({ selectedBarChartDepartments: data });
+
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+        const textColorSecondary = documentStyle.getPropertyValue(
+            '--text-color-secondary'
+        );
+        const surfaceBorder =
+            documentStyle.getPropertyValue('--surface-border');
+
+        const labelsObjectiveName = [];
+        const incompleteGoals = [];
+        // const actualBudget = [];
+        const completedGoals = [];
+        // const monthData = [];
+        // const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
+        console.log({ selectedBarChartDepartments: data });
+        data.forEach((goal) => {
+            let objectiveName = goal.objectivesDetails.map(
+                (e) => e.functional_objective
+            );
+            if (goal.department && goal.budget && goal.date_added) {
+                // const dateAdded = new Date(goal.date_added);
+                // const monthAdded = dateAdded.getMonth() + 1; // Month (1-12)
+                labelsObjectiveName.push(objectiveName);
+                // actualBudget.push(goal.budget);
+                completedGoals.push(
+                    goal.completion_percentage === 100
+                        ? goal.completion_percentage
+                        : 0
+                );
+                console.log({ completedGoals });
+                incompleteGoals.push(
+                    goal.completion_percentage < 100
+                        ? goal.completion_percentage
+                        : 0
+                );
+                // monthData.push(monthAdded);
+            }
+        });
+
+        console.log({ completedGoals, incompleteGoals });
+
+        const datasets = [
+            {
+                label: 'Completed',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgb(75, 192, 192)',
+                data: completedGoals,
+            },
+            {
+                label: 'In Progress',
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgb(153, 102, 255)',
+                data: incompleteGoals,
+            },
+        ];
+
+        this.barCharts = {
+            labels: labelsObjectiveName,
+            // labels: this.months({ count: currentMonth }),
+            datasets: datasets,
+        };
+
+        this.options = {
+            type: 'line',
+            data: datasets,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: textColor,
+                    },
+                },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: textColorSecondary,
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false,
+                    },
+                },
+                x: {
+                    ticks: {
+                        color: textColorSecondary,
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false,
+                    },
+                },
+            },
+        };
+    }
+    onClearDepartment() {
+        console.log('onClearDepartment');
+        this.barCharts = [];
+        this.selectedBarDepartmentDropdown = undefined;
+        this.barChartType = 'line';
+        this.thisBarCharts(this.goals);
+    }
+
+    async thisBarCharts(data: any = []) {
+        console.log({ thisBarCharts: data });
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+        const textColorSecondary = documentStyle.getPropertyValue(
+            '--text-color-secondary'
+        );
+        const surfaceBorder =
+            documentStyle.getPropertyValue('--surface-border');
+
+        const labelsObjectiveName = [];
+        const labelsOfficeName = [];
+        const actualBudget = [];
+        const actualBudgetCompleted = [];
+        const budgetData = [];
+        const monthData = [];
+        const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
+
+        data.forEach((goal) => {
+            let objectiveName = goal.objectivesDetails.map(
+                (e) => e.functional_objective
+            );
+            let objectiveCompleted = goal.objectivesDetails.map((e) => {
+                if (e.complete) {
+                    actualBudgetCompleted.push(goal.budget);
+                }
+            });
+            if (goal.department && goal.budget && goal.date_added) {
+                const dateAdded = new Date(goal.date_added);
+                const monthAdded = dateAdded.getMonth() + 1; // Month (1-12)
+                labelsObjectiveName.push(objectiveName);
+                actualBudget.push(goal.budget);
+                budgetData.push(goal.remainingBudget);
+                monthData.push(monthAdded);
+            }
+        });
+
+        const datasets = [
+            {
+                label: 'Budget',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgb(75, 192, 192)',
+                data: budgetData,
+                stack: 'combined',
+                type: 'bar',
+            },
+            {
+                label: 'Actual Budget',
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgb(153, 102, 255)',
+                data: actualBudget,
+                stack: 'combined',
+            },
+            {
+                label: 'Completed',
+                backgroundColor: 'rgba(153, 82, 255, 0.2)',
+                borderColor: 'rgb(153, 102, 255)',
+                data: actualBudgetCompleted,
+                // stack: 'combined',
+                type: 'bar',
+            },
+            // {
+            //     label: 'Current Month',
+            //     backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            //     borderColor: 'rgb(255, 159, 64)',
+            //     data: Array(labelsObjectiveName.length).fill(currentMonth),
+            // },
+        ];
+
+        this.barCharts = {
+            // labels: this.months({ count: currentMonth }),
+            labels: labelsObjectiveName,
+            datasets: datasets,
+        };
+
+        this.options = {
+            type: 'line',
+            data: datasets,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: textColor,
+                    },
+                },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: textColorSecondary,
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false,
+                    },
+                },
+                x: {
+                    ticks: {
+                        color: textColorSecondary,
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false,
+                    },
+                },
+            },
+        };
     }
 
     getAllobjectivesGoalsUsers() {

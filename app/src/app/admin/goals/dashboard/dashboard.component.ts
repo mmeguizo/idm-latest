@@ -97,14 +97,17 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .fetch('get', 'goals', `getObjectivesViewTable`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data?: any) => {
-                this.initBarCharts(data?.data);
+                console.log({ getObjectiveViewPieChart: data });
+                this.initBarCharts(data?.goals);
             });
     }
 
     ngOnDestroy(): void {
         this.dashboardSubscription.unsubscribe();
     }
-    initBarCharts(goal?: any) {
+    async initBarCharts(goal?: any) {
+        console.log({ goal });
+
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -114,7 +117,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             documentStyle.getPropertyValue('--surface-border');
 
         // Function to generate random color
-
         const getIncrementalColor = () => {
             const randomColor = [
                 Math.floor(Math.random() * 256), // Red
@@ -126,56 +128,62 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             return `rgba(${randomColor[0]}, ${randomColor[1]}, ${randomColor[2]}, 0.5)`;
         };
 
-        console.log({ goal });
-        const labels = [];
-        const labelsDataset = [];
-        const dataInsideDatasets = [];
-        const totalBudget = [];
-        const CompletedDataInsideDatasets = [];
-        const completedLabels = [];
-        goal.map((t) => {
-            t.objectives.map((x: any) => {
-                labelsDataset.push(x.functional_objective);
-                dataInsideDatasets.push(x.budget);
-                totalBudget.push(x.totalBudget);
-                completedLabels.push(
-                    x.complete ? 'Completed' : 'Not Completed'
-                );
-                CompletedDataInsideDatasets.push(
-                    x.complete ? 'Completed' : 'Not Completed'
-                );
-                labels.push(x.functional_objective);
-            });
-        });
-        const datasets = [
-            {
-                label: 'Budget of Objective',
-                data: dataInsideDatasets,
-                backgroundColor: getIncrementalColor(),
-                borderColor: getIncrementalColor(),
-                stack: 'combined',
-                type: 'bar',
-            },
-            {
-                label: 'Total Budget of the Goal',
-                data: totalBudget,
-                backgroundColor: getIncrementalColor(),
-                borderColor: getIncrementalColor(),
-                stack: 'combined',
-            },
-        ];
+        const labels: string[] = [];
+        const dataGoal: number[] = [];
+        const dataGoalObjective: number[] = [];
+        const dataRemainingBudget: number[] = [];
 
-        console.log({ datasets, labels });
+        goal.forEach((t: any) => {
+            labels.push(t.department);
+            dataGoal.push(t.budget);
+            dataGoalObjective.push(
+                t.objectivesDetails
+                    .map((o: any) => o.budget)
+                    .reduce((a: any, b: any) => a + b, 0)
+            );
+            dataRemainingBudget.push(t.remainingBudget);
+        });
 
         this.donutData = {
             labels: labels,
-            datasets: datasets,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: 'Goal Budget',
+                    data: dataGoal,
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--blue-500'),
+                    borderWidth: 1,
+                },
+                {
+                    type: 'bar',
+                    label: 'Goal Remaining',
+                    data: dataRemainingBudget,
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--green-500'),
+                    borderWidth: 1,
+                },
+                {
+                    type: 'bar',
+                    label: 'Objective Budget Total',
+                    data: dataGoalObjective,
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--yellow-500'),
+                    borderWidth: 1,
+                },
+            ],
         };
+
+        console.log({ donutData: this.donutData });
 
         this.donutOptions = {
             maintainAspectRatio: false,
             aspectRatio: 0.8,
             plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                },
                 legend: {
                     labels: {
                         color: textColor,
@@ -184,11 +192,9 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             },
             scales: {
                 x: {
+                    stacked: true,
                     ticks: {
                         color: textColorSecondary,
-                        font: {
-                            weight: 500,
-                        },
                     },
                     grid: {
                         color: surfaceBorder,
@@ -196,6 +202,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                     },
                 },
                 y: {
+                    stacked: true,
                     ticks: {
                         color: textColorSecondary,
                     },
@@ -206,6 +213,36 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 },
             },
         };
+
+        // this.donutOptions = {
+        //     maintainAspectRatio: false,
+        //     aspectRatio: 0.8,
+        //     plugins: {
+        //         legend: {
+        //             labels: {
+        //                 color: textColor,
+        //             },
+        //         },
+        //     },
+        //     scales: {
+        //         x: {
+        //             ticks: {
+        //                 color: textColorSecondary,
+        //             },
+        //             grid: {
+        //                 color: surfaceBorder,
+        //             },
+        //         },
+        //         y: {
+        //             ticks: {
+        //                 color: textColorSecondary,
+        //             },
+        //             grid: {
+        //                 color: surfaceBorder,
+        //             },
+        //         },
+        //     },
+        // };
     }
 
     expandAll() {
