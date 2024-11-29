@@ -70,7 +70,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
         this.Addform.get('role').valueChanges.subscribe((role) => {
             this.getAllVicePresident();
             this.getAllDirectors();
-            console.log('Role selected:', role); // Debug log
 
             if (role && role.code) {
                 if (role.code === 'vice-president') {
@@ -143,7 +142,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
                 this.selectVPDropdown = data.data[0] || [];
-                console.log('getAllVicePresident', this.selectVPDropdown);
             });
     }
     getAllDirectors() {
@@ -151,7 +149,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
             .fetch('get', 'users', 'getAllDirector')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
-                console.log('getAllDirector', data);
                 this.selectDirectorDropdown = data.data[0] || [];
             });
     }
@@ -161,7 +158,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
             .fetch('get', 'campus', 'getAllCampus')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
-                console.log('getAllCampuses', data);
                 this.deptDropdownCampusValue = data.data[0];
             });
     }
@@ -170,7 +166,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
             .fetch('get', 'department', 'getAllDepartmentDropdown')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
-                console.log('getAllDepartmentDropdown', data);
                 this.deptDropdownValue = data.data[0];
             });
     }
@@ -240,7 +235,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
     }
 
     resetForm() {
-        console.log('Resetting form...');
         this.Addform.reset();
         this.formGroupCampus.reset();
         this.formGroupDemo.reset();

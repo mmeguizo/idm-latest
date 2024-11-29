@@ -92,6 +92,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ];
 
     PieChartOptions: any;
+    pieChartsBudgetUsed: any;
+    PieChartBudgetUsedOptions: any;
+    pieChartsBudgetRemaining: any;
+    pieChartsBudgetRemainingOptions: any;
+    pieChartsPercentage: any;
+    pieChartsPercentageOptions: any;
+
+    pieChartsObjectives: any;
+    pieChartsObjectivesOptions: any;
+    pieChartsGoals: any;
+    pieChartsGoalsOptions: any;
+
     constructor(
         public userService: UserService,
         private goalService: GoalService,
@@ -116,7 +128,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async processDashboardData(data) {
-        console.log({ processDashboardData: data });
         // total of objectives
 
         const objectives =
@@ -192,7 +203,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .fetch('get', 'users', 'getAllUsersForDashboard')
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data: any) => {
-                console.log(data.data);
                 this.users = data.data[0];
             });
     }
@@ -224,7 +234,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async getAllObjectivesWithObjectives(campus?: string) {
-        console.log({ getAllObjectivesWithObjectives: campus });
         this.loading = true;
         this.goalService
             .fetch(
@@ -235,7 +244,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe({
                 next: (data: any) => {
-                    console.log({ getAllObjectivesWithObjectives: data });
                     this.goals = data.goals || [];
                     // this.goalBarChartList = data.goalDropdown || [];
                     // this.pieChart(data.goals || this.goals || []);
@@ -256,18 +264,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async getAllObjectivesWithObjectivesForCharts(campus?: string) {
-        console.log({ getAllObjectivesWithObjectives: campus });
         this.loading = true;
         this.goalService
             .fetch('get', 'goals', `getAllObjectivesWithObjectivesForCharts`)
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe({
                 next: (data: any) => {
-                    console.log({ getAllObjectivesWithObjectives: data });
+                    console.log({
+                        getAllObjectivesWithObjectivesForCharts: data,
+                    });
                     this.goals = data.goals || [];
                     this.goalBarChartList = data.goalDropdown || [];
                     this.pieChart(data.goals || this.goals || []);
-                    this.thisBarCharts(data.goals);
+                    // this.thisBarCharts(data.goals);
                     this.processDashboardData(data);
                     this.loading = false;
                 },
@@ -313,16 +322,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         objectivesData,
                         completionPercentage,
                     } = data.data[0];
-                    console.log(data.data[0]);
                     this.objectivesSideData = objectivesData;
                     this.pieDataBool =
                         objectivesData.length >= 1 ? true : false;
-                    console.log({
-                        getAllObjectivesForDashboardPie: {
-                            objectivesSideData: this.objectivesSideData.length,
-                            pieData: this.pieDataBool,
-                        },
-                    });
                     this.initCharts(objectivesData);
                     this.loading = false;
                 });
@@ -343,120 +345,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.knobValue = 0;
         this.getAllObjectivesWithObjectives(event?.value?.name ?? '');
     }
-    async onChangeDepartment(event: any = '') {
-        this.barCharts = [];
-        console.log({ onChangeDepartment: event.value });
-        if (event.value) {
-            const matchingGoals = this.goals.filter(
-                (goal) => goal.department === event.value.name
-            );
-            this.barChartType = 'bar';
-            console.log(this.barChartType);
-            console.log({ matchingGoals });
-            await this.selectedBarChartDepartments(matchingGoals);
-        }
-    }
-
-    async selectedBarChartDepartments(data: any) {
-        console.log({ selectedBarChartDepartments: data });
-
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue(
-            '--text-color-secondary'
-        );
-        const surfaceBorder =
-            documentStyle.getPropertyValue('--surface-border');
-
-        const labelsObjectiveName = [];
-        const incompleteGoals = [];
-        // const actualBudget = [];
-        const completedGoals = [];
-        // const monthData = [];
-        // const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
-        console.log({ selectedBarChartDepartments: data });
-        data.forEach((goal) => {
-            let objectiveName = goal.objectivesDetails.map(
-                (e) => e.functional_objective
-            );
-            if (goal.department && goal.budget && goal.date_added) {
-                // const dateAdded = new Date(goal.date_added);
-                // const monthAdded = dateAdded.getMonth() + 1; // Month (1-12)
-                labelsObjectiveName.push(objectiveName);
-                // actualBudget.push(goal.budget);
-                completedGoals.push(
-                    goal.completion_percentage === 100
-                        ? goal.completion_percentage
-                        : 0
-                );
-                console.log({ completedGoals });
-                incompleteGoals.push(
-                    goal.completion_percentage < 100
-                        ? goal.completion_percentage
-                        : 0
-                );
-                // monthData.push(monthAdded);
-            }
-        });
-
-        console.log({ completedGoals, incompleteGoals });
-
-        const datasets = [
-            {
-                label: 'Completed',
-                borderColor: documentStyle.getPropertyValue('--blue-500'),
-                borderWidth: 2,
-                fill: false,
-                tension: 0.4,
-                data: completedGoals,
-            },
-            {
-                label: 'In Progress',
-                backgroundColor: documentStyle.getPropertyValue('--green-500'),
-                borderColor: 'white',
-                data: incompleteGoals,
-            },
-        ];
-
-        this.barCharts = {
-            labels: labelsObjectiveName,
-            // labels: this.months({ count: currentMonth }),
-            datasets: datasets,
-        };
-
-        this.options = {
-            type: 'line',
-            data: datasets,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor,
-                    },
-                },
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        color: textColorSecondary,
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false,
-                    },
-                },
-                x: {
-                    ticks: {
-                        color: textColorSecondary,
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false,
-                    },
-                },
-            },
-        };
-    }
 
     onClearCampus() {
         this.loading = true;
@@ -466,11 +354,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     onClearDepartment() {
-        console.log('onClearDepartment');
         this.barCharts = [];
         this.selectedBarDepartmentDropdown = undefined;
         this.barChartType = 'line';
-        this.thisBarCharts(this.goals);
+        // this.thisBarCharts(this.goals);
     }
 
     initCharts(data?: any) {
@@ -552,25 +439,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
         alert(this.tabView.tabs[this.selectedIndex].header);
     }
 
-    async pieChart(data: any = []) {
+    async pieChart(data: any[] = []) {
+        console.log({ pieChart: data });
+
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
 
-        const labels = data.map((goal) => goal.department);
-        const budgets = data.map((goal) => goal.budget);
-        const generateRandomColor = () => {
-            const r = Math.floor(Math.random() * 256);
-            const g = Math.floor(Math.random() * 256);
-            const b = Math.floor(Math.random() * 256);
-            return `rgba(${r}, ${g}, ${b}, 0.2)`;
-        };
+        const labels = data.map((goal: any) => goal.department);
 
-        const backgroundColors = labels.map(() => generateRandomColor());
-        const hoverBackgroundColors = backgroundColors.map((color) =>
-            color.replace('0.2', '0.4')
+        const budgets = data.map((goal: any) => goal.budget);
+        const budgetsUsed = data.map(
+            (goal: any) => goal.budgetMinusAllObjectiveBudget
+        );
+        const budgetsRemaining = data.map((goal: any) => goal.remainingBudget);
+
+        const percentageCompletion = data.map(
+            (goal: any) => goal.completion_percentage
         );
 
-        this.pieCharts = data = {
+        const abbreviateNumber = (value: number) => {
+            if (value >= 1_000_000) {
+                return (value / 1_000_000).toFixed(1) + 'M';
+            } else if (value >= 1_000) {
+                return (value / 1_000).toFixed(1) + 'k';
+            } else {
+                return value.toString();
+            }
+        };
+
+        const abbreviatePercentage = (value: number) => {
+            return value + '%';
+        };
+
+        this.pieCharts = {
             labels: labels,
             datasets: [
                 {
@@ -597,116 +498,362 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         color: textColor,
                     },
                 },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label =
+                                context.label
+                                    .split(' ')
+                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .join('') || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        this.pieChartsBudgetUsed = {
+            labels: labels,
+            datasets: [
+                {
+                    data: budgetsUsed,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--cyan-500'),
+                        documentStyle.getPropertyValue('--bluegray-500'),
+                        documentStyle.getPropertyValue('--red-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--cyan-400'),
+                        documentStyle.getPropertyValue('--bluegray-400'),
+                        documentStyle.getPropertyValue('--red-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.PieChartBudgetUsedOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        this.PieChartBudgetUsedOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label =
+                                context.label
+                                    .split(' ')
+                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .join('') || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        this.pieChartsBudgetRemaining = {
+            labels: labels,
+            datasets: [
+                {
+                    data: budgetsRemaining,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--orange-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--orange-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.pieChartsBudgetRemainingOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label =
+                                context.label
+                                    .split(' ')
+                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .join('') || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        this.pieChartsPercentage = {
+            labels: labels,
+            datasets: [
+                {
+                    data: percentageCompletion,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--orange-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--orange-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.pieChartsPercentageOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviatePercentage(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label =
+                                context.label
+                                    .split(' ')
+                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .join('') || '';
+                            const value = context.raw;
+                            return `${label}: ${value}%`;
+                        },
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        // goal charts
+
+        const goalsData = data.map((goal) => {
+            const totalObjectives = goal.objectivesDetails.length;
+            const completedObjectives = goal.objectivesDetails.filter(
+                (obj) => obj.complete
+            ).length;
+            const pendingObjectives = totalObjectives - completedObjectives;
+
+            return {
+                goal: goal.goals,
+                totalObjectives,
+                completedObjectives,
+                pendingObjectives,
+            };
+        });
+
+        const totalObjectives = goalsData.map((g) => g.totalObjectives);
+        const completedObjectives = goalsData.map((g) => g.completedObjectives);
+        const pendingObjectivesObjectives = goalsData.map(
+            (g) => g.pendingObjectives
+        );
+
+        const totalObjectivesSum = totalObjectives.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+        const completedObjectivesSum = completedObjectives.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+        const pendingObjectivesSum = pendingObjectivesObjectives.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+
+        console.log(
+            totalObjectivesSum,
+            completedObjectivesSum,
+            pendingObjectivesSum
+        );
+
+        this.pieChartsObjectives = {
+            labels: [
+                'Total Objectives',
+                'Completed Objectives',
+                'Pending Objectives',
+            ],
+            datasets: [
+                {
+                    data: [
+                        totalObjectivesSum,
+                        completedObjectivesSum,
+                        pendingObjectivesSum,
+                    ],
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                        documentStyle.getPropertyValue('--red-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                        documentStyle.getPropertyValue('--red-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.pieChartsObjectivesOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number, context: any) => {
+                        const label = (
+                            context.chart.data.labels[context.dataIndex] || ''
+                        ).split(' ')[0];
+                        return `${label}: ${value.toString()}`;
+                    },
+                    color: textColor,
+                    font: {
+                        size: 13,
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        const goalsSummary = data.reduce(
+            (acc, goal) => {
+                acc.totalGoals++;
+                if (goal.completion_percentage === 100) {
+                    acc.completedGoals++;
+                } else {
+                    acc.pendingGoals++;
+                }
+                return acc;
+            },
+            { totalGoals: 0, completedGoals: 0, pendingGoals: 0 }
+        );
+
+        this.pieChartsGoals = {
+            labels: ['Completed Goals', 'Pending Goals'],
+            datasets: [
+                {
+                    data: [
+                        goalsSummary.completedGoals,
+                        goalsSummary.pendingGoals,
+                    ],
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--green-500'),
+                        documentStyle.getPropertyValue('--red-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--green-400'),
+                        documentStyle.getPropertyValue('--red-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.pieChartsGoalsOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number, context: any) => {
+                        const label = (
+                            context.chart.data.labels[context.dataIndex] || ''
+                        ).split(' ')[0];
+                        return `${label}: ${value.toString()}`;
+                    },
+                    color: textColor,
+                    font: {
+                        size: 13,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label = context.label || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
+                    },
+                },
             },
             maintainAspectRatio: true,
         };
     }
-    async thisBarCharts(data: any = []) {
-        console.log({ thisBarCharts: data });
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue(
-            '--text-color-secondary'
-        );
-        const surfaceBorder =
-            documentStyle.getPropertyValue('--surface-border');
 
-        const labelsObjectiveName = [];
-        const labelsOfficeName = [];
-        const actualBudget = [];
-        const actualBudgetCompleted = [];
-        const budgetData = [];
-        const monthData = [];
-        const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
-
-        data.forEach((goal) => {
-            let objectiveName = goal.objectivesDetails.map(
-                (e) => e.functional_objective
-            );
-            let objectiveCompleted = goal.objectivesDetails.map((e) => {
-                if (e.complete) {
-                    actualBudgetCompleted.push(goal.budget);
-                }
-            });
-            if (goal.department && goal.budget && goal.date_added) {
-                const dateAdded = new Date(goal.date_added);
-                const monthAdded = dateAdded.getMonth() + 1; // Month (1-12)
-                labelsObjectiveName.push(objectiveName);
-                actualBudget.push(goal.budget);
-                budgetData.push(goal.remainingBudget);
-                monthData.push(monthAdded);
-            }
-        });
-
-        const datasets = [
-            {
-                label: 'Budget',
-                backgroundColor: documentStyle.getPropertyValue('--green-500'),
-                borderColor: 'white',
-                data: budgetData,
-                stack: 'combined',
-                type: 'bar',
-            },
-            {
-                label: 'Actual Budget',
-                backgroundColor: documentStyle.getPropertyValue('--orange-500'),
-                data: actualBudget,
-                stack: 'combined',
-            },
-            {
-                label: 'Completed',
-                borderColor: documentStyle.getPropertyValue('--blue-500'),
-                data: actualBudgetCompleted,
-                // stack: 'combined',
-                type: 'bar',
-            },
-            // {
-            //     label: 'Current Month',
-            //     backgroundColor: 'rgba(255, 159, 64, 0.2)',
-            //     borderColor: 'rgb(255, 159, 64)',
-            //     data: Array(labelsObjectiveName.length).fill(currentMonth),
-            // },
-        ];
-
-        this.barCharts = {
-            // labels: this.months({ count: currentMonth }),
-            labels: labelsObjectiveName,
-            datasets: datasets,
-        };
-
-        this.options = {
-            type: 'line',
-            data: datasets,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor,
-                    },
-                },
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        color: textColorSecondary,
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false,
-                    },
-                },
-                x: {
-                    ticks: {
-                        color: textColorSecondary,
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false,
-                    },
-                },
-            },
-        };
-    }
     months(config) {
         var cfg = config || {};
         var count = cfg.count || 12;
@@ -718,7 +865,112 @@ export class DashboardComponent implements OnInit, OnDestroy {
             value = this.MONTHS[Math.ceil(i) % 12];
             values.push(value.substring(0, section));
         }
-
         return values;
     }
+
+    // async onChangeDepartment(event: any = '') {
+    //     this.barCharts = [];
+    //     if (event.value) {
+    //         const matchingGoals = this.goals.filter(
+    //             (goal) => goal.department === event.value.name
+    //         );
+    //         this.barChartType = 'bar';
+    //         await this.selectedBarChartDepartments(matchingGoals);
+    //     }
+    // }
+
+    // async selectedBarChartDepartments(data: any) {
+    //     const documentStyle = getComputedStyle(document.documentElement);
+    //     const textColor = documentStyle.getPropertyValue('--text-color');
+    //     const textColorSecondary = documentStyle.getPropertyValue(
+    //         '--text-color-secondary'
+    //     );
+    //     const surfaceBorder =
+    //         documentStyle.getPropertyValue('--surface-border');
+
+    //     const labelsObjectiveName = [];
+    //     const incompleteGoals = [];
+    //     // const actualBudget = [];
+    //     const completedGoals = [];
+    //     // const monthData = [];
+    //     // const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
+    //     data.forEach((goal) => {
+    //         let objectiveName = goal.objectivesDetails.map(
+    //             (e) => e.functional_objective
+    //         );
+    //         if (goal.department && goal.budget && goal.date_added) {
+    //             // const dateAdded = new Date(goal.date_added);
+    //             // const monthAdded = dateAdded.getMonth() + 1; // Month (1-12)
+    //             labelsObjectiveName.push(objectiveName);
+    //             // actualBudget.push(goal.budget);
+    //             completedGoals.push(
+    //                 goal.completion_percentage === 100
+    //                     ? goal.completion_percentage
+    //                     : 0
+    //             );
+    //             incompleteGoals.push(
+    //                 goal.completion_percentage < 100
+    //                     ? goal.completion_percentage
+    //                     : 0
+    //             );
+    //             // monthData.push(monthAdded);
+    //         }
+    //     });
+
+    //     const datasets = [
+    //         {
+    //             label: 'Completed',
+    //             borderColor: documentStyle.getPropertyValue('--blue-500'),
+    //             borderWidth: 2,
+    //             fill: false,
+    //             tension: 0.4,
+    //             data: completedGoals,
+    //         },
+    //         {
+    //             label: 'Percentage',
+    //             backgroundColor: documentStyle.getPropertyValue('--green-500'),
+    //             borderColor: 'white',
+    //             data: incompleteGoals,
+    //         },
+    //     ];
+
+    //     this.barCharts = {
+    //         labels: labelsObjectiveName,
+    //         // labels: this.months({ count: currentMonth }),
+    //         datasets: datasets,
+    //     };
+
+    //     this.options = {
+    //         type: 'line',
+    //         data: datasets,
+    //         plugins: {
+    //             legend: {
+    //                 labels: {
+    //                     color: textColor,
+    //                 },
+    //             },
+    //         },
+    //         scales: {
+    //             y: {
+    //                 beginAtZero: true,
+    //                 ticks: {
+    //                     color: textColorSecondary,
+    //                 },
+    //                 grid: {
+    //                     color: surfaceBorder,
+    //                     drawBorder: false,
+    //                 },
+    //             },
+    //             x: {
+    //                 ticks: {
+    //                     color: textColorSecondary,
+    //                 },
+    //                 grid: {
+    //                     color: surfaceBorder,
+    //                     drawBorder: false,
+    //                 },
+    //             },
+    //         },
+    //     };
+    // }
 }

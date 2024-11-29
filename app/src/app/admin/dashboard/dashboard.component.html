@@ -114,7 +114,7 @@
             </div>
 
             @if (objectivesData) {
-            <span class="text-500">Done: </span>
+            <span class="text-500">Completed: </span>
             <span class="text-green-500 font-medium"
                 >{{ objectivesData?.objectiveCompleted || 0 }} -
             </span>
@@ -167,7 +167,7 @@
             }
         </div>
     </div>
-    <div class="col-12 lg:col-12 xl:col-6 cursor-pointer">
+    <div class="col-12 lg:col-12 xl:col-6">
         <div class="card flex flex-column align-items-center">
             <h5 class="text-left w-full">Total Budget</h5>
             <p-chart
@@ -175,32 +175,92 @@
                 type="pie"
                 [data]="pieCharts"
                 [options]="PieChartOptions"
-                width="30rem"
-                height="30rem"
             ></p-chart>
         </div>
     </div>
-    <div class="col-12 lg:col-12 xl:col-6 cursor-pointer">
+    <div class="col-12 lg:col-12 xl:col-6">
         <div class="card flex flex-column align-items-center">
-            <p-dropdown
-                [options]="goalBarChartList"
-                [(ngModel)]="selectedBarDepartmentDropdown"
-                optionLabel="name"
-                [showClear]="true"
-                placeholder="Select Department"
-                (onChange)="onChangeDepartment($event)"
-                (onClear)="onClearDepartment()"
-            />
+            <h5 class="text-left w-full">Total Budget Used</h5>
             <p-chart
                 [responsive]="true"
-                width="30rem"
-                height="30rem"
-                [type]="barChartType"
-                [data]="barCharts"
-                [options]="options"
-            />
+                type="pie"
+                [data]="pieChartsBudgetUsed"
+                [options]="PieChartBudgetUsedOptions"
+            ></p-chart>
         </div>
     </div>
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Total Budget Remaining</h5>
+            <p-chart
+                [responsive]="true"
+                type="pie"
+                [data]="pieChartsBudgetRemaining"
+                [options]="pieChartsBudgetRemainingOptions"
+            ></p-chart>
+        </div>
+    </div>
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Goal Percentage Completion</h5>
+            <p-chart
+                [responsive]="true"
+                type="pie"
+                [data]="pieChartsPercentage"
+                [options]="pieChartsPercentageOptions"
+            ></p-chart>
+        </div>
+    </div>
+
+    <!-- project -->
+
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Goals</h5>
+            <p-chart
+                [responsive]="true"
+                type="pie"
+                [data]="pieChartsGoals"
+                [options]="pieChartsGoalsOptions"
+            ></p-chart>
+        </div>
+    </div>
+
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Objectives</h5>
+            <p-chart
+                [responsive]="true"
+                type="pie"
+                [data]="pieChartsObjectives"
+                [options]="pieChartsObjectivesOptions"
+            ></p-chart>
+        </div>
+    </div>
+
+    <!-- <div  class="col-12 lg:col-6 xl:col-3">
+    <div class="card flex flex-column align-items-center">
+        <h5 class="text-left w-full">Goal Percentage Completion</h5>
+        <p-chart
+            [responsive]="true"
+            type="pie"
+            [data]="pieChartsPercentage"
+            [options]="pieChartsPercentageOptions"
+        ></p-chart>
+    </div>
+</div>
+<div  class="col-12 lg:col-6 xl:col-3">
+    <div class="card flex flex-column align-items-center">
+        <h5 class="text-left w-full">Goal Percentage Completion</h5>
+        <p-chart
+            [responsive]="true"
+            type="pie"
+            [data]="pieChartsPercentage"
+            [options]="pieChartsPercentageOptions"
+        ></p-chart>
+    </div>
+</div> -->
+
     <div class="col-12">
         <div class="card">
             <p-dropdown
@@ -290,7 +350,6 @@
                             <div
                                 class="col-5 align-items-center justify-content-center md:flex-column"
                             >
-                                <!--   [(ngModel)]="knobValue" -->
                                 <div
                                     class="card flex justify-content-center flex-column"
                                 >
@@ -440,33 +499,26 @@
                         </div>
                     </div>
                 </p-tabPanel>
-                <!-- <p-tabPanel
-                    header="Pie Charts"
-                    class="line-height-3 m-0"
-                    cache="false"
-                >
-                    <div class="card">
-                        <p-chart
-                            type="pie"
-                            [data]="pieCharts"
-                            [options]="PieChartOptions"
-                        />
-                    </div>
-                </p-tabPanel>
-                <p-tabPanel
-                    header="Vertical Charts"
-                    class="line-height-3 m-0"
-                    cache="false"
-                >
-                    <div class="card">
-                        <p-chart
-                            type="bar"
-                            [data]="barCharts"
-                            [options]="options"
-                        />
-                    </div>
-                </p-tabPanel> -->
             </p-tabView>
         </div>
     </div>
 </div>
+<!-- <div class="card flex flex-column align-items-center">
+            <p-dropdown
+                [options]="goalBarChartList"
+                [(ngModel)]="selectedBarDepartmentDropdown"
+                optionLabel="name"
+                [showClear]="true"
+                placeholder="Select Department"
+                (onChange)="onChangeDepartment($event)"
+                (onClear)="onClearDepartment()"
+            />
+            <p-chart
+                [responsive]="true"
+                width="30rem"
+                height="30rem"
+                [type]="barChartType"
+                [data]="barCharts"
+                [options]="options"
+            />
+        </div> -->

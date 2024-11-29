@@ -68,7 +68,11 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getGoals() {
         this.goal
-            .fetch('get', 'goals', 'getGoalsForDashboard/' + this.USERID)
+            .fetch(
+                'get',
+                'director_query',
+                'getGoalsForDashboardDirector/' + this.USERID
+            )
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.goalForTables =
@@ -91,28 +95,31 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .fetch(
                 'get',
                 'goals',
-                `getAllObjectivesWithObjectives/` + this.USERID
+                `getAllObjectivesWithObjectives/${this.USERID}`
             )
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
-                console.log('getAllObjectivesForTabledata', data);
                 this.goals = data.goals;
             });
     }
 
     getObjectiveViewPieChart() {
         this.goalService
-            .fetch('get', 'goals', `getObjectivesViewTable/` + this.USERID)
+            .fetch(
+                'get',
+                'director_query',
+                `getObjectivesViewTableDirector/${this.USERID}`
+            )
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data?: any) => {
-                this.initBarCharts(data?.data);
+                this.initBarCharts(data?.goals || []);
             });
     }
 
     ngOnDestroy(): void {
         this.dashboardSubscription.unsubscribe();
     }
-    initBarCharts(goal?: any) {
+    async initBarCharts(goal?: any) {
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -122,7 +129,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             documentStyle.getPropertyValue('--surface-border');
 
         // Function to generate random color
-
         const getIncrementalColor = () => {
             const randomColor = [
                 Math.floor(Math.random() * 256), // Red
@@ -134,31 +140,60 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             return `rgba(${randomColor[0]}, ${randomColor[1]}, ${randomColor[2]}, 0.5)`;
         };
 
-        const datasets = goal.map((goal) => {
-            const backgroundColors = goal.objectives.map(() =>
-                getIncrementalColor()
+        const labels: string[] = [];
+        const dataGoal: number[] = [];
+        const dataGoalObjective: number[] = [];
+        const dataRemainingBudget: number[] = [];
+
+        goal.forEach((t: any) => {
+            labels.push(t.department);
+            dataGoal.push(t.budget);
+            dataGoalObjective.push(
+                t.objectivesDetails
+                    .map((o: any) => o.budget)
+                    .reduce((a: any, b: any) => a + b, 0)
             );
-            const borderColors = backgroundColors.map((color) => color);
-
-            return {
-                label: goal.goals,
-                backgroundColor: backgroundColors,
-                borderColor: borderColors,
-                data: goal.objectives.map((obj) => obj.budget),
-            };
+            dataRemainingBudget.push(t.remainingBudget);
         });
-
-        const labels = goal.flatMap((goal) => goal.objectives.map((obj) => ''));
 
         this.donutData = {
             labels: labels,
-            datasets: datasets,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: 'Goal Budget',
+                    data: dataGoal,
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--blue-500'),
+                    borderWidth: 1,
+                },
+                {
+                    type: 'bar',
+                    label: 'Goal Remaining',
+                    data: dataRemainingBudget,
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--green-500'),
+                    borderWidth: 1,
+                },
+                {
+                    type: 'bar',
+                    label: 'Objective Budget Total',
+                    data: dataGoalObjective,
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--yellow-500'),
+                    borderWidth: 1,
+                },
+            ],
         };
 
         this.donutOptions = {
             maintainAspectRatio: false,
             aspectRatio: 0.8,
             plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                },
                 legend: {
                     labels: {
                         color: textColor,
@@ -167,11 +202,9 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             },
             scales: {
                 x: {
+                    stacked: true,
                     ticks: {
                         color: textColorSecondary,
-                        font: {
-                            weight: 500,
-                        },
                     },
                     grid: {
                         color: surfaceBorder,
@@ -179,6 +212,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                     },
                 },
                 y: {
+                    stacked: true,
                     ticks: {
                         color: textColorSecondary,
                     },
@@ -189,6 +223,8 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 },
             },
         };
+
+        this.loading = false;
     }
 
     expandAll() {

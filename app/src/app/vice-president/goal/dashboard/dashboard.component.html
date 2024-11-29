@@ -2,7 +2,7 @@
     <div class="col-12">
         <div class="card">
             <h5>Goals with Objectives</h5>
-            @if(donutData){
+            @if(!loading){
             <p-chart
                 type="bar"
                 [data]="donutData"
@@ -34,7 +34,6 @@
                 >
                     {{ goalForTables | peso }}
                 </p>
-                <!-- <p class="text-sm font-medium">Total Budget</p> -->
                 <p class="text-xs font-medium">Goals :{{ goalCount }}</p>
                 <p class="text-xs font-light">
                     Remaining Budget:

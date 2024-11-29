@@ -116,7 +116,6 @@ export class UpdateGoalComponent implements OnInit, OnDestroy {
             .getRoute('get', 'department', 'getAllDepartmentDropdown')
             .pipe(takeUntil(this.updateGoalSubscription))
             .subscribe((data: any) => {
-                console.log('getAllDept', data);
                 this.deptDropdownValue = data?.data[0];
             });
     }

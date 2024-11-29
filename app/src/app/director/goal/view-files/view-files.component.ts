@@ -39,9 +39,6 @@ export class ViewFilesComponent implements OnInit, OnDestroy {
         if (changes['viewFiles']?.currentValue) {
             const { data, viewFiles } = changes['viewFiles']?.currentValue;
             this.objectiveIDforFile = data.id;
-
-            console.log('viewFiles', viewFiles, data);
-
             //use this when triggering the child component for adding file
             this.getAllFilesFromObjectiveLoad(this.USERID, data.id);
             this.viewObjectiveFileDialogCard = viewFiles;

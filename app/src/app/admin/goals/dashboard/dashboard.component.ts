@@ -16,7 +16,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     dashboardSubscription = new Subject<void>();
     goals: any[] = [];
     products: Product[] = [];
-    loading = true;
+    loading = false;
     barOptions: any;
     barData: any;
     objectiveBudget: number;
@@ -87,7 +87,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .fetch('get', 'goals', `getAllObjectivesWithObjectives`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
-                console.log('getAllObjectivesForTabledata', data);
                 this.goals = data.goals;
             });
     }
@@ -97,8 +96,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .fetch('get', 'goals', `getObjectivesViewTable`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data?: any) => {
-                console.log({ getObjectiveViewPieChart: data });
-                this.initBarCharts(data?.goals);
+                this.initBarCharts(data?.goals || []);
             });
     }
 
@@ -106,8 +104,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
         this.dashboardSubscription.unsubscribe();
     }
     async initBarCharts(goal?: any) {
-        console.log({ goal });
-
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -174,8 +170,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             ],
         };
 
-        console.log({ donutData: this.donutData });
-
         this.donutOptions = {
             maintainAspectRatio: false,
             aspectRatio: 0.8,
@@ -213,36 +207,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 },
             },
         };
-
-        // this.donutOptions = {
-        //     maintainAspectRatio: false,
-        //     aspectRatio: 0.8,
-        //     plugins: {
-        //         legend: {
-        //             labels: {
-        //                 color: textColor,
-        //             },
-        //         },
-        //     },
-        //     scales: {
-        //         x: {
-        //             ticks: {
-        //                 color: textColorSecondary,
-        //             },
-        //             grid: {
-        //                 color: surfaceBorder,
-        //             },
-        //         },
-        //         y: {
-        //             ticks: {
-        //                 color: textColorSecondary,
-        //             },
-        //             grid: {
-        //                 color: surfaceBorder,
-        //             },
-        //         },
-        //     },
-        // };
+        this.loading = false;
     }
 
     expandAll() {

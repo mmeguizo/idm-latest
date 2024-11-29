@@ -152,11 +152,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             )
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllObjectivesUnderAVicePresident: data });
                 this.getAllObjectivesUnderAVicePresidentData = data;
                 this.completedGoalsFromApi = data.completedGoals;
                 this.uncompletedGoalsFromApi = data.uncompletedGoals;
-                this.pieChart(data.goals || []);
                 this.goals = data.goals || [];
                 this.goalBarChartList = data.dropdown || [];
                 this.pieChart(data.goals || this.goals || []);
@@ -179,21 +177,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     async onChangeDepartment(event: any = '') {
         this.barCharts = [];
-        console.log({ onChangeDepartment: event.value });
         if (event.value) {
             const matchingGoals = this.goals.filter(
                 (goal) => goal.department === event.value.name
             );
             this.barChartType = 'bar';
-            console.log(this.barChartType);
-            console.log({ matchingGoals });
             await this.selectedBarChartDepartments(matchingGoals);
         }
     }
 
     async selectedBarChartDepartments(data: any) {
-        console.log({ selectedBarChartDepartments: data });
-
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -208,7 +201,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const completedGoals = [];
         // const monthData = [];
         // const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
-        console.log({ selectedBarChartDepartments: data });
         data.forEach((goal) => {
             let objectiveName = goal.objectivesDetails.map(
                 (e) => e.functional_objective
@@ -223,7 +215,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         ? goal.completion_percentage
                         : 0
                 );
-                console.log({ completedGoals });
                 incompleteGoals.push(
                     goal.completion_percentage < 100
                         ? goal.completion_percentage
@@ -233,19 +224,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         });
 
-        console.log({ completedGoals, incompleteGoals });
-
         const datasets = [
             {
                 label: 'Completed',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgb(75, 192, 192)',
+                borderColor: documentStyle.getPropertyValue('--blue-500'),
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4,
                 data: completedGoals,
             },
             {
-                label: 'In Progress',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
+                label: 'Percentage',
+                backgroundColor: documentStyle.getPropertyValue('--green-500'),
+                borderColor: 'white',
                 data: incompleteGoals,
             },
         ];
@@ -291,7 +282,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     onClearDepartment() {
-        console.log('onClearDepartment');
         this.barCharts = [];
         this.selectedBarDepartmentDropdown = undefined;
         this.barChartType = 'line';
@@ -315,7 +305,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async processDashboardData(data) {
-        console.log({ processDashboardData: data });
         // total of objectives
 
         const objectives =
@@ -381,7 +370,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async getAllObjectivesWithObjectivesForCharts(campus?: string) {
-        console.log({ getAllObjectivesWithObjectives: campus });
         this.loading = true;
         this.obj
             .fetch(
@@ -392,7 +380,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe({
                 next: (data: any) => {
-                    console.log({ getAllObjectivesWithObjectives: data });
                     this.goals = data.goals || [];
                     this.goalBarChartList = data.dropdown || [];
                     this.pieChart(data.goals || this.goals || []);
@@ -413,7 +400,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async thisBarCharts(data: any = []) {
-        console.log({ thisBarCharts: data });
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -452,23 +438,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const datasets = [
             {
                 label: 'Budget',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: documentStyle.getPropertyValue('--green-500'),
+                borderColor: 'white',
                 data: budgetData,
                 stack: 'combined',
                 type: 'bar',
             },
             {
                 label: 'Actual Budget',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
+                backgroundColor: documentStyle.getPropertyValue('--orange-500'),
                 data: actualBudget,
                 stack: 'combined',
             },
             {
                 label: 'Completed',
-                backgroundColor: 'rgba(153, 82, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
+                borderColor: documentStyle.getPropertyValue('--blue-500'),
                 data: actualBudgetCompleted,
                 // stack: 'combined',
                 type: 'bar',
@@ -526,7 +510,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const textColor = documentStyle.getPropertyValue('--text-color');
 
         const labels = data.map((goal) => goal.department);
-        const budgets = data.map((goal) => goal.remainingBudget);
+        const budgets = data.map((goal) => goal.budget);
         const generateRandomColor = () => {
             const r = Math.floor(Math.random() * 256);
             const g = Math.floor(Math.random() * 256);
@@ -544,8 +528,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
             datasets: [
                 {
                     data: budgets,
-                    backgroundColor: backgroundColors,
-                    hoverBackgroundColor: hoverBackgroundColors,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--yellow-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--yellow-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                    ],
                 },
             ],
         };

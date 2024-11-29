@@ -150,7 +150,6 @@ export class UsersComponent implements OnInit, OnDestroy {
             )
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
-                console.log('getAllusers', data);
                 this.users = data.users;
                 this.loading = false;
             });

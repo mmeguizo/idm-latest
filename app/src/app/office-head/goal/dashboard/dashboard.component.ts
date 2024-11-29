@@ -68,7 +68,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getGoals() {
         this.goal
-            .fetch('get', 'goals', 'getGoalsForDashboard/' + this.USERID)
+            .fetch('get', 'goals', `getGoalsForDashboard/${this.USERID}`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.goalForTables =
@@ -80,7 +80,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     getAllObjectives() {
         this.obj
-            .fetch('get', 'objectives', `getAllObjectivesBudget/` + this.USERID)
+            .fetch('get', 'objectives', `getAllObjectivesBudget/${this.USERID}`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.objectiveBudget = data.data;
@@ -91,21 +91,24 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .fetch(
                 'get',
                 'goals',
-                `getAllObjectivesWithObjectives/` + this.USERID
+                `getAllObjectivesWithObjectives/${this.USERID}`
             )
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
-                console.log('getAllObjectivesForTabledata', data);
                 this.goals = data.goals;
             });
     }
 
     getObjectiveViewPieChart() {
         this.goalService
-            .fetch('get', 'goals', `getObjectivesViewTable/` + this.USERID)
+            .fetch(
+                'get',
+                'office_head_query',
+                `getAllObjectivesUnderAOfficeHeadV2/${this.USERID}`
+            )
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data?: any) => {
-                this.initBarCharts(data?.data);
+                this.initBarCharts(data?.objectiveCompletions || []);
             });
     }
 
@@ -135,7 +138,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
         };
 
         const datasets = goal.map((goal) => {
-            const backgroundColors = goal.objectives.map(() =>
+            const backgroundColors = goal.objectivesDetails.map(() =>
                 getIncrementalColor()
             );
             const borderColors = backgroundColors.map((color) => color);
@@ -144,11 +147,13 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 label: goal.goals,
                 backgroundColor: backgroundColors,
                 borderColor: borderColors,
-                data: goal.objectives.map((obj) => obj.budget),
+                data: goal.objectivesDetails.map((obj) => obj.budget),
             };
         });
 
-        const labels = goal.flatMap((goal) => goal.objectives.map((obj) => ''));
+        const labels = goal.flatMap((goal) =>
+            goal.objectivesDetails.map((obj) => obj.functional_objective)
+        );
 
         this.donutData = {
             labels: labels,
@@ -189,6 +194,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 },
             },
         };
+        this.loading = false;
     }
 
     expandAll() {

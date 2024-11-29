@@ -78,10 +78,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     currentEvents = signal<EventApi[]>([]);
     loading = true;
-    userId: string;
+    USERID: string;
 
     selectedBarDepartmentDropdown: IdepartmentDropdown | undefined;
-    getAllObjectivesUnderADirectorData: any;
+    getAllObjectivesUnderAOfficeHeadData: any;
     goalBarChartList: IdepartmentDashboardDropdown[] | undefined;
     PieChartOptions: any;
     pieData: any;
@@ -114,31 +114,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.userId = this.auth.getTokenUserID();
-        this.getAllobjectivesGoalsUsers();
-
-        this.userId = this.auth.getTokenUserID();
-        this.getAllobjectivesGoalsUsers();
-        this.userId = this.auth.getTokenUserID();
-        this.getAllobjectivesGoalsUsers();
-        this.getAllObjectivesUnderADirector();
-    }
-
-    getAllobjectivesGoalsUsers() {
-        this.loading = true;
-        this.obj
-            .fetch(
-                'get',
-                'objectives',
-                `getObjectiveForCalendar/${this.userId}`
-            )
-            .pipe(takeUntil(this.objectiveSubscription))
-            .subscribe((data: any) => {
-                console.log(data.data);
-                const events = this.transformEvents(data.data);
-                this.updateCalendarEvents(events);
-                this.loading = false;
-            });
+        this.USERID = this.auth.getTokenUserID();
+        this.getAllObjectivesUnderAOfficeHead();
     }
 
     transformEvents(data: any[]): any[] {
@@ -146,9 +123,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             const title =
                 ` ${item.functional_objective.toUpperCase()} : ` +
                 this.getCurrentGoalAndActual(item);
-            console.log({
-                getCurrentGoalAndActual: this.getCurrentGoalAndActual(item),
-            });
             let endDate = new Date(item.createdAt);
             if (item.frequency_monitoring === 'yearly') {
                 // endDate.setFullYear(endDate.getFullYear() + 1);
@@ -193,25 +167,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
             currentDate.getMonth() -
             createdAt.getMonth();
 
-        console.log({ diffMonths: diffMonths }); // Debugging: Show the difference in months
-
         // Check the frequency_monitoring field
         const frequency = entry.frequency_monitoring;
 
         if (frequency === 'yearly') {
             // Use the current month index directly
             const currentMonth = currentDate.getMonth() + 1;
-            console.log({ currentMonth: currentMonth }); // Debugging: Log current month index
-            console.log({ goalmonth: entry[`goal_month_${currentMonth}`] });
-            console.log({ actualmonth: entry[`month_${currentMonth}`] });
-
             return `Goal: ${
                 entry[`goal_month_${currentMonth}`] ?? 'Not Available'
             } | Actual: ${entry[`month_${currentMonth}`] ?? 'Not Available'}`;
         } else if (frequency === 'quarterly') {
             // Find the current quarter index (0 to 3)
             const currentQuarter = Math.floor(diffMonths / 3) % 4;
-            console.log({ currentQuarter: currentQuarter }); // Debugging: Log current quarter index
 
             return `Goal: ${
                 entry[`goal_quarter_${currentQuarter}`] ?? 'Not Available'
@@ -221,7 +188,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         } else if (frequency === 'semi_annual') {
             // Find the current half-year index (0 or 1)
             const currentHalf = Math.floor(diffMonths / 6) % 2;
-            console.log({ currentHalf: currentHalf }); // Debugging: Log current half-year index
 
             return `Goal: ${
                 entry[`goal_semi_annual_${currentHalf}`] ?? 'Not Available'
@@ -230,7 +196,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }`;
         } else {
             // Return a fallback message for unsupported or undefined frequency
-            console.log('Frequency not supported or data missing');
             return 'Frequency not supported or data not available';
         }
     }
@@ -319,42 +284,37 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     async onChangeDepartment(event: any = '') {
         this.barCharts = [];
-        console.log({ onChangeDepartment: event.value });
         if (event.value) {
             const matchingGoals = this.goals.filter(
                 (goal) => goal.department === event.value.name
             );
             this.barChartType = 'bar';
-            console.log(this.barChartType);
-            console.log({ matchingGoals });
+
             await this.selectedBarChartDepartments(matchingGoals);
         }
     }
 
-    async getAllObjectivesUnderADirector() {
+    async getAllObjectivesUnderAOfficeHead() {
         await this.userService
             .fetch(
                 'get',
-                'director_query',
-                `getAllObjectivesUnderADirectorV2/${this.userId}`
+                'office_head_query',
+                `getAllObjectivesUnderAOfficeHeadV2/${this.USERID}`
             )
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllObjectivesUnderADirector: data });
-                this.getAllObjectivesUnderADirectorData = data;
+                this.getAllObjectivesUnderAOfficeHeadData = data;
                 this.completedGoalsFromApi = data.completedGoals;
                 this.uncompletedGoalsFromApi = data.uncompletedGoals;
-                this.pieChart(data.goals || []);
                 this.goals = data.goals || [];
                 this.goalBarChartList = data.dropdown || [];
                 this.pieChart(data.goals || this.goals || []);
-                this.thisBarCharts(data.goals);
+                this.thisBarCharts(data.objectiveCompletions);
                 this.processDashboardData(data);
             });
     }
 
     async processDashboardData(data) {
-        console.log({ processDashboardData: data });
         // total of objectives
 
         const objectives =
@@ -422,28 +382,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
     async pieChart(data: any = []) {
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
-
-        const labels = data.map((goal) => goal.department);
-        const budgets = data.map((goal) => goal.remainingBudget);
-        const generateRandomColor = () => {
-            const r = Math.floor(Math.random() * 256);
-            const g = Math.floor(Math.random() * 256);
-            const b = Math.floor(Math.random() * 256);
-            return `rgba(${r}, ${g}, ${b}, 0.2)`;
-        };
-
-        const backgroundColors = labels.map(() => generateRandomColor());
-        const hoverBackgroundColors = backgroundColors.map((color) =>
-            color.replace('0.2', '0.4')
+        const labels = data.flatMap((e) =>
+            e.objectivesDetails.map((x) => x.functional_objective)
+        );
+        const budgets = data.flatMap((e) =>
+            e.objectivesDetails.map((x) => x.budget)
         );
 
-        this.pieCharts = data = {
+        this.pieCharts = {
             labels: labels,
             datasets: [
                 {
                     data: budgets,
-                    backgroundColor: backgroundColors,
-                    hoverBackgroundColor: hoverBackgroundColors,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--yellow-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--yellow-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                    ],
                 },
             ],
         };
@@ -460,9 +420,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             maintainAspectRatio: true,
         };
     }
-    async selectedBarChartDepartments(data: any) {
-        console.log({ selectedBarChartDepartments: data });
 
+    async selectedBarChartDepartments(data: any) {
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -470,65 +429,61 @@ export class DashboardComponent implements OnInit, OnDestroy {
         );
         const surfaceBorder =
             documentStyle.getPropertyValue('--surface-border');
+        const labels: string[] = [];
+        const dataGoal: number[] = [];
+        const dataGoalObjective: number[] = [];
+        const dataRemainingBudget: number[] = [];
 
-        const labelsObjectiveName = [];
-        const incompleteGoals = [];
-        // const actualBudget = [];
-        const completedGoals = [];
-        // const monthData = [];
-        // const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
-        console.log({ selectedBarChartDepartments: data });
-        data.forEach((goal) => {
-            let objectiveName = goal.objectivesDetails.map(
-                (e) => e.functional_objective
+        data.forEach((t: any) => {
+            labels.push(t.department);
+            dataGoal.push(t.budget);
+            dataGoalObjective.push(
+                t.objectivesDetails
+                    .map((o: any) => o.budget)
+                    .reduce((a: any, b: any) => a + b, 0)
             );
-            if (goal.department && goal.budget && goal.date_added) {
-                // const dateAdded = new Date(goal.date_added);
-                // const monthAdded = dateAdded.getMonth() + 1; // Month (1-12)
-                labelsObjectiveName.push(objectiveName);
-                // actualBudget.push(goal.budget);
-                completedGoals.push(
-                    goal.completion_percentage === 100
-                        ? goal.completion_percentage
-                        : 0
-                );
-                console.log({ completedGoals });
-                incompleteGoals.push(
-                    goal.completion_percentage < 100
-                        ? goal.completion_percentage
-                        : 0
-                );
-                // monthData.push(monthAdded);
-            }
+            dataRemainingBudget.push(t.remainingBudget);
         });
 
-        console.log({ completedGoals, incompleteGoals });
-
-        const datasets = [
-            {
-                label: 'Completed',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgb(75, 192, 192)',
-                data: completedGoals,
-            },
-            {
-                label: 'In Progress',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
-                data: incompleteGoals,
-            },
-        ];
-
         this.barCharts = {
-            labels: labelsObjectiveName,
+            labels: labels,
             // labels: this.months({ count: currentMonth }),
-            datasets: datasets,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: 'Goal Budget',
+                    data: dataGoal,
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--blue-500'),
+                    borderWidth: 1,
+                },
+                {
+                    type: 'bar',
+                    label: 'Goal Remaining',
+                    data: dataRemainingBudget,
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--green-500'),
+                    borderWidth: 1,
+                },
+                {
+                    type: 'bar',
+                    label: 'Objective Budget Total',
+                    data: dataGoalObjective,
+                    backgroundColor:
+                        documentStyle.getPropertyValue('--yellow-500'),
+                    borderWidth: 1,
+                },
+            ],
         };
 
         this.options = {
-            type: 'line',
-            data: datasets,
+            maintainAspectRatio: false,
+            aspectRatio: 0.8,
             plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                },
                 legend: {
                     labels: {
                         color: textColor,
@@ -536,8 +491,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 },
             },
             scales: {
-                y: {
-                    beginAtZero: true,
+                x: {
+                    stacked: true,
                     ticks: {
                         color: textColorSecondary,
                     },
@@ -546,7 +501,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         drawBorder: false,
                     },
                 },
-                x: {
+                y: {
+                    stacked: true,
                     ticks: {
                         color: textColorSecondary,
                     },
@@ -559,7 +515,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         };
     }
     onClearDepartment() {
-        console.log('onClearDepartment');
         this.barCharts = [];
         this.selectedBarDepartmentDropdown = undefined;
         this.barChartType = 'line';
@@ -567,7 +522,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async thisBarCharts(data: any = []) {
-        console.log({ thisBarCharts: data });
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -576,68 +530,45 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const surfaceBorder =
             documentStyle.getPropertyValue('--surface-border');
 
-        const labelsObjectiveName = [];
-        const labelsOfficeName = [];
+        const objectiveName = [];
         const actualBudget = [];
         const actualBudgetCompleted = [];
         const budgetData = [];
-        const monthData = [];
-        const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
+        const percentageCompletion = [];
 
         data.forEach((goal) => {
-            let objectiveName = goal.objectivesDetails.map(
-                (e) => e.functional_objective
-            );
-            let objectiveCompleted = goal.objectivesDetails.map((e) => {
+            goal.objectivesDetails.map((e) => {
+                objectiveName.push(e.functional_objective);
+                // budgetData.push(e.budget);
+                // actualBudget.push(goal.budget);
+                percentageCompletion.push(e.completion_percentage);
                 if (e.complete) {
                     actualBudgetCompleted.push(goal.budget);
                 }
             });
-            if (goal.department && goal.budget && goal.date_added) {
-                const dateAdded = new Date(goal.date_added);
-                const monthAdded = dateAdded.getMonth() + 1; // Month (1-12)
-                labelsObjectiveName.push(objectiveName);
-                actualBudget.push(goal.budget);
-                budgetData.push(goal.remainingBudget);
-                monthData.push(monthAdded);
-            }
         });
 
         const datasets = [
             {
-                label: 'Budget',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgb(75, 192, 192)',
-                data: budgetData,
+                label: 'Percentage Completion',
+                backgroundColor: documentStyle.getPropertyValue('--green-500'),
+                borderColor: 'white',
+                data: percentageCompletion,
+                // data: budgetData,
                 stack: 'combined',
-                type: 'bar',
-            },
-            {
-                label: 'Actual Budget',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
-                data: actualBudget,
-                stack: 'combined',
-            },
-            {
-                label: 'Completed',
-                backgroundColor: 'rgba(153, 82, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
-                data: actualBudgetCompleted,
-                // stack: 'combined',
                 type: 'bar',
             },
             // {
-            //     label: 'Current Month',
-            //     backgroundColor: 'rgba(255, 159, 64, 0.2)',
-            //     borderColor: 'rgb(255, 159, 64)',
-            //     data: Array(labelsObjectiveName.length).fill(currentMonth),
+            //     label: 'Actual Budget',
+            //     backgroundColor: documentStyle.getPropertyValue('--orange-500'),
+            //     data: actualBudget,
+            //     stack: 'combined',
             // },
         ];
 
         this.barCharts = {
             // labels: this.months({ count: currentMonth }),
-            labels: labelsObjectiveName,
+            labels: objectiveName,
             datasets: datasets,
         };
 

@@ -181,7 +181,6 @@ export class GoalComponent implements OnInit, OnDestroy {
     }
 
     receivedViewFilesButtonClick(event: any) {
-        console.log({ receivedViewFilesButtonClick: event });
         const { viewFiles, data } = event;
         this.parentViewFiles = {
             viewFiles: viewFiles,
@@ -190,7 +189,6 @@ export class GoalComponent implements OnInit, OnDestroy {
     }
 
     receivedRemarksEvent(event: any) {
-        console.log({ receivedRemarksEvent: event });
         const { remarksDialogCard, data } = event;
         this.parentRemarks = {
             remarksDialogCard: remarksDialogCard,

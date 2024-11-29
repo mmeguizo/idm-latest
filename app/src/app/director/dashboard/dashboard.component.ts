@@ -124,14 +124,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     async onChangeDepartment(event: any = '') {
         this.barCharts = [];
-        console.log({ onChangeDepartment: event.value });
         if (event.value) {
             const matchingGoals = this.goals.filter(
                 (goal) => goal.department === event.value.name
             );
             this.barChartType = 'bar';
-            console.log(this.barChartType);
-            console.log({ matchingGoals });
             await this.selectedBarChartDepartments(matchingGoals);
         }
     }
@@ -145,7 +142,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             )
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
-                console.log({ getAllObjectivesUnderADirector: data });
                 this.getAllObjectivesUnderADirectorData = data;
                 this.completedGoalsFromApi = data.completedGoals;
                 this.uncompletedGoalsFromApi = data.uncompletedGoals;
@@ -159,7 +155,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async processDashboardData(data) {
-        console.log({ processDashboardData: data });
         // total of objectives
 
         const objectives =
@@ -229,7 +224,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const textColor = documentStyle.getPropertyValue('--text-color');
 
         const labels = data.map((goal) => goal.department);
-        const budgets = data.map((goal) => goal.remainingBudget);
+        const budgets = data.map((goal) => goal.budget);
         const generateRandomColor = () => {
             const r = Math.floor(Math.random() * 256);
             const g = Math.floor(Math.random() * 256);
@@ -247,8 +242,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
             datasets: [
                 {
                     data: budgets,
-                    backgroundColor: backgroundColors,
-                    hoverBackgroundColor: hoverBackgroundColors,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--yellow-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--yellow-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                    ],
                 },
             ],
         };
@@ -266,8 +269,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         };
     }
     async selectedBarChartDepartments(data: any) {
-        console.log({ selectedBarChartDepartments: data });
-
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -282,7 +283,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const completedGoals = [];
         // const monthData = [];
         // const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
-        console.log({ selectedBarChartDepartments: data });
         data.forEach((goal) => {
             let objectiveName = goal.objectivesDetails.map(
                 (e) => e.functional_objective
@@ -297,7 +297,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         ? goal.completion_percentage
                         : 0
                 );
-                console.log({ completedGoals });
                 incompleteGoals.push(
                     goal.completion_percentage < 100
                         ? goal.completion_percentage
@@ -307,19 +306,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         });
 
-        console.log({ completedGoals, incompleteGoals });
-
         const datasets = [
             {
                 label: 'Completed',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgb(75, 192, 192)',
+                borderColor: documentStyle.getPropertyValue('--blue-500'),
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4,
                 data: completedGoals,
             },
             {
-                label: 'In Progress',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
+                label: 'Percentage',
+                backgroundColor: documentStyle.getPropertyValue('--green-500'),
+                borderColor: 'white',
                 data: incompleteGoals,
             },
         ];
@@ -364,7 +363,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         };
     }
     onClearDepartment() {
-        console.log('onClearDepartment');
         this.barCharts = [];
         this.selectedBarDepartmentDropdown = undefined;
         this.barChartType = 'line';
@@ -372,7 +370,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     async thisBarCharts(data: any = []) {
-        console.log({ thisBarCharts: data });
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -411,23 +408,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const datasets = [
             {
                 label: 'Budget',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: documentStyle.getPropertyValue('--green-500'),
+                borderColor: 'white',
                 data: budgetData,
                 stack: 'combined',
                 type: 'bar',
             },
             {
                 label: 'Actual Budget',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
+                backgroundColor: documentStyle.getPropertyValue('--orange-500'),
                 data: actualBudget,
                 stack: 'combined',
             },
             {
                 label: 'Completed',
-                backgroundColor: 'rgba(153, 82, 255, 0.2)',
-                borderColor: 'rgb(153, 102, 255)',
+                borderColor: documentStyle.getPropertyValue('--blue-500'),
                 data: actualBudgetCompleted,
                 // stack: 'combined',
                 type: 'bar',
@@ -490,7 +485,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             )
             .pipe(takeUntil(this.objectiveSubscription))
             .subscribe((data: any) => {
-                console.log(data.data);
                 const events = this.transformEvents(data.data);
                 this.updateCalendarEvents(events);
                 this.loading = false;
@@ -502,9 +496,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             const title =
                 ` ${item.functional_objective.toUpperCase()} : ` +
                 this.getCurrentGoalAndActual(item);
-            console.log({
-                getCurrentGoalAndActual: this.getCurrentGoalAndActual(item),
-            });
+
             let endDate = new Date(item.createdAt);
             if (item.frequency_monitoring === 'yearly') {
                 // endDate.setFullYear(endDate.getFullYear() + 1);
@@ -549,17 +541,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
             currentDate.getMonth() -
             createdAt.getMonth();
 
-        console.log({ diffMonths: diffMonths }); // Debugging: Show the difference in months
-
         // Check the frequency_monitoring field
         const frequency = entry.frequency_monitoring;
 
         if (frequency === 'yearly') {
             // Use the current month index directly
             const currentMonth = currentDate.getMonth() + 1;
-            console.log({ currentMonth: currentMonth }); // Debugging: Log current month index
-            console.log({ goalmonth: entry[`goal_month_${currentMonth}`] });
-            console.log({ actualmonth: entry[`month_${currentMonth}`] });
 
             return `Goal: ${
                 entry[`goal_month_${currentMonth}`] ?? 'Not Available'
@@ -567,7 +554,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         } else if (frequency === 'quarterly') {
             // Find the current quarter index (0 to 3)
             const currentQuarter = Math.floor(diffMonths / 3) % 4;
-            console.log({ currentQuarter: currentQuarter }); // Debugging: Log current quarter index
 
             return `Goal: ${
                 entry[`goal_quarter_${currentQuarter}`] ?? 'Not Available'
@@ -577,7 +563,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         } else if (frequency === 'semi_annual') {
             // Find the current half-year index (0 or 1)
             const currentHalf = Math.floor(diffMonths / 6) % 2;
-            console.log({ currentHalf: currentHalf }); // Debugging: Log current half-year index
 
             return `Goal: ${
                 entry[`goal_semi_annual_${currentHalf}`] ?? 'Not Available'
@@ -586,57 +571,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }`;
         } else {
             // Return a fallback message for unsupported or undefined frequency
-            console.log('Frequency not supported or data missing');
             return 'Frequency not supported or data not available';
         }
     }
-    // getCurrentGoalAndActual(entry: any): string {
-    //     // Parse the createdAt date into a Date object
-    //     const createdAt = new Date(entry.createdAt);
-    //     const currentDate = new Date(); // Get the current date
-
-    //     // Calculate the difference in months from createdAt to currentDate
-    //     const diffMonths =
-    //         (currentDate.getFullYear() - createdAt.getFullYear()) * 12 +
-    //         currentDate.getMonth() -
-    //         createdAt.getMonth();
-    //     console.log({ diffMonths: diffMonths });
-    //     // Check the frequency_monitoring field
-    //     const frequency = entry.frequency_monitoring;
-
-    //     if (frequency === 'yearly') {
-    //         const currentMonth = diffMonths % 12; // Current month within the year
-    //         console.log({
-    //             currentMonth: currentMonth,
-    //         });
-    //         return `Goal: ${
-    //             entry[`goal_month_${currentMonth}`] ?? 'Not Available'
-    //         } | Actual: ${entry[`month_${currentMonth}`] ?? 'Not Available'}`;
-    //     } else if (frequency === 'quarterly') {
-    //         const currentQuarter = Math.floor(diffMonths / 3) % 4; // Calculate current quarter
-    //         console.log({
-    //             currentQuarter: currentQuarter,
-    //         });
-    //         return `Goal: ${
-    //             entry[`goal_quarter_${currentQuarter}`] ?? 'Not Available'
-    //         } | Actual: ${
-    //             entry[`quarter_${currentQuarter}`] ?? 'Not Available'
-    //         }`;
-    //     } else if (frequency === 'semi_annual') {
-    //         const currentHalf = Math.floor(diffMonths / 6) % 2; // Calculate current half of the year
-    //         console.log({
-    //             currentHalf: currentHalf,
-    //         });
-    //         return `Goal: ${
-    //             entry[`goal_semi_annual_${currentHalf}`] ?? 'Not Available'
-    //         } | Actual: ${
-    //             entry[`semi_annual_${currentHalf}`] ?? 'Not Available'
-    //         }`;
-    //     } else {
-    //         // Return a fallback message for undefined or unsupported frequency
-    //         return 'Frequency not supported or data not available';
-    //     }
-    // }
 
     getEndDateAfter12Months(createdAt) {
         // Parse the input 'createdAt' into a Date object

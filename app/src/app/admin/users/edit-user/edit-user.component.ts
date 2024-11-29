@@ -148,7 +148,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
                 this.selectVP = data.data[0] || [];
-                console.log('getAllVicePresident', this.selectVP);
             });
     }
 
@@ -157,9 +156,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
             .fetch('get', 'users', 'getAllDirector')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
-                console.log('getAllDirector', data);
                 this.selectDiretor = data.data[0] || [];
-                console.log('getAllDirector', this.selectDiretor);
             });
     }
 

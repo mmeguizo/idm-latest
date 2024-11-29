@@ -70,63 +70,6 @@ export class ViewFileHistoryComponent implements OnInit, OnDestroy {
         return getIcon(name);
     }
 
-    // async getAllFilesHistoryFromObjectiveLoad(
-    //     id: string,
-    //     objectiveID: string
-    // ): Promise<Boolean> {
-    //     this.loading = true;
-    //     this.fileService
-    //         .getAllFilesHistoryFromObjectiveLoad(id, objectiveID)
-    //         .pipe(takeUntil(this.getGoalSubscription))
-    //         .subscribe((data: any) => {
-    //             this.AllObjectivesHistoryFiles = data.data;
-    //             // this.changeDetectorRef.detectChanges();
-    //             this.loading = false;
-    //             // this.changeDetectorRef.markForCheck();
-    //         });
-    //     return true;
-    // }
-
-    // async getAllFilesFromObjectiveLoad(
-    //     id: string,
-    //     objectiveID: string
-    // ): Promise<boolean> {
-    //     try {
-    //         this.loading = true;
-    //         this.fileService
-    //             .getAllFilesHistoryFromObjectiveLoad(id, objectiveID)
-    //             .pipe(takeUntil(this.getGoalSubscription))
-    //             .subscribe((data: any) => {
-    //                 this.AllObjectivesHistoryFiles = data.data;
-    //                 this.loading = false;
-    //             });
-    //         return true;
-    //     } catch (error) {
-    //         console.error(error);
-    //         return false;
-    //     }
-    // }
-
-    // async getAllFilesHistoryFromObjectiveLoad(
-    //     id: string,
-    //     objectiveID: string
-    // ): Promise<Boolean> {
-    //     this.loading = true;
-    //     this.route
-    //         .getRoute(
-    //             'get',
-    //             'vice_president_query',
-    //             `getAllFilesHistoryFromObjectiveLoad/${id}/${objectiveID}`
-    //         )
-    //         .pipe(takeUntil(this.getGoalSubscription))
-    //         .subscribe((data: any) => {
-    //             console.log('getAllFilesHistoryFromObjectiveLoad', data.data);
-    //             this.AllObjectivesHistoryFiles = data.data;
-    //             this.loading = false;
-    //         });
-    //     return true;
-    // }
-
     async getAllFilesHistoryFromObjectiveLoad(
         id: string,
         objectiveID: string
@@ -142,10 +85,7 @@ export class ViewFileHistoryComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
                     this.AllObjectivesHistoryFiles = data.data;
-                    console.log(
-                        'getAllFilesHistoryFromObjectiveLoad',
-                        this.AllObjectivesHistoryFiles
-                    );
+
                     this.loading = false;
                 });
             return true;
@@ -154,45 +94,4 @@ export class ViewFileHistoryComponent implements OnInit, OnDestroy {
             return false;
         }
     }
-
-    // async getAllFilesHistoryFromObjectiveLoad(
-    //     id: string,
-    //     objectiveID: string
-    // ): Promise<boolean> {
-    //     try {
-    //         this.loading = true;
-    //         this.route
-    //             .getRoute(
-    //                 'get',
-    //                 'vice_president_query',
-    //                 `getAllFilesHistoryFromObjectiveLoad/${id}/${objectiveID}`
-    //             )
-    //             .pipe(takeUntil(this.getGoalSubscription))
-    //             .subscribe((data: any) => {
-    //                 this.AllObjectivesHistoryFiles = data.data;
-    //                 console.log(
-    //                     'getAllFilesHistoryFromObjectiveLoad',
-    //                     this.AllObjectivesHistoryFiles
-    //                 );
-    //                 this.loading = false;
-    //                 this.changeDetectorRef.detectChanges(); // Force change detection
-    //             });
-    //         return true;
-    //     } catch (error) {
-    //         console.error(error);
-    //         this.loading = false;
-    //         this.changeDetectorRef.detectChanges(); // Ensure change detection on error as well
-    //         return false;
-    //     }
-    // }
 }
-/*
-  this.fileService
-            .getAllFilesHistoryFromObjectiveLoad(id, objectiveID)
-            .pipe(takeUntil(this.getGoalSubscription))
-            .subscribe((data: any) => {
-                this.AllObjectivesHistoryFiles = data.data;
-                this.changeDetectorRef.detectChanges();
-                this.loading = false;
-            });
-*/

@@ -46,6 +46,10 @@
                                 pButton
                                 icon="pi pi-plus"
                                 (click)="addObjective()"
+                                [disabled]="
+                                    objectivesArray.length >= 5 ||
+                                    !addGoalform.get('goals').valid
+                                "
                             ></button>
                         </ng-container>
                         &nbsp;
@@ -70,6 +74,7 @@
                 (click)="
                     editing ? updateGoal(addGoalform) : addGoalExec(addGoalform)
                 "
+                [disabled]="!addGoalform.valid"
             ></p-button>
             &nbsp;
             <button
@@ -82,36 +87,3 @@
         </form>
     </div>
 </div>
-
-<!-- <div class="p-fluid">
-    <div class="field col-10 md:col-10">
-        <form [formGroup]="addGoalform">
-            <div class="field">
-                <label htmlFor="name1">Goal name</label>
-                <input
-                    pInputText
-                    id="goals"
-                    class="flex-auto"
-                    autocomplete="off"
-                    [ngClass]="
-                        addGoalform?.get('goals').touched &&
-                        addGoalform?.controls['goals'].errors?.required
-                            ? 'ng-invalid ng-dirty'
-                            : ''
-                    "
-                    formControlName="goals"
-                    required
-                    (keydown.enter)="addGoalExec(addGoalform)"
-                />
-            </div>
-        </form>
-        <p-button
-            [label]="editing ? 'Edit' : 'Save'"
-            class="mt-4"
-            [severity]="editing ? 'warning' : 'primary'"
-            (click)="
-                editing ? updateGoal(addGoalform) : addGoalExec(addGoalform)
-            "
-        />
-    </div>
-</div> -->

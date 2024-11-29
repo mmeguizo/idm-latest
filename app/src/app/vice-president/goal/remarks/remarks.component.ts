@@ -58,22 +58,18 @@ export class RemarksComponent implements OnInit, OnDestroy {
             .getRoutePublic('get', 'remark', `remarks/${this.objectiveId}`)
             .pipe(takeUntil(this.remarksSubscriptions))
             .subscribe(async (data) => {
-                console.log(data);
                 this.remarks = data;
             });
     }
 
     async addRemarks() {
-        console.log('adding remarks');
         this.showEditorDialogCard = true;
     }
 
     async submitRemarks() {
-        console.log('submitting remarks');
         this.showEditorDialogCard = false;
         if (this.text) {
             const plainText = this.text.replace(/<\/?[^>]+(>|$)/g, '');
-            console.log(plainText, this.objectiveData);
 
             this.baseService
                 .getRoutePublic('post', 'remark', 'remarks', {

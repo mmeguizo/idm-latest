@@ -1,0 +1,64 @@
+[{
+  "_id": {
+    "$oid": "674565b2d4778999a0ad6563"
+  },
+  "remarks": "nearing finish the goal",
+  "userId": "eab34b08-cfb9-4f90-9e3e-81491eb18a90",
+  "objectiveId": "a2ef3895-2094-4090-aa71-8af429e27cf8",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-11-26T06:07:47.000Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:07:47.000Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6745663cd4778999a0ad65ec"
+  },
+  "remarks": "goods na",
+  "userId": "eab34b08-cfb9-4f90-9e3e-81491eb18a90",
+  "objectiveId": "c4ffb3c1-615d-481b-8767-fd84eaed091a",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-11-26T06:10:04.492Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:10:04.492Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67456736d4778999a0ad66a9"
+  },
+  "remarks": "started pc goal",
+  "userId": "3312e24e-a671-4e37-b0e6-bd2a97b90a10",
+  "objectiveId": "f2b3b396-fca3-4e24-9c7d-02f96c5741f2",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-11-26T06:14:14.271Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:14:14.271Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6745699ed4778999a0ad6876"
+  },
+  "remarks": "bought 1",
+  "userId": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "objectiveId": "9e00cbe2-e1f5-4587-980f-b51595840e39",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-11-26T06:24:30.165Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:24:30.165Z"
+  },
+  "__v": 0
+}]

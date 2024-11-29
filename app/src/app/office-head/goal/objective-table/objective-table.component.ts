@@ -148,9 +148,6 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
             this.editObjectiveTableTrigger?.success &&
             this.editObjectiveTableTrigger?.id
         ) {
-            console.log({
-                editObjectiveTableTrigger: this.editObjectiveTableTrigger,
-            });
             const { success, id } = this.editObjectiveTableTrigger;
             this.loading = success;
             this.getTableData(id);
@@ -237,7 +234,6 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     }
 
     viewFiles(objectives: any) {
-        console.log({ viewFiles: objectives });
         this.viewFilesEvent.emit({
             viewFiles: true,
             data: objectives,
@@ -245,8 +241,6 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     }
 
     openRemarksDialog(data: any) {
-        console.log({ openRemarksDialog: data });
-
         this.remarksEvent.emit({
             remarksDialogCard: true,
             data: data,
@@ -254,7 +248,6 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     }
 
     printDocument(header: string, data: any) {
-        console.log({ printDocument: data, header });
         //   this.printingHead = true;
         this.printObjectiveTableEvent.emit({
             printObjectiveTable: true,

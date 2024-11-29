@@ -67,8 +67,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.loading = true;
         this.USERID = this.auth.getTokenUserID();
-        console.log(this.auth.getTokenUserID());
-        console.log(this.USERID);
+
         this.goalsTableData(this.USERID);
 
         //need polishing dont delete
@@ -80,7 +79,6 @@ export class GoalTableComponent implements OnInit, OnDestroy {
     }
 
     async goalsTableData(userId?: string) {
-        console.log(userId);
         const resultSubject = new Subject<boolean>();
         this.loading;
         this.goal
@@ -183,7 +181,6 @@ export class GoalTableComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalTableSubscription))
             .subscribe((data: any) => {
                 this.deptDropdownValue = data?.data[0];
-                console.log('getAllDept', this.deptDropdownValue);
             });
     }
 }

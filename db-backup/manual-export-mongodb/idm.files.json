@@ -1,0 +1,115 @@
+[{
+  "_id": {
+    "$oid": "674565a1d4778999a0ad6553"
+  },
+  "id": "d2fce036-430f-43a4-91f4-29bf6bf11fdb",
+  "source": "818d7d1a8b0861960f0921bd85bd910f.jpg",
+  "user_id": "eab34b08-cfb9-4f90-9e3e-81491eb18a90",
+  "for": "files",
+  "status": true,
+  "filetype": "image",
+  "objective_id": "a2ef3895-2094-4090-aa71-8af429e27cf8",
+  "file_month_0": "818d7d1a8b0861960f0921bd85bd910f.jpg",
+  "date_added": {
+    "$date": "2024-11-26T06:07:29.687Z"
+  },
+  "createdAt": {
+    "$date": "2024-11-26T06:07:29.688Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:07:29.688Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6745664bd4778999a0ad65fb"
+  },
+  "id": "6e3e81a1-7064-4623-9dc5-2cbe187916bc",
+  "source": "bbdeafde54129f0430f3d99a81ba147d.gif",
+  "user_id": "eab34b08-cfb9-4f90-9e3e-81491eb18a90",
+  "for": "files",
+  "status": true,
+  "filetype": "image",
+  "objective_id": "c4ffb3c1-615d-481b-8767-fd84eaed091a",
+  "file_semi_annual_0": "bbdeafde54129f0430f3d99a81ba147d.gif",
+  "date_added": {
+    "$date": "2024-11-26T06:10:19.229Z"
+  },
+  "createdAt": {
+    "$date": "2024-11-26T06:10:19.230Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:10:19.230Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67456745d4778999a0ad66b4"
+  },
+  "id": "549435bd-a6f1-4eac-909a-dfffde679da5",
+  "source": "cd00da2fe3c847017cd60c3943780d46.pdf",
+  "user_id": "3312e24e-a671-4e37-b0e6-bd2a97b90a10",
+  "for": "files",
+  "status": true,
+  "filetype": "application",
+  "objective_id": "f2b3b396-fca3-4e24-9c7d-02f96c5741f2",
+  "file_quarter_0": "cd00da2fe3c847017cd60c3943780d46.pdf",
+  "date_added": {
+    "$date": "2024-11-26T06:14:29.687Z"
+  },
+  "createdAt": {
+    "$date": "2024-11-26T06:14:29.687Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:14:29.687Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67456892d4778999a0ad6754"
+  },
+  "id": "c5233e7c-3341-4398-b507-5516c0c2212d",
+  "source": "ef331cba0242e0ca019fd733c5a73bbf.jpg",
+  "user_id": "53138441-f108-4a97-a992-965059c74c1e",
+  "for": "files",
+  "status": true,
+  "filetype": "image",
+  "objective_id": "550ad2ce-288c-4c5e-88ce-7321f88f5d93",
+  "file_semi_annual_0": "ef331cba0242e0ca019fd733c5a73bbf.jpg",
+  "date_added": {
+    "$date": "2024-11-26T06:20:02.117Z"
+  },
+  "createdAt": {
+    "$date": "2024-11-26T06:20:02.118Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:20:02.118Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674569a5d4778999a0ad6881"
+  },
+  "id": "1b6136ae-cbdb-4539-8d2d-715f9dde94ef",
+  "source": "81a0abf388ab85f891919948b3b77213.jpg",
+  "user_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "for": "files",
+  "status": true,
+  "filetype": "image",
+  "objective_id": "9e00cbe2-e1f5-4587-980f-b51595840e39",
+  "file_semi_annual_0": "81a0abf388ab85f891919948b3b77213.jpg",
+  "date_added": {
+    "$date": "2024-11-26T06:24:37.844Z"
+  },
+  "createdAt": {
+    "$date": "2024-11-26T06:24:37.845Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:24:37.845Z"
+  },
+  "__v": 0
+}]
