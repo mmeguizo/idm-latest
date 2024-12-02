@@ -8,3 +8,9 @@ export interface IdepartmentDashboardDropdown {
     code: string;
     id: string;
 }
+
+export interface genericDropdown {
+    name: string;
+    code: string;
+    id: string;
+}

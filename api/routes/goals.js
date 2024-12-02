@@ -7,6 +7,8 @@ const { logger } = require("../middleware/logger");
 const userHistory = require("../models/userhistories");
 const goals = require("../models/goals");
 const Users = require("../models/user");
+const Departments = require("../models/department");
+const { query, log } = require("winston");
 
 module.exports = (router) => {
   router.get("/getObjectivesViewTable", async (req, res) => {
@@ -280,6 +282,12 @@ module.exports = (router) => {
             complete: 1,
             "users.id": 1,
             "users.username": 1,
+            "users.firstname": 1,
+            "users.lastname": 1,
+            "users.role": 1,
+            "users.email": 1,
+            "users.profile_pic": 1,
+            "users.department": 1,
             objectivesDetails: {
               $map: {
                 input: { $ifNull: ["$objectivesDetails", []] },
@@ -381,11 +389,11 @@ module.exports = (router) => {
               Goals: [],
             }); // Return error of no blogs found
           } else {
-            let returnedData = await Promise.all(
-              await CalculateBudgetAndCompletion(Goals)
-            );
-
-            res.json({ success: true, goals: returnedData }); // Return success and blogs array
+            res.json({
+              success: true,
+              goals: await CalculateBudgetAndCompletion(Goals),
+              office_dropdown: await getBarChartsData(Goals),
+            }); // Return success and blogs array
           }
         }
       }
@@ -999,6 +1007,9 @@ module.exports = (router) => {
       }
     });
     return goalDropdown;
+    // return Array.from(new Set(goalDropdown.map(JSON.stringify))).map(
+    //   JSON.parse
+    // );
   }
 
   async function CalculateBudgetAndCompletion(data) {
@@ -1617,14 +1628,52 @@ module.exports = (router) => {
     }
   });
 
-  router.get("/getAllObjectivesWithObjectives/:id", (req, res) => {
+  router.get("/getAllObjectivesWithObjectives/:id", async (req, res) => {
+    const officeName = req.params.id.toLowerCase();
+    let matchQuery = {
+      deleted: false,
+    };
+
+    let queryIds = [];
+    console.log(officeName);
+    if (officeName && officeName !== "undefined") {
+      console.log(officeName);
+      const department = await Users.findOne({
+        // department: { $regex: officeName, $options: "i" },
+        department: officeName,
+      }).select({ id: 1, firstname: 1, lastname: 1, role: 1 });
+
+      if (department?.role === "vice-president") {
+        const results = await Users.find({
+          vice_president_id: department.id,
+        }).select({ id: true, firstname: true, lastname: true });
+        queryIds = results.map((e) => e.id);
+      } else if (department?.role === "director") {
+        const results = await Users.find({
+          director_id: department.id,
+        }).select({ id: true, firstname: true, lastname: true });
+        queryIds = results.map((e) => e.id);
+      } else {
+        queryIds.push(department.id || "");
+      }
+      matchQuery.createdBy = { $in: queryIds };
+    }
+
+    // // const usersUnderThisOffice = await Users.find({
+    // //   $or: [{ vice_president_id: officeId }, { director_id: officeId }],
+    // // }).select({ id: true, firstname: true, lastname: true });
+    // const usersUnderThisOffice = await Users.find({
+    //   $or: [{ vice_president_id: officeId }, { director_id: officeId }],
+    // }).select({ id: 1, firstname: 1, lastname: 1 });
+
+    // Extract the array of user ids
+    // const userIds = usersUnderThisOffice.map((user) => user.id);
+    // queryIds.push(userIds);
+
     Goals.aggregate(
       [
         {
-          $match: {
-            deleted: false,
-            createdBy: req.params.id,
-          },
+          $match: matchQuery,
         },
         {
           $lookup: {
@@ -1683,6 +1732,12 @@ module.exports = (router) => {
             complete: 1,
             "users.id": 1,
             "users.username": 1,
+            "users.firstname": 1,
+            "users.lastname": 1,
+            "users.role": 1,
+            "users.email": 1,
+            "users.profile_pic": 1,
+            "users.department": 1,
             objectivesDetails: {
               $map: {
                 input: { $ifNull: ["$objectivesDetails", []] },
@@ -1773,6 +1828,7 @@ module.exports = (router) => {
       ],
       { allowDiskUse: true },
       async (err, Goals) => {
+        // Check if error was found or not
         if (err) {
           res.json({ success: false, message: err });
         } else {
@@ -1781,12 +1837,13 @@ module.exports = (router) => {
               success: false,
               message: "No Goals found.",
               Goals: [],
-            });
+            }); // Return error of no blogs found
           } else {
-            let returnedData = await Promise.all(
-              await CalculateBudgetAndCompletion(Goals)
-            );
-            res.json({ success: true, goals: returnedData });
+            res.json({
+              success: true,
+              goals: await CalculateBudgetAndCompletion(Goals),
+              office_dropdown: await getBarChartsData(Goals),
+            }); // Return success and blogs array
           }
         }
       }

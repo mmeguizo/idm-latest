@@ -337,6 +337,7 @@ module.exports = (router) => {
 
   router.put("/updateUser", async (req, res) => {
     let data = req.body;
+    let saveData = {};
     let userData = {};
     try {
       const user = await User.findOne({ id: req.body.id });
@@ -365,14 +366,15 @@ module.exports = (router) => {
         }
 
         const hashedPassword = await hash.encryptPassword(data.password);
-        userData.password = hashedPassword;
+        saveData.password = hashedPassword;
       }
 
-      userData.role = data.role;
-      userData.username = data.username;
-      userData.email = data.email;
-      userData.campus = data.campus;
-      userData.department = data.department;
+      // userData.role = data.role;
+      // userData.username = data.username;
+      // userData.email = data.email;
+      // userData.campus = data.campus;
+      // userData.department = data.department;
+      userData = { ...data, ...saveData };
 
       const response = await User.findOneAndUpdate({ id: data.id }, userData, {
         new: true,

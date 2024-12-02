@@ -4,6 +4,9 @@ import { GoalService } from 'src/app/demo/service/goal.service';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { ProductService } from 'src/app/demo/service/product.service';
 import { Product } from 'src/app/demo/api/product';
+import { genericDropdown } from 'src/app/interface/campus.interface';
+import { AuthService } from 'src/app/demo/service/auth.service';
+
 interface expandedRows {
     [key: string]: boolean;
 }
@@ -30,28 +33,45 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     donutOptions: any;
     goalForTables: any;
 
+    selectedOffice: genericDropdown | undefined;
+    officeList: genericDropdown[] | undefined;
+    totalBudget: number;
+    usedBudget: number;
+    remainingTotal: number;
+
     constructor(
         private goal: GoalService,
         private goalService: GoalService,
         private obj: ObjectiveService,
-        private productService: ProductService
+        private productService: ProductService,
+        public auth: AuthService
     ) {}
 
     ngOnInit() {
+        this.loading = true;
         this.productService
             .getProductsWithOrdersSmall()
             .then((data) => (this.products = data));
-
         this.getAllObjectivesForTable();
         this.getGoals();
         this.getObjectiveViewPieChart();
         this.getAllObjectives();
+        this.loading = false;
     }
 
     getCompletedObjectives(goal: any): number {
         return (
             goal.objectivesDetails?.filter((o) => o.complete && !o.deleted)
                 .length || 0
+        );
+    }
+
+    getObjectiveNames(goal: any): number {
+        return (
+            goal.objectivesDetails
+                ?.filter((o) => o.functional_objective)
+                .map((o) => o.functional_objective)
+                .join(', ') || ''
         );
     }
 
@@ -70,8 +90,19 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 this.goalForTables =
                     data?.data[0]?.totalBudget[0]?.totalAmount || 0;
                 this.goalCount = data?.data[0]?.goalCount;
-                this.loading = false;
             });
+    }
+
+    formatFrequencyString(frequency: string) {
+        if (frequency === 'quarterly') {
+            return 'Quarterly';
+        } else if (frequency === 'yearly') {
+            return 'Yearly';
+        } else if (frequency === 'semi_annual') {
+            return 'Semi-Annual';
+        } else {
+            return 'Unknown';
+        }
     }
 
     getAllObjectives() {
@@ -82,12 +113,17 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 this.objectiveBudget = data.data;
             });
     }
-    getAllObjectivesForTable() {
+    getAllObjectivesForTable(office?: any) {
         this.obj
-            .fetch('get', 'goals', `getAllObjectivesWithObjectives`)
+            .fetch('get', 'goals', `getAllObjectivesWithObjectives/${office}`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
                 this.goals = data.goals;
+                this.calculateBudget(data.goals);
+                this.calculateUsed(data.goals);
+                this.calculateRemaining(data.goals);
+                this.officeList = data.office_dropdown;
+                console.log({ getAllObjectivesForTable: data });
             });
     }
 
@@ -145,7 +181,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             datasets: [
                 {
                     type: 'bar',
-                    label: 'Goal Budget',
+                    label: 'Allocation Budget',
                     data: dataGoal,
                     backgroundColor:
                         documentStyle.getPropertyValue('--blue-500'),
@@ -153,7 +189,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 },
                 {
                     type: 'bar',
-                    label: 'Goal Remaining',
+                    label: 'Remaining Budget',
                     data: dataRemainingBudget,
                     backgroundColor:
                         documentStyle.getPropertyValue('--green-500'),
@@ -161,7 +197,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 },
                 {
                     type: 'bar',
-                    label: 'Objective Budget Total',
+                    label: 'Used Budget',
                     data: dataGoalObjective,
                     backgroundColor:
                         documentStyle.getPropertyValue('--yellow-500'),
@@ -207,7 +243,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 },
             },
         };
-        this.loading = false;
     }
 
     expandAll() {
@@ -221,5 +256,45 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             this.expandedRows = {};
         }
         this.isExpanded = !this.isExpanded;
+    }
+
+    onChangeOffice(event: any = '') {
+        //reset the goals
+        this.goals = [];
+        this.getAllObjectivesForTable(event.value.name);
+        console.log({ event: event.value });
+    }
+
+    onClearOffice() {
+        this.goals = [];
+        this.getAllObjectivesForTable();
+    }
+
+    calculateBudget(goals: any) {
+        let total = 0;
+        for (let calc of this.goals) {
+            total += calc.budget;
+        }
+        console.log({ total });
+
+        this.totalBudget = total;
+    }
+
+    calculateUsed(goals: any) {
+        let total = 0;
+        for (let calc of this.goals) {
+            total += calc.budgetMinusAllObjectiveBudget;
+        }
+        console.log({ total });
+
+        this.usedBudget = total;
+    }
+    calculateRemaining(goals: any) {
+        let total = 0;
+        for (let calc of this.goals) {
+            total += calc.remainingBudget;
+        }
+        console.log({ total });
+        this.remainingTotal = total;
     }
 }
