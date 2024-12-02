@@ -47,4 +47,615 @@
   "status": "active",
   "deleted": false,
   "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704ddd63a5a2408fa481e05"
+  },
+  "department": "Dean, College of Business Management and Accountancy",
+  "status": "active",
+  "deleted": false
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb00"
+  },
+  "id": "10a308d9-aa41-4754-b086-8b9e7e2049c6",
+  "department": "dean, college of business management and accountancy",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb01"
+  },
+  "id": "abcd3791-2ff9-49b3-ae46-b044431e6486",
+  "department": "dean, college of computer studies",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb02"
+  },
+  "id": "f92159fc-979d-4d10-a58f-735991adbea2",
+  "department": "dean, college of criminal justice",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb05"
+  },
+  "id": "7ad83118-dcea-41d3-b049-14040151d5ff",
+  "department": "dean, college of fisheries",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb06"
+  },
+  "id": "2646c98a-4460-4e08-9f52-91d066ead58e",
+  "department": "dean, college of industrial technology",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb07"
+  },
+  "id": "0ddf117d-1137-43eb-b266-31895d131934",
+  "department": "director, advanced education program",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb08"
+  },
+  "id": "9899129f-8b3f-4013-8ccc-2adb64566588",
+  "department": "director, curriculum and instructional materials development",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb09"
+  },
+  "id": "e03bdbd0-28d9-4f34-a2fd-ee365e2f01fd",
+  "department": "director admission and registrarship",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb0a"
+  },
+  "id": "dd7b3427-114e-4814-8bd7-1562045d6943",
+  "department": "director guidance services",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb0b"
+  },
+  "id": "05d84888-a65d-4005-9b2d-79b5d6baac1a",
+  "department": "director library and information services",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb0c"
+  },
+  "id": "b0e13e98-d81d-47d7-a2f5-25847303356e",
+  "department": "director national service training program",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb0d"
+  },
+  "id": "ad89099a-21ac-41d4-b36d-e2548a177a2c",
+  "department": "director student affairs and services",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb0e"
+  },
+  "id": "cc8406bc-9f86-4cdc-9cbb-ceeeb3e5fd41",
+  "department": "director scholarship",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb0f"
+  },
+  "id": "ca1758ef-ee52-4b2f-8c65-2551522d89ef",
+  "department": "director internationalization and external affairs",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb10"
+  },
+  "id": "922f9d35-b599-4e71-b660-bbcb1a84d1c9",
+  "department": "director alumni relations",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb11"
+  },
+  "id": "88bfc911-0c47-4757-a0a2-b4e2fff99c04",
+  "department": "human resource management officer",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb12"
+  },
+  "id": "a296088b-e96d-4d4e-991b-ad9fa532269c",
+  "department": "procurement management officer",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb13"
+  },
+  "id": "e0ab08a3-1b0a-43fa-b41c-60c0ab0b1460",
+  "department": "records management officer",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb14"
+  },
+  "id": "15190171-348b-40ff-bc13-57c27ccf875e",
+  "department": "property and supply management officer",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb15"
+  },
+  "id": "c6c5020c-bd3e-438b-9b49-e09ef7c1cc14",
+  "department": "security officer",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb16"
+  },
+  "id": "c74e25a5-159a-4b9f-a1b7-c6c591673951",
+  "department": "general services officer",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb03"
+  },
+  "id": "82cbfac5-28b3-4d05-a473-3aa222aef921",
+  "department": "dean, college of education",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb04"
+  },
+  "id": "d528f308-24df-4c6d-9701-671aea6c49ca",
+  "department": "dean, college of engineering",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb19"
+  },
+  "id": "079b7621-e00b-4d41-af2c-fe25eac335c5",
+  "department": "executive director, fortune towne campus",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb1a"
+  },
+  "id": "60091a66-97f0-4914-a9aa-135db88577e9",
+  "department": "director business affairs",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb1b"
+  },
+  "id": "1b3ff22d-e5fb-4235-92ac-b9f063e7f167",
+  "department": "director, human resource development",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb1c"
+  },
+  "id": "d4d61b76-207a-4da4-ad87-d366672b5198",
+  "department": "director information and communication technology",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb1d"
+  },
+  "id": "a35b800d-bf39-44c8-95f8-ca5800f8e6ac",
+  "department": "mis officer",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb1e"
+  },
+  "id": "47223712-50a5-478e-9775-f4a4aa9d824a",
+  "department": "it officer",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb1f"
+  },
+  "id": "c070b971-5331-41c7-83f9-32a4a64cb4ba",
+  "department": "director physical plant and facilities management",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb20"
+  },
+  "id": "a695cb9a-fc89-498a-84f4-384be6262ea9",
+  "department": "director for risk reduction and management",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb21"
+  },
+  "id": "72ea8b3e-d2df-46c1-981f-4760dfa425e4",
+  "department": "director, extension and community services",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb22"
+  },
+  "id": "6cd6d3bc-3aab-4bd6-bf3e-6a8642a5e072",
+  "department": "director, intellectual property management",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb23"
+  },
+  "id": "376dadb6-90d9-4200-9ee0-046154e58142",
+  "department": "director, research and development services",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb24"
+  },
+  "id": "c107ef44-8a62-48a6-bf10-3c187553ff0c",
+  "department": "deputy director, research ethics review",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb25"
+  },
+  "id": "305d3423-dbcb-4962-935a-c9e0df738a20",
+  "department": "deputy director, scientific review",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb17"
+  },
+  "id": "8a655ec1-9394-4f4c-a3ee-8e0dee26e8ed",
+  "department": "executive director, allis campus",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704e6ddfa763273bb5beb18"
+  },
+  "id": "66be759c-3472-4e67-bf9c-ec03b05aab44",
+  "department": "executive director, binalbogan campus",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704f35bfa763273bb5bebe2"
+  },
+  "id": "da66e656-37ad-466a-8cb0-d100bd81f7b1",
+  "department": "vice president for academic affairs",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704f379fa763273bb5bebe9"
+  },
+  "id": "d6a1e245-164e-4a39-8a44-83fd420a957b",
+  "department": "vice president for administration and finance",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704f394fa763273bb5bebf0"
+  },
+  "id": "1ecbeeba-a686-4c28-a3e3-6a1ae284cc7a",
+  "department": "vice president for research extension and intellectual property",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704f3b2fa763273bb5bebf7"
+  },
+  "id": "96863893-940e-42c3-8d20-264c653646f2",
+  "department": "chief administrative officer administration division",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704f3befa763273bb5bebfe"
+  },
+  "id": "6a58d496-c143-44f5-a369-fe93bd8804df",
+  "department": "assistant vice president for academic affairs",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6704f3fcfa763273bb5bec05"
+  },
+  "id": "16e2695c-8576-46e0-b8ee-a1a9b54365ac",
+  "department": "director research and development services",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6708c4a0bddbad20bc179258"
+  },
+  "id": "37c5ac31-4845-472f-92ed-dce4fedb7617",
+  "department": "management information system / data privacy office",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-10-11T06:24:32.424Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-11T06:24:32.424Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6708cdd84d11339e420c8246"
+  },
+  "id": "276558cd-c4c1-4365-8f7e-c9db0a86f8ed",
+  "department": "director for information and communications technology",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-10-11T07:03:52.069Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-11T07:03:52.069Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670c6fd5e0db9e85311ebc8a"
+  },
+  "id": "9bce5d00-3c9f-4b36-8947-341797e0c0d5",
+  "department": "information technology officer",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-10-14T01:11:49.685Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-14T01:11:49.685Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670c7018e0db9e85311ebc91"
+  },
+  "id": "d7b5d5ac-7043-46d0-87ab-b32b80ca490e",
+  "department": "director for business affairs",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-10-14T01:12:56.163Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-14T01:12:56.163Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670e24d4c2049a1cc729eb9f"
+  },
+  "id": "fd907392-1c9c-4d98-b7dc-641bee29889e",
+  "department": "director for cultural affairs",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-10-15T08:16:20.064Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-15T08:16:20.064Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670e24e0c2049a1cc729eba6"
+  },
+  "id": "6d011891-5c98-416c-86d1-add05fe47fb9",
+  "department": "director for sports affairs",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-10-15T08:16:32.702Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-15T08:16:32.702Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67456ee0d4778999a0ad6990"
+  },
+  "id": "a3583b3e-d24d-4674-ad16-0d0eb879d725",
+  "department": "information system",
+  "campus": "Talisay",
+  "status": "active",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2024-11-26T06:46:56.122Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:46:56.122Z"
+  },
+  "__v": 0
 }]

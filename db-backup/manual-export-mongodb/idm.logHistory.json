@@ -1,0 +1,1848 @@
+[{
+  "_id": {
+    "$oid": "674564e18a8b2c1b006d8a61"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:04:17.196Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732601057195",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674564e98a8b2c1b006d8a62"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:04:25.235Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732601065235",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674565018a8b2c1b006d8a63"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:04:49.284Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"ariane.torres@chmsu.edu.ph\",\"password\":\"Password123!  \"}|null|::1|1732601089284",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674565a18a8b2c1b006d8a64"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:07:29.664Z"
+  },
+  "level": "info",
+  "message": " POST|{\"user_id\":\"eab34b08-cfb9-4f90-9e3e-81491eb18a90\"}|{}|/fileupload/addObjectiveFiles/eab34b08-cfb9-4f90-9e3e-81491eb18a90|{}|null|::1|1732601249663",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6745664b8a8b2c1b006d8a65"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:10:19.220Z"
+  },
+  "level": "info",
+  "message": " POST|{\"user_id\":\"eab34b08-cfb9-4f90-9e3e-81491eb18a90\"}|{}|/fileupload/addObjectiveFiles/eab34b08-cfb9-4f90-9e3e-81491eb18a90|{}|null|::1|1732601419220",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6745667a8a8b2c1b006d8a66"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:11:06.455Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"benrie.nufable@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732601466455",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674567458a8b2c1b006d8a67"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:14:29.678Z"
+  },
+  "level": "info",
+  "message": " POST|{\"user_id\":\"3312e24e-a671-4e37-b0e6-bd2a97b90a10\"}|{}|/fileupload/addObjectiveFiles/3312e24e-a671-4e37-b0e6-bd2a97b90a10|{}|null|::1|1732601669678",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674567588a8b2c1b006d8a68"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:14:48.896Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rusty@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732601688896",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674568298a8b2c1b006d8a69"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:18:17.233Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rosalinda.tuvilla@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732601897231",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674568318a8b2c1b006d8a6a"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:18:25.550Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rusty@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732601905549",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674568928a8b2c1b006d8a6b"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:20:02.101Z"
+  },
+  "level": "info",
+  "message": " POST|{\"user_id\":\"53138441-f108-4a97-a992-965059c74c1e\"}|{}|/fileupload/addObjectiveFiles/53138441-f108-4a97-a992-965059c74c1e|{}|null|::1|1732602002100",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6745689e8a8b2c1b006d8a6c"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:20:14.332Z"
+  },
+  "level": "info",
+  "message": " GET|{\"user_id\":\"3312e24e-a671-4e37-b0e6-bd2a97b90a10\",\"objective_id\":\"f2b3b396-fca3-4e24-9c7d-02f96c5741f2\"}|{}|/vice_president_query/getAllFilesHistoryFromObjectiveLoad/3312e24e-a671-4e37-b0e6-bd2a97b90a10/f2b3b396-fca3-4e24-9c7d-02f96c5741f2|{}|null|::1|1732602014331",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674568d48a8b2c1b006d8a6d"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:21:08.394Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rosalinda.tuvilla@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732602068394",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674569158a8b2c1b006d8a6e"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:22:13.158Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732602133157",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674569158a8b2c1b006d8a6f"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:22:13.821Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732602133821",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6745695a8a8b2c1b006d8a70"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:23:22.162Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732602202162",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674569628a8b2c1b006d8a71"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:23:30.859Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rosalinda.tuvilla@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732602210859",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674569a58a8b2c1b006d8a72"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:24:37.831Z"
+  },
+  "level": "info",
+  "message": " POST|{\"user_id\":\"dec10eec-c8cc-407b-8c4c-23242153d27e\"}|{}|/fileupload/addObjectiveFiles/dec10eec-c8cc-407b-8c4c-23242153d27e|{}|null|::1|1732602277830",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674569c68a8b2c1b006d8a73"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:25:10.021Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732602310020",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674569c68a8b2c1b006d8a74"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:25:10.658Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732602310658",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67456d858a8b2c1b006d8a75"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:41:09.624Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732603269622",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67456d868a8b2c1b006d8a76"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:41:10.802Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732603270802",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67456ee08a8b2c1b006d8a77"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:46:56.121Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/department/addDepartment|{\"department\":\"Information System\"}|null|::1|1732603616121",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67456ee08a8b2c1b006d8a78"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:46:56.140Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732603616139",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67456fbd8a8b2c1b006d8a79"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:50:37.328Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732603837328",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67456fc18a8b2c1b006d8a7a"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:50:41.865Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732603841865",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67456ff78a8b2c1b006d8a7b"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:51:35.162Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732603895161",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674570008a8b2c1b006d8a7c"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:51:44.362Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732603904362",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6745700e8a8b2c1b006d8a7d"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:51:58.927Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732603918927",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674570528a8b2c1b006d8a7e"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T06:53:06.350Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732603986350",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674572228a8b2c1b006d8a7f"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:00:50.225Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732604450225",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6745730b8a8b2c1b006d8a80"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:04:43.610Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732604683609",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674573678a8b2c1b006d8a81"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:06:15.563Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732604775563",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674573c18a8b2c1b006d8a82"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:07:45.631Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732604865631",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6745740e8a8b2c1b006d8a83"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:09:02.016Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732604942016",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674574218a8b2c1b006d8a84"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:09:21.009Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732604961008",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6745744c8a8b2c1b006d8a85"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:10:04.464Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605004464",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674574e08a8b2c1b006d8a86"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:12:32.864Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605152864",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674574fe8a8b2c1b006d8a87"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:13:02.895Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732605182894",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6745751b8a8b2c1b006d8a88"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:13:31.197Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605211197",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674575b58a8b2c1b006d8a89"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:16:05.493Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605365493",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674575ca8a8b2c1b006d8a8a"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:16:26.608Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605386607",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674575d68a8b2c1b006d8a8b"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:16:38.711Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605398711",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674575ef8a8b2c1b006d8a8c"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:17:03.976Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605423976",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674575ff8a8b2c1b006d8a8d"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:17:19.498Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605439497",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674576228a8b2c1b006d8a8e"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:17:54.698Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605474698",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674576398a8b2c1b006d8a8f"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:18:17.029Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605497029",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674576478a8b2c1b006d8a90"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:18:31.499Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605511498",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674576578a8b2c1b006d8a91"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:18:47.942Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605527941",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674576c78a8b2c1b006d8a92"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T07:20:39.408Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732605639408",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67458de88a8b2c1b006d8a93"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T08:59:20.473Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732611560469",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67458df08a8b2c1b006d8a94"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T08:59:28.474Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732611568474",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67458dfb8a8b2c1b006d8a95"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T08:59:39.142Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732611579142",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67458faa8a8b2c1b006d8a96"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T09:06:50.691Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732612010690",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67458fab8a8b2c1b006d8a97"
+  },
+  "timestamp": {
+    "$date": "2024-11-26T09:06:51.443Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732612011443",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674679ecea992514e006e467"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T01:46:20.803Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732671980799",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674679edea992514e006e468"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T01:46:21.687Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732671981687",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67467a10ea992514e006e469"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T01:46:56.443Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732672016443",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67467a11ea992514e006e46a"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T01:46:57.103Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732672017102",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67467a15ea992514e006e46b"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T01:47:01.032Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732672021031",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67467a15ea992514e006e46c"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T01:47:01.628Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732672021627",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67467db6ea992514e006e46d"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T02:02:30.631Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732672950630",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67467edaea992514e006e46e"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T02:07:22.420Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732673242420",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67468104ea992514e006e46f"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T02:16:36.361Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rosalinda.tuvilla@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732673796361",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674681aaea992514e006e470"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T02:19:22.801Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rosalinda.tuvilla@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732673962800",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67468644ea992514e006e471"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T02:39:00.006Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rusty@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732675140005",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67468651ea992514e006e472"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T02:39:13.481Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rosalinda.tuvilla@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732675153480",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6746b54022755337509e0673"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T05:59:28.521Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rosalinda.tuvilla@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732687168517",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6746c5a522755337509e0674"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T07:09:25.122Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rusty@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732691365121",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6746c7e222755337509e0675"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T07:18:58.590Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rosalinda.tuvilla@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732691938589",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6746c8ab22755337509e0676"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T07:22:19.737Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rusty@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732692139736",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6746cee57d749943fc2f13ec"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T07:48:53.748Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"ariane.torres@chmsu.edu.ph\",\"password\":\"Password123!  \"}|null|::1|1732693733745",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6746d5ef996acb4db0d649c2"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T08:18:55.347Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rosalinda.tuvilla@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732695535344",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6746d602996acb4db0d649c3"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T08:19:14.561Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rusty@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732695554560",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6746d610996acb4db0d649c4"
+  },
+  "timestamp": {
+    "$date": "2024-11-27T08:19:28.719Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"ariane.torres@chmsu.edu.ph\",\"password\":\"Password123!  \"}|null|::1|1732695568719",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6747c701f090ed43f899df27"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T01:27:29.133Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"ariane.torres@chmsu.edu.ph\",\"password\":\"Password123!  \"}|null|::1|1732757249130",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6747d04b6026f947bc80ff4d"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T02:07:07.234Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rusty@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732759627232",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6747e50a6026f947bc80ff4e"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T03:35:38.871Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"ariane.torres@chmsu.edu.ph\",\"password\":\"Password123!  \"}|null|::1|1732764938870",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6747e5556026f947bc80ff4f"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T03:36:53.039Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732765013039",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6747e5566026f947bc80ff50"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T03:36:54.070Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732765014070",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67480528fa085406f8dd696d"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T05:52:40.119Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732773160116",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67480c26fa085406f8dd696e"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T06:22:30.895Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732774950894",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67480c32fa085406f8dd696f"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T06:22:42.326Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"ariane.torres@chmsu.edu.ph\",\"password\":\"Password123!  \"}|null|::1|1732774962325",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674818ddfa085406f8dd6970"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T07:16:45.444Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732778205444",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674818defa085406f8dd6971"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T07:16:46.270Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732778206270",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674818e1fa085406f8dd6972"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T07:16:49.669Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732778209669",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674818ebfa085406f8dd6973"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T07:16:59.891Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732778219891",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674818edfa085406f8dd6974"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T07:17:01.624Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732778221624",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674818eefa085406f8dd6975"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T07:17:02.778Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732778222777",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674818f1fa085406f8dd6976"
+  },
+  "timestamp": {
+    "$date": "2024-11-28T07:17:05.204Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732778225204",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67491cb83db17812ac7fc98b"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T01:45:28.593Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732844728591",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67491eb73db17812ac7fc98c"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T01:53:59.352Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732845239352",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67491f0f3db17812ac7fc98d"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T01:55:27.123Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732845327123",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67492da53db17812ac7fc98e"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T02:57:41.573Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732849061572",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67492da63db17812ac7fc98f"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T02:57:42.180Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732849062179",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67492e2e3db17812ac7fc990"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T02:59:58.264Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"rosalinda.tuvilla@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732849198263",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67492e603db17812ac7fc991"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:00:48.323Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1732849248323",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67492e603db17812ac7fc992"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:00:48.917Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732849248917",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67492e6a3db17812ac7fc993"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:00:58.867Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732849258867",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67492e8f3db17812ac7fc994"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:01:35.198Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732849295196",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674931973db17812ac7fc995"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:14:31.518Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1732850071518",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674931e73db17812ac7fc996"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:15:51.173Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732850151172",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749322b3db17812ac7fc997"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:16:59.900Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732850219899",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749324b3db17812ac7fc998"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:17:31.154Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732850251153",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749327f3db17812ac7fc999"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:18:23.814Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732850303813",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674934153db17812ac7fc99a"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:25:09.880Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732850709880",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674934753db17812ac7fc99b"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:26:45.505Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732850805505",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674934873db17812ac7fc99c"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:27:03.193Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732850823193",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674934c43db17812ac7fc99d"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:28:04.966Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732850884966",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674934f13db17812ac7fc99e"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:28:49.354Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732850929353",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749352e3db17812ac7fc99f"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:29:50.759Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732850990759",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749357c3db17812ac7fc9a0"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:31:08.514Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732851068513",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674936103db17812ac7fc9a1"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:33:36.210Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732851216210",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674936233db17812ac7fc9a2"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:33:55.579Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732851235579",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674938083db17812ac7fc9a3"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:42:00.083Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732851720083",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749398b3db17812ac7fc9a4"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T03:48:27.498Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732852107498",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674963f83db17812ac7fc9a5"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T06:49:28.025Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732862968004",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674964903db17812ac7fc9a6"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T06:52:00.073Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732863120072",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674964b43db17812ac7fc9a7"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T06:52:36.006Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732863156006",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674964cf3db17812ac7fc9a8"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T06:53:03.618Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732863183617",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749652e3db17812ac7fc9a9"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T06:54:38.540Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732863278539",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674965543db17812ac7fc9aa"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T06:55:16.648Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732863316648",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749656c3db17812ac7fc9ab"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T06:55:40.211Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732863340211",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674966ae3db17812ac7fc9ac"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:01:02.039Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732863662039",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674966ba3db17812ac7fc9ad"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:01:14.691Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732863674691",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674966d43db17812ac7fc9ae"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:01:40.247Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732863700246",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674967be3db17812ac7fc9af"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:05:34.871Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732863934871",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674968583db17812ac7fc9b0"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:08:08.740Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864088740",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749689b3db17812ac7fc9b1"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:09:15.404Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864155403",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749699a3db17812ac7fc9b2"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:13:30.179Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864410179",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674969c13db17812ac7fc9b3"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:14:09.601Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864449600",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674969d43db17812ac7fc9b4"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:14:28.495Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864468495",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674969ef3db17812ac7fc9b5"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:14:55.524Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864495524",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496a033db17812ac7fc9b6"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:15:15.372Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864515371",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496a1d3db17812ac7fc9b7"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:15:41.702Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864541701",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496a283db17812ac7fc9b8"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:15:52.039Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864552039",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496a3e3db17812ac7fc9b9"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:16:14.026Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864574026",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496a5c3db17812ac7fc9ba"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:16:44.788Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864604788",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496a7c3db17812ac7fc9bb"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:17:16.360Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864636360",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496b8c3db17812ac7fc9bc"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:21:48.298Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864908298",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496b9f3db17812ac7fc9bd"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:22:07.509Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864927509",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496bd73db17812ac7fc9be"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:23:03.873Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732864983873",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496be83db17812ac7fc9bf"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:23:20.420Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865000420",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496c013db17812ac7fc9c0"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:23:45.210Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865025209",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496c6b3db17812ac7fc9c1"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:25:31.301Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865131301",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496c783db17812ac7fc9c2"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:25:44.110Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865144110",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496c903db17812ac7fc9c3"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:26:08.704Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865168704",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496ca53db17812ac7fc9c4"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:26:29.660Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865189660",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496ce73db17812ac7fc9c5"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:27:35.245Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865255244",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496d5d3db17812ac7fc9c6"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:29:33.364Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865373364",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496d6c3db17812ac7fc9c7"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:29:48.053Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865388053",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496de03db17812ac7fc9c8"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:31:44.796Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865504795",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67496e7b3db17812ac7fc9c9"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:34:19.099Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732865659099",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674970873db17812ac7fc9ca"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:43:03.760Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732866183759",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+}]

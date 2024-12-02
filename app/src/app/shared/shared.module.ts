@@ -61,6 +61,10 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { RatingModule } from 'primeng/rating';
 import { EditorModule } from 'primeng/editor';
+import { Chart } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+Chart.register(ChartDataLabels);
 
 const pipes = [
     dataFilterPipe,

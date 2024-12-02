@@ -7,6 +7,7 @@ const config = require("./config/database");
 const mongoose = require("mongoose");
 const PORT = process.env.PORT || 3000;
 const path = require("path");
+const office_head_query = require("./routes/office_head_query");
 const http = require("http").Server(app);
 //path routes
 //onst customer = require('./routes/customers')(router);
@@ -23,6 +24,7 @@ const ai = require("./routes/ai")(router);
 const goallists = require("./routes/goallists")(router);
 const director_query = require("./routes/director_query")(router);
 const vice_president_query = require("./routes/vice_president_query")(router);
+const office_head_query_query = require("./routes/office_head_query")(router);
 const remarks = require("./routes/remark")(router);
 // const { logMiddleware } = require("./middleware/logger");
 
@@ -71,6 +73,7 @@ app.use("/ai", ai);
 app.use("/userhistory", userhistory);
 app.use("/goallists", goallists);
 app.use("/director_query", director_query);
+app.use("/office_head_query", office_head_query_query);
 app.use("/vice_president_query", vice_president_query);
 app.use("/remark", remarks);
 app.use(

@@ -274,8 +274,6 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             timetable: new Map(), // Initialize the timetable Map
         };
 
-        console.log({ data });
-
         const updatedData = await this.addGoalPeriods(data, patterns);
         this.obj
             .fetch('post', 'objectives', 'addObjectives', updatedData)

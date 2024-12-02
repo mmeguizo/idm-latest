@@ -170,33 +170,35 @@ export class AddingGoalComponent implements OnInit, OnDestroy {
             return; // Stop further execution
         }
 
-        this.goal
-            .fetch('post', 'goals', 'addGoals', data)
-            .pipe(takeUntil(this.addGoalSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    // this.getAllObjectivesWithObjectives();
-                    this.messageService.add({
-                        severity: 'success  ',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
-                    this.addGoalDialogCard = false;
-                    this.addGoalform.reset();
-                    this.formGroupDemo.reset();
-                    this.formGroupCampus.reset();
-                    this.childAddGoalEvent.emit({
-                        success: true,
-                        message: 'Added Goal Successfully',
-                    });
-                } else {
-                    this.messageService.add({
-                        severity: 'error  ',
-                        summary: 'Error',
-                        detail: data.message,
-                    });
-                }
-            });
+        console.log({ addGoalDialogExec: data });
+
+        // this.goal
+        //     .fetch('post', 'goals', 'addGoals', data)
+        //     .pipe(takeUntil(this.addGoalSubscription))
+        //     .subscribe((data: any) => {
+        //         if (data.success) {
+        //             // this.getAllObjectivesWithObjectives();
+        //             this.messageService.add({
+        //                 severity: 'success  ',
+        //                 summary: 'Done',
+        //                 detail: data.message,
+        //             });
+        //             this.addGoalDialogCard = false;
+        //             this.addGoalform.reset();
+        //             this.formGroupDemo.reset();
+        //             this.formGroupCampus.reset();
+        //             this.childAddGoalEvent.emit({
+        //                 success: true,
+        //                 message: 'Added Goal Successfully',
+        //             });
+        //         } else {
+        //             this.messageService.add({
+        //                 severity: 'error  ',
+        //                 summary: 'Error',
+        //                 detail: data.message,
+        //             });
+        //         }
+        //     });
     }
 
     onHide() {

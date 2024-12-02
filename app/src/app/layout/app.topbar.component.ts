@@ -242,11 +242,6 @@ export class AppTopBarComponent implements OnInit {
                 detail: 'First Name and Last Name are required',
             });
         }
-
-        console.log('updates', data);
-        console.log('updates', form.value.lastname);
-        console.log('updates', !form.value.lastname);
-
         this.user
             .fetch('put', 'users', 'updateProfile', data)
             .pipe(takeUntil(this.getSubscription))

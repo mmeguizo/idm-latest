@@ -1,52 +1,48 @@
 /**
- * @module vice_president_query
- * @description This module defines routes related to querying objectives and files under a Vice President.
+ * @fileoverview This file contains the routes for querying goals and files related to a director.
  *
- * @param {Object} router - Express router object.
+ * @requires ../models/goals
+ * @requires ../models/user
  *
- * @route GET /getAllObjectivesUnderAVicePresident/:id
- * @description Retrieves all objectives under a specific Vice President.
- * @param {string} req.params.id - The ID of the Vice President.
- * @returns {Object} JSON response containing success status and goals data.
+ * @param {Object} router - The router object to define routes.
+ *
+ * @route GET /getAllObjectivesUnderAOfficeHead/:id
+ * @param {string} req.params.id - The ID of the director.
+ * @returns {Object} res - The response object containing the goals and their details.
  *
  * @function CalculateBudgetAndCompletion
- * @description Calculates the budget and completion percentage for each goal.
- * @param {Array} data - Array of goal objects.
- * @returns {Array} Array of goal objects with calculated budget and completion percentage.
+ * @param {Array} data - The array of goals data.
+ * @returns {Promise<Array>} - The array of goals with calculated budget and completion.
  *
  * @function formatIsoDate
- * @description Formats an ISO date string to 'YYYY-MM-DD' format.
  * @param {string} isoDateString - The ISO date string to format.
- * @returns {string} Formatted date string.
+ * @returns {string} - The formatted date string in YYYY-MM-DD format.
  *
  * @route GET /getAllFilesFromObjective/:user_id/:objective_id
- * @description Retrieves all files related to a specific objective.
  * @param {string} req.params.user_id - The ID of the user.
  * @param {string} req.params.objective_id - The ID of the objective.
- * @returns {Object} JSON response containing success status and files data.
+ * @returns {Object} res - The response object containing the files related to the objective.
  *
  * @route GET /getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id
- * @description Retrieves the history of all files related to a specific objective.
  * @param {string} req.params.user_id - The ID of the user.
  * @param {string} req.params.objective_id - The ID of the objective.
- * @returns {Object} JSON response containing success status and files history data.
+ * @returns {Object} res - The response object containing the files history related to the objective.
  */
-const { first } = require("rxjs");
 const Goals = require("../models/goals");
 const Users = require("../models/user");
 const File = require("../models/fileupload");
 
 module.exports = (router) => {
-  router.get("/getGoalsForDashboardVicePresident/:id", async (req, res) => {
+  router.get("/getGoalsForDashboardOfficeHead/:id", async (req, res) => {
     let data = [];
     try {
-      const VPId = req.params.id;
+      const DrId = req.params.id;
       const usersUnderThisVicePresident = await Users.find({
-        vice_president_id: VPId,
+        director_id: DrId,
       }).select({ id: true, firstname: true, lastname: true });
       // Extract the array of user ids
       const userIds = usersUnderThisVicePresident.map((user) => user.id);
-      userIds.push(VPId);
+      userIds.push(DrId);
 
       let goalCount = await Goals.countDocuments({
         deleted: false,
@@ -87,14 +83,14 @@ module.exports = (router) => {
     }
   });
 
-  router.get("/getObjectivesViewTableVicePresident/:id", async (req, res) => {
-    const VPId = req.params.id;
+  router.get("/getObjectivesViewTableOfficeHead/:id", async (req, res) => {
+    const DrId = req.params.id;
     const usersUnderThisVicePresident = await Users.find({
-      vice_president_id: VPId,
+      director_id: DrId,
     }).select({ id: true, firstname: true, lastname: true });
     // Extract the array of user ids
     const userIds = usersUnderThisVicePresident.map((user) => user.id);
-    userIds.push(VPId);
+    userIds.push(DrId);
 
     await Goals.aggregate(
       [
@@ -275,7 +271,198 @@ module.exports = (router) => {
     ).sort({ _id: -1 });
   });
 
-  router.get("/getAllUsersForDashboardVP/:id", async (req, res) => {
+  router.get("/getAllObjectivesUnderAOfficeHead/:id", async (req, res) => {
+    const directorId = req.params.id;
+    const usersUnderThisOfficeHead = await Users.find({
+      director_id: directorId,
+    }).select({ id: true, _id: false });
+
+    // Extract the array of user ids
+    const userIds = usersUnderThisOfficeHead.map((user) => user.id);
+    userIds.push(directorId);
+
+    Goals.aggregate(
+      [
+        {
+          $match: {
+            deleted: false,
+            createdBy: {
+              $in: userIds,
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "objectives",
+            let: { objectiveIds: { $ifNull: ["$objectives", []] } },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $in: ["$id", { $ifNull: ["$$objectiveIds", []] }] },
+                      { $eq: ["$deleted", false] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "objectivesDetails",
+          },
+        },
+        {
+          $lookup: {
+            as: "users",
+            from: "users",
+            foreignField: "id",
+            localField: "createdBy",
+          },
+        },
+        { $unwind: { path: "$users" } },
+        {
+          $addFields: {
+            objectivesDetails: {
+              $cond: {
+                if: { $eq: ["$objectivesDetails", []] },
+                then: null,
+                else: "$objectivesDetails",
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            id: 1,
+            goals: 1,
+            budget: 1,
+            department: 1,
+            campus: 1,
+            createdBy: 1,
+            deleted: 1,
+            date_added: 1,
+            createdAt: 1,
+            goallistsId: 1,
+            __v: 1,
+            updatedAt: 1,
+            complete: 1,
+            "users.id": 1,
+            "users.username": 1,
+            objectivesDetails: {
+              $map: {
+                input: { $ifNull: ["$objectivesDetails", []] },
+                as: "od",
+                in: {
+                  id: "$$od.id",
+                  functional_objective: "$$od.functional_objective",
+                  performance_indicator: "$$od.performance_indicator",
+                  target: "$$od.target",
+                  formula: "$$od.formula",
+                  programs: "$$od.programs",
+                  responsible_persons: "$$od.responsible_persons",
+                  clients: "$$od.clients",
+                  remarks: "$$od.remarks",
+                  month_0: "$$od.month_0",
+                  month_1: "$$od.month_1",
+                  month_2: "$$od.month_2",
+                  month_3: "$$od.month_3",
+                  month_4: "$$od.month_4",
+                  month_5: "$$od.month_5",
+                  month_6: "$$od.month_6",
+                  month_7: "$$od.month_7",
+                  month_8: "$$od.month_8",
+                  month_9: "$$od.month_9",
+                  month_10: "$$od.month_10",
+                  month_11: "$$od.month_11",
+                  file_month_0: "$$od.file_month_0",
+                  file_month_1: "$$od.file_month_1",
+                  file_month_2: "$$od.file_month_2",
+                  file_month_3: "$$od.file_month_3",
+                  file_month_4: "$$od.file_month_4",
+                  file_month_5: "$$od.file_month_5",
+                  file_month_6: "$$od.file_month_6",
+                  file_month_7: "$$od.file_month_7",
+                  file_month_8: "$$od.file_month_8",
+                  file_month_9: "$$od.file_month_9",
+                  file_month_10: "$$od.file_month_10",
+                  file_month_11: "$$od.file_month_11",
+                  goal_month_0: "$$od.goal_month_0",
+                  goal_month_1: "$$od.goal_month_1",
+                  goal_month_2: "$$od.goal_month_2",
+                  goal_month_3: "$$od.goal_month_3",
+                  goal_month_4: "$$od.goal_month_4",
+                  goal_month_5: "$$od.goal_month_5",
+                  goal_month_6: "$$od.goal_month_6",
+                  goal_month_7: "$$od.goal_month_7",
+                  goal_month_8: "$$od.goal_month_8",
+                  goal_month_9: "$$od.goal_month_9",
+                  goal_month_10: "$$od.goal_month_10",
+                  goal_month_11: "$$od.goal_month_11",
+                  quarter_1: "$$od.quarter_1",
+                  quarter_2: "$$od.quarter_2",
+                  quarter_3: "$$od.quarter_3",
+                  quarter_0: "$$od.quarter_0",
+                  file_quarter_1: "$$od.file_quarter_1",
+                  file_quarter_2: "$$od.file_quarter_2",
+                  file_quarter_3: "$$od.file_quarter_3",
+                  file_quarter_0: "$$od.file_quarter_0",
+                  goal_quarter_1: "$$od.goal_quarter_1",
+                  goal_quarter_2: "$$od.goal_quarter_2",
+                  goal_quarter_3: "$$od.goal_quarter_3",
+                  goal_quarter_0: "$$od.goal_quarter_0",
+                  semi_annual_0: "$$od.semi_annual_0",
+                  semi_annual_1: "$$od.semi_annual_1",
+                  semi_annual_2: "$$od.semi_annual_2",
+                  file_semi_annual_0: "$$od.file_semi_annual_0",
+                  file_semi_annual_1: "$$od.file_semi_annual_1",
+                  file_semi_annual_2: "$$od.file_semi_annual_2",
+                  goal_semi_annual_0: "$$od.goal_semi_annual_0",
+                  goal_semi_annual_1: "$$od.goal_semi_annual_1",
+                  goal_semi_annual_2: "$$od.goal_semi_annual_2",
+                  frequency_monitoring: "$$od.frequency_monitoring",
+                  timetable: "$$od.timetable",
+                  complete: "$$od.complete",
+                  data_source: "$$od.data_source",
+                  budget: "$$od.budget",
+                  date_added: "$$od.date_added",
+                  createdBy: "$$od.createdBy",
+                  updateby: "$$od.updateby",
+                  updateDate: "$$od.updateDate",
+                  createdAt: "$$od.createdAt",
+                  deleted: "$$od.deleted",
+                },
+              },
+            },
+          },
+        },
+      ],
+      { allowDiskUse: true },
+      async (err, Goals) => {
+        if (err) {
+          res.json({ success: false, message: err });
+        } else {
+          if (!Goals || Goals.length === 0) {
+            res.json({
+              success: false,
+              message: "No Goals found.",
+              Goals: [],
+            });
+          } else {
+            // let returnedData = await Promise.all(
+            //   await CalculateBudgetAndCompletion(Goals)
+            // );
+            res.json({
+              success: true,
+              goals: await CalculateBudgetAndCompletion(Goals),
+              dropdown: await GetAllDepartmentDropdown(Goals),
+            });
+          }
+        }
+      }
+    ).sort({ _id: -1 });
+  });
+
+  router.get("/getAllUsersForDashboardOfficeHead/:id", async (req, res) => {
     try {
       let directorCount = await Users.countDocuments({
         deleted: false,
@@ -307,15 +494,15 @@ module.exports = (router) => {
     }
   });
 
-  router.get("/getAllObjectivesUnderAVicePresident/:id", async (req, res) => {
-    const VPId = req.params.id;
-    const usersUnderThisVicePresident = await Users.find({
-      vice_president_id: VPId,
+  router.get("/getAllObjectivesUnderAOfficeHeadV2/:id", async (req, res) => {
+    const DrID = req.params.id;
+    const usersUnderThisOfficeHead = await Users.find({
+      director_id: DrID,
     }).select({ id: true, firstname: true, lastname: true });
 
     // Extract the array of user ids
-    const userIds = usersUnderThisVicePresident.map((user) => user.id);
-    userIds.push(VPId);
+    const userIds = usersUnderThisOfficeHead.map((user) => user.id);
+    userIds.push(DrID);
 
     Goals.aggregate(
       [
@@ -490,6 +677,9 @@ module.exports = (router) => {
             // );
             const calculatedGoals = await CalculateBudgetAndCompletion(Goals);
             const departmentDropdown = await GetAllDepartmentDropdown(Goals);
+            const objectiveCompletions = await calculateCompletionPercentage(
+              Goals
+            );
             const completedGoals = Goals.filter(
               (goal) =>
                 goal.objectivesDetails &&
@@ -511,6 +701,7 @@ module.exports = (router) => {
             res.json({
               success: true,
               goals: calculatedGoals,
+              objectiveCompletions: objectiveCompletions,
               completedGoals: goalCompleted,
               uncompletedGoals: goalunCompleted,
               dropdown: departmentDropdown,
@@ -522,6 +713,36 @@ module.exports = (router) => {
       }
     ).sort({ _id: -1 });
   });
+
+  async function calculateCompletionPercentage(goals) {
+    return goals.map((goal) => {
+      goal.objectivesDetails = goal.objectivesDetails.map((objective) => {
+        let actualSum = 0;
+
+        if (objective.frequency_monitoring === "yearly") {
+          for (let i = 0; i < 12; i++) {
+            actualSum += objective[`month_${i}`] || 0;
+          }
+        } else if (objective.frequency_monitoring === "quarterly") {
+          for (let i = 0; i < 4; i++) {
+            actualSum += objective[`quarter_${i}`] || 0;
+          }
+        } else if (objective.frequency_monitoring === "semi_annual") {
+          for (let i = 0; i < 2; i++) {
+            actualSum += objective[`semi_annual_${i}`] || 0;
+          }
+        }
+
+        const completionPercentage = (actualSum / objective.target) * 100;
+        return {
+          ...objective,
+          completion_percentage: completionPercentage,
+        };
+      });
+
+      return goal;
+    });
+  }
 
   async function GetAllDepartmentDropdown(data) {
     let departmentDropdown = [];
@@ -539,6 +760,7 @@ module.exports = (router) => {
 
     return departmentDropdown;
   }
+
   async function CalculateBudgetAndCompletion(data) {
     return await Promise.all(
       data.map(async (goal) => {
@@ -592,6 +814,9 @@ module.exports = (router) => {
               totalCompletion += objectiveCompletion;
               totalObjectives++;
             }
+
+            // Add complete key to each objective
+            e.complete = goalSum === e.target;
           }
 
           // Calculate percentage and remaining
@@ -627,9 +852,9 @@ module.exports = (router) => {
     return `${year}-${month}-${day}`;
   }
 
-  //******************** */
-  // FILES QUERY API
-
+  /*
+FILES QUERY API
+*/
   router.get(
     "/getAllFilesFromObjective/:user_id/:objective_id",
 
@@ -674,8 +899,6 @@ module.exports = (router) => {
   router.get(
     "/getAllFilesHistoryFromObjectiveLoad/:user_id/:objective_id",
     async (req, res) => {
-      console.log("getAllFilesHistoryFromObjectiveLoad Hit");
-
       try {
         const { user_id, objective_id } = req.params;
 
@@ -710,35 +933,6 @@ module.exports = (router) => {
       );
     }
   );
-
-  router.get(
-    "/getAllDepartmentDropdown/:id",
-
-    async (req, res) => {
-      let data = [];
-      try {
-        let campus = await Department.find({
-          deleted: false,
-          status: "active",
-        });
-        data.push(
-          campus.map((e) => {
-            return {
-              name: e.department.replace(/\b\w/g, (char) => char.toUpperCase()),
-              code: e.department,
-            };
-          })
-        );
-        await res.json({
-          success: true,
-          data: data,
-        });
-      } catch (error) {
-        res.json({ success: false, message: error });
-      }
-    }
-  );
-
   //needed
   return router;
 };

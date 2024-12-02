@@ -271,7 +271,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 tap((data: any) => {
                     this.goals = data.goals;
                     this.loading = false;
-                    console.log('getAllObjectivesWithObjectives', data);
                 }),
                 catchError((error) => {
                     this.loading = false; // Set loading to false on error
@@ -298,7 +297,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 tap((data: any) => {
                     this.goals = data.goals;
                     this.loading = false;
-                    console.log('getAllObjectivesWithObjectives', data);
                 }),
                 catchError((error) => {
                     this.loading = false; // Set loading to false on error
@@ -323,7 +321,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getGoalSubscription))
             .subscribe((data: any) => {
                 this.deptDropdownValue = data?.data[0];
-                console.log('getAllDept', this.deptDropdownValue);
             });
     }
 
@@ -363,7 +360,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe(async (data: any) => {
-                    console.log('getObjectives', data);
                     this.objectiveDatas = data.Objectives;
                     this.loading = false;
                 });
@@ -741,10 +737,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
         };
     }
 
-    ngAfterViewInit() {
-        console.log(this.filter); // Logs the ElementRef of 'filter'
-        console.log(this.filter.nativeElement); // Logs the actual DOM element
-    }
+    ngAfterViewInit() {}
 
     openRemarksDialog(event: any) {
         this.parentRemarks = {

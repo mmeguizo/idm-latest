@@ -65,8 +65,6 @@ export class GoalTableComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.loading = true;
         this.USERID = this.auth.getTokenUserID();
-        console.log(this.auth.getTokenUserID());
-        console.log(this.USERID);
         this.goalsTableData(this.USERID);
     }
 
@@ -75,7 +73,6 @@ export class GoalTableComponent implements OnInit, OnDestroy {
     }
 
     goalsTableData(userId?: string) {
-        console.log(userId);
         const resultSubject = new Subject<boolean>();
         this.loading;
         this.goal
@@ -84,7 +81,6 @@ export class GoalTableComponent implements OnInit, OnDestroy {
                 takeUntil(this.getGoalTableSubscription),
                 tap((data: any) => {
                     this.goals = data.goals;
-                    console.log({ goalsTableData: this.goals });
                     this.loading = false;
                     resultSubject.next(true); // Emit true on success
                     resultSubject.complete(); // Complete the subject

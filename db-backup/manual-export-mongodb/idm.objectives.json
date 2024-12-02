@@ -1,385 +1,229 @@
 [{
   "_id": {
-    "$oid": "667bc8fde19b2607aee9b82a"
+    "$oid": "67456583d4778999a0ad6537"
   },
-  "id": "59690c3c-d0c7-4b60-a2d4-11f46ab273a7",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "a07141d6-8c96-4d22-a5a1-a2f791f5ed45",
+  "id": "a2ef3895-2094-4090-aa71-8af429e27cf8",
+  "userId": "eab34b08-cfb9-4f90-9e3e-81491eb18a90",
+  "goalId": "8bbbaf5a-18b1-47ce-8908-f41ae646cc89",
   "goal_Id": {
-    "$oid": "667bbd204745108f9f5ccabf"
+    "$oid": "67456537d4778999a0ad6523"
   },
-  "functional_objective": "functional test",
-  "performance_indicator": "sdfsad",
-  "target": "fsadf",
-  "formula": "asdfasd",
-  "programs": "fasdf",
-  "responsible_persons": "asdf",
-  "clients": "functional test",
-  "timetable": [
-    "2024-06-25T16:00:00.000Z",
-    "2024-06-28T16:00:00.000Z"
-  ],
-  "frequency_monitoring": "daily",
-  "complete": false,
-  "data_source": "asdfsdaf",
-  "budget": 7,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "deleted": true,
-  "date_added": {
-    "$date": "2024-06-26T07:53:33.687Z"
-  },
-  "createdAt": {
-    "$date": "2024-06-26T07:53:33.687Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "667bc923e19b2607aee9b844"
-  },
-  "id": "15668d6e-8a06-488f-9649-9fea81daf851",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "a07141d6-8c96-4d22-a5a1-a2f791f5ed45",
-  "goal_Id": {
-    "$oid": "667bbd204745108f9f5ccabf"
-  },
-  "functional_objective": "update tester",
-  "performance_indicator": "asdfsdafsd",
-  "target": "asdfsdafsd",
-  "formula": "asdfsdafsd",
-  "programs": "asdfsdafsd",
-  "responsible_persons": "asdfsdafsd",
-  "clients": "update tester",
-  "timetable": [
-    "2024-06-25T16:00:00.000Z",
-    "2024-06-28T16:00:00.000Z"
-  ],
-  "frequency_monitoring": "daily",
-  "complete": true,
-  "data_source": "asdfsdafsd",
-  "budget": 560,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "deleted": true,
-  "date_added": {
-    "$date": "2024-06-26T07:54:11.915Z"
-  },
-  "createdAt": {
-    "$date": "2024-06-26T07:54:11.915Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "667e60cec2fed63e21766d3f"
-  },
-  "id": "d034a223-589a-4cd4-81dd-1fdea4a11782",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "a07141d6-8c96-4d22-a5a1-a2f791f5ed45",
-  "goal_Id": {
-    "$oid": "667bbd204745108f9f5ccabf"
-  },
-  "functional_objective": "supertester",
-  "performance_indicator": "supertester",
-  "target": "supertester",
-  "formula": "supertester",
-  "programs": "supertester",
-  "responsible_persons": "supertester",
-  "clients": "supertester",
-  "timetable": [
-    "2024-06-27T16:00:00.000Z",
-    "2024-06-29T16:00:00.000Z"
-  ],
-  "frequency_monitoring": "daily",
-  "complete": false,
-  "data_source": "supertester",
-  "budget": 200,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "deleted": true,
-  "date_added": {
-    "$date": "2024-06-28T07:05:50.559Z"
-  },
-  "createdAt": {
-    "$date": "2024-06-28T07:05:50.559Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "667e6aed85a7e3d783a69155"
-  },
-  "id": "c597eb5c-aed7-40c1-8695-4af3109b6f21",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "da501522-f5da-4e9b-bbd9-0ce45ebf1406",
-  "goal_Id": {
-    "$oid": "667e6ad485a7e3d783a6914a"
-  },
-  "functional_objective": "2nd goals",
-  "performance_indicator": "2nd goals",
-  "target": "2nd goals",
-  "formula": "2nd goals",
-  "programs": "2nd goals",
-  "responsible_persons": "2nd goals",
-  "clients": "2nd goals",
-  "timetable": [
-    "2024-06-27T16:00:00.000Z",
-    "2024-06-29T16:00:00.000Z"
-  ],
-  "frequency_monitoring": "daily",
-  "complete": false,
-  "data_source": "2nd goals",
-  "budget": 5000,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "deleted": false,
-  "date_added": {
-    "$date": "2024-06-28T07:49:01.319Z"
-  },
-  "createdAt": {
-    "$date": "2024-06-28T07:49:01.319Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "668b9049fc4302f26df7e10d"
-  },
-  "id": "477e3b7f-a523-44f3-8060-3ed72530e291",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "4e890113-273b-440a-a049-395a8e6f647a",
-  "goal_Id": {
-    "$oid": "668b874bfc4302f26df7e060"
-  },
-  "functional_objective": "dsadsa",
-  "performance_indicator": "asdfsad",
-  "target": "fsdaf",
-  "formula": "sadfsda",
-  "programs": "fasdf",
-  "responsible_persons": "sadf",
-  "clients": "asdfsad",
-  "timetable": [
-    "2024-07-07T16:00:00.000Z",
-    "2024-07-18T16:00:00.000Z"
-  ],
-  "frequency_monitoring": "daily",
-  "complete": false,
-  "data_source": "asdfsda",
-  "budget": 32,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "deleted": true,
-  "date_added": {
-    "$date": "2024-07-08T07:07:53.624Z"
-  },
-  "createdAt": {
-    "$date": "2024-07-08T07:07:53.624Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "668ccff77b8f8460eb824ad2"
-  },
-  "id": "866e73d4-f5e0-4682-9bc5-ff2cea3fa9df",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "da501522-f5da-4e9b-bbd9-0ce45ebf1406",
-  "goal_Id": {
-    "$oid": "667e6ad485a7e3d783a6914a"
-  },
-  "functional_objective": "sdfgsdfgsdfg",
-  "performance_indicator": "fdsgsdfg",
-  "target": "sdfgdfs",
-  "formula": "gsdfgsdf",
-  "programs": "gsdfg",
-  "responsible_persons": "sdfgsdf",
-  "clients": "gsdfg",
-  "timetable": [
-    "2024-07-08T16:00:00.000Z",
-    "2024-07-12T16:00:00.000Z"
-  ],
-  "frequency_monitoring": "daily",
-  "complete": false,
-  "data_source": "asafasdf",
-  "budget": 4000,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "deleted": true,
-  "date_added": {
-    "$date": "2024-07-09T05:51:51.540Z"
-  },
-  "createdAt": {
-    "$date": "2024-07-09T05:51:51.540Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "668e29c9eeceacd47ba6d035"
-  },
-  "id": "91515367-4778-44da-9344-a5d612a554c5",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "da501522-f5da-4e9b-bbd9-0ce45ebf1406",
-  "goal_Id": {
-    "$oid": "667e6ad485a7e3d783a6914a"
-  },
-  "functional_objective": "dfdfdfdf",
-  "performance_indicator": "dfdfdfd",
-  "target": "fdfd",
-  "formula": "fdfs",
-  "programs": "dfd",
-  "responsible_persons": "fdf",
-  "clients": "dfd",
-  "timetable": [
-    "2024-07-09T16:00:00.000Z",
-    "2024-07-12T16:00:00.000Z"
-  ],
-  "frequency_monitoring": "daily",
-  "complete": false,
-  "data_source": "dfdfdf",
-  "budget": 1000,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "deleted": true,
-  "date_added": {
-    "$date": "2024-07-10T06:27:21.924Z"
-  },
-  "createdAt": {
-    "$date": "2024-07-10T06:27:21.924Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "668e367f26c1f739536e647f"
-  },
-  "id": "92efe71d-fe96-49e9-b9ce-e53e7c91c83e",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "da501522-f5da-4e9b-bbd9-0ce45ebf1406",
-  "goal_Id": {
-    "$oid": "667e6ad485a7e3d783a6914a"
-  },
-  "functional_objective": "buy computer",
-  "performance_indicator": "has computer",
-  "target": "end of the year ",
-  "formula": "1 + 1 everyone has computer",
-  "programs": "buy own computer",
-  "responsible_persons": "me",
-  "clients": "mis",
-  "timetable": [
-    "2024-07-30T16:00:00.000Z",
-    "1970-01-01T00:00:00.000Z"
-  ],
+  "functional_objective": "iso 1",
+  "performance_indicator": "update switches",
+  "target": 20,
+  "formula": "update switches",
+  "programs": "update switches",
+  "responsible_persons": "ariane",
+  "clients": "chmsu",
+  "remarks": "tester",
+  "month_0": 2,
+  "month_1": 2,
+  "month_2": 2,
+  "month_3": 2,
+  "month_4": 2,
+  "month_5": 2,
+  "month_6": 2,
+  "month_7": 2,
+  "month_8": 1,
+  "month_9": 1,
+  "month_10": 1,
+  "month_11": 0,
+  "goal_month_0": 2,
+  "goal_month_1": 2,
+  "goal_month_2": 2,
+  "goal_month_3": 2,
+  "goal_month_4": 2,
+  "goal_month_5": 2,
+  "goal_month_6": 2,
+  "goal_month_7": 2,
+  "goal_month_8": 1,
+  "goal_month_9": 1,
+  "goal_month_10": 1,
+  "goal_month_11": 1,
   "frequency_monitoring": "yearly",
-  "complete": true,
-  "data_source": "receipt",
-  "budget": 5000,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
+  "timetable": {},
+  "complete": false,
+  "data_source": "new switches",
+  "budget": 50000,
+  "createdBy": "eab34b08-cfb9-4f90-9e3e-81491eb18a90",
   "deleted": false,
   "date_added": {
-    "$date": "2024-07-10T07:21:35.678Z"
+    "$date": "2024-11-26T06:06:59.419Z"
   },
   "createdAt": {
-    "$date": "2024-07-10T07:21:35.678Z"
+    "$date": "2024-11-26T06:06:59.419Z"
   },
-  "__v": 0
+  "updatedAt": {
+    "$date": "2024-11-26T06:08:10.292Z"
+  },
+  "__v": 0,
+  "file_month_0": "💾 File Added..."
 },
 {
   "_id": {
-    "$oid": "668e3f5526c1f739536e658b"
+    "$oid": "67456624d4778999a0ad65d3"
   },
-  "id": "05df61cb-459b-47af-acae-3f10734b01d0",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "a07141d6-8c96-4d22-a5a1-a2f791f5ed45",
+  "id": "c4ffb3c1-615d-481b-8767-fd84eaed091a",
+  "userId": "eab34b08-cfb9-4f90-9e3e-81491eb18a90",
+  "goalId": "8bbbaf5a-18b1-47ce-8908-f41ae646cc89",
   "goal_Id": {
-    "$oid": "667bbd204745108f9f5ccabf"
+    "$oid": "67456537d4778999a0ad6523"
   },
-  "functional_objective": "buy printer",
-  "performance_indicator": "can print",
-  "target": "this year",
-  "formula": "if can print then it is good",
-  "programs": "mis",
-  "responsible_persons": "me",
-  "clients": "mis",
-  "timetable": [
-    "2024-07-09T16:00:00.000Z",
-    "2024-07-26T16:00:00.000Z"
-  ],
+  "functional_objective": "iso 2",
+  "performance_indicator": "lay up new lan",
+  "target": 10,
+  "formula": "lay up new lan",
+  "programs": "lay up new lan",
+  "responsible_persons": "ariane",
+  "clients": "chmsu",
+  "remarks": "lay up new lan",
+  "semi_annual_0": 5,
+  "semi_annual_1": 4,
+  "goal_semi_annual_0": 5,
+  "goal_semi_annual_1": 5,
+  "frequency_monitoring": "semi_annual",
+  "timetable": {},
+  "complete": false,
+  "data_source": "lay up new lan",
+  "budget": 50000,
+  "createdBy": "eab34b08-cfb9-4f90-9e3e-81491eb18a90",
+  "deleted": false,
+  "date_added": {
+    "$date": "2024-11-26T06:09:40.557Z"
+  },
+  "createdAt": {
+    "$date": "2024-11-26T06:09:40.557Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-26T06:10:20.673Z"
+  },
+  "__v": 0,
+  "file_semi_annual_0": "💾 File Added..."
+},
+{
+  "_id": {
+    "$oid": "67456727d4778999a0ad669e"
+  },
+  "id": "f2b3b396-fca3-4e24-9c7d-02f96c5741f2",
+  "userId": "3312e24e-a671-4e37-b0e6-bd2a97b90a10",
+  "goalId": "2861b69b-2b49-4ac3-a468-c7b22b038e59",
+  "goal_Id": {
+    "$oid": "674566fbd4778999a0ad668b"
+  },
+  "functional_objective": "cert 1",
+  "performance_indicator": "new pc",
+  "target": 20,
+  "formula": "new pc",
+  "programs": "new pc",
+  "responsible_persons": "ben rei",
+  "clients": "chmsu",
+  "remarks": "new pc",
+  "quarter_1": 5,
+  "quarter_2": 5,
+  "quarter_3": 3,
+  "quarter_0": 5,
+  "goal_quarter_1": 5,
+  "goal_quarter_2": 5,
+  "goal_quarter_3": 5,
+  "goal_quarter_0": 5,
   "frequency_monitoring": "quarterly",
+  "timetable": {},
   "complete": false,
-  "data_source": "physical printer",
-  "budget": 500,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
+  "data_source": "new pc",
+  "budget": 500000,
+  "createdBy": "3312e24e-a671-4e37-b0e6-bd2a97b90a10",
   "deleted": false,
   "date_added": {
-    "$date": "2024-07-10T07:59:17.937Z"
+    "$date": "2024-11-26T06:13:59.267Z"
   },
   "createdAt": {
-    "$date": "2024-07-10T07:59:17.937Z"
+    "$date": "2024-11-26T06:13:59.267Z"
   },
-  "__v": 0
+  "updatedAt": {
+    "$date": "2024-11-26T06:14:30.673Z"
+  },
+  "__v": 0,
+  "file_quarter_0": "🏷️ File added hit submit"
 },
 {
   "_id": {
-    "$oid": "668e405426c1f739536e65a5"
+    "$oid": "67456887d4778999a0ad6748"
   },
-  "id": "f7fb078e-e230-43e8-b162-0e40a02283c3",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "a07141d6-8c96-4d22-a5a1-a2f791f5ed45",
+  "id": "550ad2ce-288c-4c5e-88ce-7321f88f5d93",
+  "userId": "53138441-f108-4a97-a992-965059c74c1e",
+  "goalId": "50f42af1-14a4-42fc-a8e1-9a57d6d58dea",
   "goal_Id": {
-    "$oid": "667bbd204745108f9f5ccabf"
+    "$oid": "67456853d4778999a0ad6735"
   },
-  "functional_objective": "buy mouse",
-  "performance_indicator": "has mouse ",
-  "target": "today",
-  "formula": "mouse",
-  "programs": "mis",
-  "responsible_persons": "mis",
-  "clients": "me",
-  "timetable": [
-    "2024-07-09T16:00:00.000Z",
-    "2024-07-30T16:00:00.000Z"
-  ],
-  "frequency_monitoring": "yearly",
-  "complete": true,
-  "data_source": "mouse?",
-  "budget": 400,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
+  "functional_objective": "goal sub 2",
+  "performance_indicator": "buy new server",
+  "target": 2,
+  "formula": "new server",
+  "programs": "new server",
+  "responsible_persons": "rusty",
+  "clients": "chmsu",
+  "remarks": "new server",
+  "semi_annual_0": 1,
+  "semi_annual_1": 0,
+  "goal_semi_annual_0": 1,
+  "goal_semi_annual_1": 1,
+  "frequency_monitoring": "semi_annual",
+  "timetable": {},
+  "complete": false,
+  "data_source": "new server",
+  "budget": 1000000,
+  "createdBy": "53138441-f108-4a97-a992-965059c74c1e",
   "deleted": false,
   "date_added": {
-    "$date": "2024-07-10T08:03:32.655Z"
+    "$date": "2024-11-26T06:19:51.316Z"
   },
   "createdAt": {
-    "$date": "2024-07-10T08:03:32.655Z"
+    "$date": "2024-11-26T06:19:51.316Z"
   },
-  "__v": 0
+  "updatedAt": {
+    "$date": "2024-11-26T06:20:04.978Z"
+  },
+  "__v": 0,
+  "file_semi_annual_0": "💾 File Added..."
 },
 {
   "_id": {
-    "$oid": "668e443726c1f739536e6675"
+    "$oid": "67456993d4778999a0ad686b"
   },
-  "id": "4bd0980a-0da6-41f0-a7cb-09dc79e78b79",
-  "userId": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "goalId": "a07141d6-8c96-4d22-a5a1-a2f791f5ed45",
+  "id": "9e00cbe2-e1f5-4587-980f-b51595840e39",
+  "userId": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "goalId": "7b0b984d-117c-4951-b5de-6d88ce437cf6",
   "goal_Id": {
-    "$oid": "667bbd204745108f9f5ccabf"
+    "$oid": "674568fbd4778999a0ad67e2"
   },
-  "functional_objective": "mouse pad",
-  "performance_indicator": "may ara mouse pad",
-  "target": "buwas",
-  "formula": "mouse pad isa",
-  "programs": "bakal mouse pad",
-  "responsible_persons": " me",
-  "clients": " me",
-  "timetable": [
-    "2024-07-09T16:00:00.000Z",
-    "2024-07-30T16:00:00.000Z"
-  ],
-  "frequency_monitoring": "monthly",
-  "complete": true,
-  "data_source": "may ara mouse pad",
-  "budget": 50,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
+  "functional_objective": "test 1",
+  "performance_indicator": "new server",
+  "target": 2,
+  "formula": "new server",
+  "programs": "new server",
+  "responsible_persons": "rosalinda",
+  "clients": "chmsu",
+  "remarks": "new server",
+  "semi_annual_0": 1,
+  "semi_annual_1": 0,
+  "goal_semi_annual_0": 1,
+  "goal_semi_annual_1": 1,
+  "frequency_monitoring": "semi_annual",
+  "timetable": {},
+  "complete": false,
+  "data_source": "new server",
+  "budget": 200000,
+  "createdBy": "dec10eec-c8cc-407b-8c4c-23242153d27e",
   "deleted": false,
   "date_added": {
-    "$date": "2024-07-10T08:20:07.424Z"
+    "$date": "2024-11-26T06:24:19.946Z"
   },
   "createdAt": {
-    "$date": "2024-07-10T08:20:07.424Z"
+    "$date": "2024-11-26T06:24:19.946Z"
   },
-  "__v": 0
+  "updatedAt": {
+    "$date": "2024-11-26T06:24:40.594Z"
+  },
+  "__v": 0,
+  "file_semi_annual_0": "💾 File Added..."
 }]

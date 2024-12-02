@@ -72,7 +72,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .fetch('get', 'goals', `getObjectivesViewTable/${this.userId}`)
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe((data?: any) => {
-                this.initBarCharts(data?.data);
+                this.initBarCharts(data?.data || []);
             });
     }
 

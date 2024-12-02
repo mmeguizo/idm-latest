@@ -227,7 +227,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .fetch('get', 'goals', `getObjectivesViewTable/${this.USERID}`)
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data?: any) => {
-                this.initBarCharts(data?.data);
+                this.initBarCharts(data?.data || []);
             });
     }
 

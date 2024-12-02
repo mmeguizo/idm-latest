@@ -40,6 +40,10 @@
                             formControlName="selectDepartment"
                             [options]="deptDropdownValue"
                             optionLabel="name"
+                            [filter]="true"
+                            [showClear]="true"
+                            filterBy="name"
+                            optionLabel="name"
                             placeholder="Select a Department"
                         />
                     </form>

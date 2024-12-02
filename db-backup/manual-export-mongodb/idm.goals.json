@@ -1,188 +1,158 @@
 [{
   "_id": {
-    "$oid": "667bbd204745108f9f5ccabf"
+    "$oid": "67456537d4778999a0ad6523"
   },
-  "id": "a07141d6-8c96-4d22-a5a1-a2f791f5ed45",
+  "id": "8bbbaf5a-18b1-47ce-8908-f41ae646cc89",
+  "goals": "goal iso",
+  "campus": "Talisay",
+  "department": "It Officer",
+  "budget": 100000,
+  "objectives": [
+    "a2ef3895-2094-4090-aa71-8af429e27cf8",
+    "c4ffb3c1-615d-481b-8767-fd84eaed091a"
+  ],
+  "createdBy": "eab34b08-cfb9-4f90-9e3e-81491eb18a90",
+  "goallistsId": "636efc00-7273-4dee-a317-432fa3aeca7f",
+  "complete": false,
+  "deleted": false,
+  "date_added": {
+    "$date": "2024-11-26T06:05:43.898Z"
+  },
+  "createdAt": {
+    "$date": "2024-11-26T06:05:43.898Z"
+  },
+  "objectiveBudget": [
+    {
+      "id": "a2ef3895-2094-4090-aa71-8af429e27cf8",
+      "budget": 50000,
+      "_id": {
+        "$oid": "67456583d4778999a0ad6539"
+      }
+    },
+    {
+      "id": "c4ffb3c1-615d-481b-8767-fd84eaed091a",
+      "budget": 50000,
+      "_id": {
+        "$oid": "67456624d4778999a0ad65d5"
+      }
+    }
+  ],
+  "updatedAt": {
+    "$date": "2024-11-26T06:50:33.073Z"
+  },
+  "__v": 0,
+  "updateDate": {
+    "$date": "2024-11-26T06:50:33.073Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "674566fbd4778999a0ad668b"
+  },
+  "id": "2861b69b-2b49-4ac3-a468-c7b22b038e59",
+  "goals": "goal cert",
+  "campus": "Talisay",
+  "department": "Information System",
+  "budget": 1000000,
+  "objectives": [
+    "f2b3b396-fca3-4e24-9c7d-02f96c5741f2"
+  ],
+  "createdBy": "3312e24e-a671-4e37-b0e6-bd2a97b90a10",
+  "goallistsId": "448bdb28-b152-434d-ad92-544bdc91acdb",
+  "complete": false,
+  "deleted": false,
+  "date_added": {
+    "$date": "2024-11-26T06:13:15.607Z"
+  },
+  "createdAt": {
+    "$date": "2024-11-26T06:13:15.607Z"
+  },
+  "objectiveBudget": [
+    {
+      "id": "f2b3b396-fca3-4e24-9c7d-02f96c5741f2",
+      "budget": 500000,
+      "_id": {
+        "$oid": "67456727d4778999a0ad66a0"
+      }
+    }
+  ],
+  "updatedAt": {
+    "$date": "2024-11-26T06:50:23.388Z"
+  },
+  "__v": 0,
+  "updateDate": {
+    "$date": "2024-11-26T06:50:23.387Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67456853d4778999a0ad6735"
+  },
+  "id": "50f42af1-14a4-42fc-a8e1-9a57d6d58dea",
+  "goals": "goal 2 ",
+  "campus": "Talisay",
+  "department": "Director Information And Communication Technology",
+  "budget": 5000000,
+  "objectives": [
+    "550ad2ce-288c-4c5e-88ce-7321f88f5d93"
+  ],
+  "createdBy": "53138441-f108-4a97-a992-965059c74c1e",
+  "goallistsId": "8a82e7bf-c8d4-476d-b669-0c5eca24778a",
+  "complete": false,
+  "deleted": false,
+  "date_added": {
+    "$date": "2024-11-26T06:18:59.446Z"
+  },
+  "createdAt": {
+    "$date": "2024-11-26T06:18:59.446Z"
+  },
+  "objectiveBudget": [
+    {
+      "id": "550ad2ce-288c-4c5e-88ce-7321f88f5d93",
+      "budget": 1000000,
+      "_id": {
+        "$oid": "67456887d4778999a0ad674a"
+      }
+    }
+  ],
+  "updatedAt": {
+    "$date": "2024-11-26T06:19:51.320Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674568fbd4778999a0ad67e2"
+  },
+  "id": "7b0b984d-117c-4951-b5de-6d88ce437cf6",
   "goals": "tester",
   "campus": "Talisay",
-  "department": "information and communications technology",
-  "budget": 1000,
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
+  "department": "Vice President For Administration And Finance",
+  "budget": 1000000,
+  "objectives": [
+    "9e00cbe2-e1f5-4587-980f-b51595840e39"
+  ],
+  "createdBy": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "goallistsId": "e35e8ee2-46a8-4c63-9455-7c4da23067f8",
   "complete": false,
   "deleted": false,
   "date_added": {
-    "$date": "2024-06-26T07:02:56.132Z"
+    "$date": "2024-11-26T06:21:47.423Z"
   },
   "createdAt": {
-    "$date": "2024-06-26T07:02:56.132Z"
-  },
-  "updatedAt": {
-    "$date": "2024-07-10T08:20:07.436Z"
-  },
-  "__v": 0,
-  "objectiveBudget": [
-    {
-      "id": "05df61cb-459b-47af-acae-3f10734b01d0",
-      "budget": 500,
-      "_id": {
-        "$oid": "668e3f5526c1f739536e658d"
-      }
-    },
-    {
-      "id": "f7fb078e-e230-43e8-b162-0e40a02283c3",
-      "budget": 100,
-      "_id": {
-        "$oid": "668e405426c1f739536e65a7"
-      }
-    },
-    {
-      "id": "4bd0980a-0da6-41f0-a7cb-09dc79e78b79",
-      "budget": 50,
-      "_id": {
-        "$oid": "668e443726c1f739536e6677"
-      }
-    }
-  ],
-  "objectives": [
-    "05df61cb-459b-47af-acae-3f10734b01d0",
-    "f7fb078e-e230-43e8-b162-0e40a02283c3",
-    "4bd0980a-0da6-41f0-a7cb-09dc79e78b79"
-  ],
-  "updateDate": {
-    "$date": "2024-06-28T07:04:11.021Z"
-  }
-},
-{
-  "_id": {
-    "$oid": "667e6ad485a7e3d783a6914a"
-  },
-  "id": "da501522-f5da-4e9b-bbd9-0ce45ebf1406",
-  "goals": "2nd goal",
-  "campus": "Talisay",
-  "department": "office of the president",
-  "budget": 10000,
-  "objectives": [
-    "c597eb5c-aed7-40c1-8695-4af3109b6f21",
-    "92efe71d-fe96-49e9-b9ce-e53e7c91c83e"
-  ],
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "complete": false,
-  "deleted": false,
-  "date_added": {
-    "$date": "2024-06-28T07:48:36.046Z"
-  },
-  "createdAt": {
-    "$date": "2024-06-28T07:48:36.047Z"
+    "$date": "2024-11-26T06:21:47.423Z"
   },
   "objectiveBudget": [
     {
-      "id": "c597eb5c-aed7-40c1-8695-4af3109b6f21",
-      "budget": 5000,
+      "id": "9e00cbe2-e1f5-4587-980f-b51595840e39",
+      "budget": 200000,
       "_id": {
-        "$oid": "667e6aed85a7e3d783a69157"
-      }
-    },
-    {
-      "id": "92efe71d-fe96-49e9-b9ce-e53e7c91c83e",
-      "budget": 5000,
-      "_id": {
-        "$oid": "668e367f26c1f739536e6481"
+        "$oid": "67456993d4778999a0ad686d"
       }
     }
   ],
   "updatedAt": {
-    "$date": "2024-07-10T07:21:35.684Z"
+    "$date": "2024-11-26T06:24:19.949Z"
   },
   "__v": 0
-},
-{
-  "_id": {
-    "$oid": "668b874bfc4302f26df7e060"
-  },
-  "id": "4e890113-273b-440a-a049-395a8e6f647a",
-  "goals": "gagsdf",
-  "campus": "Alijis",
-  "department": "department of finance",
-  "budget": 34,
-  "objectives": [
-    "477e3b7f-a523-44f3-8060-3ed72530e291"
-  ],
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "complete": false,
-  "deleted": true,
-  "date_added": {
-    "$date": "2024-07-08T06:29:31.241Z"
-  },
-  "createdAt": {
-    "$date": "2024-07-08T06:29:31.242Z"
-  },
-  "objectiveBudget": [
-    {
-      "id": "477e3b7f-a523-44f3-8060-3ed72530e291",
-      "budget": 32,
-      "_id": {
-        "$oid": "668b9049fc4302f26df7e10f"
-      }
-    }
-  ],
-  "updatedAt": {
-    "$date": "2024-07-09T00:51:43.107Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "668cd0267b8f8460eb824af0"
-  },
-  "id": "f6b3896d-aac6-486b-af74-c31d1c5083a7",
-  "goals": "logsfiles",
-  "campus": "Talisay",
-  "department": "department of finance",
-  "budget": 23232,
-  "objectives": [],
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "complete": false,
-  "deleted": true,
-  "date_added": {
-    "$date": "2024-07-09T05:52:38.332Z"
-  },
-  "createdAt": {
-    "$date": "2024-07-09T05:52:38.332Z"
-  },
-  "objectiveBudget": [],
-  "updatedAt": {
-    "$date": "2024-07-09T05:52:46.996Z"
-  },
-  "__v": 0,
-  "updateDate": {
-    "$date": "2024-07-09T05:52:43.830Z"
-  }
-},
-{
-  "_id": {
-    "$oid": "668e299beeceacd47ba6d00e"
-  },
-  "id": "eae6b20e-fff1-4bf6-b081-2d03751a5a76",
-  "goals": "67676767",
-  "campus": "Talisay",
-  "department": "department of finance",
-  "budget": 32131,
-  "objectives": [],
-  "createdBy": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
-  "complete": false,
-  "deleted": true,
-  "date_added": {
-    "$date": "2024-07-10T06:26:35.471Z"
-  },
-  "createdAt": {
-    "$date": "2024-07-10T06:26:35.471Z"
-  },
-  "objectiveBudget": [],
-  "updatedAt": {
-    "$date": "2024-07-10T06:26:46.955Z"
-  },
-  "__v": 0,
-  "updateDate": {
-    "$date": "2024-07-10T06:26:44.099Z"
-  }
 }]

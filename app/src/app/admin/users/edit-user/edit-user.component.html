@@ -6,6 +6,7 @@
     [breakpoints]="{ '1199px': '50vw', '890px': '40vw', '500px': '30vw' }"
     [draggable]="false"
     [resizable]="false"
+    (onHide)="form.reset()"
 >
     <div class="card p-fluid">
         <form [formGroup]="form">
@@ -164,11 +165,18 @@
             <div class="field">
                 <form [formGroup]="formGroupDemo">
                     <label htmlFor="department">Department</label>
+                    <!--    formControlName="selectDepartment"
+                        [options]="deptDropdownValue"
+                        optionLabel="name"
+                        [editable]="true"
+                        placeholder="Search a Department" -->
                     <p-dropdown
                         formControlName="selectDepartment"
                         [options]="deptDropdownValue"
                         optionLabel="name"
-                        [editable]="true"
+                        [filter]="true"
+                        [showClear]="true"
+                        filterBy="name"
                         placeholder="Search a Department"
                     />
                 </form>
