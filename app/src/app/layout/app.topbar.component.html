@@ -1,9 +1,4 @@
 <div class="layout-topbar">
-
-    <button #menubutton class="p-link layout-topbar-button mr-2" (click)="layoutService.onMenuToggle()">
-        <i class="pi pi-bars"></i>
-    </button>
-
     <a class="layout-topbar-logo" routerLink="/">
         <img
             src="assets/layout/images/{{
@@ -13,6 +8,14 @@
         />
         <span class="text-xl">Institutional Dashboard Monitoring</span>
     </a>
+
+    <button
+        #menubutton
+        class="p-link layout-topbar-button"
+        (click)="layoutService.onMenuToggle()"
+    >
+        <i class="pi pi-bars"></i>
+    </button>
 
     <button
         #topbarmenubutton
