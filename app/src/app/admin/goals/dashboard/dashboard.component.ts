@@ -261,7 +261,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     onChangeOffice(event: any = '') {
         //reset the goals
         this.goals = [];
-        this.getAllObjectivesForTable(event.value.name);
+        this.getAllObjectivesForTable(event?.value?.name);
         console.log({ event: event.value });
     }
 

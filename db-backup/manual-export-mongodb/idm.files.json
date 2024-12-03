@@ -112,4 +112,27 @@
     "$date": "2024-11-26T06:24:37.845Z"
   },
   "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674977f043893583b72f74c6"
+  },
+  "id": "e7dd03d5-13e9-4767-8ca3-4993b229ed0d",
+  "source": "076745c57b899cce64da2477b65bcd99.gif",
+  "user_id": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
+  "for": "files",
+  "status": true,
+  "filetype": "image",
+  "objective_id": "9e00cbe2-e1f5-4587-980f-b51595840e39",
+  "file_semi_annual_1": "076745c57b899cce64da2477b65bcd99.gif",
+  "date_added": {
+    "$date": "2024-11-29T08:14:40.489Z"
+  },
+  "createdAt": {
+    "$date": "2024-11-29T08:14:40.490Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-29T08:14:40.490Z"
+  },
+  "__v": 0
 }]

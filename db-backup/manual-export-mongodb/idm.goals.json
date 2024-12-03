@@ -91,7 +91,7 @@
   "id": "50f42af1-14a4-42fc-a8e1-9a57d6d58dea",
   "goals": "goal 2 ",
   "campus": "Talisay",
-  "department": "Director Information And Communication Technology",
+  "department": "Director For Information And Communications Technology",
   "budget": 5000000,
   "objectives": [
     "550ad2ce-288c-4c5e-88ce-7321f88f5d93"
@@ -116,9 +116,12 @@
     }
   ],
   "updatedAt": {
-    "$date": "2024-11-26T06:19:51.320Z"
+    "$date": "2024-12-02T08:54:40.760Z"
   },
-  "__v": 0
+  "__v": 0,
+  "updateDate": {
+    "$date": "2024-12-02T08:54:40.760Z"
+  }
 },
 {
   "_id": {

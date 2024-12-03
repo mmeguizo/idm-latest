@@ -1845,4 +1845,1480 @@
   "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732866183759",
   "meta": null,
   "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674973b13db17812ac7fc9cb"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T07:56:33.105Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732866993104",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674974af3db17812ac7fc9cc"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:00:47.676Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732867247675",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749750d3db17812ac7fc9cd"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:02:21.291Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732867341291",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674975533db17812ac7fc9ce"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:03:31.532Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732867411532",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749770f3db17812ac7fc9cf"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:10:55.296Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732867855294",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674977f03db17812ac7fc9d0"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:14:40.323Z"
+  },
+  "level": "info",
+  "message": " POST|{\"user_id\":\"eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c\"}|{}|/fileupload/addObjectiveFiles/eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c|{}|null|::1|1732868080322",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674977f53db17812ac7fc9d1"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:14:45.544Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732868085543",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674978163db17812ac7fc9d2"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:15:18.114Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732868118114",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749784f3db17812ac7fc9d3"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:16:15.969Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732868175969",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674979033db17812ac7fc9d4"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:19:15.358Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732868355358",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674979d13db17812ac7fc9d5"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:22:41.104Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732868561103",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674979ff3db17812ac7fc9d6"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:23:27.022Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732868607022",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67497a573db17812ac7fc9d7"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:24:55.974Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732868695973",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67497a823db17812ac7fc9d8"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:25:38.007Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732868738007",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67497ac93db17812ac7fc9d9"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:26:49.800Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732868809800",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67497b523db17812ac7fc9da"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:29:06.565Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732868946565",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67497c823db17812ac7fc9db"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:34:10.549Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732869250549",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67497ed23db17812ac7fc9dc"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:44:02.441Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732869842439",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67497ee13db17812ac7fc9dd"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:44:17.726Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732869857726",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67497fe03db17812ac7fc9de"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:48:32.602Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870112602",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "67497ff33db17812ac7fc9df"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:48:51.852Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870131852",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674980173db17812ac7fc9e0"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:49:27.448Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870167447",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674980523db17812ac7fc9e1"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:50:26.787Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870226786",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749808e3db17812ac7fc9e2"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:51:26.930Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870286930",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749809c3db17812ac7fc9e3"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:51:40.815Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870300815",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674980c03db17812ac7fc9e4"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:52:16.261Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870336261",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674980d13db17812ac7fc9e5"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:52:33.422Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870353422",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674980f83db17812ac7fc9e6"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:53:12.137Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870392137",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "6749816a3db17812ac7fc9e7"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:55:06.087Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870506086",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674981883db17812ac7fc9e8"
+  },
+  "timestamp": {
+    "$date": "2024-11-29T08:55:36.792Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1732870536792",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d14e6d4e1243a68af4c48"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T02:01:10.509Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!  \"}|null|::1|1733104870505",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d14e7d4e1243a68af4c49"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T02:01:11.424Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733104871423",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d1518d4e1243a68af4c4a"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T02:02:00.412Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733104920411",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d15fcd4e1243a68af4c4b"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T02:05:48.898Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733105148898",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d15ffd4e1243a68af4c4c"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T02:05:51.642Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733105151641",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d161fd4e1243a68af4c4d"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T02:06:23.263Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733105183262",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d162fd4e1243a68af4c4e"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T02:06:39.251Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733105199251",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d1640d4e1243a68af4c4f"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T02:06:56.815Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733105216815",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d2f893b737353b4e0acf6"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T03:54:49.895Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733111689873",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d5ef237068b498c2282a7"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:17:06.237Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733123826234",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d5fdc37068b498c2282a8"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:21:00.127Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124060127",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d601637068b498c2282a9"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:21:58.277Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124118277",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d603637068b498c2282aa"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:22:30.133Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124150133",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d608e37068b498c2282ab"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:23:58.772Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124238772",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d60ae37068b498c2282ac"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:24:30.254Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124270253",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d60f637068b498c2282ad"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:25:42.598Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124342598",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d614237068b498c2282ae"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:26:58.254Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124418254",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d618137068b498c2282af"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:28:01.490Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124481490",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d61b037068b498c2282b0"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:28:48.415Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124528415",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d629237068b498c2282b1"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:32:34.567Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124754566",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d62e937068b498c2282b2"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:34:01.171Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733124841170",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d63a537068b498c2282b3"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:37:09.169Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125029169",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d63dc37068b498c2282b4"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:38:04.262Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125084261",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d63fc37068b498c2282b5"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:38:36.415Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125116415",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d645c37068b498c2282b6"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:40:12.503Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125212502",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d647537068b498c2282b7"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:40:37.484Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125237484",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d649b37068b498c2282b8"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:41:15.277Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125275276",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d64b537068b498c2282b9"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:41:41.874Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125301874",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d655737068b498c2282ba"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:44:23.995Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125463994",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d657637068b498c2282bb"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:44:54.263Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125494263",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d65a737068b498c2282bc"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:45:43.577Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125543577",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d65d337068b498c2282bd"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:46:27.114Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125587114",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d660337068b498c2282be"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:47:15.894Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125635893",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d663337068b498c2282bf"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:48:03.212Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125683212",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d667037068b498c2282c0"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:49:04.446Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125744445",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d66ac37068b498c2282c1"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:50:04.583Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125804583",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d66c837068b498c2282c2"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:50:32.216Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125832216",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d66eb37068b498c2282c3"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:51:07.264Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125867263",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d671c37068b498c2282c4"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:51:56.683Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125916682",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d674137068b498c2282c5"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:52:33.708Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733125953708",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d67a337068b498c2282c6"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:54:11.058Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733126051058",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d67e137068b498c2282c7"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:55:13.812Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733126113812",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d680537068b498c2282c8"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:55:49.700Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733126149700",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d687c37068b498c2282c9"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T07:57:48.753Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733126268753",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6a2837068b498c2282ca"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:04:56.482Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733126696482",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6a4d37068b498c2282cb"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:05:33.968Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733126733968",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6a8a37068b498c2282cc"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:06:34.204Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733126794204",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6abc37068b498c2282cd"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:07:24.330Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733126844330",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6b2137068b498c2282ce"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:09:05.424Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733126945424",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6b4337068b498c2282cf"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:09:39.489Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733126979489",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6b8137068b498c2282d0"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:10:41.039Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127041038",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6bab37068b498c2282d1"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:11:23.904Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127083904",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6bc237068b498c2282d2"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:11:46.986Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127106986",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6be637068b498c2282d3"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:12:22.024Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127142023",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6bf337068b498c2282d4"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:12:35.868Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127155868",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6c0837068b498c2282d5"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:12:56.442Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127176442",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6c1937068b498c2282d6"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:13:13.258Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127193258",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6c2537068b498c2282d7"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:13:25.662Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127205662",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6c9937068b498c2282d8"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:15:21.362Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127321362",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6d7c37068b498c2282d9"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:19:08.037Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127548037",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6dae37068b498c2282da"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:19:58.340Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127598340",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6df137068b498c2282db"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:21:05.015Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127665014",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6e1937068b498c2282dc"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:21:45.119Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127705119",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6e6037068b498c2282dd"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:22:56.882Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127776882",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6eb537068b498c2282de"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:24:21.022Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127861022",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6ed137068b498c2282df"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:24:49.782Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127889782",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6f0637068b498c2282e0"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:25:42.285Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127942285",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6f1d37068b498c2282e1"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:26:05.473Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733127965473",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6f7a37068b498c2282e2"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:27:38.070Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733128058069",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d6fd637068b498c2282e3"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:29:10.218Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733128150218",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d702837068b498c2282e4"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:30:32.966Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733128232966",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d705f37068b498c2282e5"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:31:27.379Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733128287379",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d70fe37068b498c2282e6"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:34:06.894Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733128446894",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d71c39daa440d2cb4fc17"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:37:23.095Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733128643090",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d721b9daa440d2cb4fc18"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:38:51.919Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733128731919",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d72ac9daa440d2cb4fc19"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:41:16.317Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733128876317",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d73049daa440d2cb4fc1a"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:42:44.907Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733128964906",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d73339daa440d2cb4fc1b"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:43:31.944Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733129011943",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d73ea9daa440d2cb4fc1c"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:46:34.006Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733129194006",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d74299daa440d2cb4fc1d"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:47:37.766Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733129257766",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d74399daa440d2cb4fc1e"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T08:47:53.153Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733129273153",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d78a6f39c723dc0f7646c"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T09:06:46.346Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733130406344",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d791df39c723dc0f7646d"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T09:08:45.433Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733130525433",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d794af39c723dc0f7646e"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T09:09:30.411Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733130570411",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d7c52291ac453d486d256"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T09:22:26.587Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733131346585",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d7d61344ee0288896f85d"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T09:26:57.150Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::ffff:127.0.0.1|1733131617147",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d7d969a431755fcd1e591"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T09:27:50.379Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733131670377",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d7eb4be767c58880340d2"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T09:32:36.011Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartment|{}|null|::1|1733131956008",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d7edebe767c58880340d3"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T09:33:18.626Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733131998626",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d80b6a343231ad870362c"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T09:41:10.338Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1733132470335",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674d80b8a343231ad870362d"
+  },
+  "timestamp": {
+    "$date": "2024-12-02T09:41:12.115Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733132472115",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674e5307eb13cf40c8d96b10"
+  },
+  "timestamp": {
+    "$date": "2024-12-03T00:38:31.487Z"
+  },
+  "level": "info",
+  "message": " POST|{}|{}|/authentication/login|{\"email\":\"mark.meguizo@chmsu.edu.ph\",\"password\":\"Password123!\"}|null|::1|1733186311484",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
+},
+{
+  "_id": {
+    "$oid": "674e5308eb13cf40c8d96b11"
+  },
+  "timestamp": {
+    "$date": "2024-12-03T00:38:32.289Z"
+  },
+  "level": "info",
+  "message": " GET|{}|{}|/department/getAllDepartmentForDashboard|{}|null|::1|1733186312288",
+  "meta": null,
+  "hostname": "DESKTOP-DC5FBVP"
 }]

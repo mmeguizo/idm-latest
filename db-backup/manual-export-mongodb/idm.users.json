@@ -280,23 +280,23 @@
   "lastname": "m. de la torre, phd",
   "username": "rusty",
   "campus": "Talisay",
-  "department": "information and communications technology",
+  "department": "director for information and communications technology",
   "role": "director",
   "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
   "vice_president_name": "Rosalinda S. Tuvilla",
   "director_id": "",
-  "director_name": " ",
+  "director_name": "",
   "office_head_id": "",
   "office_head_name": "",
   "status": "active",
   "deleted": false,
-  "password": "$2a$10$Aqr8gd87rDjaDMtlt1C0C.HTiKJlfW10g/es.vS1XQe97UMnNxw5C",
+  "password": "",
   "profile_pic": "c3b068b02c26fe30d1b7285a4152c080.jpg",
   "createdAt": {
     "$date": "2024-10-11T08:17:37.437Z"
   },
   "updatedAt": {
-    "$date": "2024-10-30T07:18:02.099Z"
+    "$date": "2024-12-02T09:32:41.779Z"
   },
   "__v": 0
 },
@@ -310,7 +310,7 @@
   "lastname": "b. nufable, phd",
   "username": "bnufable",
   "campus": "Talisay",
-  "department": "management information system / data privacy office",
+  "department": "information system",
   "role": "office-head",
   "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
   "vice_president_name": "Rosalinda S. Tuvilla",
@@ -320,13 +320,13 @@
   "office_head_name": "",
   "status": "active",
   "deleted": false,
-  "password": "$2a$10$SK/LrtihswVNTdVgQ4SEH.IEn52LFYeoqBXWE3yxvWXAKP6QCXCFC",
+  "password": "",
   "profile_pic": "no-photo.png",
   "createdAt": {
     "$date": "2024-10-11T08:19:02.214Z"
   },
   "updatedAt": {
-    "$date": "2024-10-11T08:19:04.242Z"
+    "$date": "2024-12-02T09:22:35.053Z"
   },
   "__v": 0
 },
@@ -340,7 +340,7 @@
   "lastname": "torres",
   "username": "atorres",
   "campus": "Talisay",
-  "department": "information and communications technology",
+  "department": "it officer",
   "role": "office-head",
   "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
   "vice_president_name": "Rosalinda S. Tuvilla",
@@ -350,13 +350,13 @@
   "office_head_name": "",
   "status": "active",
   "deleted": false,
-  "password": "$2a$10$J884v.oi5t.sAOmBQ00gV.K2YnINFSphNdhiMBJQNcvThjhGyltcu",
+  "password": "",
   "profile_pic": "04c1aa693ce28bc14c83a82d20cf40f1.jpg",
   "createdAt": {
     "$date": "2024-10-14T01:11:15.877Z"
   },
   "updatedAt": {
-    "$date": "2024-11-04T01:54:57.406Z"
+    "$date": "2024-12-02T09:22:43.937Z"
   },
   "__v": 0
 },
@@ -375,18 +375,18 @@
   "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
   "vice_president_name": "Rosalinda S. Tuvilla",
   "director_id": "",
-  "director_name": " ",
+  "director_name": "",
   "office_head_id": "",
   "office_head_name": "",
   "status": "active",
   "deleted": false,
-  "password": "$2a$10$3xfdUOVvBS5jPKOEHQTh6OXWkmekm8SKbP58LEJT/OakaFQUYCehO",
+  "password": "",
   "profile_pic": "no-photo.png",
   "createdAt": {
     "$date": "2024-10-14T01:14:09.775Z"
   },
   "updatedAt": {
-    "$date": "2024-10-14T01:14:12.163Z"
+    "$date": "2024-12-02T09:22:50.445Z"
   },
   "__v": 0
 },
