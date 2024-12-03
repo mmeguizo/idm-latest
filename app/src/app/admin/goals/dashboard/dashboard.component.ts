@@ -272,7 +272,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     calculateBudget(goals: any) {
         let total = 0;
-        for (let calc of this.goals) {
+        for (let calc of goals) {
             total += calc.budget;
         }
         console.log({ total });
@@ -282,7 +282,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
 
     calculateUsed(goals: any) {
         let total = 0;
-        for (let calc of this.goals) {
+        for (let calc of goals) {
             total += calc.budgetMinusAllObjectiveBudget;
         }
         console.log({ total });
@@ -291,7 +291,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     }
     calculateRemaining(goals: any) {
         let total = 0;
-        for (let calc of this.goals) {
+        for (let calc of goals) {
             total += calc.remainingBudget;
         }
         console.log({ total });

@@ -1648,11 +1648,13 @@ module.exports = (router) => {
           vice_president_id: department.id,
         }).select({ id: true, firstname: true, lastname: true });
         queryIds = results.map((e) => e.id);
+        queryIds.push(department.id || "");
       } else if (department?.role === "director") {
         const results = await Users.find({
           director_id: department.id,
         }).select({ id: true, firstname: true, lastname: true });
         queryIds = results.map((e) => e.id);
+        queryIds.push(department.id || "");
       } else {
         queryIds.push(department.id || "");
       }

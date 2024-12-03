@@ -5,6 +5,7 @@ import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { ProductService } from 'src/app/demo/service/product.service';
 import { Product } from 'src/app/demo/api/product';
 import { AuthService } from 'src/app/demo/service/auth.service';
+import { genericDropdown } from 'src/app/interface/campus.interface';
 
 interface expandedRows {
     [key: string]: boolean;
@@ -18,7 +19,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     dashboardSubscription = new Subject<void>();
     goals: any[] = [];
     products: Product[] = [];
-    loading = true;
+    loading = false;
     barOptions: any;
     barData: any;
     objectiveBudget: number;
@@ -32,7 +33,11 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     donutOptions: any;
     goalForTables: any;
     USERID: any;
-
+    officeList: genericDropdown[] | undefined;
+    selectedOffice: genericDropdown | undefined;
+    totalBudget: number;
+    usedBudget: number;
+    remainingTotal: number;
     constructor(
         private goal: GoalService,
         private goalService: GoalService,
@@ -42,6 +47,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
+        this.loading = true;
         this.productService
             .getProductsWithOrdersSmall()
             .then((data) => (this.products = data));
@@ -50,6 +56,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
         this.getGoals();
         this.getObjectiveViewPieChart();
         this.getAllObjectives();
+        this.loading = false;
     }
 
     getCompletedObjectives(goal: any): number {
@@ -66,6 +73,17 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
         );
     }
 
+    onChangeOffice(event: any = '') {
+        //reset the goals
+        this.goals = [];
+        this.getAllObjectivesForTable(event.value.name);
+        console.log({ event: event.value });
+    }
+    onClearOffice() {
+        this.goals = [];
+        this.getAllObjectivesForTable();
+    }
+
     getGoals() {
         this.goal
             .fetch(
@@ -75,10 +93,10 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             )
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
+                console.log({ getGoals: data });
                 this.goalForTables =
                     data?.data[0]?.totalBudget[0]?.totalAmount || 0;
                 this.goalCount = data?.data[0]?.goalCount;
-                this.loading = false;
             });
     }
 
@@ -90,17 +108,60 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 this.objectiveBudget = data.data;
             });
     }
-    getAllObjectivesForTable() {
+    getAllObjectivesForTable(office?: any) {
         this.obj
             .fetch(
                 'get',
-                'goals',
-                `getAllObjectivesWithObjectives/${this.USERID}`
+                'vice_president_query',
+                `getAllObjectivesWithObjectivesForVicePresident/${this.USERID}/${office}`
             )
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
+                console.log({ getAllObjectivesForTable: data });
                 this.goals = data.goals;
+                this.calculateBudget(data.goals);
+                this.calculateUsed(data.goals);
+                this.calculateRemaining(data.goals);
+                this.officeList = data.office_dropdown;
+                console.log({ getAllObjectivesForTablethisgoals: this.goals });
             });
+    }
+
+    getObjectiveNames(goal: any): number {
+        return (
+            goal.objectivesDetails
+                ?.filter((o) => o.functional_objective)
+                .map((o) => o.functional_objective)
+                .join(', ') || ''
+        );
+    }
+
+    calculateBudget(goals: any) {
+        let total = 0;
+        for (let calc of goals) {
+            total += calc.budget;
+        }
+        console.log({ total });
+
+        this.totalBudget = total;
+    }
+
+    calculateUsed(goals: any) {
+        let total = 0;
+        for (let calc of goals) {
+            total += calc.budgetMinusAllObjectiveBudget;
+        }
+        console.log({ total });
+
+        this.usedBudget = total;
+    }
+    calculateRemaining(goals: any) {
+        let total = 0;
+        for (let calc of goals) {
+            total += calc.remainingBudget;
+        }
+        console.log({ total });
+        this.remainingTotal = total;
     }
 
     getObjectiveViewPieChart() {
@@ -224,7 +285,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 },
             },
         };
-        this.loading = false;
     }
 
     expandAll() {
