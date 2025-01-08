@@ -11,20 +11,67 @@
         <div class="field col-10 md:col-10">
             <form [formGroup]="addObjectiveGoalform">
                 <div class="field">
+                    <label htmlFor="department">Strategic Objective</label>
+                    <input
+                        pInputText
+                        id="strategic_objective"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('strategic_objective')
+                                ?.touched &&
+                            addObjectiveGoalform?.controls[
+                                'strategic_objective'
+                            ].errors?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="strategic_objective"
+                        required
+                    />
+                </div>
+                <!-- [disabled]="true" -->
+                <div class="field">
                     <label htmlFor="department">Functional Objective</label>
-                    <p-dropdown
+                    <!-- <input
+                        pInputText
+                        id="functional_objective"
+                        class="flex-auto"
+                        autocomplete="off"
+                        [ngClass]="
+                            addObjectiveGoalform?.get('functional_objective')
+                                ?.touched &&
+                            addObjectiveGoalform?.controls[
+                                'functional_objective'
+                            ].errors?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
                         formControlName="functional_objective"
-                        [options]="dropdwonGoallistSelection"
-                        optionLabel="name"
-                        placeholder="Select an Objective"
-                        [(ngModel)]="customFunctionalName"
-                        [editable]="false"
-                        (onChange)="onGoalChange($event)"
-                    ></p-dropdown>
+                        required
+                    /> -->
+
+                    <textarea
+                        rows="5"
+                        cols="30"
+                        placeholder="Message..."
+                        [ngClass]="
+                            addObjectiveGoalform?.get('functional_objective')
+                                ?.touched &&
+                            addObjectiveGoalform?.controls[
+                                'functional_objective'
+                            ].errors?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="functional_objective"
+                        required
+                        pInputTextarea
+                    ></textarea>
                 </div>
                 <div class="field">
                     <label htmlFor="name1">Performance Indicator</label>
-                    <input
+                    <!-- <input
                         pInputText
                         id="performance_indicator"
                         class="flex-auto"
@@ -40,7 +87,25 @@
                         "
                         formControlName="performance_indicator"
                         required
-                    />
+                    /> -->
+
+                    <textarea
+                        rows="5"
+                        cols="30"
+                        placeholder="Message..."
+                        [ngClass]="
+                            addObjectiveGoalform?.get('performance_indicator')
+                                ?.touched &&
+                            addObjectiveGoalform?.controls[
+                                'performance_indicator'
+                            ].errors?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="performance_indicator"
+                        required
+                        pInputTextarea
+                    ></textarea>
                 </div>
                 <div class="field">
                     <label htmlFor="name1">Target</label>
@@ -72,10 +137,29 @@
                         formControlName="target"
                     >
                     </p-inputNumber>
+                    <div
+                        class="flex flex-row align-items-center justify-content-evenly"
+                    >
+                        <label htmlFor="name1" class="mr-2">Percent</label>
+                        <p-radioButton
+                            class="my-2"
+                            [(ngModel)]="targetValSwitch"
+                            value="percent"
+                            [ngModelOptions]="{ standalone: true }"
+                        ></p-radioButton>
+                        <br />
+                        <label htmlFor="name1" class="mr-2">Count</label>
+                        <p-radioButton
+                            class="my-2"
+                            [(ngModel)]="targetValSwitch"
+                            value="count"
+                            [ngModelOptions]="{ standalone: true }"
+                        ></p-radioButton>
+                    </div>
                 </div>
                 <div class="field">
                     <label htmlFor="name1">Formula</label>
-                    <input
+                    <!-- <input
                         pInputText
                         id="formula"
                         class="flex-auto"
@@ -89,11 +173,27 @@
                         "
                         formControlName="formula"
                         required
-                    />
+                    /> -->
+
+                    <textarea
+                        rows="5"
+                        cols="30"
+                        placeholder="Message..."
+                        [ngClass]="
+                            addObjectiveGoalform?.get('formula')?.touched &&
+                            addObjectiveGoalform?.controls['formula'].errors
+                                ?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="formula"
+                        required
+                        pInputTextarea
+                    ></textarea>
                 </div>
                 <div class="field">
                     <label htmlFor="name1">Programs</label>
-                    <input
+                    <!-- <input
                         pInputText
                         id="programs"
                         class="flex-auto"
@@ -107,7 +207,23 @@
                         "
                         formControlName="programs"
                         required
-                    />
+                    /> -->
+
+                    <textarea
+                        rows="5"
+                        cols="30"
+                        placeholder="Message..."
+                        [ngClass]="
+                            addObjectiveGoalform?.get('programs')?.touched &&
+                            addObjectiveGoalform?.controls['programs'].errors
+                                ?.required
+                                ? 'ng-invalid ng-dirty'
+                                : ''
+                        "
+                        formControlName="programs"
+                        required
+                        pInputTextarea
+                    ></textarea>
                 </div>
                 <div class="field">
                     <label htmlFor="name1">Responsible Persons</label>
@@ -129,7 +245,7 @@
                         required
                     />
                 </div>
-                <div class="field">
+                <!-- <div class="field">
                     <label htmlFor="name1">Clients</label>
                     <input
                         pInputText
@@ -146,8 +262,7 @@
                         formControlName="clients"
                         required
                     />
-                </div>
-
+                </div> -->
                 <div class="field">
                     <label htmlFor="department">Frequency Monitoring</label>
                     <p-dropdown
@@ -157,12 +272,33 @@
                         placeholder="Select a Frequency"
                         (onChange)="onFrequencyChange($event)"
                     ></p-dropdown>
+                    <div
+                        class="flex flex-row align-items-center justify-content-evenly"
+                    >
+                        <label htmlFor="name1" class="mr-2">Cumulative</label>
+                        <p-radioButton
+                            class="my-2"
+                            [(ngModel)]="typeOfComputationValSwitch"
+                            value="cumulative"
+                            [ngModelOptions]="{ standalone: true }"
+                        ></p-radioButton>
+                        <br />
+                        <label htmlFor="name1" class="mr-2"
+                            >Non-Cumulative</label
+                        >
+                        <p-radioButton
+                            class="my-2"
+                            [(ngModel)]="typeOfComputationValSwitch"
+                            value="non-cumulative"
+                            [ngModelOptions]="{ standalone: true }"
+                        ></p-radioButton>
+                    </div>
                 </div>
 
                 <div
                     *ngIf="
                         addObjectiveGoalform.get('frequency_monitoring')
-                            .value === 'yearly'
+                            .value === 'monthly'
                     "
                 >
                     <div class="grid">
@@ -176,6 +312,24 @@
                             <p-inputNumber
                                 id="month_{{ i }}"
                                 formControlName="month_{{ i }}"
+                            ></p-inputNumber>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    *ngIf="
+                        addObjectiveGoalform.get('frequency_monitoring')
+                            .value === 'yearly'
+                    "
+                >
+                    <div class="grid">
+                        <div class="col-3">
+                            <label for="yearly_{{ 0 }}"
+                                >Goal For the Year</label
+                            >
+                            <p-inputNumber
+                                id="yearly_{{ 0 }}"
+                                formControlName="yearly_{{ 0 }}"
                             ></p-inputNumber>
                         </div>
                     </div>
@@ -254,17 +408,16 @@
                     >
                     </p-inputNumber>
                 </div>
-                <div class="field">
+                <!-- <div class="field">
                     <label htmlFor="name1"> Remarks </label>
                     <textarea
                         rows="5"
                         cols="30"
                         formControlName="remarks"
-                        placeholder="Your Message"
+                        placeholder="Message..."
                         pInputTextarea
                     ></textarea>
-                </div>
-
+                </div> -->
                 <div class="flex justify-space-between gap-2">
                     <p-button
                         label="Cancel"
@@ -282,3 +435,12 @@
         </div>
     </div>
 </p-dialog>
+<!-- <p-dropdown
+                        formControlName="strategic_objective"
+                        [options]="dropdwonGoallistSelection"
+                        optionLabel="name"
+                        placeholder="Select an Strategic Objective"
+                        [(ngModel)]="customFunctionalName"
+                        [editable]="false"
+                        (onChange)="onGoalChange($event)"
+                    ></p-dropdown> -->

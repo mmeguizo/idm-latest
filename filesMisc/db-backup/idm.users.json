@@ -1,0 +1,602 @@
+[{
+  "_id": {
+    "$oid": "66385670ebc7d84cc1505d50"
+  },
+  "id": "eebb3e51-7a9f-45f4-8b5c-fb55e2e99e4c",
+  "email": "mark.meguizo@chmsu.edu.ph",
+  "username": "mark",
+  "role": "admin",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$l6HmndpVHX6Ry4czNTrEKuo66LPXUjigewqYINIk5VS.mhwSQENcu",
+  "profile_pic": "b040d6fd4130667171a43b71f796f655.jpg",
+  "department": "information and communications technology",
+  "__v": 0,
+  "campus": "Talisay",
+  "firstname": "Mark oliver",
+  "lastname": "meguizo",
+  "updatedAt": {
+    "$date": "2024-12-03T01:27:43.461Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "663ddab4a6204b62c1d2662a"
+  },
+  "id": "710ee9b1-9746-4946-8138-cb8dc79ac72c",
+  "email": "tester@chmsu.edu.ph",
+  "username": "tester",
+  "department": "information and communications technology",
+  "role": "admin",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$KE.PhJEP0GD50ip1WQb9FeBKmz7jTH5TcjXZ2EqpvMxsbQM91iWAq",
+  "profile_pic": "6ef6e6f2c51e60f618c145e35f545e5c.jpg",
+  "__v": 0,
+  "campus": "Talisay"
+},
+{
+  "_id": {
+    "$oid": "663ddb86eacffba99a7bbcef"
+  },
+  "id": "1d7b75dd-3a4a-4127-838e-102e5caa989f",
+  "email": "test@chmsu.edu.ph",
+  "username": "test",
+  "department": "information and communications technology",
+  "role": "office-head",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$y6.4QkMdcR7y9AthIH/skuiVtXsOSyciWtcp3WtXl2wH8tDjDkJ6C",
+  "profile_pic": "3a880afe6b1ea1805eda6e200bbcc989.png",
+  "__v": 0,
+  "campus": "Talisay"
+},
+{
+  "_id": {
+    "$oid": "6653e11b7270e96edebf953b"
+  },
+  "id": "f888b09c-7372-45bd-afbc-bc8fa233d9f9",
+  "email": "supertest@chmsu.edu.ph",
+  "username": "supertest",
+  "department": "information and communications technology",
+  "role": "office-head",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$qFZjrpT.a5qfBjpq8jnfAONuPdYUwEBXS8FNySMd.Ifvf20zzDkVS",
+  "profile_pic": "a8c8f18a16e5d0460830238220d8c967.jpg",
+  "__v": 0,
+  "campus": "Talisay"
+},
+{
+  "_id": {
+    "$oid": "6653e3f17270e96edebf954a"
+  },
+  "id": "a5917c6d-5a7d-47a1-978a-ce0c6f7c1cbd",
+  "email": "qatester@chmsu.edu.ph",
+  "username": "qatester",
+  "department": "information and communications technology",
+  "role": "office-head",
+  "status": "inactive",
+  "deleted": true,
+  "password": "$2a$10$nW1.Pn0sETQ0D0HQ/xXIc.MeZnV11ke6PyOO/frjje6xLo0/2cbsG",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6655972e071c782317ce8d46"
+  },
+  "id": "82482c49-a92b-4bbb-b4d3-9dca15fbe279",
+  "email": "lowertest@chmsu.edu.ph",
+  "username": "lowertest",
+  "department": "information and communications technology",
+  "role": "office-head",
+  "status": "inactive",
+  "deleted": true,
+  "password": "$2a$10$/esJhI3zBlLHAX7hwcxctu..2sTgkYTuGldcxsb6VM7HGkkramba6",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6656ca9a0581b056d00f8d5b"
+  },
+  "id": "3029a826-68f1-43d4-bb11-a379a9affc7f",
+  "email": "xtester@chmsu.edu.ph",
+  "username": "xtester",
+  "department": "department of finance",
+  "role": "office-head",
+  "status": "inactive",
+  "deleted": true,
+  "password": "$2a$10$tI/F27qbQFXqdcArSZpdauRZwtBha./p34TVHbWRWYjXeV63hIJ3S",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6656cc880581b056d00f8d6d"
+  },
+  "id": "dc65c4c3-b77a-4777-b75b-44da2f78e57f",
+  "email": "xxtester@chmsu.edu.ph",
+  "username": "xxtester",
+  "department": "information and communications technology",
+  "role": "office-head",
+  "status": "inactive",
+  "deleted": true,
+  "password": "$2a$10$QM1X3fHw4RqSt/LdX39dpuWEt.ObQjv7AVCpvHguCkpWjC.LAxHs6",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66714c643eb6b48edf76839d"
+  },
+  "id": "4b9900b8-1821-458c-b6ed-2318bb2ad857",
+  "email": "campususer@chmsu.edu.ph",
+  "username": "campususer",
+  "department": "office of the secretary",
+  "campus": "Talisay",
+  "role": "office-head",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$srj8K3BLF1cI5iIDpEDBbefQ0XeKGMEGLUIkB/5OkgvbbvHm2nCTO",
+  "profile_pic": "no-photo.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66f108d122594398a23a28e9"
+  },
+  "id": "6e6c556a-a658-4a04-a888-4ac3a775a1ed",
+  "email": "titus@chmsu.edu.ph",
+  "username": "titus",
+  "department": "information and communications technology",
+  "campus": "Talisay",
+  "role": "office-head",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$KLQnpnpMmKtUgOgS.41NhO6xOKUE3zLk.QC0GuSZQ46wAWJtcnZX6",
+  "profile_pic": "39cb3cebf2fecf0415ff00447c8e0f25.jpg",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66f10a3722594398a23a2918"
+  },
+  "id": "5e57e572-514c-4f1b-8f65-fb2fdecd5c40",
+  "email": "brutus@chmsu.edu.ph",
+  "username": "brutus",
+  "department": "information and communications technology",
+  "campus": "Talisay",
+  "role": "director",
+  "status": "active",
+  "deleted": true,
+  "password": "$2a$10$WeGu0sRt8XOmDulTyR/Bt.n10NDZX73UeX0BNrWANxuOEV53OsH.C",
+  "profile_pic": "no-photo.png",
+  "__v": 0,
+  "firstname": "brutus",
+  "lastname": "brutus",
+  "updatedAt": {
+    "$date": "2024-10-10T08:33:05.407Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6706398f355134c322cb62d0"
+  },
+  "id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "email": "rosalinda.tuvilla@chmsu.edu.ph",
+  "firstname": "rosalinda s.",
+  "lastname": "tuvilla",
+  "username": "rtuvilla",
+  "campus": "Talisay",
+  "department": "vice president for administration and finance",
+  "role": "vice-president",
+  "vice_president_id": "",
+  "vice_president_name": "",
+  "director_id": "",
+  "director_name": "",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$tBM7/Q7quNlUS/w3fcsl3ezBbBS3sx5G80eE7MnujcAeE/cwSTG9K",
+  "profile_pic": "68d5a803b7e99c42a1f4c4ac6a54d56d.jpg",
+  "createdAt": {
+    "$date": "2024-10-09T08:06:39.634Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-16T05:53:45.196Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6708c1debddbad20bc17918b"
+  },
+  "id": "a0146ecc-e00c-4681-8723-d32908ddb642",
+  "email": "jay.estrella@chmsu.edu.ph",
+  "firstname": "jay b.",
+  "lastname": "estrellas, edd",
+  "username": "jestrella",
+  "campus": "Talisay",
+  "department": "vice president for academic affairs",
+  "role": "vice-president",
+  "vice_president_id": "",
+  "vice_president_name": "",
+  "director_id": "",
+  "director_name": "",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$D0JcSSPY9hPiye7FDcJvqeUHwJqnlaJ9ZOweeadSJDlM.aHxMcm/u",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-10-11T06:12:46.797Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-11T06:12:49.314Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6708c26dbddbad20bc1791cc"
+  },
+  "id": "b6a70a85-eb09-484a-8a30-7abe7d9fe7eb",
+  "email": "andrew.tan@chmsu.edu.ph",
+  "firstname": "andrew eusebio",
+  "lastname": "s. tan, phd",
+  "username": "aetan",
+  "campus": "Talisay",
+  "department": "vice president for research extension and intellectual property",
+  "role": "vice-president",
+  "vice_president_id": "",
+  "vice_president_name": "",
+  "director_id": "",
+  "director_name": "",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$3fNLL3WB4N/8o8UpOMf1jekaKh6E7NREkvm9.OozBJQYtygt306Mi",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-10-11T06:15:09.449Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-11T06:15:13.215Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6708df21d3dec5011557e245"
+  },
+  "id": "53138441-f108-4a97-a992-965059c74c1e",
+  "email": "rusty@chmsu.edu.ph",
+  "firstname": "engr. russel ",
+  "lastname": "m. de la torre, phd",
+  "username": "rusty",
+  "campus": "Talisay",
+  "department": "director for information and communications technology",
+  "role": "director",
+  "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "vice_president_name": "Rosalinda S. Tuvilla",
+  "director_id": "",
+  "director_name": "",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$.l/B43mS.9Gw1xnFFunwj.vx1s9kA1qD53tg4nX2FqBgzUCYK/Yb.",
+  "profile_pic": "c3b068b02c26fe30d1b7285a4152c080.jpg",
+  "createdAt": {
+    "$date": "2024-10-11T08:17:37.437Z"
+  },
+  "updatedAt": {
+    "$date": "2024-12-05T01:10:04.648Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6708df76d3dec5011557e273"
+  },
+  "id": "3312e24e-a671-4e37-b0e6-bd2a97b90a10",
+  "email": "benrie.nufable@chmsu.edu.ph",
+  "firstname": "benrie james ",
+  "lastname": "b. nufable, phd",
+  "username": "bnufable",
+  "campus": "Talisay",
+  "department": "information system",
+  "role": "office-head",
+  "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "vice_president_name": "Rosalinda S. Tuvilla",
+  "director_id": "53138441-f108-4a97-a992-965059c74c1e",
+  "director_name": "Engr. Russel  M. De La Torre, Phd",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-10-11T08:19:02.214Z"
+  },
+  "updatedAt": {
+    "$date": "2024-12-02T09:22:35.053Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670c6fb3e0db9e85311ebc73"
+  },
+  "id": "eab34b08-cfb9-4f90-9e3e-81491eb18a90",
+  "email": "ariane.torres@chmsu.edu.ph",
+  "firstname": "ariane",
+  "lastname": "torres",
+  "username": "atorres",
+  "campus": "Talisay",
+  "department": "it officer",
+  "role": "office-head",
+  "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "vice_president_name": "Rosalinda S. Tuvilla",
+  "director_id": "53138441-f108-4a97-a992-965059c74c1e",
+  "director_name": "Engr. Russel  M. De La Torre, Phd",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$1zE8gVMc3o4KHHawViLCXOagHvlVXb6kAepHqe3quxKqXGXW8NHr6",
+  "profile_pic": "04c1aa693ce28bc14c83a82d20cf40f1.jpg",
+  "createdAt": {
+    "$date": "2024-10-14T01:11:15.877Z"
+  },
+  "updatedAt": {
+    "$date": "2024-12-05T01:36:31.834Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670c7061e0db9e85311ebcbf"
+  },
+  "id": "36293bf8-9697-4a0d-ba3f-51b8248f1a09",
+  "email": "neuyer.balaan@chmsu.edu.ph",
+  "firstname": "neuyer jan c.",
+  "lastname": "bala-an",
+  "username": "nbalaan",
+  "campus": "Talisay",
+  "department": "director for business affairs",
+  "role": "director",
+  "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "vice_president_name": "Rosalinda S. Tuvilla",
+  "director_id": "",
+  "director_name": "",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-10-14T01:14:09.775Z"
+  },
+  "updatedAt": {
+    "$date": "2024-12-02T09:22:50.445Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670c8b87e0db9e85311ebf1b"
+  },
+  "id": "2901692b-9d2c-424c-a665-23209732a1f5",
+  "email": "bao.officer@chmsu.edu.ph",
+  "firstname": "bao ",
+  "lastname": "officer",
+  "username": "subbaooffice",
+  "campus": "Talisay",
+  "department": "director for business affairs",
+  "role": "office-head",
+  "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "vice_president_name": "Rosalinda S. Tuvilla",
+  "director_id": "36293bf8-9697-4a0d-ba3f-51b8248f1a09",
+  "director_name": "Neuyer Jan C. Bala-An",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$waZsrAZ/I3I0VjoQ.KOLteuFixKLV40NPDfgTLvi5UHopI8YM1wlK",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-10-14T03:09:59.894Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-14T03:10:08.813Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670e0f2b7c6222d2ccb19fff"
+  },
+  "id": "c385463d-e1c2-45bf-b68f-10cb1d06888e",
+  "email": "dummy@chmsu.edu.ph",
+  "firstname": "dummy",
+  "lastname": "dummy",
+  "username": "dummy",
+  "campus": "Talisay",
+  "department": "information and communications technology",
+  "role": "vice-president",
+  "vice_president_id": " ",
+  "vice_president_name": " ",
+  "director_id": "",
+  "director_name": " ",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$XKHZkz64Ds3nV7cLr79pX..H3iHGqoJr3DgzrJTlOu2tZ5cGyTeGC",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-10-15T06:43:55.908Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-15T06:44:00.122Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670e2474c2049a1cc729eb82"
+  },
+  "id": "629931b4-2405-4967-9a68-e7e885fda187",
+  "email": "maria.violanda@chmsu.edu.ph",
+  "firstname": "maria victoria",
+  "lastname": " g. violanda, edd",
+  "username": "mviolanda",
+  "campus": "Talisay",
+  "department": "director student affairs and services",
+  "role": "director",
+  "vice_president_id": "a0146ecc-e00c-4681-8723-d32908ddb642",
+  "vice_president_name": "Jay B. Estrellas, Edd",
+  "director_id": "",
+  "director_name": " ",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$0uKk4a9p8Zh1kJq6ttSs/e7eqWSudtoHnWJhnl8BekzQ2TlCpA8D6",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-10-15T08:14:44.302Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-15T08:14:47.664Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670e2639c2049a1cc729ebd4"
+  },
+  "id": "b09425b1-2542-46fa-8357-62e2bafcccf4",
+  "email": "jyan.bascar@chmsu.edu.ph",
+  "firstname": "jyan rome",
+  "lastname": "a. bascar",
+  "username": "jbascar",
+  "campus": "Talisay",
+  "department": "director for sports affairs",
+  "role": "office-head",
+  "vice_president_id": "a0146ecc-e00c-4681-8723-d32908ddb642",
+  "vice_president_name": "Jay B. Estrellas, Edd",
+  "director_id": "629931b4-2405-4967-9a68-e7e885fda187",
+  "director_name": "Maria Victoria  G. Violanda, Edd",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$SkQrkHp0E29SKQiSSo6PU.wRq4YBamofZgTzz3YclG5Fxp6CbDH8i",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-10-15T08:22:17.087Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-15T08:22:19.519Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "670e2686c2049a1cc729ec00"
+  },
+  "id": "e1ac5c91-8cdf-4db2-921a-c6905f9752e1",
+  "email": "maria.tuscano@chmsu.edu.ph",
+  "firstname": "maria rowena",
+  "lastname": " j. tuscano",
+  "username": "mtuscano",
+  "campus": "Talisay",
+  "department": "director for cultural affairs",
+  "role": "office-head",
+  "vice_president_id": "a0146ecc-e00c-4681-8723-d32908ddb642",
+  "vice_president_name": "Jay B. Estrellas, Edd",
+  "director_id": "629931b4-2405-4967-9a68-e7e885fda187",
+  "director_name": "Maria Victoria  G. Violanda, Edd",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$lKDNT05J4HgMJg2o1vMW0evFBD4jOFKZsuRHSxiZfb90rZhYW7uRW",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-10-15T08:23:34.658Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-15T08:23:37.494Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674eb878ca8364d5fdd65a2b"
+  },
+  "id": "0dab4edf-4a65-41a2-8c89-f477ceb4c49c",
+  "email": "rusty1@chmsu.edu.ph",
+  "firstname": "russel ",
+  "lastname": "dela torre",
+  "username": "rusty1",
+  "campus": "Talisay",
+  "department": "director for information and communications technology",
+  "role": "director",
+  "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "vice_president_name": "Rosalinda S. Tuvilla",
+  "director_id": "",
+  "director_name": " ",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$.1Ia6B.CR1oNArsqwrdZXu7ntHc/kDH3EIRH8jyD04iVkjYgzUFsS",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-12-03T07:51:20.647Z"
+  },
+  "updatedAt": {
+    "$date": "2024-12-03T07:51:28.567Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674eba99ca8364d5fdd65b62"
+  },
+  "id": "63c6f64c-c971-40e9-b663-bbea1d6bbe0e",
+  "email": "benrey@chmsu.edu.ph",
+  "firstname": "benrie",
+  "lastname": "benrey",
+  "username": "ben",
+  "campus": "Talisay",
+  "department": "mis officer",
+  "role": "office-head",
+  "vice_president_id": "dec10eec-c8cc-407b-8c4c-23242153d27e",
+  "vice_president_name": "Rosalinda S. Tuvilla",
+  "director_id": "53138441-f108-4a97-a992-965059c74c1e",
+  "director_name": "Engr. Russel  M. De La Torre, Phd",
+  "office_head_id": "",
+  "office_head_name": "",
+  "status": "active",
+  "deleted": false,
+  "password": "$2a$10$duWrVEU3W9ioUi/j2m4Uy.hTuFquL9Ay6FScL8tcWfKHgigpF0dwi",
+  "profile_pic": "no-photo.png",
+  "createdAt": {
+    "$date": "2024-12-03T08:00:25.973Z"
+  },
+  "updatedAt": {
+    "$date": "2024-12-03T08:00:31.630Z"
+  },
+  "__v": 0
+}]

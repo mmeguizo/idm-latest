@@ -91,6 +91,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
                 takeUntil(this.getGoalTableSubscription),
                 tap((data: any) => {
                     this.goals = data.goals;
+                    console.log(data.goals);
                     this.deptDropdownValue = data?.dropdown;
                     this.loading = false;
                     resultSubject.next(true); // Emit true on success
@@ -161,7 +162,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
         _id: string,
         listsId: any,
         goal: any,
-        remainingBudget: any,
+        // remainingBudget: any,
         goalData: any
     ) {
         this.getObjectiveButtonClick.emit({
@@ -169,7 +170,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
             _id: _id,
             listsId: listsId,
             goal: goal,
-            remainingBudget: remainingBudget,
+            // remainingBudget: remainingBudget,
             goalData: goalData,
         });
     }

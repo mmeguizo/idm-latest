@@ -54,7 +54,8 @@
                     <div class="text-900 font-medium text-xl">
                         {{
                             getAllObjectivesUnderAVicePresidentData?.Incompleted +
-                                getAllObjectivesUnderAVicePresidentData?.completed
+                                getAllObjectivesUnderAVicePresidentData?.completed ||
+                                0
                         }}
                     </div>
                     } @else {<p-skeleton
@@ -87,20 +88,175 @@
             }
         </div>
     </div>
-    <div class="col-12 lg:col-12 xl:col-6 cursor-pointer">
+    <div class="col-12 lg:col-12 xl:col-6">
         <div class="card flex flex-column align-items-center">
-            <h5 class="text-left w-full">Total Budget</h5>
-            <p-chart
-                [responsive]="true"
-                type="pie"
-                [data]="pieCharts"
-                [options]="PieChartOptions"
-                width="30rem"
-                height="30rem"
-            ></p-chart>
+            <h5 class="text-left w-full">Office Budget</h5>
+            <ng-container
+                *ngIf="pieCharts?.datasets[0]?.data.length; else noData"
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieCharts"
+                    [options]="PieChartOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
         </div>
     </div>
-    <div class="col-12 lg:col-12 xl:col-6 cursor-pointer">
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Objective Budget</h5>
+            <ng-container
+                *ngIf="
+                    pieChartsBudgetUsed?.datasets[0]?.data.length;
+                    else noData
+                "
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsBudgetUsed"
+                    [options]="PieChartBudgetUsedOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p id="emoji" style="font-size: xxx-large">😴</p>
+            </ng-template>
+        </div>
+    </div>
+
+    <!--
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Total Budget</h5>
+            <ng-container
+                *ngIf="pieCharts?.datasets[0]?.data.length; else noData"
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieCharts"
+                    [options]="PieChartOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
+        </div>
+    </div>
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Total Budget Used</h5>
+            <ng-container
+                *ngIf="
+                    pieChartsBudgetUsed?.datasets[0]?.data.length;
+                    else noData
+                "
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsBudgetUsed"
+                    [options]="PieChartBudgetUsedOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p id="emoji" style="font-size: xxx-large">😴</p>
+            </ng-template>
+        </div>
+    </div> -->
+
+    <!--
+
+
+
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Total Budget Remaining</h5>
+            <ng-container
+                *ngIf="
+                    pieChartsBudgetRemaining?.datasets[0]?.length;
+                    else noData
+                "
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsBudgetRemaining"
+                    [options]="pieChartsBudgetRemainingOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
+        </div>
+    </div>
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Goal Percentage Completion</h5>
+            <ng-container
+                *ngIf="
+                    pieChartsPercentage?.datasets[0]?.data.length;
+                    else noData
+                "
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsPercentage"
+                    [options]="pieChartsPercentageOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
+        </div>
+    </div>
+
+
+
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Goals</h5>
+            <ng-container
+                *ngIf="pieChartsGoals?.datasets?.data?.length; else noData"
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsGoals"
+                    [options]="pieChartsGoalsOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
+        </div>
+    </div>
+
+    <div class="col-12 lg:col-12 xl:col-6">
+        <div class="card flex flex-column align-items-center">
+            <h5 class="text-left w-full">Objectives</h5>
+            <ng-container
+                *ngIf="pieChartsObjectives?.datasets?.data?.length; else noData"
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsObjectives"
+                    [options]="pieChartsObjectivesOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
+        </div>
+    </div> -->
+
+    <!-- <div class="col-12 lg:col-12 xl:col-6 cursor-pointer">
         <div class="card flex flex-column align-items-center">
             <p-dropdown
                 [options]="goalBarChartList"
@@ -120,7 +276,7 @@
                 [options]="options"
             />
         </div>
-    </div>
+    </div> -->
     <!-- <div class="col-12">
         <div class="card">
             <div class="add-user-heading">

@@ -110,7 +110,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
                 _id: objectId,
                 listsId: goallistsId,
                 goal: subHeader,
-                remainingBudget: goalDataRemainingBudget,
+                // remainingBudget: goalDataRemainingBudget,
                 goalData: goalData,
             } = this.getObjectiveTableTrigger;
 
@@ -125,9 +125,9 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
             //headers in objective table
 
             this.subOnjectiveHeaderData = goalData;
-            this.goalDataRemainingBudget =
-                goalDataRemainingBudget ||
-                this.subOnjectiveHeaderData?.remainingBudget;
+            // this.goalDataRemainingBudget =
+            //     goalDataRemainingBudget ||
+            //     this.subOnjectiveHeaderData?.remainingBudget;
             this.goalBudget = this.subOnjectiveHeaderData?.budget;
 
             this.subObjectiveHeaders = customTitleCase(
@@ -263,5 +263,9 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
             remarksDialogCard: true,
             data: data,
         });
+    }
+
+    formatText(text: string) {
+        return text.replace(/_/g, ' ');
     }
 }

@@ -55,12 +55,13 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
         { name: 'yearly', code: 'yearly' },
         { name: 'quarterly', code: 'quarterly' },
         { name: 'semi_annual', code: 'semi_annual' },
+        { name: 'monthly', code: 'monthly' },
     ];
-
     months: string[] = [];
     quarters: string[] = [];
     semi_annual: string[] = [];
     file_semi_annual: string[] = [];
+    yearly: string[] = [];
 
     // file service
     uploadedFiles: any[] = [];
@@ -100,6 +101,7 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
         this.quarters = ['quarter_0', 'quarter_1', 'quarter_2', 'quarter_3'];
         this.semi_annual = ['semi_annual_0', 'semi_annual_1'];
         this.file_semi_annual = ['file_semi_annual_0', 'file_semi_annual_1'];
+        this.yearly = ['yearly_0'];
     }
 
     ngOnInit() {
@@ -286,9 +288,12 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
         form.value.id = this.tobeUpdatedSubGoal;
         form.value.goalId = this.goal_ObjectId;
         let data = {};
+        const currentDate = new Date().toISOString().split('T')[0];
+
         for (const key in form.value) {
-            if (form.value[key] !== '') {
+            if (form.value[key] !== '' && form.value[key] !== 0) {
                 data[key] = form.value[key];
+
                 if (
                     key.includes('file') &&
                     key.includes(form.value.frequency_monitoring)
@@ -298,8 +303,35 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
                         delete data[key];
                     }
                 }
+
+                if (
+                    form.value.frequency_monitoring === 'monthly' &&
+                    key.startsWith('month_')
+                ) {
+                    const index = key.split('_')[1];
+                    data[`month_${index}_date`] = currentDate;
+                } else if (
+                    form.value.frequency_monitoring === 'quarterly' &&
+                    key.startsWith('quarter_')
+                ) {
+                    const index = key.split('_')[1];
+                    data[`quarter_${index}_date`] = currentDate;
+                } else if (
+                    form.value.frequency_monitoring === 'semi_annual' &&
+                    key.startsWith('semi_annual_')
+                ) {
+                    const index = key.split('_')[2];
+                    data[`semi_annual_${index}_date`] = currentDate;
+                } else if (
+                    form.value.frequency_monitoring === 'yearly' &&
+                    key.startsWith('yearly_')
+                ) {
+                    const index = key.split('_')[1];
+                    data[`yearly_${index}_date`] = currentDate;
+                }
             }
         }
+
         this.obj
             .fetch('put', 'objectives', 'updateObjectives', data)
             .pipe(takeUntil(this.updateObjectiveSubscription))

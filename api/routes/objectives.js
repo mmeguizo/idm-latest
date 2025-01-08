@@ -3,9 +3,9 @@ const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const Goals = require("../models/goals");
 const Files = require("../models/fileupload");
-const { logger } = require("../middleware/logger");
+// const { logger } = require("../middleware/logger");
 const objective = require("../models/objective");
-const { log } = require("winston");
+// const { log } = require("winston");
 
 module.exports = (router) => {
   const formatCurrency = (amount) => {
@@ -224,12 +224,14 @@ module.exports = (router) => {
         });
       }
 
-      const updatedObjectives = await calculatePercentage(objectives);
+      // const updatedObjectives = await calculatePercentage(objectives);
 
       // console.log(returnedData);
-      return res
-        .status(200)
-        .json({ success: true, Objectives: updatedObjectives });
+      return res.status(200).json({
+        success: true,
+        Objectives: await calculatePercentage(objectives),
+        budget: objectives.map((e) => e.budget).reduce((a, b) => a + b, 0),
+      });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
     }
@@ -259,29 +261,190 @@ module.exports = (router) => {
   });
 
   async function calculatePercentage(objectives) {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentQuarter = Math.floor(currentMonth / 3);
+    const currentYear = currentDate.getFullYear();
+
     return await objectives.map((objective) => {
       let total = 0;
+      let totalCumulativeAchive = 0;
+      let totalCumulativeAchiveGoal = 0;
+      let totalGoalsSet = 0;
+      let goal = 0;
       const target = objective.target;
+      let actual = 0;
       const updatedObjective = { ...objective._doc }; // Copy to prevent mutating the original
 
-      if (objective.frequency_monitoring === "yearly") {
+      if (objective.frequency_monitoring === "monthly") {
         for (let i = 0; i < 12; i++) {
           total += objective[`month_${i}`] || 0;
+
+          if (objective.type_of_computation === "cumulative") {
+            if (
+              objective[`goal_month_${i}`] &&
+              objective.type_of_computation === "cumulative"
+            ) {
+              totalGoalsSet += objective[`goal_month_${i}`] || 0;
+            }
+
+            if (
+              objective.type_of_computation === "cumulative" &&
+              objective[`month_${i}_date`]
+            ) {
+              const monthDate = new Date(objective[`month_${i}_date`]);
+              const monthDateSet = monthDate.getMonth();
+              if (
+                monthDateSet === currentMonth &&
+                monthDate.getFullYear() === currentYear
+              ) {
+                totalCumulativeAchive += objective[`month_${i}`] || 0;
+                totalCumulativeAchiveGoal += objective[`goal_month_${i}`] || 0;
+              }
+            }
+          }
         }
       } else if (objective.frequency_monitoring === "quarterly") {
         for (let i = 0; i < 4; i++) {
           total += objective[`quarter_${i}`] || 0;
+
+          if (objective.type_of_computation === "cumulative") {
+            if (
+              objective[`goal_quarter_${i}`] &&
+              objective.type_of_computation === "cumulative"
+            ) {
+              totalGoalsSet += objective[`goal_quarter_${i}`] || 0;
+            }
+
+            if (
+              objective.type_of_computation === "cumulative" &&
+              objective[`quarter_${i}_date`]
+            ) {
+              const quarterDate = new Date(objective[`quarter_${i}_date`]);
+              const quarterDateSet = quarterDate.getMonth();
+              if (quarterDateSet >= 0 && quarterDateSet <= 2) {
+                quarter = 0;
+              } else if (quarterDateSet >= 3 && quarterDateSet <= 5) {
+                quarter = 1;
+              } else if (quarterDateSet >= 6 && quarterDateSet <= 8) {
+                quarter = 2;
+              } else if (quarterDateSet >= 9 && quarterDateSet <= 11) {
+                quarter = 3;
+              }
+              if (
+                quarterDateSet === currentQuarter &&
+                quarterDate.getFullYear() === currentYear
+              ) {
+                // actual += objective[`quarter_${i}`] || 0;
+                totalCumulativeAchive += objective[`quarter_${i}`] || 0;
+                totalCumulativeAchiveGoal +=
+                  objective[`goal_quarter_${i}`] || 0;
+              }
+            }
+          }
         }
       } else if (objective.frequency_monitoring === "semi_annual") {
         for (let i = 0; i < 2; i++) {
           total += objective[`semi_annual_${i}`] || 0;
+
+          if (objective.type_of_computation === "cumulative") {
+            if (
+              objective[`goal_semi_annual_${i}`] &&
+              objective.type_of_computation === "cumulative"
+            ) {
+              totalGoalsSet += objective[`goal_semi_annual_${i}`] || 0;
+            }
+
+            if (
+              objective.type_of_computation === "cumulative" &&
+              objective[`semi_annual_${i}_date`] &&
+              objective[`semi_annual_${i}`] !== 0
+            ) {
+              let goalsemiannualposition = 0;
+              let currentsemianualposition = 0;
+
+              const semiAnnualDate = new Date(
+                objective[`semi_annual_${i}_date`]
+              );
+              const semiAnnualDateSet = semiAnnualDate.getMonth();
+
+              if (semiAnnualDateSet >= 0 && semiAnnualDateSet <= 5) {
+                goalsemiannualposition = 0;
+              } else {
+                goalsemiannualposition = 1;
+              }
+
+              const currentYearDateSet = currentDate.getMonth();
+
+              if (currentYearDateSet >= 0 && currentYearDateSet <= 5) {
+                currentsemianualposition = 0;
+              } else {
+                currentsemianualposition = 1;
+              }
+
+              console.log({ goalsemiannualposition });
+              console.log({ currentsemianualposition });
+              console.log({ currentYear });
+              console.log({ ownDateYear: semiAnnualDate.getFullYear() });
+
+              if (
+                goalsemiannualposition === currentsemianualposition &&
+                semiAnnualDate.getFullYear() === currentYear
+              ) {
+                // actual += objective[`semi_annual_${i}`] || 0;
+                totalCumulativeAchive += objective[`semi_annual_${i}`] || 0;
+                totalCumulativeAchiveGoal +=
+                  objective[`goal_semi_annual_${i}`] || 0;
+                console.log({ totalCumulativeAchiveGoal });
+              }
+            }
+          }
+        }
+      } else if (objective.frequency_monitoring === "yearly") {
+        for (let i = 0; i < 1; i++) {
+          total += objective[`yearly_${i}`] || 0;
+
+          if (objective.type_of_computation === "cumulative") {
+            if (
+              objective[`goal_yearly_${i}`] &&
+              objective.type_of_computation === "cumulative"
+            ) {
+              totalGoalsSet += objective[`goal_yearly_${i}`] || 0;
+            }
+
+            if (
+              objective.type_of_computation === "cumulative" &&
+              objective[`yearly_${i}_date`]
+            ) {
+              const yearlyDate = new Date(objective[`yearly_${i}_date`]);
+              if (yearlyDate.getFullYear() === currentYear) {
+                // actual += objective[`yearly_0`] || 0;
+                totalCumulativeAchive += objective[`yearly_${i}`] || 0;
+                totalCumulativeAchiveGoal += objective[`goal_yearly_${i}`] || 0;
+              }
+            }
+          }
         }
       }
 
+      updatedObjective.total = total;
+      // updatedObjective.actual = actual;
+      updatedObjective.totalCumulativeAchive = totalCumulativeAchive;
+      updatedObjective.totalCumulativeAchiveGoal = totalCumulativeAchiveGoal;
       updatedObjective.completionPercentage = target
         ? Math.round((total / target) * 100)
         : 0;
+
+      updatedObjective.GOAL = totalCumulativeAchive;
+      updatedObjective.ACTUAL = totalCumulativeAchiveGoal;
+      updatedObjective.GOALSET = totalGoalsSet;
+      updatedObjective.countNonCumulative = `${total}` + "/" + `${target}`;
+      updatedObjective.goalVsActual = `${totalCumulativeAchive}/${
+        totalCumulativeAchiveGoal || totalGoalsSet
+      } `;
       return updatedObjective;
+
+      //objectiveData.total + "/" + objectiveData.target
     });
   }
 
@@ -328,12 +491,14 @@ module.exports = (router) => {
     let goalObjectiveNumber = [];
 
     try {
+      console.log(objectivesData);
+
       const checkTargetVsGoal = await checkedGoalVStarget(objectivesData);
 
       if (!checkTargetVsGoal) {
         return res
           .status(400)
-          .json({ message: "goal sets is larger than target" });
+          .json({ message: "check goals vs target, there is a discrepancy" });
       }
 
       let goalData = await Goals.findOne({ id: goalId }).select({
@@ -387,7 +552,7 @@ module.exports = (router) => {
 
       res.status(201).json({ success: true, data: newObjective });
     } catch (error) {
-      logger.error(error);
+      // logger.error(error);
       console.log(error);
       res.status(500).json({ success: false, message: "Server Error" });
     }
@@ -396,11 +561,16 @@ module.exports = (router) => {
   async function checkedGoalVStarget(data) {
     let counter = 0;
 
-    if (data.frequency_monitoring === "yearly") {
+    if (data.frequency_monitoring === "monthly") {
       for (let i = 0; i < 12; i++) {
         counter += data[`goal_month_${i}`] || 0;
       }
     }
+
+    if (data.frequency_monitoring === "yearly") {
+      counter = data["goal_yearly_0"];
+    }
+
     if (data.frequency_monitoring === "semi_annual") {
       counter = data["goal_semi_annual_0"] + data["goal_semi_annual_1"];
     }
@@ -549,7 +719,7 @@ module.exports = (router) => {
 
       // Check the goal_month_[i] : value and total
       let isComplete = true;
-      if (objective.frequency_monitoring === "yearly") {
+      if (objective.frequency_monitoring === "monthly") {
         for (let i = 0; i < 12; i++) {
           const key = `month_${i}`;
           const goalKey = `goal_month_${i}`;
@@ -576,13 +746,18 @@ module.exports = (router) => {
             break;
           }
         }
+      } else {
+        const key = `yearly_0`;
+        const goalKey = `goal_yearly_0`;
+        if (objective[goalKey] !== updateData[key]) {
+          isComplete = false;
+        }
       }
 
       // If the same total, change the complete to true and add it to the update data
 
       updateData.complete = isComplete ? isComplete : false;
 
-      console.log(updateData);
       const result = await Objectives.updateOne({ id }, updateData);
       if (result.nModified === 0) {
         return res.status(404).json({
@@ -824,46 +999,118 @@ module.exports = (router) => {
     "/getAllObjectivesForDashboardPie/:id",
 
     async (req, res) => {
-      let data = [];
       try {
-        let objectivesCount = await Objectives.countDocuments({
-          goalId: req.params.id,
-        });
-        let objectiveCompleted = await Objectives.countDocuments({
-          complete: true,
-          deleted: false,
-          goalId: req.params.id,
-        });
-        let objectiveUncompleted = await Objectives.countDocuments({
-          complete: false,
-          deleted: false,
-          goalId: req.params.id,
-        });
+        // let objectivesCount = await Objectives.countDocuments({
+        //   goalId: req.params.id,
+        // });
+        // let objectiveCompleted = await Objectives.countDocuments({
+        //   complete: true,
+        //   deleted: false,
+        //   goalId: req.params.id,
+        // });
+        // let objectiveUncompleted = await Objectives.countDocuments({
+        //   complete: false,
+        //   deleted: false,
+        //   goalId: req.params.id,
+        // });
         let objectivesData = await Objectives.find({
           deleted: false,
           goalId: req.params.id,
         }).select({
-          _id: 0,
           id: 1,
           functional_objective: 1,
+          performance_indicator: 1,
+          target: 1,
+          formula: 1,
+          programs: 1,
+          responsible_persons: 1,
+          // clients: 1,
+          remarks: 1,
+          month_0: 1,
+          month_1: 1,
+          month_2: 1,
+          month_3: 1,
+          month_4: 1,
+          month_5: 1,
+          month_6: 1,
+          month_7: 1,
+          month_8: 1,
+          month_9: 1,
+          month_10: 1,
+          month_11: 1,
+          file_month_0: 1,
+          file_month_1: 1,
+          file_month_2: 1,
+          file_month_3: 1,
+          file_month_4: 1,
+          file_month_5: 1,
+          file_month_6: 1,
+          file_month_7: 1,
+          file_month_8: 1,
+          file_month_9: 1,
+          file_month_10: 1,
+          file_month_11: 1,
+          goal_month_0: 1,
+          goal_month_1: 1,
+          goal_month_2: 1,
+          goal_month_3: 1,
+          goal_month_4: 1,
+          goal_month_5: 1,
+          goal_month_6: 1,
+          goal_month_7: 1,
+          goal_month_8: 1,
+          goal_month_9: 1,
+          goal_month_10: 1,
+          goal_month_11: 1,
+          quarter_0: 1,
+          quarter_1: 1,
+          quarter_2: 1,
+          quarter_3: 1,
+          file_quarter_0: 1,
+          file_quarter_1: 1,
+          file_quarter_2: 1,
+          file_quarter_3: 1,
+          goal_quarter_0: 1,
+          goal_quarter_1: 1,
+          goal_quarter_2: 1,
+          goal_quarter_3: 1,
+          semi_annual_0: 1,
+          semi_annual_1: 1,
+          file_semi_annual_0: 1,
+          file_semi_annual_1: 1,
+          goal_semi_annual_0: 1,
+          goal_semi_annual_1: 1,
+
+          goal_yearly_0: 1,
+          file_yearly_0: 1,
+          yearly_0: 1,
+
+          frequency_monitoring: 1,
+          timetable: 1,
+          // complete: 1,
+          data_source: 1,
           budget: 1,
-          complete: 1,
           date_added: 1,
+          createdBy: 1,
+          updateby: 1,
+          updateDate: 1,
+          createdAt: 1,
+          deleted: 1,
+          strategic_objective: 1,
         });
 
-        let completionPercentage =
-          objectivesCount > 0
-            ? Math.round((objectiveCompleted / objectivesData.length) * 100)
-            : 0;
+        console.log({ objectivesData: objectivesData._doc });
 
-        data.push({
-          objectivesCount: objectivesCount,
-          objectiveCompleted: objectiveCompleted,
-          objectiveUncompleted: objectiveUncompleted,
-          objectivesData: objectivesData,
-          completionPercentage: completionPercentage,
+        // let completionPercentage =
+        //   objectivesCount > 0
+        //     ? Math.round((objectiveCompleted / objectivesData.length) * 100)
+        //     : 0;
+        res.json({
+          success: true,
+          data: {
+            objectivesData: await CalculateBudgetAndCompletion(objectivesData),
+          },
         });
-        res.json({ success: true, data: data });
       } catch (error) {
         res.json({ success: false, message: error });
       }
@@ -904,6 +1151,32 @@ module.exports = (router) => {
       res.json({ success: false, message: err });
     }
   });
+  async function CalculateBudgetAndCompletion(data) {
+    return data.map((obj) => {
+      let total = 0;
+
+      if (obj.frequency_monitoring === "monthly") {
+        for (let i = 0; i < 12; i++) {
+          total += obj[`month_${i}`] || 0;
+        }
+      } else if (obj.frequency_monitoring === "quarterly") {
+        for (let i = 0; i < 4; i++) {
+          total += obj[`quarter_${i}`] || 0;
+        }
+      } else if (obj.frequency_monitoring === "semi_annual") {
+        for (let i = 0; i < 2; i++) {
+          total += obj[`semi_annual_${i}`] || 0;
+        }
+      } else if (obj.frequency_monitoring === "yearly") {
+        total += obj[`yearly_0`] || 0;
+      }
+
+      return {
+        ...obj._doc,
+        completed: total === obj.target ? true : false,
+      };
+    });
+  }
 
   return router;
 };

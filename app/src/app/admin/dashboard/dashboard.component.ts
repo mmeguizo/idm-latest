@@ -19,6 +19,10 @@ import { BranchService } from 'src/app/demo/service/branch.service';
 import { MessageService } from 'primeng/api';
 import { TabView, TabPanel } from 'primeng/tabview';
 import { ChartComponent } from '@swimlane/ngx-charts';
+import {
+    abbreviateNumber,
+    abbreviatePercentage,
+} from 'src/app/utlis/general-utils';
 
 @Component({
     selector: 'app-admin-dashboard',
@@ -270,12 +274,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe({
                 next: (data: any) => {
-                    console.log({
-                        getAllObjectivesWithObjectivesForCharts: data,
-                    });
-                    this.goals = data.goals || [];
-                    this.goalBarChartList = data.goalDropdown || [];
-                    this.pieChart(data.goals || this.goals || []);
+                    this.goals = data?.goals || [];
+                    this.goalBarChartList = data?.goalDropdown || [];
+                    this.pieChart(data?.goals || this.goals || []);
                     // this.thisBarCharts(data.goals);
                     this.processDashboardData(data);
                     this.loading = false;
@@ -316,12 +317,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 )
                 .pipe(takeUntil(this.getDashboardSubscription))
                 .subscribe((data: any) => {
-                    let {
-                        objectiveCompleted,
-                        objectiveUncompleted,
-                        objectivesData,
-                        completionPercentage,
-                    } = data.data[0];
+                    console.log(data);
+                    let { objectivesData } = data.data;
                     this.objectivesSideData = objectivesData;
                     this.pieDataBool =
                         objectivesData.length >= 1 ? true : false;
@@ -446,10 +443,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const textColor = documentStyle.getPropertyValue('--text-color');
 
         const labels = data.map((goal: any) => goal.department);
-
-        const budgets = data.map((goal: any) => goal.budget);
+        const labelsWithDepartment = data.flatMap(
+            (goal: any) =>
+                goal.objectivesDetails?.map(
+                    (obj: any) =>
+                        `${goal.department}**${obj.strategic_objective}`
+                ) || []
+        );
+        const budgets = data.map(
+            (goal: any) =>
+                goal.objectivesDetails?.reduce(
+                    (sum, obj) => sum + (obj.budget || 0),
+                    0
+                ) || 0
+        );
         const budgetsUsed = data.map(
             (goal: any) => goal.budgetMinusAllObjectiveBudget
+        );
+        const objectivesBudgets = data.flatMap(
+            (goal: any) =>
+                goal.objectivesDetails?.map((obj: any) => obj.budget || 0) || []
         );
         const budgetsRemaining = data.map((goal: any) => goal.remainingBudget);
 
@@ -457,19 +470,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
             (goal: any) => goal.completion_percentage
         );
 
-        const abbreviateNumber = (value: number) => {
-            if (value >= 1_000_000) {
-                return (value / 1_000_000).toFixed(1) + 'M';
-            } else if (value >= 1_000) {
-                return (value / 1_000).toFixed(1) + 'k';
-            } else {
-                return value.toString();
-            }
-        };
+        // const abbreviateNumber = (value: number) => {
+        //     if (value >= 1_000_000) {
+        //         return (value / 1_000_000).toFixed(1) + 'M';
+        //     } else if (value >= 1_000) {
+        //         return (value / 1_000).toFixed(1) + 'k';
+        //     } else {
+        //         return value?.toString();
+        //     }
+        // };
 
-        const abbreviatePercentage = (value: number) => {
-            return value + '%';
-        };
+        // const abbreviatePercentage = (value: number) => {
+        //     return value + '%';
+        // };
 
         this.pieCharts = {
             labels: labels,
@@ -517,16 +530,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             return `${label}: ${value}`;
                         },
                     },
+                    // callbacks: {
+                    //     label: (context: any) => {
+                    //         const label = context.label;
+                    //         const value = context.raw;
+                    //         return `${label}: ${value}`;
+                    //     },
+                    // },
                 },
             },
             maintainAspectRatio: true,
         };
+        //copy the original labels with department
+        const originalLabelsWithDepartment = [...labelsWithDepartment];
 
         this.pieChartsBudgetUsed = {
-            labels: labels,
+            labels: labelsWithDepartment.map((label) => label.split('**')[0]),
             datasets: [
                 {
-                    data: budgetsUsed,
+                    data: objectivesBudgets,
                     backgroundColor: [
                         documentStyle.getPropertyValue('--cyan-500'),
                         documentStyle.getPropertyValue('--bluegray-500'),
@@ -578,11 +600,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 tooltip: {
                     callbacks: {
                         label: (context: any) => {
-                            const label =
-                                context.label
-                                    .split(' ')
-                                    .map((word) => word.charAt(0).toUpperCase())
-                                    .join('') || '';
+                            const originalLabel =
+                                originalLabelsWithDepartment[context.dataIndex];
+                            const label = originalLabel.split('**')[1];
                             const value = context.raw;
                             return `${label}: ${value}`;
                         },
@@ -729,13 +749,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             (sum, value) => sum + value,
             0
         );
-
-        console.log(
-            totalObjectivesSum,
-            completedObjectivesSum,
-            pendingObjectivesSum
-        );
-
         this.pieChartsObjectives = {
             labels: [
                 'Total Objectives',

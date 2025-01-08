@@ -76,7 +76,7 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-                        <th style="min-width: 12rem">
+                        <!-- <th style="min-width: 12rem">
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
@@ -88,20 +88,9 @@
                                     placeholder="Search by Budget"
                                 ></p-columnFilter>
                             </div>
-                        </th>
+                        </th> -->
 
                         <th style="min-width: 12rem">
-                            <!-- <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Department
-                                <p-columnFilter
-                                    type="text"
-                                    field="department"
-                                    display="menu"
-                                    placeholder="Search by Department"
-                                ></p-columnFilter>
-                            </div> -->
                             <p-columnFilter
                                 field="department"
                                 matchMode="in"
@@ -203,7 +192,6 @@
                                         goal._id,
                                         goal.goallistsId,
                                         goal.goals,
-                                        goal.remainingBudget,
                                         goal
                                     )
                                 "
@@ -217,7 +205,7 @@
                                 {{ goal.goals | titlecase }}
                             </button>
                         </td>
-                        <td>
+                        <!-- <td>
                             <p-chip
                                 label="View Budget"
                                 icon="pi pi-wallet "
@@ -283,7 +271,7 @@
                                     </div>
                                 </p-card>
                             </p-overlayPanel>
-                        </td>
+                        </td> -->
 
                         <td>
                             {{ goal.department | titlecase }}
@@ -299,13 +287,17 @@
                             <!-- {{ goal.searchDate | date : "mediumDate" }} -->
                         </td>
                         <td>
-                            <div class="col">
+                            <!-- <div class="col">
                                 <p-progressBar
                                     [color]="'#1da750'"
                                     [value]="goal.completion_percentage"
                                     [showValue]="true"
                                 ></p-progressBar>
-                            </div>
+                            </div> -->
+
+                            <p class="text-center">
+                                {{ goal.completion_percentage }}%
+                            </p>
                         </td>
                         <!-- #1da750 -->
                         <td>
@@ -393,10 +385,10 @@
                 <div class="text-6xl text-primary font-bold mb-3">
                     {{ goalBudget || 0 | peso }}
                 </div>
-                <p class="mt-0 mb-4 text-700 line-height-3">
+                <!-- <p class="mt-0 mb-4 text-700 line-height-3">
                     Remaining:
                     {{ goalDataRemainingBudget || "0" | peso }}
-                </p>
+                </p> -->
             </section>
         </div>
 
@@ -419,8 +411,6 @@
                     'programs',
                     'department',
                     'responsible_persons',
-                    'clients',
-                    'timetable',
                     'frequency_monitoring',
                     'data_source',
                     'budget',
@@ -430,6 +420,7 @@
                 ]"
                 responsiveLayout="scroll"
                 [tableStyle]="{ 'min-width': '50rem' }"
+                [rowHover]="false"
             >
                 <ng-template pTemplate="caption">
                     <div
@@ -454,12 +445,27 @@
 
                         <p-button
                             icon="pi pi-file-pdf"
+                            label="QOAP"
                             (click)="
                                 printDocument(
                                     subOnjectiveHeaderData?.department || ''
                                 )
                             "
                             severity="info"
+                            [outlined]="true"
+                            pTooltip="Print PDF"
+                            tooltipPosition="top"
+                        />
+
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="QOM"
+                            (click)="
+                                printDocumentQOM(
+                                    subOnjectiveHeaderData?.department || ''
+                                )
+                            "
+                            severity="success"
                             [outlined]="true"
                             pTooltip="Print PDF"
                             tooltipPosition="top"
@@ -483,7 +489,20 @@
                             <div
                                 class="flex justify-content-between align-items-center"
                             >
-                                Percentage Complete
+                                <!-- Breakthrough Goals and Strategic Objective
+                                <p-columnFilter
+                                    type="text"
+                                    field="strategic_objective"
+                                    display="menu"
+                                    placeholder="Search by Strategic Objective"
+                                ></p-columnFilter> -->
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Status
                             </div>
                         </th>
                         <th style="min-width: 12rem">
@@ -565,32 +584,6 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-                        <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Clients
-                                <p-columnFilter
-                                    type="text"
-                                    field="clients"
-                                    display="menu"
-                                    placeholder="Search by Clients"
-                                ></p-columnFilter>
-                            </div>
-                        </th>
-                        <!-- <th style="min-width: 12rem">
-                            <div
-                                class="flex justify-content-between align-items-center"
-                            >
-                                Timetable
-                                <p-columnFilter
-                                    type="text"
-                                    field="timetable"
-                                    display="menu"
-                                    placeholder="Search by Timetable"
-                                ></p-columnFilter>
-                            </div>
-                        </th> -->
                         <th style="min-width: 4rem">
                             <div
                                 class="flex justify-content-between align-items-center"
@@ -696,13 +689,31 @@
                     pTemplate="body"
                     let-objectiveData
                     let-rowIndex="rowIndex"
+                    styleClass="custom-table-style"
                 >
                     <tr>
+                        <td
+                            *ngIf="rowIndex === 0"
+                            [attr.rowspan]="objectiveDatas.length"
+                        >
+                            <!-- {{ objectiveData.strategic_objective | titlecase }} -->
+                            {{
+                                subObjectiveHeaders +
+                                    " (" +
+                                    objectiveData.strategic_objective +
+                                    ")" | titlecase
+                            }}
+                        </td>
                         <td>
-                            <p-progressBar
+                            <!-- <p-progressBar
                                 [color]="'#1da750'"
                                 [value]="objectiveData.completionPercentage"
-                            />
+                            /> -->
+                            {{
+                                objectiveData.total + "/" + objectiveData.target
+                            }}
+                            as of
+                            {{ currentDate | date : "mediumDate" }}
                         </td>
                         <td>
                             {{ objectiveData.target }}
@@ -727,11 +738,10 @@
                             {{ objectiveData.responsible_persons | titlecase }}
                         </td>
                         <td>
-                            {{ objectiveData.clients | titlecase }}
-                        </td>
-
-                        <td>
-                            {{ objectiveData.frequency_monitoring | titlecase }}
+                            {{
+                                formatText(objectiveData.frequency_monitoring)
+                                    | titlecase
+                            }}
                         </td>
                         <td>
                             {{ objectiveData.data_source | titlecase }}
@@ -1223,7 +1233,7 @@
 </p-dialog>
 
 <app-print-table [printFile]="parentPrintFile"> </app-print-table>
-
+<app-print-qom [printFile]="parentPrintFileQom"> </app-print-qom>
 <!-- Printing functions  -->
 <app-remarks [remarksFromGoalParent]="parentRemarks">
     <!--  (childRemarksEvent)="receivedRemarksEvent($event)" -->

@@ -5,8 +5,6 @@ const chatHistories = new Map();
 module.exports = (router) => {
   router.get("/remarks/:objectiveId", async (req, res) => {
     try {
-      console.log({ id: req.params.objectiveId, remarks: "remarks" });
-
       const remarks = await Remarks.aggregate([
         {
           $match: {
@@ -47,8 +45,6 @@ module.exports = (router) => {
 
   router.post("/remarks", async (req, res) => {
     try {
-      console.log(req.body);
-
       const newRemark = new Remarks(req.body);
       const savedRemark = await newRemark.save();
       res.status(201).json(savedRemark);

@@ -73,10 +73,9 @@ export class EditUserComponent implements OnInit, OnDestroy {
         this.getAllCampuses();
         this.getAllVicePresident();
         this.getAllDepartmentDropdown();
-
+        this.getAllDirectors();
         this.form.get('role').valueChanges.subscribe((role) => {
             this.getAllVicePresident();
-            this.getAllDirectors();
 
             if (role && role.code) {
                 if (role.code === 'vice-president') {
@@ -101,8 +100,9 @@ export class EditUserComponent implements OnInit, OnDestroy {
         // this.getAllDepartmentDropdown();
         const data = changes['updateUser']?.currentValue?.data;
 
-        console.log('data', data);
         this.editNewUserEventFromParent = changes['updateUser']?.currentValue;
+
+        console.log({ ngOnChanges: data });
 
         if (data && (!data.vice_president_id || !data.vice_president_name)) {
             this.isVicePresident = false;
@@ -128,7 +128,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
                     (dept) => dept.code === data.department
                 ),
             });
-            let selectedVp = '';
             // if (data.role === 'director') {
             //     this.isDirector = true;
             //     this.isVicePresident = true;
@@ -161,6 +160,14 @@ export class EditUserComponent implements OnInit, OnDestroy {
                 ),
             });
 
+            const selectedDirector = this.selectDiretor.find(
+                (director) => director.id === data.director_id
+            );
+
+            const selectedVp = this.selectVP.find(
+                (vp) => vp.id === data.vice_president_id
+            );
+
             this.form.setValue({
                 firstname: data.firstname ? data.firstname : 'tester',
                 lastname: data.lastname ? data.lastname : '',
@@ -169,15 +176,12 @@ export class EditUserComponent implements OnInit, OnDestroy {
                 department: data.department ? data.department : '',
                 role: rolesSelected || '',
                 vice_president: selectedVp || '',
-                director: '',
+                director: selectedDirector || '',
                 office_head: '',
                 campus: data.campus ? data.campus : '',
                 password: '',
                 confirm: '',
             });
-
-            console.log('selectedVpxxx', selectedVp);
-            console.log('selectVP', this.selectVP);
 
             this.updateUserCard = true;
             this.updateUserId = data.id;
@@ -216,6 +220,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
                 this.selectDiretor = data.data[0] || [];
+                console.log({ getAllDirectors: this.selectDiretor });
             });
     }
 
@@ -232,7 +237,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
             .fetch('get', 'department', 'getAllDepartmentDropdown')
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
-                console.log('getAllDepartmentDropdown', data);
                 this.deptDropdownValue = data.data[0];
             });
     }
@@ -242,24 +246,42 @@ export class EditUserComponent implements OnInit, OnDestroy {
     }
 
     updateUserExecution(form: FormGroup): void {
-        let data = {
+        let data: any = {
             id: this.updateUserId,
             username: form.value.username,
             email: form.value.email,
             department: this.formGroupDemo.value.selectDepartment.code,
+            department_id: this.formGroupDemo.value.selectDepartment.id,
             campus: this.formGroupCampus.value.selectedCampus.name,
             role: form.value.role.code,
-            vice_president_id: form.value.vice_president.id || '',
-            vice_president_name: form.value.vice_president.fullname || '',
-            director_id: form.value.director.id || '',
-            director_name: form.value.director.fullname || '',
-            password: form.value.password.trim(),
-            confirm: form.value.confirm.trim(),
         };
 
-        console.log('updateUserExecution', data);
+        if (form.value.vice_president.id) {
+            data.vice_president_id = form.value.vice_president.id;
+            data.vice_president_name = form.value.vice_president.fullname;
+        }
+
+        if (form.value.director.id) {
+            data.director_id = form.value.director.id;
+            data.director_name = form.value.director.fullname;
+        }
+
+        if (form.value.password.trim() || form.value.confirm.trim()) {
+            if (form.value.password.trim() !== form.value.confirm.trim()) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Password and confirm password do not match',
+                });
+                return;
+            } else {
+                data.password = form.value.password.trim();
+                data.confirm = form.value.confirm.trim();
+            }
+        }
+        console.log({ updateUserExecution: data });
         this.user
-            .fetch('put', 'users', 'updateUser', data)
+            .fetch('put', 'users', 'updateUserAdmin', data)
             .pipe(takeUntil(this.getUserSubscription))
             .subscribe((data: any) => {
                 if (data.success) {

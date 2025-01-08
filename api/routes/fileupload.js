@@ -8,7 +8,7 @@ const path = require("path");
 const ObjectId = mongoose.Types.ObjectId;
 let fs = require("fs");
 let md5 = require("md5");
-const { logger } = require("../middleware/logger");
+// const { logger } = require("../middleware/logger");
 const Logs = require("../models/logs");
 const User = require("../models/user");
 const Objectives = require("../models/objective");
@@ -111,11 +111,11 @@ module.exports = (router) => {
       let params = JSON.stringify(req.params);
       let query = JSON.stringify(req.query);
       let body = JSON.stringify(req.body);
-      logger.info(
-        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-          req.statusCode
-        }|${req.socket.remoteAddress}|${Date.now()}`
-      );
+      // logger.info(
+      //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+      //     req.statusCode
+      //   }|${req.socket.remoteAddress}|${Date.now()}`
+      // );
     }
   );
 
@@ -180,6 +180,7 @@ module.exports = (router) => {
             source: finalFileName,
             for: "files",
             filetype: file.mimetype.split("/")[0],
+            // frequencyFileName: frequencyFileName || null,
           };
 
           if (frequencyFileName) {
@@ -234,11 +235,11 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.post("/addFile/:user_id", async (req, res) => {
@@ -312,11 +313,11 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.post("/addAvatar", (req, res) => {
@@ -394,11 +395,11 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.put("/deleteFile", (req, res) => {
@@ -431,11 +432,11 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.put("/deleteFileObjective", (req, res) => {
@@ -475,11 +476,11 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.get("/getAllFiles/:user_id", (req, res) => {
@@ -494,11 +495,11 @@ module.exports = (router) => {
     });
     let params = JSON.stringify(req.params);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.get(
@@ -572,11 +573,11 @@ module.exports = (router) => {
       let params = JSON.stringify(req.params);
       let query = JSON.stringify(req.query);
       let body = JSON.stringify(req.body);
-      logger.info(
-        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-          req.statusCode
-        }|${req.socket.remoteAddress}|${Date.now()}`
-      );
+      // logger.info(
+      //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+      //     req.statusCode
+      //   }|${req.socket.remoteAddress}|${Date.now()}`
+      // );
     }
   );
 

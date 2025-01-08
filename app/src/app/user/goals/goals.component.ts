@@ -889,7 +889,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     printTable(subOnjectiveHeaderData: any = '', name?: any, office?: any) {
-        let imageSrc = this.auth.domain + '/assets/layout/images/logo.png';
+        let imageSrc = this.auth.domain + '/images/logo.png';
         this.isPrintableVisible = true;
         let print, win;
         print = document.getElementById('print').innerHTML;

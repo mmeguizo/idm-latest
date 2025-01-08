@@ -49,6 +49,8 @@ module.exports.emailValidator = [
 //usernanme validators
 
 let usernameLengthChecker = (username) => {
+  console.log("username: " + username);
+
   if (!username) {
     return false;
   } else {

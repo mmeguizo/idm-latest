@@ -69,7 +69,8 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     addNewObjectiveTableTrigger: any;
     editObjectiveTableTrigger: any;
     // childAddObjectiveEvent: any;
-
+    parentPrintFileQom: any = {};
+    printingOfficeName: any;
     constructor(
         private objective: ObjectiveService,
         private messageService: MessageService,
@@ -100,7 +101,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
         this.addNewObjectiveTableTrigger =
             changes['addNewSuccessObjective']?.currentValue;
         this.editObjectiveTableTrigger = changes['editObjective']?.currentValue;
-
+        console.log(this.getObjectiveTableTrigger);
         if (
             this.getObjectiveTableTrigger &&
             this.getObjectiveTableTrigger.getObjective
@@ -110,7 +111,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
                 _id: objectId,
                 listsId: goallistsId,
                 goal: subHeader,
-                remainingBudget: goalDataRemainingBudget,
+                // remainingBudget: goalDataRemainingBudget,
                 goalData: goalData,
             } = this.getObjectiveTableTrigger;
 
@@ -125,9 +126,9 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
             //headers in objective table
 
             this.subOnjectiveHeaderData = goalData;
-            this.goalDataRemainingBudget =
-                goalDataRemainingBudget ||
-                this.subOnjectiveHeaderData?.remainingBudget;
+            // this.goalDataRemainingBudget =
+            //     goalDataRemainingBudget ||
+            //     this.subOnjectiveHeaderData?.remainingBudget;
             this.goalBudget = this.subOnjectiveHeaderData?.budget;
 
             this.subObjectiveHeaders = customTitleCase(
@@ -163,6 +164,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
                 .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.objectiveTableSubscription))
                 .subscribe(async (data: any) => {
+                    console.log(data);
                     this.objectiveDatas = await data.Objectives;
                     this.changeDetectorRef.markForCheck();
                     this.loading = false;
@@ -250,7 +252,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
 
     printDocument(header: string, data: any) {
         //   this.printingHead = true;
-
+        console.log({ printDocument: true, data: data, header: header });
         this.printObjectiveTableEvent.emit({
             printObjectiveTable: true,
             data: data,
@@ -263,5 +265,21 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
             remarksDialogCard: true,
             data: data,
         });
+    }
+
+    printDocumentQOM() {
+        //   this.printingHead = true;
+        this.parentPrintFileQom = {
+            printFile: true,
+            objectData: this.objectiveDatas,
+            printingHead: true,
+            subObjectiveHeaders: this.subObjectiveHeaders,
+            subOnjectiveHeaderData: this.subOnjectiveHeaderData?.department,
+            printingOfficeName: this.printingOfficeName,
+        };
+    }
+
+    formatText(text: string) {
+        return text.replace(/_/g, ' ');
     }
 }

@@ -55,7 +55,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     //table columns
     cols!: any;
     loading = false;
-
+    currentDate = Date.now();
     //variables used in the component
     userID: string;
     updateGoalID: string;
@@ -103,7 +103,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     // progress bar
     value = 0;
     interval: any;
-    goalDataRemainingBudget: number = 0;
+    // goalDataRemainingBudget: number = 0;
     goalBudget: number = 0;
     // set initial value
     onclickCompletionButton = [];
@@ -126,13 +126,14 @@ export class GoalsComponent implements OnInit, OnDestroy {
     // add files child component
     parentAddnewFile: any = {};
     parentPrintFile: any = {};
+    parentPrintFileQom: any = {};
 
     frequencyOptions = [
         { name: 'yearly', code: 'yearly' },
         { name: 'quarterly', code: 'quarterly' },
         { name: 'semi_annual', code: 'semi_annual' },
+        { name: 'monthly', code: 'monthly' },
     ];
-
     months: string[] = [];
     quarters: string[] = [];
     semi_annual: string[] = [];
@@ -260,32 +261,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
             });
     }
 
-    getAllObjectivesUnderDirector(role: string): Subject<boolean> {
-        const resultSubject = new Subject<boolean>(); // Create a new Subject to emit success or failure
-
-        this.loading = true;
-        this.goal
-            .fetch('get', 'goals', `getAllObjectivesUnderDirector/${role}`)
-            .pipe(
-                takeUntil(this.getGoalSubscription),
-                tap((data: any) => {
-                    this.goals = data.goals;
-                    this.loading = false;
-                }),
-                catchError((error) => {
-                    this.loading = false; // Set loading to false on error
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error getAllObjectivesWithObjectives',
-                        detail: error.message,
-                    });
-                    return throwError(() => error); // Re-throw the error if necessary
-                })
-            )
-            .subscribe(); // Trigger the observable
-        return resultSubject; // Return the subject to the caller
-    }
-
     getAllObjectivesWithObjectives(): Subject<boolean> {
         const resultSubject = new Subject<boolean>(); // Create a new Subject to emit success or failure
 
@@ -296,6 +271,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 takeUntil(this.getGoalSubscription),
                 tap((data: any) => {
                     this.goals = data.goals;
+                    console.log(data.goals);
                     this.loading = false;
                 }),
                 catchError((error) => {
@@ -329,7 +305,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
         objectId: string = '',
         goallistsId: string = '',
         subHeader: string = '',
-        goalDataRemainingBudget: number = 0,
         goalData: any = []
     ) {
         this.loading = true;
@@ -343,10 +318,10 @@ export class GoalsComponent implements OnInit, OnDestroy {
         //headers in objective table
 
         this.subOnjectiveHeaderData = goalData;
-        this.goalDataRemainingBudget =
-            goalDataRemainingBudget ||
-            this.subOnjectiveHeaderData?.remainingBudget;
-        this.goalBudget = this.subOnjectiveHeaderData?.budget;
+        // this.goalDataRemainingBudget =
+        //     goalDataRemainingBudget ||
+        //     this.subOnjectiveHeaderData?.remainingBudget;
+        // this.goalBudget = this.subOnjectiveHeaderData?.budget;
 
         this.subObjectiveHeaders = this.customTitleCase(
             subHeader || this.subObjectiveHeaders || ''
@@ -360,7 +335,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe(async (data: any) => {
+                    console.log(data);
                     this.objectiveDatas = data.Objectives;
+                    this.goalBudget = data.budget;
                     this.loading = false;
                 });
         }
@@ -374,11 +351,12 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.getGoalSubscription))
                 .subscribe((data: any) => {
                     this.objectiveDatas = data.Objectives;
+                    this.goalBudget = data.budget;
                     let subBudget = data.Objectives.reduce((acc, e) => {
                         return acc + e.budget;
                     }, 0);
 
-                    this.goalDataRemainingBudget = this.goalBudget - subBudget;
+                    // this.goalDataRemainingBudget = this.goalBudget - subBudget;
                     this.changeDetectorRef.detectChanges();
                     this.loading = false;
                     this.makeChanges = false;
@@ -451,6 +429,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     }
 
     updateSubGoal(data: any) {
+        console.log({ updateSubGoal: data });
         this.parentupdateObjective = {
             editGoal: true,
             data,
@@ -732,6 +711,19 @@ export class GoalsComponent implements OnInit, OnDestroy {
             printFile: true,
             objectData: this.objectiveDatas,
             printingHead: true,
+            subObjectiveHeaders: this.subObjectiveHeaders,
+            subOnjectiveHeaderData: this.subOnjectiveHeaderData?.department,
+            printingOfficeName: this.printingOfficeName,
+        };
+    }
+
+    printDocumentQOM() {
+        //   this.printingHead = true;
+        this.parentPrintFileQom = {
+            printFile: true,
+            objectData: this.objectiveDatas,
+            printingHead: true,
+            subObjectiveHeaders: this.subObjectiveHeaders,
             subOnjectiveHeaderData: this.subOnjectiveHeaderData?.department,
             printingOfficeName: this.printingOfficeName,
         };
@@ -744,5 +736,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
             remarksDialogCard: true,
             data: event,
         };
+    }
+
+    formatText(text: string) {
+        return text.replace(/_/g, ' ');
     }
 }

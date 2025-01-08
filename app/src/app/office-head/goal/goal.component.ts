@@ -49,6 +49,7 @@ export class GoalComponent implements OnInit, OnDestroy {
     parentRemarks: any;
     parentViewFiles: { viewFiles: any; data: any };
     parentPrintFile: any = {};
+    parentPrintQom: any = {};
     constructor(
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
@@ -87,6 +88,16 @@ export class GoalComponent implements OnInit, OnDestroy {
         const { header, data, printObjectiveTable } = event;
         this.parentPrintFile = {
             printObjectiveTable: printObjectiveTable,
+            data: data,
+            header: header,
+        };
+    }
+    receivedPrintQOMObjectiveTableEvent(event: any) {
+        console.log({ receivedPrintQOMObjectiveTableEvent: event });
+
+        const { header, data, printQOMObjectiveTable } = event;
+        this.parentPrintQom = {
+            printQOMObjectiveTable: printQOMObjectiveTable,
             data: data,
             header: header,
         };

@@ -4,7 +4,7 @@ const config = require("../config/database");
 const { v4: uuidv4 } = require("uuid");
 let bcrypt = require("bcryptjs");
 const comparePassword = require("../models/validators/password-compare");
-const { logger, logMiddleware } = require("../middleware/logger");
+// const { logger, logMiddleware } = require("../middleware/logger");
 
 module.exports = (router) => {
   router.post("/register", (req, res) => {
@@ -137,11 +137,11 @@ module.exports = (router) => {
           let params = JSON.stringify(req.params);
           let query = JSON.stringify(req.query);
           let body = JSON.stringify(req.body);
-          logger.info(
-            ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-              req.statusCode
-            }|${req.socket.remoteAddress}|${Date.now()}`
-          );
+          // logger.info(
+          //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+          //     req.statusCode
+          //   }|${req.socket.remoteAddress}|${Date.now()}`
+          // );
           res.json({
             success: true,
             message: "Password is Correct",
@@ -207,7 +207,7 @@ Object { a: 5, c: 7 }
         if (decoded) {
           data.user = { username, id, role, profile_pic, campus, department } =
             decoded;
-          logMiddleware(data);
+          // logMiddleware(data);
         }
 
         if (err) {

@@ -136,7 +136,7 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             programs: ['', [Validators.required]],
             responsible_persons: ['', [Validators.required]],
             clients: ['', [Validators.required]],
-            timetable: ['', [Validators.required]],
+            // timetable: ['', [Validators.required]],
             frequency_monitoring: ['', [Validators.required]],
             data_source: ['', [Validators.required]],
             budget: ['', [Validators.required]],
@@ -324,10 +324,10 @@ export class ObjectivesComponent implements OnInit, OnDestroy {
             programs: data.programs,
             responsible_persons: data.responsible_persons,
             clients: data.clients,
-            timetable: [
-                new Date(data.timetable[0]),
-                new Date(data.timetable[1]),
-            ],
+            // timetable: [
+            //     new Date(data.timetable[0]),
+            //     new Date(data.timetable[1]),
+            // ],
             frequency_monitoring: data.frequency_monitoring,
             data_source: data.data_source,
             budget: data.budget,

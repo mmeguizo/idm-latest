@@ -76,7 +76,11 @@ export class GoalTableComponent implements OnInit, OnDestroy {
         const resultSubject = new Subject<boolean>();
         this.loading;
         this.goal
-            .fetch('get', 'goals', `getAllObjectivesWithObjectives/${userId}`)
+            .fetch(
+                'get',
+                'office_head_query',
+                `getAllObjectivesWithObjectivesTableOfficeHead/${userId}`
+            )
             .pipe(
                 takeUntil(this.getGoalTableSubscription),
                 tap((data: any) => {
@@ -89,7 +93,8 @@ export class GoalTableComponent implements OnInit, OnDestroy {
                     this.loading = false; // Set loading to false on error
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error getAllObjectivesWithObjectives',
+                        summary:
+                            'Error getAllObjectivesWithObjectivesTableOfficeHead',
                         detail: error.message,
                     });
                     resultSubject.next(false); // Emit false on error
@@ -150,7 +155,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
         _id: string,
         listsId: any,
         goal: any,
-        remainingBudget: any,
+        // remainingBudget: any,
         goalData: any
     ) {
         this.getObjectiveButtonClick.emit({
@@ -158,7 +163,7 @@ export class GoalTableComponent implements OnInit, OnDestroy {
             _id: _id,
             listsId: listsId,
             goal: goal,
-            remainingBudget: remainingBudget,
+            // remainingBudget: remainingBudget,
             goalData: goalData,
         });
     }

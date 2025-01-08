@@ -97,16 +97,16 @@ export class AppMenuComponent implements OnInit {
                         },
                     ],
                 },
-                {
-                    label: 'Logs',
-                    items: [
-                        {
-                            label: 'Activity',
-                            icon: 'pi pi-server',
-                            routerLink: ['/admin/logs'],
-                        },
-                    ],
-                },
+                // {
+                //     label: 'Logs',
+                //     items: [
+                //         {
+                //             label: 'Activity',
+                //             icon: 'pi pi-server',
+                //             routerLink: ['/admin/logs'],
+                //         },
+                //     ],
+                // },
                 {
                     label: 'Ai Helper',
                     items: [

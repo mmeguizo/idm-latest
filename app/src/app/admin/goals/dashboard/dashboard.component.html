@@ -17,7 +17,6 @@
             }
         </div>
     </div>
-
     <!-- <div class="col-12 lg:col-6 xl:col-3">
         <p-card header="Goal Summary">
             <div class="align-items-center">
@@ -51,16 +50,15 @@
     <div class="col-12 lg:col-6 xl:col-3">
         <p-card header="To Do card"> </p-card>
     </div> -->
-
     <div class="col-12">
         <div class="card">
             <p-card header="Goal Summary">
                 <div class="align-items-center">
-                    <p-progressBar
+                    <!-- <p-progressBar
                         [value]="(objectiveBudget / goalForTables) * 100"
                         [showValue]="false"
                         styleClass="mb-2"
-                    ></p-progressBar>
+                    ></p-progressBar> -->
                     <!-- <p
                         class="text-center text-base"
                         style="
@@ -76,18 +74,21 @@
                         Remaining Budget:
                         {{ goalForTables - objectiveBudget | peso }}
                     </p> -->
+                    <span class="block text-base font-bold mb-1">{{
+                        officeListCombine | titlecase
+                    }}</span>
 
                     <div>
                         <p-chip
-                            label="Goal : {{ goalForTables | peso }}"
+                            label="Goal : {{ goals.length }}"
                             icon="pi pi-money-bill"
                             styleClass="m-2"
                         ></p-chip>
                     </div>
                     <div>
                         <p-chip
-                            label="Used Budget : {{
-                                goalForTables - objectiveBudget | peso
+                            label="Total Objective Budget : {{
+                                allObjectiveBudget || 0 | peso
                             }}"
                             icon="pi pi-money-bill"
                             styleClass="m-2 mb-0"
@@ -185,10 +186,10 @@
                             }}
                         </td>
                         <td>{{ goal.completion_percentage + "%" }}</td>
-                        <td>{{ getObjectiveNames(goal) }}</td>
+                        <td>{{ goal | objectiveNames }}</td>
                         <td>{{ goal.objectivesDetails?.length || 0 }}</td>
-                        <td>{{ getCompletedObjectives(goal) }}</td>
-                        <td>{{ getIncompleteObjectives(goal) }}</td>
+                        <td>{{ goal | completedObjectives }}</td>
+                        <td>{{ goal | incompleteObjectives }}</td>
                     </tr>
                 </ng-template>
 
@@ -214,9 +215,8 @@
                                             </td>
                                             <td>
                                                 {{
-                                                    formatFrequencyString(
-                                                        objective.frequency_monitoring
-                                                    )
+                                                    objective.frequency_monitoring
+                                                        | formatFrequency
                                                 }}
                                             </td>
                                             <td>

@@ -3,8 +3,9 @@ const { v4: uuidv4 } = require("uuid");
 const hash = require("../config/password-hasher");
 const mongoose = require("mongoose");
 let bcrypt = require("bcryptjs");
-const { logger } = require("../middleware/logger");
+// const { logger } = require("../middleware/logger");
 const ObjectId = mongoose.Types.ObjectId;
+const Department = require("../models/department");
 
 module.exports = (router) => {
   router.get("/getAllVicePresident", async (req, res) => {
@@ -162,7 +163,6 @@ module.exports = (router) => {
   });
 
   router.post("/addUser", (req, res) => {
-    console.log("addUser", req.body);
     const {
       email,
       username,
@@ -198,6 +198,7 @@ module.exports = (router) => {
       username: req.body.username.toLowerCase(),
       password: req.body.password,
       department: req.body.department,
+      department_id: req.body.department_id,
       vice_president_name: req.body?.vice_president_name || " ",
       vice_president_id: req.body?.vice_president_id || " ",
       director_name: req.body.director_name || " ",
@@ -208,18 +209,33 @@ module.exports = (router) => {
 
     User.create(userData)
       .then((data) => {
-        res.json({
-          success: true,
-          message: "This user is successfully Registered ",
-          data: {
-            email,
-            firstname,
-            lastname,
-            username,
-            department,
-            role,
-          },
-        });
+        Department.create({
+          id: uuidv4(),
+          department: req.body.department,
+          department_head: req.body.username,
+          user_id: req.body.id,
+          campus: req.body.campus,
+        })
+          .then((data) => {
+            res.json({
+              success: true,
+              message: "This user is successfully Registered ",
+              data: {
+                email,
+                firstname,
+                lastname,
+                username,
+                department,
+                role,
+              },
+            });
+          })
+          .catch((err) => {
+            res.json({
+              success: false,
+              message: "Could not save user Error : " + err,
+            });
+          });
       })
       .catch((err) => {
         if (err.code === 11000) {
@@ -233,6 +249,8 @@ module.exports = (router) => {
           const errors = Object.keys(err.errors);
           res.json({ success: false, message: err.errors[errors[0]].message });
         } else {
+          Department;
+
           res.json({
             success: false,
             message: "Could not save user Error : " + err,
@@ -369,16 +387,14 @@ module.exports = (router) => {
         saveData.password = hashedPassword;
       }
 
-      // userData.role = data.role;
-      // userData.username = data.username;
-      // userData.email = data.email;
-      // userData.campus = data.campus;
-      // userData.department = data.department;
-      userData = { ...data, ...saveData };
+      const response = await User.findOneAndUpdate(
+        { id: data.id },
+        { userData, ...req.body },
+        {
+          new: true,
+        }
+      );
 
-      const response = await User.findOneAndUpdate({ id: data.id }, userData, {
-        new: true,
-      });
       if (response) {
         res.json({
           success: true,
@@ -394,6 +410,73 @@ module.exports = (router) => {
     } catch (err) {
       res.json({ success: false, message: err.message });
     }
+  });
+  router.put("/updateUserAdmin", async (req, res) => {
+    let data = req.body;
+    let saveData = {};
+    let userData = {};
+
+    console.log({ updateUserAdmin: data });
+
+    try {
+      const user = await User.findOne({ id: req.body.id });
+      if (!user) {
+        return res.json({ success: false, message: "User not found" });
+      }
+
+      if (data.password && data.confirm && data.password.trim() !== "") {
+        if (data.password !== data.confirm) {
+          return res.json({
+            success: false,
+            message: "Passwords do not match",
+          });
+        }
+        const hashedPassword = await hash.encryptPassword(data.password);
+        data.password = hashedPassword;
+      }
+
+      const response = await User.findOneAndUpdate(
+        { id: data.id },
+        { userData, ...req.body },
+        {
+          new: true,
+        }
+      );
+
+      if (response) {
+        const results = await Department.findOneAndUpdate(
+          { id: data.department_id },
+          { $set: { department_head: data.username, user_id: data.id } },
+          { new: true, upsert: true }
+        );
+
+        console.log("Department update results:", results);
+
+        res.json({
+          success: true,
+          message: "User information has been updated!",
+          data: response,
+        });
+      } else {
+        res.json({
+          success: true,
+          message: "No user has been modified!",
+        });
+      }
+    } catch (err) {
+      res.json({ success: false, message: err.message });
+    }
+
+    // const checkPassword = await bcrypt.compare(
+    //   data.old_password,
+    //   user.password
+    // );
+    // if (!checkPassword) {
+    //   return res.json({
+    //     success: false,
+    //     message: "Incorrect old password",
+    //   });
+    // }
   });
 
   router.put("/updateProfile", async (req, res) => {

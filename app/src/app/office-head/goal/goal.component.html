@@ -31,6 +31,7 @@
     (viewFilesEvent)="receivedViewFilesButtonClick($event)"
     (remarksEvent)="receivedRemarksEvent($event)"
     (printObjectiveTableEvent)="receivedPrintObjectiveTableEvent($event)"
+    (printQOMObjectiveTableEvent)="receivedPrintQOMObjectiveTableEvent($event)"
 >
 </app-objective-table>
 <app-add-objective
@@ -40,21 +41,20 @@
 </app-add-objective>
 
 <!-- files -->
-<app-add-files
-    [addNewFile]="parentAddnewFile"
-    (childAddFile)="receivedAddFileEvent($event)"
->
-</app-add-files>
+<app-add-files [addNewFile]="parentAddnewFile"> </app-add-files>
 
 <app-view-files [viewFiles]="parentViewFiles"></app-view-files>
 
 <app-edit-objective
     [getObjective]="parentEditObjective"
     (childUpdateObjective)="receivedUpdateObjective($event)"
+    (childAddFile)="receivedAddFileEvent($event)"
 >
 </app-edit-objective>
 <app-print-objective-table [printFile]="parentPrintFile">
 </app-print-objective-table>
+
+<app-print-qom [printQOMFile]="parentPrintQom"></app-print-qom>
 
 <app-remarks
     [remarksFromGoalParent]="parentRemarks"

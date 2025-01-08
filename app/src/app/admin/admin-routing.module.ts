@@ -25,7 +25,7 @@ import { GoalManagementComponent } from './goal-management/goal-management.compo
             // { path: 'goals/reporting', component: ReportingComponent },
             { path: 'departments', component: DepartmentsComponent },
             { path: 'goal-management', component: GoalManagementComponent },
-            { path: 'logs', component: LogsComponent },
+            // { path: 'logs', component: LogsComponent },
             { path: 'ai', component: AiComponent },
             { path: '**', redirectTo: '/dashboard' },
         ]),

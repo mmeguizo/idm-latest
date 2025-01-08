@@ -35,6 +35,8 @@ import { MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { IdepartmentDropdown } from 'src/app/interface/department.interface';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { abbreviateNumber } from 'src/app/utlis/general-utils';
+
 @Component({
     selector: 'app-dashboard',
     standalone: true,
@@ -106,6 +108,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     completedGoalsFromApi: any;
     uncompletedGoalsFromApi: any;
     goals: any;
+    pieChartsBudgetUsed: any;
+    PieChartBudgetUsedOptions: any;
     constructor(
         private changeDetector: ChangeDetectorRef,
         private obj: ObjectiveService,
@@ -145,7 +149,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.getAllObjectivesUnderADirectorData = data;
                 this.completedGoalsFromApi = data.completedGoals;
                 this.uncompletedGoalsFromApi = data.uncompletedGoals;
-                this.pieChart(data.goals || []);
                 this.goals = data.goals || [];
                 this.goalBarChartList = data.dropdown || [];
                 this.pieChart(data.goals || this.goals || []);
@@ -224,7 +227,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const textColor = documentStyle.getPropertyValue('--text-color');
 
         const labels = data.map((goal) => goal.department);
-        const budgets = data.map((goal) => goal.budget);
+        const budgets = data.map((goal) => goal.budgetMinusAllObjectiveBudget);
+        const budgetsUsed = data.map(
+            (goal: any) => goal.budgetMinusAllObjectiveBudget
+        );
+        const budgetsRemaining = data.map((goal: any) => goal.remainingBudget);
+
+        const percentageCompletion = data.map(
+            (goal: any) => goal.completion_percentage
+        );
         const generateRandomColor = () => {
             const r = Math.floor(Math.random() * 256);
             const g = Math.floor(Math.random() * 256);
@@ -262,6 +273,64 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     labels: {
                         usePointStyle: true,
                         color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label =
+                                context.label
+                                    .split(' ')
+                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .join('') || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        this.pieChartsBudgetUsed = {
+            labels: labels,
+            datasets: [
+                {
+                    data: budgetsUsed,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--cyan-500'),
+                        documentStyle.getPropertyValue('--bluegray-500'),
+                        documentStyle.getPropertyValue('--red-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--cyan-400'),
+                        documentStyle.getPropertyValue('--bluegray-400'),
+                        documentStyle.getPropertyValue('--red-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.PieChartBudgetUsedOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
                     },
                 },
             },

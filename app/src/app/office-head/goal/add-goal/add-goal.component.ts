@@ -20,6 +20,7 @@ import { CampusService } from 'src/app/demo/service/campus.service';
 import { AuthService } from 'src/app/demo/service/auth.service';
 import { GoallistService } from 'src/app/demo/service/goallists.service';
 import { GoalService } from 'src/app/demo/service/goal.service';
+import { customTitleCase } from 'src/app/utlis/custom-title-case';
 @Component({
     selector: 'app-add-goal',
     templateUrl: './add-goal.component.html',
@@ -40,7 +41,9 @@ export class AddGoalComponent implements OnInit, OnDestroy {
     customGoalName: string;
     USERID: string;
     selectedGoalId: any;
-
+    strategicObjectiveList: any;
+    originalStrategicObjective: any;
+    filteredStrategicObjectiveList: any;
     constructor(
         private formBuilder: FormBuilder,
         private dept: DepartmentService,
@@ -94,7 +97,20 @@ export class AddGoalComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.addGoalSubscription))
             .subscribe({
                 next: (data: any) => {
-                    this.deptDropdownGoalListValue = data.data[0];
+                    this.deptDropdownGoalListValue = data.data[0].map(
+                        (item) => ({
+                            ...item,
+                            name: customTitleCase(item.name),
+                        })
+                    );
+                    this.originalStrategicObjective =
+                        this.strategicObjectiveList = data.data[0].flatMap(
+                            (e: any) =>
+                                e.objectives.map((objective: any) => ({
+                                    ...objective,
+                                    name: customTitleCase(objective.name),
+                                }))
+                        );
                 },
                 error: (error) => {
                     this.messageService.add({
@@ -130,7 +146,8 @@ export class AddGoalComponent implements OnInit, OnDestroy {
     createAddGoalForm() {
         this.addGoalform = this.formBuilder.group({
             goals: ['', [Validators.required]],
-            budget: ['', [Validators.required]],
+            strategic_objective: ['', [Validators.required]],
+            // budget: ['', [Validators.required]],
             campus: ['', [Validators.required]],
             department: ['', [Validators.required]],
         });
@@ -146,19 +163,16 @@ export class AddGoalComponent implements OnInit, OnDestroy {
     addGoalDialogExec(form: FormGroup) {
         let data = {
             goals: form.value.goals.name || this.customGoalName,
-            budget: form.value.budget,
+            strategic_objective: form.value.strategic_objective.name,
+            strategic_id: form.value.strategic_objective.id,
             campus: this.formGroupCampus.value.selectedCampus.name,
             department: this.formGroupDemo.value.selectDepartment.name,
             createdBy: this.USERID,
             goallistsId: this.selectedGoalId || '',
         };
+        console.log('addGoalDialogExec', data);
 
-        if (
-            data.goals === '' ||
-            data.budget === '' ||
-            data.campus === '' ||
-            data.department === ''
-        ) {
+        if (data.goals === '' || data.campus === '' || data.department === '') {
             // Handle the error (display a message, log to console, etc.)
             this.messageService.add({
                 severity: 'error',
@@ -203,11 +217,21 @@ export class AddGoalComponent implements OnInit, OnDestroy {
     }
 
     onGoalChange(event: any) {
+        //ever change set the goal back to the original list
+        this.strategicObjectiveList = this.originalStrategicObjective;
         if (event.value) {
             this.selectedGoalId = event.value.id;
+            this.filterStrategicObjectives(event.value.id);
         }
     }
 
+    filterStrategicObjectives(goal_id: any) {
+        this.filteredStrategicObjectiveList =
+            this.strategicObjectiveList.filter(
+                (objective) => objective.goal_id === goal_id
+            );
+        this.strategicObjectiveList = this.filteredStrategicObjectiveList;
+    }
     ngOnDestroy(): void {
         this.addGoalSubscription.next();
         this.addGoalSubscription.complete();

@@ -36,6 +36,7 @@ import { MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { IdepartmentDropdown } from 'src/app/interface/department.interface';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { abbreviateNumber } from 'src/app/utlis/general-utils';
 
 @Component({
     selector: 'app-dashboard',
@@ -105,7 +106,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     completedGoalsFromApi: any;
     uncompletedGoalsFromApi: any;
     goals: any;
-
+    pieChartsBudgetUsed: any;
+    PieChartBudgetUsedOptions: any;
     constructor(
         private changeDetector: ChangeDetectorRef,
         private obj: ObjectiveService,
@@ -307,6 +309,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.completedGoalsFromApi = data.completedGoals;
                 this.uncompletedGoalsFromApi = data.uncompletedGoals;
                 this.goals = data.goals || [];
+                console.log({ getAllObjectivesUnderAOfficeHead: this.goals });
                 this.goalBarChartList = data.dropdown || [];
                 this.pieChart(data.goals || this.goals || []);
                 this.thisBarCharts(data.objectiveCompletions);
@@ -316,6 +319,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     async processDashboardData(data) {
         // total of objectives
+        console.log({ processDashboardData: data });
 
         const objectives =
             data.goals?.reduce(
@@ -382,11 +386,32 @@ export class DashboardComponent implements OnInit, OnDestroy {
     async pieChart(data: any = []) {
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
-        const labels = data.flatMap((e) =>
-            e.objectivesDetails.map((x) => x.functional_objective)
+
+        const labels = data.map((goal: any) => goal.department);
+
+        const budgets = data.map(
+            (goal: any) => goal.budgetMinusAllObjectiveBudget
         );
-        const budgets = data.flatMap((e) =>
-            e.objectivesDetails.map((x) => x.budget)
+        const budgetsUsed = data.map(
+            (goal: any) => goal.budgetMinusAllObjectiveBudget
+        );
+        const budgetsRemaining = data.map((goal: any) => goal.remainingBudget);
+
+        const percentageCompletion = data.map(
+            (goal: any) => goal.completion_percentage
+        );
+
+        const labelsWithDepartment = data.flatMap(
+            (goal: any) =>
+                goal.objectivesDetails?.map(
+                    (obj: any) =>
+                        `${goal.department}**${obj.strategic_objective}`
+                ) || []
+        );
+
+        const objectivesBudgets = data.flatMap(
+            (goal: any) =>
+                goal.objectivesDetails?.map((obj: any) => obj.budget || 0) || []
         );
 
         this.pieCharts = {
@@ -414,6 +439,96 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     labels: {
                         usePointStyle: true,
                         color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label =
+                                context.label
+                                    .split(' ')
+                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .join('') || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        const originalLabelsWithDepartment = [...labelsWithDepartment];
+
+        this.pieChartsBudgetUsed = {
+            labels: labelsWithDepartment.map((label) => label.split('**')[0]),
+            datasets: [
+                {
+                    data: objectivesBudgets,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--cyan-500'),
+                        documentStyle.getPropertyValue('--bluegray-500'),
+                        documentStyle.getPropertyValue('--red-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--cyan-400'),
+                        documentStyle.getPropertyValue('--bluegray-400'),
+                        documentStyle.getPropertyValue('--red-400'),
+                    ],
+                },
+            ],
+        };
+
+        // this.PieChartBudgetUsedOptions = {
+        //     plugins: {
+        //         legend: {
+        //             labels: {
+        //                 usePointStyle: true,
+        //                 color: textColor,
+        //             },
+        //         },
+        //         datalabels: {
+        //             formatter: (value: number) => abbreviateNumber(value),
+        //             color: textColor,
+        //             font: {
+        //                 size: 15,
+        //             },
+        //         },
+        //     },
+        //     maintainAspectRatio: true,
+        // };
+
+        this.PieChartBudgetUsedOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const originalLabel =
+                                originalLabelsWithDepartment[context.dataIndex];
+                            const label = originalLabel.split('**')[1];
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
                     },
                 },
             },

@@ -285,6 +285,7 @@ export class FileService {
         }
         formData.append('objectiveId', objectiveId);
         formData.append('frequencyFileName', frequencyFileName);
+        console.log('formData', formData);
         return this.http
             .post(
                 this.cs.domain + `/fileupload/addObjectiveFiles/${user_id}`,

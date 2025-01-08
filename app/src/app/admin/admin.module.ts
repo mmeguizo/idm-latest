@@ -30,6 +30,7 @@ import { AddFilesComponent } from './goals/add-files/add-files.component';
 import { AddUserComponent } from './users/add-user/add-user.component';
 import { EditUserComponent } from './users/edit-user/edit-user.component';
 import { RemarksComponent } from './goals/remarks/remarks.component';
+import { PrintQomComponent } from './goals/print-qom/print-qom.component';
 
 @NgModule({
     imports: [AdminRoutingModule, SharedModule, MarkdownModule.forRoot()],
@@ -56,6 +57,7 @@ import { RemarksComponent } from './goals/remarks/remarks.component';
         AddUserComponent,
         EditUserComponent,
         RemarksComponent,
+        PrintQomComponent,
     ],
     providers: [FileUpload],
 })

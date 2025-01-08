@@ -32,8 +32,7 @@ export class PrintObjectiveTableComponent implements OnInit {
     constructor(private authService: AuthService) {} // Inject AuthService if needed
 
     ngOnInit() {
-        this.imageSrc =
-            this.authService.domain + '/assets/layout/images/logo.png'; // Get the image source
+        this.imageSrc = this.authService.domain + '/images/logo.png'; // Get the image source
     }
 
     ngOnChanges(changes: SimpleChanges) {

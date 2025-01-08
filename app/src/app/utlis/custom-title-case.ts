@@ -8,3 +8,7 @@ export function customTitleCase(str: string): string {
     // Join the formatted words back into a string
     return formattedWords.join(' ');
 }
+
+export function RemoveUnderscoreInAstring(str: string): string {
+    return str.replace(/_/g, ' ');
+}

@@ -63,7 +63,16 @@ import { RatingModule } from 'primeng/rating';
 import { EditorModule } from 'primeng/editor';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
+import { RadioButtonModule } from 'primeng/radiobutton';
+import {
+    AbbreviatePercentagePipe,
+    AbbreviationPipe,
+    FirstFourWordsPipe,
+    ObjectiveNamesPipe,
+    CompletedObjectivesPipe,
+    IncompleteObjectivesPipe,
+    FormatFrequencyPipe,
+} from '../utlis/general.pipes';
 Chart.register(ChartDataLabels);
 
 const pipes = [
@@ -80,6 +89,13 @@ const pipes = [
     PesoPipe,
     StringToDatePipe,
     MarkdownPipe,
+    AbbreviatePercentagePipe,
+    ObjectiveNamesPipe,
+    AbbreviationPipe,
+    FirstFourWordsPipe,
+    CompletedObjectivesPipe,
+    IncompleteObjectivesPipe,
+    FormatFrequencyPipe,
 ];
 
 @NgModule({
@@ -134,6 +150,7 @@ const pipes = [
         ConfirmDialogModule,
         RatingModule,
         EditorModule,
+        RadioButtonModule,
         // BoldReportViewerModule,
         ...pipes,
         // FileUpload

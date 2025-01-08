@@ -5,7 +5,7 @@ const app = express();
 const router = express.Router();
 const config = require("./config/database");
 const mongoose = require("mongoose");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002;
 const path = require("path");
 const office_head_query = require("./routes/office_head_query");
 const http = require("http").Server(app);
@@ -35,6 +35,8 @@ mongoose.connect(config.uri, config.options, (err) => {
     console.log("cant connect to database " + process.env.DB_NAME);
   } else {
     console.log("connected to the database " + process.env.DB_NAME);
+    console.log("running on " + process.env.NODE_ENV + " mode");
+    console.log("on port " + PORT);
   }
 });
 
@@ -56,7 +58,7 @@ app.use(express.urlencoded({ limit: "20mb", extended: false }));
 app.use(allowCrossDomain);
 
 //for deployment on hosting and build
-app.use(express.static(__dirname + "/dist/"));
+// app.use(express.static(__dirname + "/dist/"));
 app.use("/images", express.static(path.join(__dirname, "./images")));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads/files")));
 //api routes
@@ -81,10 +83,14 @@ app.use(
   express.static(path.join(__dirname, "../uploads/images"))
 );
 
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "index.html"));
+// });
+
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname + "/dist/index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
-const servers = app.listen(PORT || 52847, () => {
+const servers = app.listen(PORT, () => {
   console.log("Connected on port " + PORT);
 });

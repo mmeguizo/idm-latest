@@ -9,7 +9,7 @@
     (onHide)="form.reset()"
 >
     <div class="card p-fluid">
-        <form [formGroup]="form">
+        <form [formGroup]="form" autocomplete="off">
             <div class="field">
                 <label for="firstname">First Name</label>
                 <input
@@ -108,6 +108,7 @@
                     id="password"
                     class="flex-auto"
                     autocomplete="off"
+                    type="password"
                     [ngClass]="
                         form?.get('password').touched &&
                         form?.controls['password'].errors?.required
@@ -115,6 +116,7 @@
                             : ''
                     "
                     formControlName="password"
+                    [toggleMask]="true"
                     required
                 />
             </div>
@@ -130,7 +132,9 @@
                             : ''
                     "
                     formControlName="confirm"
+                    [toggleMask]="true"
                     autocomplete="off"
+                    type="password"
                     required
                 />
             </div>

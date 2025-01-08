@@ -14,12 +14,24 @@
                         [options]="deptDropdownGoalListValue"
                         optionLabel="name"
                         placeholder="Select a Goal"
-                        [(ngModel)]="customGoalName"
                         [editable]="false"
                         (onChange)="onGoalChange($event)"
                     />
+                    <!-- [(ngModel)]="customGoalName" -->
                 </div>
                 <div class="field">
+                    <label htmlFor="department">Strategic Objectives</label>
+                    <p-dropdown
+                        formControlName="strategic_objective"
+                        [options]="strategicObjectiveList"
+                        optionLabel="name"
+                        placeholder="Select a Strategic Objectives"
+                        [editable]="false"
+                    />
+                    <!-- [(ngModel)]="customstrageticObjectiveName" -->
+                    <!--  (onChange)="onGoalChange($event)" -->
+                </div>
+                <!-- <div class="field">
                     <label htmlFor="name1">Budget</label>
                     <p-inputNumber
                         mode="decimal"
@@ -27,7 +39,7 @@
                         formControlName="budget"
                     >
                     </p-inputNumber>
-                </div>
+                </div> -->
                 <div class="field">
                     <label htmlFor="department">Department</label>
                     <form [formGroup]="formGroupDemo">

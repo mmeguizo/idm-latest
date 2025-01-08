@@ -54,6 +54,12 @@ export class AddFilesComponent implements OnInit, OnDestroy {
     ngOnChanges(changes: SimpleChanges) {
         const addFileTrigger = changes['addNewFile']?.currentValue;
         this.addFileTrigger = changes['addNewFile']?.currentValue;
+
+        console.log(
+            'changes addNewFile currentValue',
+            changes['addNewFile']?.currentValue
+        );
+
         if (addFileTrigger && addFileTrigger.addFile) {
             this.addObjectiveFileDialogCard = true;
             this.objectiveIDforFile = addFileTrigger?.objectiveId;
@@ -90,6 +96,15 @@ export class AddFilesComponent implements OnInit, OnDestroy {
             event.preventDefault();
         }
 
+        console.log('uploadedFiles', {
+            user_id: this.USERID,
+            objectiveId: this.objectiveIDforFile,
+            files: this.uploadedFiles,
+            frequencyFileName: this.frequencyFileName
+                ? this.frequencyFileName
+                : '',
+        });
+
         this.fileService
             .addObjectiveFiles({
                 user_id: this.USERID,
@@ -109,6 +124,15 @@ export class AddFilesComponent implements OnInit, OnDestroy {
                         frequencyFileNameForUpdate: data.fileNames[0],
                         frequencyFileName: this.frequencyFileName,
                     });
+
+                    console.log('childAddFiledata', {
+                        USERID: this.USERID,
+                        objectiveId: this.objectiveIDforFile,
+                        viewObjectiveFileDialogCard: false,
+                        frequencyFileNameForUpdate: data.fileNames[0],
+                        frequencyFileName: this.frequencyFileName,
+                    });
+
                     this.addObjectiveFileDialogCard = false;
                     this.AllObjectivesFiles = [];
                     if (data.success) {

@@ -46,7 +46,9 @@
                             "
                         ></button>
                     </td>
-                    <td style="min-width: 12rem">{{ goal.goals }}</td>
+                    <td style="min-width: 12rem">
+                        {{ goal.goals | titlecase }}
+                    </td>
                     <td>
                         <div class="options-users">
                             <i
@@ -85,7 +87,11 @@
                                 </ng-template>
                                 <ng-template pTemplate="body" let-objective>
                                     <tr>
-                                        <td>{{ objective.objective }}</td>
+                                        <td>
+                                            {{
+                                                objective.objective | titlecase
+                                            }}
+                                        </td>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="emptymessage">

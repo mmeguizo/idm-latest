@@ -25,23 +25,49 @@ export class PrintTableComponent implements OnInit {
     isPrintableVisible: boolean = false;
     printingHead: boolean = false;
     objectiveDatas: any;
-    nameValue: string = '';
-    officeValue: string = '';
+
+    preparedByValue: string = '';
+    preparedByofficeValue: string = '';
+    counterCheckedValue: string = '';
+    counterCheckedofficeValue: string = '';
+    verifiedByValue: string = '';
+    verifiedByofficeValue: string = '';
+
     subOnjectiveHeaderData: string = '';
+    subObjectiveHeaders: string = '';
+    reviewedByValue: any;
+    reviewedByofficeValue: any;
 
     constructor(private authService: AuthService) {} // Inject AuthService if needed
 
     ngOnInit() {
-        this.imageSrc =
-            this.authService.domain + '/assets/layout/images/logo.png'; // Get the image source
+        this.imageSrc = this.authService.domain + '/images/logo.png'; // Get the image source
+        // this.authService.domain + '/images/logo.png'; // Get the image source
     }
+    /*
+      this.parentPrintFile = {
+            printFile: true,
+            objectData: this.objectiveDatas,
+            printingHead: true,
+            subObjectiveHeaders: this.subObjectiveHeaders,
+            subOnjectiveHeaderData: this.subOnjectiveHeaderData?.department,
+            printingOfficeName: this.printingOfficeName,
+        };
+    */
 
     ngOnChanges(changes: SimpleChanges) {
-        const { objectData, subOnjectiveHeaderData, printingHead } =
-            changes['printFile']?.currentValue;
-        this.objectiveDatas = objectData;
+        const {
+            objectData: data,
+            header,
+            subObjectiveHeaders,
+            printFile: printObjectiveTable,
+            subOnjectiveHeaderData,
+        } = changes['printFile']?.currentValue;
+        console.log(data, header, subObjectiveHeaders, printObjectiveTable);
         this.subOnjectiveHeaderData = subOnjectiveHeaderData;
-        this.printingHead = printingHead;
+        this.objectiveDatas = data;
+        this.subObjectiveHeaders = subObjectiveHeaders;
+        this.printingHead = printObjectiveTable;
     }
 
     getFrequencyKeys(frequency_monitoring: string) {
@@ -50,7 +76,7 @@ export class PrintTableComponent implements OnInit {
     }
 
     printPdf() {
-        this.isPrintableVisible = true;
+        // this.isPrintableVisible = true;
         let print, win;
         print = document.getElementById('print').innerHTML;
         win = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
@@ -110,20 +136,20 @@ export class PrintTableComponent implements OnInit {
           .nested-table {
             tr {
               td {
-                font-weight: 600;
-                &[rowspan="4"] {
-                  border-bottom: 0;
-                }
-                &:last-child {
-                  border-right: 0;
-                }
+            font-weight: 600;
+            &[rowspan="4"] {
+              border-bottom: 0;
+            }
+            &:last-child {
+              border-right: 0;
+            }
               }
               &:last-child {
-                td {
-                  &:last-child {
-                    border-bottom: 0;
-                  }
-                }
+            td {
+              &:last-child {
+                border-bottom: 0;
+              }
+            }
               }
             }
           }
@@ -138,21 +164,21 @@ export class PrintTableComponent implements OnInit {
             }
             & + td {
               & > div {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                > h1 {
-                  font-size: 26px;
-                }
-                > h5 {
-                  color: #064f7c;
-                }
-                > hr {
-                  margin-top: 8px;
-                  width: 80%;
-                  border: 1px solid;
-                }
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            > h1 {
+              font-size: 26px;
+            }
+            > h5 {
+              color: #064f7c;
+            }
+            > hr {
+              margin-top: 8px;
+              width: 80%;
+              border: 1px solid;
+            }
               }
             }
           }
@@ -162,30 +188,30 @@ export class PrintTableComponent implements OnInit {
               font-size: 18px;
               padding: 8px 6px;
               &:first-child {
-                background-color: #f57e3a;
+            background-color: #f57e3a;
               }
               &:nth-child(2) {
-                background-color: #057a40;
+            background-color: #057a40;
               }
               &:last-child {
-                background-color: #efdf10;
+            background-color: #efdf10;
               }
             }
             & + tr {
               & > th {
-                padding: 8px;
+            padding: 8px;
               }
               & + tr {
-                & > th {
-                  padding: 0px 4px;
-                  font-stretch: condensed;
-                  font-size: 16px;
-                }
-                & + tr {
-                  & > th {
-                    padding: 2px;
-                  }
-                }
+            & > th {
+              padding: 0px 4px;
+              font-stretch: condensed;
+              font-size: 16px;
+            }
+            & + tr {
+              & > th {
+                padding: 2px;
+              }
+            }
               }
             }
           }
@@ -194,18 +220,18 @@ export class PrintTableComponent implements OnInit {
             font-stretch: condensed;
             & tr {
               & > td {
-                height: 0;
-                & > div {
-                  height: 100%;
-                  display: flex;
-                  flex-direction: column;
-                  gap: 1rem;
-                  justify-content: space-evenly;
-                  text-align: center;
-                  & p {
-                    font-size: 14px;
-                  }
-                }
+            height: 0;
+            & > div {
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
+              justify-content: space-evenly;
+              text-align: center;
+              & p {
+                font-size: 14px;
+              }
+            }
               }
             }
           }
@@ -215,31 +241,31 @@ export class PrintTableComponent implements OnInit {
             & tr td {
               padding: 0;
               & > div {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                & > div {
-                  &:not(:last-child) {
-                    border-right: 1px solid;
-                  }
-                  & > div {
-                    font-size: 14px;
-                    padding: 3px 6px;
-                    &:not(:last-child) {
-                      border-bottom: 1px solid;
-                    }
-                    &:nth-child(2) {
-                      text-align: center;
-                      font-size: 16px;
-                      padding-top: 32px;
-                      font-weight: 600;
-                      padding-bottom: 0px;
-                    }
-                    &:last-child {
-                      text-align: center;
-                      font-size: 14px;
-                    }
-                  }
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            & > div {
+              &:not(:last-child) {
+                border-right: 1px solid;
+              }
+              & > div {
+                font-size: 14px;
+                padding: 3px 6px;
+                &:not(:last-child) {
+                  border-bottom: 1px solid;
                 }
+                &:nth-child(2) {
+                  text-align: center;
+                  font-size: 16px;
+                  padding-top: 32px;
+                  font-weight: 600;
+                  padding-bottom: 0px;
+                }
+                &:last-child {
+                  text-align: center;
+                  font-size: 14px;
+                }
+              }
+            }
               }
             }
           }
@@ -264,94 +290,106 @@ export class PrintTableComponent implements OnInit {
             </style>
             <body>
               <div id="tobeprinted">
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="p-0" rowspan="4" colspan="9">
-                        <table class="nested-table">
-                          <tr>
-                            <td rowspan="4" class="logo">
-                              <img src="${this.imageSrc}" alt="CHMSU Logo" />
-                            </td>
-                            <td rowspan="4">
-                              <div>
-                                <h1>Carlos Hilado Memorial State University</h1>
-                                <h5>Alijis Campus . Binalbagan Campus . Fortune Towne Campus . Talisay Campus</h5>
-                                <hr />
-                              </div>
-                            </td>
-                            <td>Revision No.</td>
-                          </tr>
-                          <tr>
-                            <td>Date of Revision</td>
-                          </tr>
-                          <tr>
-                            <td>Date of Effectivity</td>
-                          </tr>
-                          <tr>
-                            <td>Page No.</td>
-                          </tr>
-                        </table>
-                      </th>
-                      <th>&nbsp;</th>
-                    </tr>
-                    <tr>
-                      <th>&nbsp;</th>
-                    </tr>
-                    <tr>
-                      <th>&nbsp;</th>
-                    </tr>
-                    <tr>
-                      <th class="text-align-end">Page 2</th>
-                    </tr>
-                    <tr class="font-condensed">
-                   <th colspan="5">${
-                       this.subOnjectiveHeaderData?.toUpperCase() ||
-                       this.printingOfficeName?.toUpperCase()
-                   }</th>
-                      <th colspan="4">QUALITY OBJECTIVES AND ACTION PLAN</th>
-                      <th class="text-align-end" colspan="1">CY</th>
-                    </tr>
-                    <tr>
-                      <th class="border-x-0" colspan="10"></th>
-                    </tr>
-                    <tr>
-                      <th class="border-x-0" colspan="10"></th>
-                    </tr>
-                  </thead>
-                  <body onload="window.print();window.close()">${print}</body>
-                  <tfoot>
-                    <tr>
-                      <td colspan="10">
-                        <div>
-                          <div>
-                            <div>Prepared by:</div>
-                            <div>${this.nameValue.toLocaleUpperCase()}</div>
-                            <div>${this.officeValue.toLocaleUpperCase()}</div>
-                          </div>
-                          <div>
-                            <div>Reviewed and verified by:</div>
-                            <div>YRIKA MARIE R. DUSARAN, PhDTM</div>
-                            <div>Director for Quality Management</div>
-                          </div>
-                          <div>
-                            <div>Approved by:</div>
-                            <div>ROSALINDA S. TUVILLA</div>
-                            <div>Vice President for Administrator and Finance</div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tfoot>
+            <table>
+              <thead>
+                <tr>
+                  <th class="p-0" rowspan="4" colspan="10">
+                <table class="nested-table">
+                  <tr>
+                    <td rowspan="4" class="logo">
+                      <img src="${this.imageSrc}" alt="CHMSU Logo" />
+                    </td>
+                    <td rowspan="4">
+                      <div>
+                    <h1>Carlos Hilado Memorial State University</h1>
+                    <h5>Alijis Campus . Binalbagan Campus . Fortune Towne Campus . Talisay Campus</h5>
+                    <hr />
+                      </div>
+                    </td>
+                    <td>Revision No.</td>
+                  </tr>
+                  <tr>
+                    <td>Date of Revision</td>
+                  </tr>
+                  <tr>
+                    <td>Date of Effectivity</td>
+                  </tr>
+                  <tr>
+                    <td>Page No.</td>
+                  </tr>
                 </table>
+                  </th>
+                  <th>&nbsp;</th>
+                </tr>
+                <tr>
+                  <th>&nbsp;</th>
+                </tr>
+                <tr>
+                  <th>&nbsp;</th>
+                </tr>
+                <tr>
+                  <th class="text-align-end">Page 2</th>
+                </tr>
+                <tr class="font-condensed">
+               <th colspan="7">${
+                   this.subOnjectiveHeaderData?.toUpperCase() ||
+                   this.printingOfficeName?.toUpperCase()
+               }</th>
+                  <th colspan="3">QUALITY OBJECTIVES AND ACTION PLAN</th>
+                  <th class="text-align-end" colspan="1">CY</th>
+                </tr>
+                <tr>
+                  <th class="border-x-0" colspan="11"></th>
+                </tr>
+                <tr>
+                  <th class="border-x-0" colspan="11"></th>
+                </tr>
+              </thead>
+              <body onload="window.print();window.close()">${print}</body>
+              <tfoot>
+                <tr>
+                  <td colspan="11">
+                <div>
+                  <div>
+                    <div>Prepared by:</div>
+                    <div>${this.preparedByValue.toLocaleUpperCase()}</div>
+                    <div>${this.preparedByofficeValue.toLocaleUpperCase()}</div>
+                  </div>
+                  <div>
+                    <div>Counter Checked by:</div>
+                    <div>${this.counterCheckedValue.toLocaleUpperCase()}</div>
+                    <div>${this.counterCheckedofficeValue.toLocaleUpperCase()}</div>
+                  </div>
+                  <div>
+                    <div>Reviewed by:</div>
+                    <div>${this.reviewedByValue.toLocaleUpperCase()}</div>
+                    <div>${this.reviewedByofficeValue.toLocaleUpperCase()}</div>
+                  </div>
+                  <div>
+                    <div>Approved by:</div>
+                    <div>${this.verifiedByValue.toLocaleUpperCase()}</div>
+                    <div>${this.verifiedByofficeValue.toLocaleUpperCase()}</div>
+                  </div>
+                </div>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
               </div>
             </body>
           </html>
               `);
+        this.isPrintableVisible = true;
         win.document.close();
         this.isPrintableVisible = false;
         this.printingOfficeName = '';
-        this.nameValue = '';
-        this.officeValue = '';
+        this.preparedByValue = '';
+        this.preparedByofficeValue = '';
+        this.counterCheckedValue = '';
+        this.counterCheckedofficeValue = '';
+        this.verifiedByValue = '';
+        this.verifiedByofficeValue = '';
+        this.reviewedByValue = '';
+        this.reviewedByofficeValue = '';
     }
 }

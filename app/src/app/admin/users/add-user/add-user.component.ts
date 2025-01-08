@@ -177,6 +177,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
             username: form.value.username,
             email: form.value.email,
             department: this.formGroupDemo.value.selectDepartment.code,
+            department_id: this.formGroupDemo.value.selectDepartment.id,
             campus: this.formGroupCampus.value.selectedCampus.name,
             password: form.value.password.trim(),
             confirm: form.value.confirm.trim(),
@@ -201,6 +202,8 @@ export class AddUserComponent implements OnInit, OnDestroy {
                 detail: 'First Name and Last Name are required',
             });
         }
+
+        console.log({ addUserFunction: data });
         this.user
             .fetch('post', 'users', 'addUser', data)
             .pipe(takeUntil(this.getUserSubscription))

@@ -44,6 +44,8 @@ const fileUpload = new Schema(
     file_semi_annual_0: { type: String },
     file_semi_annual_1: { type: String },
     file_semi_annual_2: { type: String },
+
+    file_yearly_0: { type: String },
   },
   {
     timestamps: true,

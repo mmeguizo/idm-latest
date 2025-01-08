@@ -31,7 +31,7 @@ const userSchema = new Schema(
       enum: ["admin", "president", "vice-president", "director", "office-head"],
       default: "office-head",
     },
-
+    department_id: { type: String, default: "" },
     vice_president_id: { type: String, default: "" },
     vice_president_name: { type: String, default: "" },
     director_id: { type: String, default: "" },

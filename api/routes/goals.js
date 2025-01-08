@@ -3,12 +3,12 @@ const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Objectives = require("../models/objective");
-const { logger } = require("../middleware/logger");
+// const { logger } = require("../middleware/logger");
 const userHistory = require("../models/userhistories");
 const goals = require("../models/goals");
 const Users = require("../models/user");
 const Departments = require("../models/department");
-const { query, log } = require("winston");
+// const { query, log } = require("winston");
 
 module.exports = (router) => {
   router.get("/getObjectivesViewTable", async (req, res) => {
@@ -181,11 +181,32 @@ module.exports = (router) => {
               await CalculateBudgetAndCompletion(Goals)
             );
 
-            res.json({ success: true, goals: returnedData }); // Return success and blogs array
+            res.json({
+              success: true,
+              goals: returnedData,
+              // originalData: Goals,
+            }); // Return success and blogs array
           }
         }
       }
     ).sort({ _id: -1 });
+  });
+
+  router.get("/getGoalForCreatingObjective/:goal_id", async (req, res) => {
+    const results = await Goals.findOne(
+      { id: req.params.goal_id, deleted: false },
+      {
+        _id: 1,
+        id: 1,
+        goals: 1,
+        strategic_objective: 1,
+        strategic_id: 1,
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Goal found", goal: results });
   });
 
   router.get("/getGoalsForDashboard", async (req, res) => {
@@ -269,7 +290,7 @@ module.exports = (router) => {
             _id: 1,
             id: 1,
             goals: 1,
-            budget: 1,
+            // budget: 1,
             department: 1,
             campus: 1,
             createdBy: 1,
@@ -359,6 +380,11 @@ module.exports = (router) => {
                   goal_semi_annual_0: "$$od.goal_semi_annual_0",
                   goal_semi_annual_1: "$$od.goal_semi_annual_1",
                   goal_semi_annual_2: "$$od.goal_semi_annual_2",
+
+                  goal_year_0: "$$od.goal_year_0",
+                  yearly_0: "$$od.yearly_0",
+                  file_year_0: "$$od.file_year_0",
+
                   frequency_monitoring: "$$od.frequency_monitoring",
                   timetable: "$$od.timetable",
                   complete: "$$od.complete",
@@ -549,6 +575,7 @@ module.exports = (router) => {
                   updateDate: "$$od.updateDate",
                   createdAt: "$$od.createdAt",
                   deleted: "$$od.deleted",
+                  strategic_objective: "$$od.strategic_objective",
                 },
               },
             },
@@ -603,8 +630,6 @@ module.exports = (router) => {
         },
       },
     ]);
-
-    console.log({ getAllObjectivesUnderDirector: officeHeadId });
 
     Goals.aggregate(
       [
@@ -941,6 +966,11 @@ module.exports = (router) => {
                         goal_semi_annual_0: "$$od.goal_semi_annual_0",
                         goal_semi_annual_1: "$$od.goal_semi_annual_1",
                         goal_semi_annual_2: "$$od.goal_semi_annual_2",
+
+                        goal_year_0: "$$od.goal_year_0",
+                        yearly_0: "$$od.yearly_0",
+                        file_year_0: "$$od.file_year_0",
+
                         frequency_monitoring: "$$od.frequency_monitoring",
                         timetable: "$$od.timetable",
                         complete: "$$od.complete",
@@ -952,6 +982,7 @@ module.exports = (router) => {
                         updateDate: "$$od.updateDate",
                         createdAt: "$$od.createdAt",
                         deleted: "$$od.deleted",
+                        strategic_objective: "$$od.strategic_objective",
                       },
                     },
                   },
@@ -1016,8 +1047,8 @@ module.exports = (router) => {
     return await Promise.all(
       data.map(async (goal) => {
         // Calculate percentage and remaining
-        let totalObjectiveBudget = 0;
-        goal.remainingBudget = goal.budget;
+        // let totalObjectiveBudget = 0;
+        // goal.remainingBudget = goal.budget;
         // Calculate completed goals percentage
         let totalCompletion = 0;
         let totalObjectives = 0;
@@ -1025,8 +1056,8 @@ module.exports = (router) => {
         if (goal.objectivesDetails !== null) {
           for (let e of goal.objectivesDetails) {
             // Calculate percentage and remaining
-            goal.remainingBudget -= e.budget;
-            totalObjectiveBudget += e.budget;
+            // goal.remainingBudget -= e.budget;
+            // totalObjectiveBudget += e.budget;
 
             // Calculate completed goals percentage
             let objectiveCompletion = 0;
@@ -1034,6 +1065,14 @@ module.exports = (router) => {
             let goalSum = 0;
 
             if (e.frequency_monitoring === "yearly") {
+              for (let i = 0; i < 1; i++) {
+                const key = `yearly_${i}`;
+                if (e[key] !== undefined) {
+                  goalSum += e[key];
+                  count++;
+                }
+              }
+            } else if (e.frequency_monitoring === "monthly") {
               for (let i = 0; i < 12; i++) {
                 const key = `month_${i}`;
                 if (e[key] !== undefined) {
@@ -1070,7 +1109,7 @@ module.exports = (router) => {
           }
 
           // Calculate percentage and remaining
-          goal.budgetMinusAllObjectiveBudget = totalObjectiveBudget;
+          // goal.budgetMinusAllObjectiveBudget = totalObjectiveBudget;
           goal.remainingPercentage = (
             (goal.budgetMinusAllObjectiveBudget / goal.budget) *
             100
@@ -1277,10 +1316,18 @@ module.exports = (router) => {
   });
 
   router.post("/addGoals", (req, res) => {
-    let { goals, budget, createdBy, campus, department, goallistsId } =
-      req.body;
+    let {
+      goals,
+      // budget,
+      createdBy,
+      campus,
+      department,
+      goallistsId,
+      strategic_id,
+      strategic_objective,
+    } = req.body;
 
-    if (!goals && budget) {
+    if (!goals) {
       return res.json({
         success: false,
         message: "You must provide an Goals and Action Plan Information",
@@ -1290,12 +1337,15 @@ module.exports = (router) => {
     let goalsDataRequest = {
       id: uuidv4(),
       goals,
-      budget,
+      // budget,
       campus,
       department,
       createdBy,
       goallistsId,
+      strategic_id,
+      strategic_objective: strategic_objective.toLowerCase(),
     };
+
     Goals.create(goalsDataRequest)
       .then((data) => {
         userHistory.create({
@@ -1616,6 +1666,7 @@ module.exports = (router) => {
                   updateDate: "$$od.updateDate",
                   createdAt: "$$od.createdAt",
                   deleted: "$$od.deleted",
+                  strategic_objective: "$$od.strategic_objective",
                 },
               },
             },
@@ -1628,37 +1679,56 @@ module.exports = (router) => {
     }
   });
 
-  router.get("/getAllObjectivesWithObjectives/:id", async (req, res) => {
-    const officeName = req.params.id.toLowerCase();
+  router.get("/getAllObjectivesWithObjectives/:office", async (req, res) => {
+    const officeName = req.params.office.toLowerCase();
     let matchQuery = {
       deleted: false,
     };
 
+    console.log("officegetAllObjectivesWithObjectives", officeName);
     let queryIds = [];
-    console.log(officeName);
     if (officeName && officeName !== "undefined") {
-      console.log(officeName);
-      const department = await Users.findOne({
+      const department = await Departments.findOne({
         // department: { $regex: officeName, $options: "i" },
         department: officeName,
-      }).select({ id: 1, firstname: 1, lastname: 1, role: 1 });
+      });
+      // }).select({ id: 1, firstname: 1, lastname: 1, role: 1 });
 
-      if (department?.role === "vice-president") {
+      console.log("department", department);
+
+      const UsersData = await Users.find({
+        department_id: department.id,
+      });
+
+      console.log("UsersData", UsersData);
+
+      if (UsersData?.role === "vice-president") {
         const results = await Users.find({
-          vice_president_id: department.id,
+          vice_president_id: UsersData.id,
         }).select({ id: true, firstname: true, lastname: true });
         queryIds = results.map((e) => e.id);
-        queryIds.push(department.id || "");
-      } else if (department?.role === "director") {
+        queryIds.push(UsersData.id || "");
+      } else if (UsersData?.role === "director") {
         const results = await Users.find({
-          director_id: department.id,
+          director_id: UsersData.id,
         }).select({ id: true, firstname: true, lastname: true });
         queryIds = results.map((e) => e.id);
-        queryIds.push(department.id || "");
+        queryIds.push(UsersData.id || "");
       } else {
-        queryIds.push(department.id || "");
+        if (UsersData) {
+          queryIds.push(UsersData.id || "");
+        }
       }
       matchQuery.createdBy = { $in: queryIds };
+
+      if (queryIds.length > 0) {
+        matchQuery = {
+          deleted: false,
+        };
+      }
+
+      console.log("queryIds", queryIds);
+      console.log("matchQuery", matchQuery);
     }
 
     // // const usersUnderThisOffice = await Users.find({

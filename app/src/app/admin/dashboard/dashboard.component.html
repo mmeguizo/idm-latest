@@ -169,97 +169,127 @@
     </div>
     <div class="col-12 lg:col-12 xl:col-6">
         <div class="card flex flex-column align-items-center">
-            <h5 class="text-left w-full">Total Budget</h5>
-            <p-chart
-                [responsive]="true"
-                type="pie"
-                [data]="pieCharts"
-                [options]="PieChartOptions"
-            ></p-chart>
+            <h5 class="text-left w-full">Office Budget</h5>
+            <ng-container
+                *ngIf="pieCharts?.datasets[0]?.data.length; else noData"
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieCharts"
+                    [options]="PieChartOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
         </div>
     </div>
     <div class="col-12 lg:col-12 xl:col-6">
         <div class="card flex flex-column align-items-center">
-            <h5 class="text-left w-full">Total Budget Used</h5>
-            <p-chart
-                [responsive]="true"
-                type="pie"
-                [data]="pieChartsBudgetUsed"
-                [options]="PieChartBudgetUsedOptions"
-            ></p-chart>
+            <h5 class="text-left w-full">Objective Budget</h5>
+            <ng-container
+                *ngIf="
+                    pieChartsBudgetUsed?.datasets[0]?.data.length;
+                    else noData
+                "
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsBudgetUsed"
+                    [options]="PieChartBudgetUsedOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p id="emoji" style="font-size: xxx-large">😴</p>
+            </ng-template>
         </div>
     </div>
+    <!--
+
+
     <div class="col-12 lg:col-12 xl:col-6">
         <div class="card flex flex-column align-items-center">
             <h5 class="text-left w-full">Total Budget Remaining</h5>
-            <p-chart
-                [responsive]="true"
-                type="pie"
-                [data]="pieChartsBudgetRemaining"
-                [options]="pieChartsBudgetRemainingOptions"
-            ></p-chart>
+            <ng-container
+                *ngIf="
+                    pieChartsBudgetRemaining?.datasets[0]?.length;
+                    else noData
+                "
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsBudgetRemaining"
+                    [options]="pieChartsBudgetRemainingOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
         </div>
     </div>
     <div class="col-12 lg:col-12 xl:col-6">
         <div class="card flex flex-column align-items-center">
             <h5 class="text-left w-full">Goal Percentage Completion</h5>
-            <p-chart
-                [responsive]="true"
-                type="pie"
-                [data]="pieChartsPercentage"
-                [options]="pieChartsPercentageOptions"
-            ></p-chart>
+            <ng-container
+                *ngIf="
+                    pieChartsPercentage?.datasets[0]?.data.length;
+                    else noData
+                "
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsPercentage"
+                    [options]="pieChartsPercentageOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
         </div>
     </div>
 
-    <!-- project -->
 
     <div class="col-12 lg:col-12 xl:col-6">
         <div class="card flex flex-column align-items-center">
             <h5 class="text-left w-full">Goals</h5>
-            <p-chart
-                [responsive]="true"
-                type="pie"
-                [data]="pieChartsGoals"
-                [options]="pieChartsGoalsOptions"
-            ></p-chart>
+            <ng-container
+                *ngIf="pieChartsGoals?.datasets?.data?.length; else noData"
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsGoals"
+                    [options]="pieChartsGoalsOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
         </div>
     </div>
 
     <div class="col-12 lg:col-12 xl:col-6">
         <div class="card flex flex-column align-items-center">
             <h5 class="text-left w-full">Objectives</h5>
-            <p-chart
-                [responsive]="true"
-                type="pie"
-                [data]="pieChartsObjectives"
-                [options]="pieChartsObjectivesOptions"
-            ></p-chart>
+            <ng-container
+                *ngIf="pieChartsObjectives?.datasets?.data?.length; else noData"
+            >
+                <p-chart
+                    [responsive]="true"
+                    type="pie"
+                    [data]="pieChartsObjectives"
+                    [options]="pieChartsObjectivesOptions"
+                ></p-chart>
+            </ng-container>
+            <ng-template #noData>
+                <p>😴</p>
+            </ng-template>
         </div>
-    </div>
-
-    <!-- <div  class="col-12 lg:col-6 xl:col-3">
-    <div class="card flex flex-column align-items-center">
-        <h5 class="text-left w-full">Goal Percentage Completion</h5>
-        <p-chart
-            [responsive]="true"
-            type="pie"
-            [data]="pieChartsPercentage"
-            [options]="pieChartsPercentageOptions"
-        ></p-chart>
-    </div>
-</div>
-<div  class="col-12 lg:col-6 xl:col-3">
-    <div class="card flex flex-column align-items-center">
-        <h5 class="text-left w-full">Goal Percentage Completion</h5>
-        <p-chart
-            [responsive]="true"
-            type="pie"
-            [data]="pieChartsPercentage"
-            [options]="pieChartsPercentageOptions"
-        ></p-chart>
-    </div>
-</div> -->
+    </div> -->
 
     <div class="col-12">
         <div class="card">
@@ -406,7 +436,20 @@
                                     </div>
                                 </div>
                             </div>
+                            } @else { @if(loading && !pieDataBool) {
+                            <div
+                                class="col-5 align-items-center justify-content-center"
+                            >
+                                <div class="card">
+                                    <p-skeleton
+                                        width="100%"
+                                        height="2rem"
+                                        *ngIf="loading"
+                                    ></p-skeleton>
+                                </div>
+                            </div>
                             } @else {
+
                             <div
                                 class="col-5 align-items-center justify-content-center"
                             >
@@ -463,20 +506,26 @@
                                         >
                                             <span class="text-sm"
                                                 >{{
-                                                    item.functional_objective
+                                                    item.strategic_objective
+                                                        | firstFourWords
                                                         | titlecase
                                                 }}
                                             </span>
                                             &nbsp; - &nbsp;
                                             <span class="text-sm"
-                                                >{{ item.budget | peso }}
+                                                >&#8369;
+                                                {{
+                                                    item.budget
+                                                        | abbreviation
+                                                            : "number"
+                                                }}
                                             </span>
                                             &nbsp; - &nbsp;
                                             <span class="text-sm">{{
                                                 item.date_added
                                                     | date : "mediumDate"
                                             }}</span>
-                                            &nbsp; - &nbsp; @if(item.complete){
+                                            &nbsp; - &nbsp; @if(item.completed){
                                             <i
                                                 class="pi pi-check-circle text-green-500 mr-2"
                                                 pTooltip="Completed"
@@ -495,7 +544,8 @@
                                     </ul>
                                 </div>
                             </div>
-                            }
+
+                            } }
                         </div>
                     </div>
                 </p-tabPanel>
@@ -503,6 +553,8 @@
         </div>
     </div>
 </div>
+
+<!-- old files  -->
 <!-- <div class="card flex flex-column align-items-center">
             <p-dropdown
                 [options]="goalBarChartList"
@@ -522,3 +574,26 @@
                 [options]="options"
             />
         </div> -->
+
+<!-- <div  class="col-12 lg:col-6 xl:col-3">
+    <div class="card flex flex-column align-items-center">
+        <h5 class="text-left w-full">Goal Percentage Completion</h5>
+        <p-chart
+            [responsive]="true"
+            type="pie"
+            [data]="pieChartsPercentage"
+            [options]="pieChartsPercentageOptions"
+        ></p-chart>
+    </div>
+</div>
+<div  class="col-12 lg:col-6 xl:col-3">
+    <div class="card flex flex-column align-items-center">
+        <h5 class="text-left w-full">Goal Percentage Completion</h5>
+        <p-chart
+            [responsive]="true"
+            type="pie"
+            [data]="pieChartsPercentage"
+            [options]="pieChartsPercentageOptions"
+        ></p-chart>
+    </div>
+</div> -->

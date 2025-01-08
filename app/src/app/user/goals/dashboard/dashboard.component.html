@@ -102,8 +102,8 @@
                         <td>{{ goal.goals }}</td>
                         <td>{{ goal.budget | currency : "PHP" : "symbol" }}</td>
                         <td>{{ goal.objectivesDetails?.length || 0 }}</td>
-                        <td>{{ getCompletedObjectives(goal) }}</td>
-                        <td>{{ getIncompleteObjectives(goal) }}</td>
+                        <td>{{ goal | completedObjectives }}</td>
+                        <td>{{ goal | incompleteObjectives }}</td>
                     </tr>
                 </ng-template>
 

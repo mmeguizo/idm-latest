@@ -46,10 +46,7 @@
                                 pButton
                                 icon="pi pi-plus"
                                 (click)="addObjective()"
-                                [disabled]="
-                                    objectivesArray.length >= 5 ||
-                                    !addGoalform.get('goals').valid
-                                "
+                                [disabled]="!addGoalform.get('goals').valid"
                             ></button>
                         </ng-container>
                         &nbsp;

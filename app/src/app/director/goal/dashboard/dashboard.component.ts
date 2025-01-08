@@ -5,7 +5,8 @@ import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { ProductService } from 'src/app/demo/service/product.service';
 import { Product } from 'src/app/demo/api/product';
 import { AuthService } from 'src/app/demo/service/auth.service';
-
+import { genericDropdown } from 'src/app/interface/campus.interface';
+import { formatFrequencyString } from 'src/app/utlis/general-utils';
 interface expandedRows {
     [key: string]: boolean;
 }
@@ -32,7 +33,13 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     donutOptions: any;
     goalForTables: any;
     USERID: any;
-
+    officeListCombine: any;
+    allObjectiveBudget: any;
+    totalBudget: number;
+    usedBudget: number;
+    remainingTotal: number;
+    officeList: genericDropdown[] | undefined;
+    selectedOffice: genericDropdown | undefined;
     constructor(
         private goal: GoalService,
         private goalService: GoalService,
@@ -90,17 +97,77 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 this.objectiveBudget = data.data;
             });
     }
-    getAllObjectivesForTable() {
+    // getAllObjectivesForTable() {
+    //     this.obj
+    //         .fetch(
+    //             'get',
+    //             'goals',
+    //             `getAllObjectivesWithObjectives/${this.USERID}`
+    //         )
+    //         .pipe(takeUntil(this.dashboardSubscription))
+    //         .subscribe((data: any) => {
+    //             this.goals = data.goals;
+    //         });
+    // }
+
+    getAllObjectivesForTable(office?: any) {
         this.obj
             .fetch(
                 'get',
-                'goals',
-                `getAllObjectivesWithObjectives/${this.USERID}`
+                'director_query',
+                `getAllObjectivesWithObjectivesForDirector/${this.USERID}/${office}`
             )
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
-                this.goals = data.goals;
+                this.goals = data.goals || [];
+                this.allObjectiveBudget = this.goals
+                    .map((o: any) =>
+                        o.objectivesDetails
+                            .map((o: any) => o.budget)
+                            .reduce((a: any, b: any) => a + b, 0)
+                    )
+                    .reduce((a: any, b: any) => a + b, 0);
+
+                this.calculateBudget(this.goals);
+                this.calculateUsed(this.goals);
+                this.calculateRemaining(this.goals);
+                this.officeList = data.office_dropdown || [];
+                this.officeListCombine = this.officeList
+                    .map((office: any) => office.name)
+                    .join(', ');
             });
+    }
+
+    getObjectiveNames(goal: any): number {
+        return (
+            goal.objectivesDetails
+                ?.filter((o) => o.functional_objective)
+                .map((o) => o.functional_objective)
+                .join(', ') || ''
+        );
+    }
+
+    calculateBudget(goals: any) {
+        let total = 0;
+        for (let calc of goals) {
+            total += calc.budget;
+        }
+        this.totalBudget = total;
+    }
+
+    calculateUsed(goals: any) {
+        let total = 0;
+        for (let calc of goals) {
+            total += calc.budgetMinusAllObjectiveBudget;
+        }
+        this.usedBudget = total;
+    }
+    calculateRemaining(goals: any) {
+        let total = 0;
+        for (let calc of goals) {
+            total += calc.remainingBudget;
+        }
+        this.remainingTotal = total;
     }
 
     getObjectiveViewPieChart() {
@@ -238,5 +305,20 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             this.expandedRows = {};
         }
         this.isExpanded = !this.isExpanded;
+    }
+
+    onChangeOffice(event: any = '') {
+        //reset the goals
+        this.goals = [];
+        this.getAllObjectivesForTable(event.value.name);
+    }
+
+    onClearOffice() {
+        this.goals = [];
+        this.getAllObjectivesForTable();
+    }
+
+    formatFrequencyString(frequency: string) {
+        return formatFrequencyString(frequency);
     }
 }

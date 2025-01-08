@@ -5,7 +5,7 @@ import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { ProductService } from 'src/app/demo/service/product.service';
 import { Product } from 'src/app/demo/api/product';
 import { AuthService } from 'src/app/demo/service/auth.service';
-
+import { genericDropdown } from 'src/app/interface/campus.interface';
 interface expandedRows {
     [key: string]: boolean;
 }
@@ -32,6 +32,16 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     donutOptions: any;
     goalForTables: any;
     USERID: any;
+    officeListCombine: any;
+    allObjectiveBudget: any;
+    officeList: genericDropdown[] | undefined;
+    selectedOffice: genericDropdown | undefined;
+    totalBudget: number;
+    usedBudget: number;
+    remainingTotal: number;
+
+    totalObjectivesCount: number = 0;
+    completedObjectivesCount: number = 0;
 
     constructor(
         private goal: GoalService,
@@ -86,17 +96,74 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                 this.objectiveBudget = data.data;
             });
     }
-    getAllObjectivesForTable() {
+    getAllObjectivesForTable(office?: any) {
         this.obj
             .fetch(
                 'get',
-                'goals',
-                `getAllObjectivesWithObjectives/${this.USERID}`
+                'office_head_query',
+                `getAllObjectivesWithObjectivesForOfficeHead/${this.USERID}`
             )
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {
-                this.goals = data.goals;
+                this.goals = data.goals || [];
+
+                console.log(this.getTotalObjectivesAndCompleted(this.goals));
+                this.allObjectiveBudget = this.goals
+                    .map((o: any) =>
+                        o.objectivesDetails
+                            .map((o: any) => o.budget)
+                            .reduce((a: any, b: any) => a + b, 0)
+                    )
+                    .reduce((a: any, b: any) => a + b, 0);
+
+                this.calculateBudget(this.goals);
+                this.calculateUsed(this.goals);
+                this.calculateRemaining(this.goals);
+                this.officeList = data.office_dropdown || [];
+                this.officeListCombine = this.officeList
+                    .map((office: any) => office.name)
+                    .join(', ');
             });
+    }
+
+    getTotalObjectivesAndCompleted(goals: any[]): {
+        total: number;
+        completed: number;
+    } {
+        let total = 0;
+        let completed = 0;
+        goals.forEach((goal) => {
+            total += goal.objectivesDetails.length;
+            completed += goal.objectivesDetails.filter(
+                (o) => o.complete
+            ).length;
+        });
+        this.totalObjectivesCount = total;
+        this.completedObjectivesCount = completed;
+        return { total, completed };
+    }
+
+    calculateBudget(goals: any) {
+        let total = 0;
+        for (let calc of goals) {
+            total += calc.budget;
+        }
+        this.totalBudget = total;
+    }
+
+    calculateUsed(goals: any) {
+        let total = 0;
+        for (let calc of goals) {
+            total += calc.budgetMinusAllObjectiveBudget;
+        }
+        this.usedBudget = total;
+    }
+    calculateRemaining(goals: any) {
+        let total = 0;
+        for (let calc of goals) {
+            total += calc.remainingBudget;
+        }
+        this.remainingTotal = total;
     }
 
     getObjectiveViewPieChart() {
@@ -208,5 +275,24 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             this.expandedRows = {};
         }
         this.isExpanded = !this.isExpanded;
+    }
+
+    onChangeOffice(event: any = '') {
+        //reset the goals
+        this.goals = [];
+        this.getAllObjectivesForTable(event.value.name);
+    }
+    onClearOffice() {
+        this.goals = [];
+        this.getAllObjectivesForTable();
+    }
+
+    getObjectiveNames(goal: any): number {
+        return (
+            goal.objectivesDetails
+                ?.filter((o) => o.functional_objective)
+                .map((o) => o.functional_objective)
+                .join(', ') || ''
+        );
     }
 }

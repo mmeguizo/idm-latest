@@ -19,6 +19,7 @@ module.exports = (router) => {
             return {
               name: e.department.replace(/\b\w/g, (char) => char.toUpperCase()),
               code: e.department,
+              id: e.id,
             };
           })
         );
@@ -60,11 +61,11 @@ module.exports = (router) => {
       let params = JSON.stringify(req.params);
       let query = JSON.stringify(req.query);
       let body = JSON.stringify(req.body);
-      logger.info(
-        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-          req.statusCode
-        }|${req.socket.remoteAddress}|${Date.now()}`
-      );
+      // logger.info(
+      //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+      //     req.statusCode
+      //   }|${req.socket.remoteAddress}|${Date.now()}`
+      // );
     }
   );
 
@@ -92,11 +93,11 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.post("/findDepartmentById", (req, res) => {
@@ -119,11 +120,11 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.post("/addDepartment", (req, res) => {
@@ -169,15 +170,14 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.post("/addDepartments", (req, res) => {
-    console.log("req.body", req.body);
     const departments = req.body;
     if (
       !departments ||
@@ -241,11 +241,11 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.put("/deleteDepartment", (req, res) => {
@@ -274,11 +274,11 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.put("/setInactiveDepartment", (req, res) => {
@@ -315,11 +315,11 @@ module.exports = (router) => {
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);
-    logger.info(
-      ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-        req.statusCode
-      }|${req.socket.remoteAddress}|${Date.now()}`
-    );
+    // logger.info(
+    //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+    //     req.statusCode
+    //   }|${req.socket.remoteAddress}|${Date.now()}`
+    // );
   });
 
   router.put(
@@ -359,11 +359,11 @@ module.exports = (router) => {
       let params = JSON.stringify(req.params);
       let query = JSON.stringify(req.query);
       let body = JSON.stringify(req.body);
-      logger.info(
-        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-          req.statusCode
-        }|${req.socket.remoteAddress}|${Date.now()}`
-      );
+      // logger.info(
+      //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+      //     req.statusCode
+      //   }|${req.socket.remoteAddress}|${Date.now()}`
+      // );
     }
   );
 
@@ -401,11 +401,11 @@ module.exports = (router) => {
       let params = JSON.stringify(req.params);
       let query = JSON.stringify(req.query);
       let body = JSON.stringify(req.body);
-      logger.info(
-        ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-          req.statusCode
-        }|${req.socket.remoteAddress}|${Date.now()}`
-      );
+      // logger.info(
+      //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+      //     req.statusCode
+      //   }|${req.socket.remoteAddress}|${Date.now()}`
+      // );
     }
   );
 

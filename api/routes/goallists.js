@@ -133,7 +133,19 @@ module.exports = (router) => {
       let campus = await Goallists.find({ deleted: false });
       data.push(
         campus.map((e) => {
-          return { name: e.goals, code: e.goals, id: e.id, _id: e._id };
+          return {
+            name: e.goals,
+            code: e.goals,
+            id: e.id,
+            _id: e._id,
+            objectives: e.objectives.map((obj) => ({
+              goal_id: e.id,
+              name: obj.objective,
+              code: obj.objective,
+              id: obj.id,
+              _id: obj._id,
+            })),
+          };
         })
       );
       await res.json({

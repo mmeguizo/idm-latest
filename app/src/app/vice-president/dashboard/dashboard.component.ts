@@ -10,16 +10,16 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import {
-    CalendarOptions,
-    DateSelectArg,
-    EventClickArg,
-    EventApi,
-} from '@fullcalendar/core';
-import interactionPlugin from '@fullcalendar/interaction';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list';
+// import {
+//     CalendarOptions,
+//     DateSelectArg,
+//     EventClickArg,
+//     EventApi,
+// } from '@fullcalendar/core';
+// import interactionPlugin from '@fullcalendar/interaction';
+// import dayGridPlugin from '@fullcalendar/daygrid';
+// import timeGridPlugin from '@fullcalendar/timegrid';
+// import listPlugin from '@fullcalendar/list';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/demo/service/auth.service';
@@ -35,6 +35,7 @@ import { MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { IdepartmentDropdown } from 'src/app/interface/department.interface';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { abbreviateNumber } from 'src/app/utlis/general-utils';
 
 @Component({
     selector: 'app-dashboard',
@@ -59,25 +60,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     goalBarChartList: IdepartmentDashboardDropdown[] | undefined;
 
     private objectiveSubscription = new Subject<void>();
-    calendarOptions = signal<CalendarOptions>({
-        plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
-        headerToolbar: {
-            // left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
-        },
-        initialView: 'dayGridMonth',
-        weekends: true,
-        editable: false,
-        selectable: false,
-        selectMirror: true,
-        dayMaxEvents: false,
-        navLinks: false,
-        select: this.handleDateSelect.bind(this),
-        eventClick: this.handleEventClick.bind(this),
-        eventsSet: this.handleEvents.bind(this),
-    });
-    currentEvents = signal<EventApi[]>([]);
+
+    // currentEvents = signal<EventApi[]>([]);
     loading = true;
     userId: string;
     users: any;
@@ -126,6 +110,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     completedGoalsFromApi: any;
     uncompletedGoalsFromApi: any;
 
+    pieChartsBudgetUsed: any;
+    PieChartBudgetUsedOptions: any;
+    pieChartsBudgetRemaining: any;
+    pieChartsBudgetRemainingOptions: any;
+    pieChartsPercentage: any;
+    pieChartsPercentageOptions: any;
+
+    pieChartsObjectives: any;
+    pieChartsObjectivesOptions: any;
+    pieChartsGoals: any;
+    pieChartsGoalsOptions: any;
+
     constructor(
         private changeDetector: ChangeDetectorRef,
         private obj: ObjectiveService,
@@ -138,9 +134,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.userId = this.auth.getTokenUserID();
-        this.getAllobjectivesGoalsUsers();
+        // this.getAllobjectivesGoalsUsers();
         this.getAllObjectivesUnderAVicePresident();
         this.getAllusersUnderVicePresidents();
+        this.getAllObjectivesWithObjectivesForCharts();
     }
 
     async getAllObjectivesUnderAVicePresident() {
@@ -288,22 +285,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.thisBarCharts(this.goals);
     }
 
-    getAllobjectivesGoalsUsers() {
-        this.loading = true;
-        this.obj
-            .fetch(
-                'get',
-                'objectives',
-                `getObjectiveForCalendar/${this.userId}`
-            )
-            .pipe(takeUntil(this.objectiveSubscription))
-            .subscribe((data: any) => {
-                const events = this.transformEvents(data.data);
-                this.updateCalendarEvents(events);
-                this.loading = false;
-            });
-    }
-
     async processDashboardData(data) {
         // total of objectives
 
@@ -375,11 +356,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .fetch(
                 'get',
                 'vice_president_query',
-                `getAllObjectivesWithObjectivesForCharts`
+                `getAllObjectivesWithObjectivesForCharts/${this.USERID}`
             )
             .pipe(takeUntil(this.getDashboardSubscription))
             .subscribe({
                 next: (data: any) => {
+                    console.log({
+                        getAllObjectivesWithObjectivesForCharts: data,
+                    });
                     this.goals = data.goals || [];
                     this.goalBarChartList = data.dropdown || [];
                     this.pieChart(data.goals || this.goals || []);
@@ -504,26 +488,42 @@ export class DashboardComponent implements OnInit, OnDestroy {
             },
         };
     }
+    async pieChart(data: any[] = []) {
+        console.log({ pieChart: data });
 
-    async pieChart(data: any = []) {
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
 
-        const labels = data.map((goal) => goal.department);
-        const budgets = data.map((goal) => goal.budget);
-        const generateRandomColor = () => {
-            const r = Math.floor(Math.random() * 256);
-            const g = Math.floor(Math.random() * 256);
-            const b = Math.floor(Math.random() * 256);
-            return `rgba(${r}, ${g}, ${b}, 0.2)`;
-        };
+        const labels = data.map((goal: any) => goal.department);
 
-        const backgroundColors = labels.map(() => generateRandomColor());
-        const hoverBackgroundColors = backgroundColors.map((color) =>
-            color.replace('0.2', '0.4')
+        const budgets = data.map(
+            (goal: any) => goal.budgetMinusAllObjectiveBudget
+        );
+        const budgetsUsed = data.map(
+            (goal: any) => goal.budgetMinusAllObjectiveBudget
+        );
+        const budgetsRemaining = data.map((goal: any) => goal.remainingBudget);
+
+        const percentageCompletion = data.map(
+            (goal: any) => goal.completion_percentage
         );
 
-        this.pieCharts = data = {
+        // const abbreviateNumber = (value: number) => {
+        //     if (value >= 1_000_000) {
+        //         return (value / 1_000_000).toFixed(1) + 'M';
+        //     } else if (value >= 1_000) {
+        //         return (value / 1_000).toFixed(1) + 'k';
+        //     } else {
+        //         return value.toString();
+        //     }
+        // };
+
+        const abbreviatePercentage = (value: number) => {
+            return value + '%';
+        };
+
+        console.log({ labels, budgets });
+        this.pieCharts = {
             labels: labels,
             datasets: [
                 {
@@ -550,10 +550,396 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         color: textColor,
                     },
                 },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label =
+                                context.label
+                                    .split(' ')
+                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .join('') || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        this.pieChartsBudgetUsed = {
+            labels: labels,
+            datasets: [
+                {
+                    data: budgetsUsed,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--cyan-500'),
+                        documentStyle.getPropertyValue('--bluegray-500'),
+                        documentStyle.getPropertyValue('--red-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--cyan-400'),
+                        documentStyle.getPropertyValue('--bluegray-400'),
+                        documentStyle.getPropertyValue('--red-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.PieChartBudgetUsedOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        this.PieChartBudgetUsedOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label =
+                                context.label
+                                    .split(' ')
+                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .join('') || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        this.pieChartsBudgetRemaining = {
+            labels: labels,
+            datasets: [
+                {
+                    data: budgetsRemaining,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--orange-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--orange-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.pieChartsBudgetRemainingOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviateNumber(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label =
+                                context.label
+                                    .split(' ')
+                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .join('') || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        this.pieChartsPercentage = {
+            labels: labels,
+            datasets: [
+                {
+                    data: percentageCompletion,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--orange-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--orange-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.pieChartsPercentageOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number) => abbreviatePercentage(value),
+                    color: textColor,
+                    font: {
+                        size: 15,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label =
+                                context.label
+                                    .split(' ')
+                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .join('') || '';
+                            const value = context.raw;
+                            return `${label}: ${value}%`;
+                        },
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        // goal charts
+
+        const goalsData = data.map((goal) => {
+            const totalObjectives = goal.objectivesDetails.length;
+            const completedObjectives = goal.objectivesDetails.filter(
+                (obj) => obj.complete
+            ).length;
+            const pendingObjectives = totalObjectives - completedObjectives;
+
+            return {
+                goal: goal.goals,
+                totalObjectives,
+                completedObjectives,
+                pendingObjectives,
+            };
+        });
+
+        const totalObjectives = goalsData.map((g) => g.totalObjectives);
+        const completedObjectives = goalsData.map((g) => g.completedObjectives);
+        const pendingObjectivesObjectives = goalsData.map(
+            (g) => g.pendingObjectives
+        );
+
+        const totalObjectivesSum = totalObjectives.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+        const completedObjectivesSum = completedObjectives.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+        const pendingObjectivesSum = pendingObjectivesObjectives.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+        this.pieChartsObjectives = {
+            labels: [
+                'Total Objectives',
+                'Completed Objectives',
+                'Pending Objectives',
+            ],
+            datasets: [
+                {
+                    data: [
+                        totalObjectivesSum,
+                        completedObjectivesSum,
+                        pendingObjectivesSum,
+                    ],
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                        documentStyle.getPropertyValue('--red-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                        documentStyle.getPropertyValue('--red-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.pieChartsObjectivesOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number, context: any) => {
+                        const label = (
+                            context.chart.data.labels[context.dataIndex] || ''
+                        ).split(' ')[0];
+                        return `${label}: ${value.toString()}`;
+                    },
+                    color: textColor,
+                    font: {
+                        size: 13,
+                    },
+                },
+            },
+            maintainAspectRatio: true,
+        };
+
+        const goalsSummary = data.reduce(
+            (acc, goal) => {
+                acc.totalGoals++;
+                if (goal.completion_percentage === 100) {
+                    acc.completedGoals++;
+                } else {
+                    acc.pendingGoals++;
+                }
+                return acc;
+            },
+            { totalGoals: 0, completedGoals: 0, pendingGoals: 0 }
+        );
+
+        this.pieChartsGoals = {
+            labels: ['Completed Goals', 'Pending Goals'],
+            datasets: [
+                {
+                    data: [
+                        goalsSummary.completedGoals,
+                        goalsSummary.pendingGoals,
+                    ],
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--green-500'),
+                        documentStyle.getPropertyValue('--red-500'),
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--green-400'),
+                        documentStyle.getPropertyValue('--red-400'),
+                    ],
+                },
+            ],
+        };
+
+        this.pieChartsGoalsOptions = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor,
+                    },
+                },
+                datalabels: {
+                    formatter: (value: number, context: any) => {
+                        const label = (
+                            context.chart.data.labels[context.dataIndex] || ''
+                        ).split(' ')[0];
+                        return `${label}: ${value.toString()}`;
+                    },
+                    color: textColor,
+                    font: {
+                        size: 13,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context: any) => {
+                            const label = context.label || '';
+                            const value = context.raw;
+                            return `${label}: ${value}`;
+                        },
+                    },
+                },
             },
             maintainAspectRatio: true,
         };
     }
+
+    ngOnDestroy(): void {
+        this.objectiveSubscription.unsubscribe();
+    }
+}
+
+/*
+
+    // calendarOptions = signal<CalendarOptions>({
+    //     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
+    //     headerToolbar: {
+    //         // left: 'prev,next today',
+    //         center: 'title',
+    //         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+    //     },
+    //     initialView: 'dayGridMonth',
+    //     weekends: true,
+    //     editable: false,
+    //     selectable: false,
+    //     selectMirror: true,
+    //     dayMaxEvents: false,
+    //     navLinks: false,
+    //     // select: this.handleDateSelect.bind(this),
+    //     // eventClick: this.handleEventClick.bind(this),
+    //     // eventsSet: this.handleEvents.bind(this),
+    // });
+
+  // getAllobjectivesGoalsUsers() {
+    //     this.loading = true;
+    //     this.obj
+    //         .fetch(
+    //             'get',
+    //             'objectives',
+    //             `getObjectiveForCalendar/${this.userId}`
+    //         )
+    //         .pipe(takeUntil(this.objectiveSubscription))
+    //         .subscribe((data: any) => {
+    //             const events = this.transformEvents(data.data);
+    //             this.updateCalendarEvents(events);
+    //             this.loading = false;
+    //         });
+    // }
 
     transformEvents(data: any[]): any[] {
         // return data.map((item) => {
@@ -677,9 +1063,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // }));
     }
 
-    ngOnDestroy(): void {
-        this.objectiveSubscription.unsubscribe();
-    }
+
 
     handleCalendarToggle() {
         // this.calendarVisible.update((bool) => !bool);
@@ -708,4 +1092,55 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.currentEvents.set(events);
         this.changeDetector.detectChanges(); // workaround for pressionChangedAfterItHasBeenCheckedError
     }
-}
+
+ // async pieChart(data: any = []) {
+    //     const documentStyle = getComputedStyle(document.documentElement);
+    //     const textColor = documentStyle.getPropertyValue('--text-color');
+
+    //     const labels = data.map((goal) => goal.department);
+    //     const budgets = data.map((goal) => goal.budget);
+    //     const generateRandomColor = () => {
+    //         const r = Math.floor(Math.random() * 256);
+    //         const g = Math.floor(Math.random() * 256);
+    //         const b = Math.floor(Math.random() * 256);
+    //         return `rgba(${r}, ${g}, ${b}, 0.2)`;
+    //     };
+
+    //     const backgroundColors = labels.map(() => generateRandomColor());
+    //     const hoverBackgroundColors = backgroundColors.map((color) =>
+    //         color.replace('0.2', '0.4')
+    //     );
+
+    //     this.pieCharts = data = {
+    //         labels: labels,
+    //         datasets: [
+    //             {
+    //                 data: budgets,
+    //                 backgroundColor: [
+    //                     documentStyle.getPropertyValue('--blue-500'),
+    //                     documentStyle.getPropertyValue('--yellow-500'),
+    //                     documentStyle.getPropertyValue('--green-500'),
+    //                 ],
+    //                 hoverBackgroundColor: [
+    //                     documentStyle.getPropertyValue('--blue-400'),
+    //                     documentStyle.getPropertyValue('--yellow-400'),
+    //                     documentStyle.getPropertyValue('--green-400'),
+    //                 ],
+    //             },
+    //         ],
+    //     };
+
+    //     this.PieChartOptions = {
+    //         plugins: {
+    //             legend: {
+    //                 labels: {
+    //                     usePointStyle: true,
+    //                     color: textColor,
+    //                 },
+    //             },
+    //         },
+    //         maintainAspectRatio: true,
+    //     };
+    // }
+
+*/
