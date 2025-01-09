@@ -691,17 +691,32 @@ module.exports = (router) => {
             const objectiveCompletions = await calculateCompletionPercentage(
               Goals
             );
+
             const completedGoals = Goals.filter(
               (goal) =>
                 goal.objectivesDetails &&
                 goal.objectivesDetails.some((e) => e.complete)
             ).length;
 
-            const incompleteGoals = Goals.filter(
-              (goal) =>
-                goal.objectivesDetails &&
-                goal.objectivesDetails.some((e) => !e.complete)
-            ).length;
+            const completeObjectivesCount = Goals.reduce((count, goal) => {
+              if (goal.objectivesDetails) {
+                const incompleteCount = goal.objectivesDetails.filter(
+                  (e) => e.complete
+                ).length;
+                return count + incompleteCount;
+              }
+              return count;
+            }, 0);
+
+            const incompleteObjectivesCount = Goals.reduce((count, goal) => {
+              if (goal.objectivesDetails) {
+                const incompleteCount = goal.objectivesDetails.filter(
+                  (e) => !e.complete
+                ).length;
+                return count + incompleteCount;
+              }
+              return count;
+            }, 0);
             const goalCompleted = Goals.filter(
               (goal) => goal.completion_percentage === 100
             ).length;
@@ -716,8 +731,8 @@ module.exports = (router) => {
               completedGoals: goalCompleted,
               uncompletedGoals: goalunCompleted,
               dropdown: departmentDropdown,
-              completed: completedGoals,
-              Incompleted: incompleteGoals,
+              completeObjectivesCount: completeObjectivesCount,
+              incompleteObjectivesCount: incompleteObjectivesCount,
             });
           }
         }
@@ -730,9 +745,13 @@ module.exports = (router) => {
       goal.objectivesDetails = goal.objectivesDetails.map((objective) => {
         let actualSum = 0;
 
-        if (objective.frequency_monitoring === "yearly") {
+        if (objective.frequency_monitoring === "monthly") {
           for (let i = 0; i < 12; i++) {
             actualSum += objective[`month_${i}`] || 0;
+          }
+        } else if (objective.frequency_monitoring === "yearly") {
+          for (let i = 0; i < 1; i++) {
+            actualSum += objective[`yearly_${i}`] || 0;
           }
         } else if (objective.frequency_monitoring === "quarterly") {
           for (let i = 0; i < 4; i++) {
@@ -743,7 +762,6 @@ module.exports = (router) => {
             actualSum += objective[`semi_annual_${i}`] || 0;
           }
         }
-
         const completionPercentage = (actualSum / objective.target) * 100;
         return {
           ...objective,
@@ -778,7 +796,6 @@ module.exports = (router) => {
         // Calculate percentage and remaining
         let totalObjectiveBudget = 0;
         goal.remainingBudget = goal.budget;
-
         // Calculate completed goals percentage
         let totalCompletion = 0;
         let totalObjectives = 0;
@@ -786,7 +803,7 @@ module.exports = (router) => {
         if (goal.objectivesDetails !== null) {
           for (let e of goal.objectivesDetails) {
             // Calculate percentage and remaining
-            goal.remainingBudget -= e.budget;
+            // goal.remainingBudget -= e.budget;
             totalObjectiveBudget += e.budget;
 
             // Calculate completed goals percentage
@@ -795,6 +812,14 @@ module.exports = (router) => {
             let goalSum = 0;
 
             if (e.frequency_monitoring === "yearly") {
+              for (let i = 0; i < 1; i++) {
+                const key = `yearly_${i}`;
+                if (e[key] !== undefined) {
+                  goalSum += e[key];
+                  count++;
+                }
+              }
+            } else if (e.frequency_monitoring === "monthly") {
               for (let i = 0; i < 12; i++) {
                 const key = `month_${i}`;
                 if (e[key] !== undefined) {
@@ -827,7 +852,7 @@ module.exports = (router) => {
             }
 
             // Add complete key to each objective
-            e.complete = goalSum === e.target;
+            // e.complete = goalSum === e.target;
           }
 
           // Calculate percentage and remaining
@@ -847,6 +872,7 @@ module.exports = (router) => {
           } else {
             goal.completion_percentage = 0;
           }
+
           // Add complete key based on completion percentage
           goal.complete = goal.completion_percentage === 100;
         }
@@ -854,6 +880,89 @@ module.exports = (router) => {
       })
     );
   }
+
+  // async function CalculateBudgetAndCompletion(data) {
+  //   return await Promise.all(
+  //     data.map(async (goal) => {
+  //       // Calculate percentage and remaining
+  //       let totalObjectiveBudget = 0;
+  //       goal.remainingBudget = goal.budget;
+
+  //       // Calculate completed goals percentage
+  //       let totalCompletion = 0;
+  //       let totalObjectives = 0;
+
+  //       if (goal.objectivesDetails !== null) {
+  //         for (let e of goal.objectivesDetails) {
+  //           // Calculate percentage and remaining
+  //           goal.remainingBudget -= e.budget;
+  //           totalObjectiveBudget += e.budget;
+
+  //           // Calculate completed goals percentage
+  //           let objectiveCompletion = 0;
+  //           let count = 0;
+  //           let goalSum = 0;
+
+  //           if (e.frequency_monitoring === "monthly") {
+  //             for (let i = 0; i < 12; i++) {
+  //               const key = `month_${i}`;
+  //               if (e[key] !== undefined) {
+  //                 goalSum += e[key];
+  //                 count++;
+  //               }
+  //             }
+  //           } else if (e.frequency_monitoring === "quarterly") {
+  //             for (let i = 0; i < 4; i++) {
+  //               const key = `quarter_${i}`;
+  //               if (e[key] !== undefined) {
+  //                 goalSum += e[key];
+  //                 count++;
+  //               }
+  //             }
+  //           } else if (e.frequency_monitoring === "semi_annual") {
+  //             for (let i = 0; i < 2; i++) {
+  //               const key = `semi_annual_${i}`;
+  //               if (e[key] !== undefined) {
+  //                 goalSum += e[key];
+  //                 count++;
+  //               }
+  //             }
+  //           }
+
+  //           if (count > 0) {
+  //             objectiveCompletion = (goalSum / e.target) * 100;
+  //             totalCompletion += objectiveCompletion;
+  //             totalObjectives++;
+  //           }
+
+  //           // Add complete key to each objective
+  //           e.complete = goalSum === e.target;
+  //         }
+
+  //         // Calculate percentage and remaining
+  //         goal.budgetMinusAllObjectiveBudget = totalObjectiveBudget;
+  //         goal.remainingPercentage = (
+  //           (goal.budgetMinusAllObjectiveBudget / goal.budget) *
+  //           100
+  //         ).toFixed(2);
+
+  //         goal.searchDate = await formatIsoDate(goal.createdAt);
+
+  //         // Add completion percentage to the root of the goal
+  //         if (totalObjectives > 0) {
+  //           goal.completion_percentage = Math.round(
+  //             totalCompletion / totalObjectives
+  //           );
+  //         } else {
+  //           goal.completion_percentage = 0;
+  //         }
+  //         // Add complete key based on completion percentage
+  //         goal.complete = goal.completion_percentage === 100;
+  //       }
+  //       return goal;
+  //     })
+  //   );
+  // }
 
   async function formatIsoDate(isoDateString) {
     const date = new Date(isoDateString);

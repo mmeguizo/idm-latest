@@ -46,11 +46,12 @@ export class GoalComponent implements OnInit, OnDestroy {
     parentEditObjective: { editObjective: any; data: any };
     parentEditSuccessObjective: { success: Boolean; id: string };
     parentAddnewFile: any;
+    parentRemarks: any;
     parentViewFiles: { viewFiles: any; data: any };
     parentViewFileHistory: { viewFilesHistory: any; data: any };
     //print file
     parentPrintFile: any = {};
-    parentRemarks: any;
+    parentPrintQom: any = {};
 
     constructor(
         private confirmationService: ConfirmationService,
@@ -84,6 +85,17 @@ export class GoalComponent implements OnInit, OnDestroy {
                 goal: event.data,
             };
         }
+    }
+
+    receivedPrintQOMObjectiveTableEvent(event: any) {
+        console.log({ receivedPrintQOMObjectiveTableEvent: event });
+
+        const { header, data, printQOMObjectiveTable } = event;
+        this.parentPrintQom = {
+            printQOMObjectiveTable: printQOMObjectiveTable,
+            data: data,
+            header: header,
+        };
     }
 
     receivedEditGoalButtonClick(event: any) {

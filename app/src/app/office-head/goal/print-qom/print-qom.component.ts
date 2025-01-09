@@ -7,7 +7,8 @@ import {
     SimpleChanges,
 } from '@angular/core';
 import { AuthService } from 'src/app/demo/service/auth.service'; // Import AuthService if needed
-
+import { formatDate } from 'src/app/utlis/general-utils';
+formatDate;
 @Component({
     selector: 'app-print-qom',
     //   standalone: true,
@@ -43,6 +44,8 @@ export class PrintQomComponent implements OnInit {
     subObjectiveHeaders: string = '';
     reviewedByValue: any;
     reviewedByofficeValue: any;
+    date = new Date();
+    formattedDate: string;
 
     constructor(private authService: AuthService) {}
 
@@ -50,7 +53,7 @@ export class PrintQomComponent implements OnInit {
         const { data, header, printQOMObjectiveTable } =
             changes['printQOMFile']?.currentValue;
 
-        console.log({ QOMPRINTING: changes['printQOMFile']?.currentValue });
+        console.log({ QOMPRINTINGtest: changes['printQOMFile']?.currentValue });
 
         this.objectiveDatas = data;
         this.subOnjectiveHeaderData = header;
@@ -62,12 +65,18 @@ export class PrintQomComponent implements OnInit {
         this.imageSrcOptimized =
             this.authService.domain + '/images/chmsu-logo-optimized.png'; // Get the image source
         this.imageSrcLogo = this.authService.domain + '/images/chmsu-logo.png'; // Get the image source
+        this.formattedDate = formatDate(this.date);
+    }
+
+    getFrequencyKeys(frequency_monitoring: string) {
+        // Replace underscores with spaces
+        return frequency_monitoring.replace(/_/g, ' ');
     }
 
     printPdf() {
         // this.isPrintableVisible = true;
         let print, win;
-        print = document.getElementById('print').innerHTML;
+        print = document.getElementById('printQom').innerHTML;
         win = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
         win.document.open();
         win.document.write(`
@@ -297,7 +306,7 @@ tfoot {
 }
  </style>
 
-  <body onload="window.print();window.close()">
+  <body>
     <div id="tobeprinted">
       <table>
         <thead>
@@ -338,10 +347,13 @@ tfoot {
             <th colspan="17" class="p-0">
               <table class="nested-table2">
                 <tr>
-                  <th align="left" width="38%">Management Information Services</th>
+                  <th align="left" width="38%">${
+                      this.subOnjectiveHeaderData?.toUpperCase() ||
+                      this.printingOfficeName?.toUpperCase()
+                  }</th>
                   <th width="12%">AY or CY</th>
                   <th align="left">Monitoring No.: 1</th>
-                  <th align="left">Recency: as of: Jan. 31, 2025</th>
+                  <th align="left">Recency: as of: ${this.formattedDate}</th>
                   <th align="left">Date of Previous Monitoring: N/A</th>
                 </tr>
               </table>
@@ -350,117 +362,9 @@ tfoot {
           <tr>
             <th class="border-x-0" colspan="17"></th>
           </tr>
-          <tr class="font-condensed">
-            <th rowspan="2" style="width: 10%">Indicators</th>
-            <th rowspan="2" style="width: 7%">Target & Target Date</th>
-            <th colspan="12">Performance</th>
-            <th rowspan="2" style="width: 6%">Overall Result</th>
-            <th rowspan="2" style="width: 8%">MOV/Data Source</th>
-            <th rowspan="2" style="width: 22%">Remarks</th>
-          </tr>
-          <tr class="font-condensed">
-            <th>Jan.</th>
-            <th>Feb.</th>
-            <th>Mar.</th>
-            <th>Apr.</th>
-            <th>May</th>
-            <th>June</th>
-            <th>July</th>
-            <th>Aug.</th>
-            <th>Sep.</th>
-            <th>Oct.</th>
-            <th>Nov.</th>
-            <th>Dec.</th>
-          </tr>
-          <tr>
-            <th class="border-x-0" colspan="17"></th>
-          </tr>
-        </thead>
-        <tbody class="data-cells">
-          <tr>
-            <td># of software systems developed</td>
-            <td>2</td>
-            <td></td>
-            <td></td>
-            <td>1</td>
-            <td></td>
-            <td></td>
-            <td>1</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>2 of 2</td>
-            <td>PPMP / Software System Inventory / Completion Report</td>
-            <td>
-              <p>Inhouse Development</p>
-              <p>Admission System</p>
-              <p>Online Grading System</p>
-            </td>
-          </tr>
-          <tr>
-            <td># of current systems deployed / migrated / upgraded</td>
-            <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>1</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>1</td>
-            <td>1</td>
-            <td>1 of 3 Ongoing</td>
-            <td>PPMP / Software System Inventory / Completion Report</td>
-            <td>
-              <p>(HR System)<br />DTR/Payroll</p>
-              <p>Enrollment</p>
-              <p>Digital Dashboard</p>
-            </td>
-          </tr>
-          <tr>
-            <td># of Software evaluated for security and performance</td>
-            <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>1</td>
-            <td></td>
-            <td></td>
-            <td>1</td>
-            <td></td>
-            <td></td>
-            <td>1</td>
-            <td>1 of 3 Ongoing</td>
-            <td>Software Maintenance / Evaluation Reports</td>
-            <td><p>System Security Evaluation</p></td>
-          </tr>
-          <tr>
-            <td>Number of Submitted ICT Policies and manual of operation</td>
-            <td>2</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>1</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>1</td>
-            <td>1 of 2 Ongoing</td>
-            <td>Forms / Policies / Manual</td>
-            <td><p>Data Privacy Manual / Office Policies</p></td>
-          </tr>
+           </thead>
+                 <body onload="window.print();window.close()">${print}</body>
+                 <tbody class="data-cells">
           <tr>
             <td></td>
             <td></td>

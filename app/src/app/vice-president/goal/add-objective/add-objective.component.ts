@@ -68,7 +68,22 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
     yearly: string[] = [];
     typeOfComputationValSwitch: boolean = false;
     targetValSwitch: boolean = false;
+    targetValPercentSwitch: Boolean = false;
+    targetValCountSwitch: Boolean = false;
+    typeOfComputationValCumulativeSwitch: Boolean = false;
+    typeOfComputationValNonCumulativeSwitch: Boolean = false;
 
+    selectedTargetType: any;
+
+    targetTypes: any[] = [
+        { name: 'percent', code: 'percent' },
+        { name: 'count', code: 'count' },
+    ];
+
+    typeOfComputations: any[] = [
+        { name: 'cumulative', code: 'cumulative' },
+        { name: 'non-cumulative', code: 'non-cumulative' },
+    ];
     constructor(
         private formBuilder: FormBuilder,
         private messageService: MessageService,
@@ -98,6 +113,8 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
         ];
 
         this.yearly = ['Year'];
+        this.targetValCountSwitch = true;
+        this.typeOfComputationValNonCumulativeSwitch = true;
     }
 
     ngOnInit() {
@@ -113,8 +130,17 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             { name: 'quarterly', code: 'Quarterly' },
             { name: 'biannually', code: 'Biannually' },
         ];
+        this.addObjectiveGoalform
+            .get('target_type')
+            .setValue(this.targetTypes[1].name);
+        this.addObjectiveGoalform
+            .get('type_of_computation')
+            .setValue(this.typeOfComputations[1].name);
     }
 
+    onTargetChange(event: any) {
+        this.targetValSwitch = event.checked;
+    }
     ngOnDestroy(): void {
         this.addObjectiveSubscription.next();
         this.addObjectiveSubscription.complete();
@@ -185,18 +211,6 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
         } else if (frequency === 'monthly') {
             addMonthlyControlsSimple(this.addObjectiveGoalform, this.months);
         }
-
-        // Clear existing dynamic controls
-
-        // this.clearDynamicControls();
-
-        // if (frequency === 'yearly') {
-        //     this.addMonthlyControls();
-        // } else if (frequency === 'quarterly') {
-        //     this.addQuarterlyControls();
-        // } else if (frequency === 'semi_annual') {
-        //     this.addSemiAnnualControls();
-        // }
 
         // Update the form control value
         this.addObjectiveGoalform
@@ -270,7 +284,8 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             data_source: ['', [Validators.required]],
             remarks: ['', [Validators.required]],
             budget: ['', [Validators.required]],
-
+            target_type: ['', [Validators.required]],
+            type_of_computation: ['', [Validators.required]],
             // Add form controls for monthly and quarterly timetable values
             month_0: [0],
             month_1: [0],
@@ -355,10 +370,6 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             goalId: addExecutionGoalId,
             goal_Id: this.addExecutionGoal_Id,
             createdBy: USERID,
-            target_type: !targetValSwitch ? 'percent' : targetValSwitch,
-            type_of_computation: !typeOfComputationValSwitch
-                ? 'cumulative'
-                : typeOfComputationValSwitch,
         };
 
         const updatedData = await this.addGoalPeriods(data, patterns);
@@ -418,59 +429,3 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
         return newObj;
     }
 }
-
-/*
- async addSubObjectiveGoalDialogExec(e: any) {
-        this.addObjectiveGoalform.get('strategic_objective').enable();
-        let patterns = [];
-        if (e.value.frequency_monitoring === 'semi_annual') {
-            patterns.push('semi_annual_[i]');
-        }
-        if (e.value.frequency_monitoring === 'yearly') {
-            patterns.push('month_[i]');
-        }
-        if (e.value.frequency_monitoring === 'quarterly') {
-            patterns.push('quarter_[i]');
-        }
-
-        const { addExecutionGoalId, formGroupDropdown, goal_ObjectId, USERID } =
-            this;
-
-        let data = {
-            ...e.value,
-            userId: USERID,
-            goalId: addExecutionGoalId,
-            goal_Id: this.addExecutionGoal_Id,
-            createdBy: USERID,
-            // timetable: new Map(), // Initialize the timetable Map
-        };
-
-        const updatedData = await this.addGoalPeriods(data, patterns);
-        this.obj
-            .fetch('post', 'objectives', 'addObjectives', updatedData)
-            .pipe(takeUntil(this.addObjectiveSubscription))
-            .subscribe((data: any) => {
-                if (data.success) {
-                    this.addObjectiveGoalDialogCard = false;
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Done',
-                        detail: data.message,
-                    });
-                    this.goal_ObjectId = data.data.goal_Id;
-                    this.addObjectiveGoalform.reset();
-                    this.formGroupDropdown.reset();
-                    this.goalDataRemainingBudget = 0;
-                    this.childSuccessAddObjectiveEvent.emit({
-                        addedNewObjective: true,
-                        success: true,
-                        data: data.data,
-                    });
-                } else {
-                    this.messageService.add({
-                        severity: 'warn',
-                    });
-                }
-            });
-    }
-            */

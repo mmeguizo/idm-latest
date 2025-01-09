@@ -18,6 +18,7 @@ import {
 } from '@angular/forms';
 import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { GoallistService } from 'src/app/demo/service/goallists.service';
+
 import {
     populateAndUpdateData,
     addMonthlyControls,
@@ -67,6 +68,23 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
     yearly: string[] = [];
     typeOfComputationValSwitch: boolean = false;
     targetValSwitch: boolean = false;
+    targetValPercentSwitch: Boolean = false;
+    targetValCountSwitch: Boolean = false;
+    typeOfComputationValCumulativeSwitch: Boolean = false;
+    typeOfComputationValNonCumulativeSwitch: Boolean = false;
+
+    selectedTargetType: any;
+
+    targetTypes: any[] = [
+        { name: 'percent', code: 'percent' },
+        { name: 'count', code: 'count' },
+    ];
+
+    typeOfComputations: any[] = [
+        { name: 'cumulative', code: 'cumulative' },
+        { name: 'non-cumulative', code: 'non-cumulative' },
+    ];
+
     constructor(
         private formBuilder: FormBuilder,
         private messageService: MessageService,
@@ -96,6 +114,8 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
         ];
 
         this.yearly = ['Year'];
+        this.targetValCountSwitch = true;
+        this.typeOfComputationValNonCumulativeSwitch = true;
     }
 
     ngOnInit() {
@@ -111,6 +131,13 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             { name: 'quarterly', code: 'Quarterly' },
             { name: 'biannually', code: 'Biannually' },
         ];
+
+        this.addObjectiveGoalform
+            .get('target_type')
+            .setValue(this.targetTypes[1].name);
+        this.addObjectiveGoalform
+            .get('type_of_computation')
+            .setValue(this.typeOfComputations[1].name);
     }
 
     ngOnDestroy(): void {
@@ -258,7 +285,8 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             data_source: ['', [Validators.required]],
             remarks: ['', [Validators.required]],
             budget: ['', [Validators.required]],
-
+            target_type: ['', [Validators.required]],
+            type_of_computation: ['', [Validators.required]],
             // Add form controls for monthly and quarterly timetable values
             month_0: [0],
             month_1: [0],
@@ -283,28 +311,28 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
         });
     }
 
-    async getAllGoallistsDropdown(id: string) {
-        this.goallistService
-            .getRoute(
-                'get',
-                'goallists',
-                `getAllAddObjectivesGoallistsDropdown/${id}`
-            )
-            .pipe(takeUntil(this.addObjectiveSubscription))
-            .subscribe({
-                next: (data: any) => {
-                    this.dropdwonGoallistSelection = data.objectives;
-                },
-                error: (error) => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'Failed to Goallist Dropdown',
-                    });
-                },
-                complete: () => {},
-            });
-    }
+    // async getAllGoallistsDropdown(id: string) {
+    //     this.goallistService
+    //         .getRoute(
+    //             'get',
+    //             'goallists',
+    //             `getAllAddObjectivesGoallistsDropdown/${id}`
+    //         )
+    //         .pipe(takeUntil(this.addObjectiveSubscription))
+    //         .subscribe({
+    //             next: (data: any) => {
+    //                 this.dropdwonGoallistSelection = data.objectives;
+    //             },
+    //             error: (error) => {
+    //                 this.messageService.add({
+    //                     severity: 'error',
+    //                     summary: 'Error',
+    //                     detail: 'Failed to Goallist Dropdown',
+    //                 });
+    //             },
+    //             complete: () => {},
+    //         });
+    // }
 
     clearAddObjectiveGoalDialogCardDatas() {
         this.addObjectiveGoalDialogCard = false;
@@ -342,10 +370,6 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             goalId: addExecutionGoalId,
             goal_Id: this.addExecutionGoal_Id,
             createdBy: USERID,
-            target_type: !targetValSwitch ? 'percent' : targetValSwitch,
-            type_of_computation: !typeOfComputationValSwitch
-                ? 'cumulative'
-                : typeOfComputationValSwitch,
         };
 
         const updatedData = await this.addGoalPeriods(data, patterns);

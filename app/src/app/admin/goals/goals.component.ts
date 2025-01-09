@@ -44,6 +44,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
     @ViewChild('filter') filter!: ElementRef;
     @ViewChild(PrintTableComponent) printTableComponent: PrintTableComponent;
     @Output() remarksEvent = new EventEmitter<any>();
+    @Output() printQOMObjectiveTableEvent = new EventEmitter<any>();
+
     //table data
     goals: any[] = [];
     Alldepts: any[] = [];
@@ -80,7 +82,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     viewObjectiveFileHistoryDialogCard: boolean = false;
     addObjectiveFileDialogCard: boolean;
     updateObjectiveGoalFlag: boolean;
-
+    parentPrintQom: any = {};
     //forms
     public addGoalform: any;
     public updateGoalform: any;
@@ -717,17 +719,17 @@ export class GoalsComponent implements OnInit, OnDestroy {
         };
     }
 
-    printDocumentQOM() {
-        //   this.printingHead = true;
-        this.parentPrintFileQom = {
-            printFile: true,
-            objectData: this.objectiveDatas,
-            printingHead: true,
-            subObjectiveHeaders: this.subObjectiveHeaders,
-            subOnjectiveHeaderData: this.subOnjectiveHeaderData?.department,
-            printingOfficeName: this.printingOfficeName,
-        };
-    }
+    // printDocumentQOM() {
+    //     //   this.printingHead = true;
+    //     this.parentPrintFileQom = {
+    //         printFile: true,
+    //         objectData: this.objectiveDatas,
+    //         printingHead: true,
+    //         subObjectiveHeaders: this.subObjectiveHeaders,
+    //         subOnjectiveHeaderData: this.subOnjectiveHeaderData?.department,
+    //         printingOfficeName: this.printingOfficeName,
+    //     };
+    // }
 
     ngAfterViewInit() {}
 
@@ -740,5 +742,31 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
     formatText(text: string) {
         return text.replace(/_/g, ' ');
+    }
+
+    receivedPrintQOMObjectiveTableEvent(event: any) {
+        console.log({ receivedPrintQOMObjectiveTableEvent: event });
+
+        const { header, data, printQOMObjectiveTable } = event;
+        this.parentPrintQom = {
+            printQOMObjectiveTable: printQOMObjectiveTable,
+            data: data,
+            header: header,
+        };
+    }
+
+    printDocumentQOM(header: string, data: any): void {
+        console.log('printDocumentQOM');
+        this.parentPrintQom = {
+            printQOMObjectiveTable: true,
+            data: data,
+            header: header,
+        };
+
+        // this.printQOMObjectiveTableEvent.emit({
+        //     printQOMObjectiveTable: true,
+        //     data: data,
+        //     header: header,
+        // });
     }
 }

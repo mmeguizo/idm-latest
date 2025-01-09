@@ -20,9 +20,60 @@
                     <div class="grid flex-column">
                         <div
                             class="col-3 frequency"
+                            *ngFor="let year of yearly; let i = index"
+                        >
+                            <label for="yearly_{{ i }}">Year</label>
+
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Goal :
+                                    {{ objectiveDatas["goal_yearly_" + i] }}
+                                </p-inputGroupAddon>
+                                <p-inputNumber
+                                    id="month_{{ i }}"
+                                    formControlName="yearly_{{ i }}"
+                                    [min]="0"
+                                ></p-inputNumber>
+                            </p-inputGroup>
+
+                            <span class="p-float-label p-input-icon-left">
+                                <i class="pi pi-file-import"></i>
+                                <input
+                                    type="text"
+                                    id="lefticon"
+                                    pInputText
+                                    formControlName="file_yearly_{{ i }}"
+                                    (click)="onUpload($event, 'yearly', i)"
+                                />
+                                <label for="lefticon">{{
+                                    objectiveDatas["file_yearly_" + [i]]
+                                        ? "Upload More.."
+                                        : "Upload Files"
+                                }}</label>
+                            </span>
+                            <i
+                                class="pi pi-check-circle text-teal-400 text-2xl pr-3 pb-2"
+                                *ngIf="
+                                    editObjectiveGoalform.get(
+                                        'file_yearly_' + i
+                                    ).value
+                                "
+                            ></i>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    *ngIf="
+                        editObjectiveGoalform.get('frequency_monitoring')
+                            .value === 'monthly'
+                    "
+                >
+                    <div class="grid flex-column">
+                        <div
+                            class="col-3 frequency"
                             *ngFor="let month of months; let i = index"
                         >
-                            <label for="month_{{ i }}">{{ month }}</label>
+                            <label for="Month{{ i }}">{{ month }}</label>
 
                             <p-inputGroup>
                                 <p-inputGroupAddon>
@@ -123,7 +174,7 @@
                             *ngFor="let period of [0, 1]; let i = index"
                         >
                             <label for="semi_annual_{{ i }}"
-                                >Semi-0{{ i + 1 }}</label
+                                >Semi {{ i + 1 }}</label
                             >
 
                             <p-inputGroup>

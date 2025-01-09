@@ -115,39 +115,6 @@
         />
         <p-button label="Save" (onClick)="printPdf(); printingHead = false" />
     </div>
-    <!-- <span class="p-text-secondary block mb-5">Update your information.</span>
-    <div class="flex align-items-center gap-3 mb-3">
-        <label for="username" class="font-semibold w-6rem">Name</label>
-        <input
-            pInputText
-            #nameInput
-            id="name"
-            placeholder="e.g Benrie Nufable, PHD. TM"
-            class="flex-auto"
-            autocomplete="off"
-            [(ngModel)]="nameValue"
-        />
-    </div>
-    <div class="flex align-items-center gap-3 mb-5">
-        <label for="email" class="font-semibold w-6rem">Office</label>
-        <input
-            pInputText
-            id="office"
-            #officeInput
-            placeholder="e.g MIS Head - DPO"
-            class="flex-auto"
-            autocomplete="off"
-            [(ngModel)]="officeValue"
-        />
-    </div>
-    <div class="flex justify-content-end gap-2">
-        <p-button
-            label="Cancel"
-            severity="secondary"
-            (onClick)="printingHead = false"
-        />
-        <p-button label="Save" (onClick)="printPdf(); printingHead = false" />
-    </div> -->
 </p-dialog>
 <table id="print" [ngClass]="{ hidden: !isPrintableVisible }">
     <thead>
@@ -159,8 +126,6 @@
             <th>Formula</th>
             <th>Programs, Projects or Activities</th>
             <th>Responsible Persons & Partners</th>
-            <!-- <th>Target Participants or Clients</th> -->
-            <!-- <th>Timetable</th> -->
             <th>Frequency of Monitoring</th>
             <th>Means of Verification (Data Source)</th>
             <th>Budget</th>
@@ -184,7 +149,6 @@
             <td>{{ obj.formula | titlecase }}</td>
             <td>{{ obj.programs | titlecase }}</td>
             <td>{{ obj.responsible_persons | titlecase }}</td>
-
             <td>
                 {{ getFrequencyKeys(obj.frequency_monitoring) | titlecase }}
             </td>
@@ -192,35 +156,4 @@
             <td>{{ obj.budget | peso }}</td>
         </tr>
     </tbody>
-    <!-- <thead>
-        <tr>
-            <th>Functional Objectives</th>
-            <th>Performance Indicators</th>
-            <th>Target</th>
-            <th>Formula</th>
-            <th>Programs, Projects or Activities</th>
-            <th>Responsible Persons & Partners</th>
-            <th>Target Participants or Clients</th>
-            <th>Frequency of Monitoring</th>
-            <th>Means of Verification (Data Source)</th>
-            <th>Budget</th>
-        </tr>
-    </thead>
-    <tbody *ngIf="objectiveDatas?.length != 0">
-        <tr *ngFor="let obj of objectiveDatas; let i = index">
-            <td>{{ obj.functional_objective | titlecase }}</td>
-            <td>{{ obj.performance_indicator | titlecase }}</td>
-            <td>{{ obj.target }}</td>
-            <td>{{ obj.formula | titlecase }}</td>
-            <td>{{ obj.programs | titlecase }}</td>
-            <td>{{ obj.responsible_persons | titlecase }}</td>
-            <td>{{ obj.clients | titlecase }}</td>
-
-            <td>
-                {{ getFrequencyKeys(obj.frequency_monitoring) | titlecase }}
-            </td>
-            <td>{{ obj.data_source | titlecase }}</td>
-            <td>{{ obj.budget | peso }}</td>
-        </tr>
-    </tbody> -->
 </table>

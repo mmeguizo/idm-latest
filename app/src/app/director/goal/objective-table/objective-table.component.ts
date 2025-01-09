@@ -53,6 +53,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     @Output() viewFilesHistoryEvent = new EventEmitter<any>();
     @Output() printObjectiveTableEvent = new EventEmitter<any>();
     @Output() remarksEvent = new EventEmitter<any>();
+    @Output() printQOMObjectiveTableEvent = new EventEmitter<any>();
 
     subGoalObjective: boolean = false;
     loading: boolean = false;
@@ -68,6 +69,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     objectiveDatas: any[] = [];
     addNewObjectiveTableTrigger: any;
     editObjectiveTableTrigger: any;
+    currentDate = new Date();
     // childAddObjectiveEvent: any;
 
     constructor(
@@ -245,6 +247,16 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
         this.viewFilesEvent.emit({
             viewFiles: true,
             data: objectives,
+        });
+    }
+
+    printDocumentQOM(header: string, data: any): void {
+        console.log('printDocumentQOM');
+
+        this.printQOMObjectiveTableEvent.emit({
+            printQOMObjectiveTable: true,
+            data: data,
+            header: header,
         });
     }
 

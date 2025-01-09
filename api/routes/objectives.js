@@ -211,27 +211,45 @@ module.exports = (router) => {
 
   router.get("/getAllByIdObjectives/:id", async (req, res) => {
     try {
-      const objectives = await Objectives.find({
-        deleted: false,
-        goalId: req.params.id,
-      }).sort({ _id: -1 });
-
-      if (!objectives || objectives.length === 0) {
-        return res.json({
-          success: false,
-          message: "No Objectives found.",
-          Objectives: [],
-        });
-      }
-
-      // const updatedObjectives = await calculatePercentage(objectives);
-
-      // console.log(returnedData);
-      return res.status(200).json({
-        success: true,
-        Objectives: await calculatePercentage(objectives),
-        budget: objectives.map((e) => e.budget).reduce((a, b) => a + b, 0),
-      });
+      await Objectives.aggregate(
+        [
+          {
+            $match: {
+              goalId: req.params.id,
+              deleted: false,
+            },
+          },
+          {
+            $lookup: {
+              as: "remarks",
+              from: "remarks",
+              foreignField: "objectiveId",
+              localField: "id",
+            },
+          },
+        ],
+        async (error, results) => {
+          if (error) {
+            console.log({ ERR: error });
+            return res
+              .status(500)
+              .json({ success: false, message: error.message });
+          }
+          if (!results || results.length === 0) {
+            return res.json({
+              success: false,
+              message: "No Objectives found.",
+              Objectives: [],
+            });
+          }
+          if (results) {
+            return res.status(200).json({
+              success: true,
+              Objectives: await calculatePercentage(results),
+            });
+          }
+        }
+      );
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
     }
@@ -274,7 +292,12 @@ module.exports = (router) => {
       let goal = 0;
       const target = objective.target;
       let actual = 0;
-      const updatedObjective = { ...objective._doc }; // Copy to prevent mutating the original
+      let monthPointer = 0;
+      let monthPointerValue = 0;
+      const updatedObjective = { ...objective };
+      updatedObjective.monthPointerValue = {};
+      // const updatedObjective = { ...objective._doc };
+      // Copy to prevent mutating the original
 
       if (objective.frequency_monitoring === "monthly") {
         for (let i = 0; i < 12; i++) {
@@ -294,6 +317,11 @@ module.exports = (router) => {
             ) {
               const monthDate = new Date(objective[`month_${i}_date`]);
               const monthDateSet = monthDate.getMonth();
+              updatedObjective.monthPointer = monthDateSet;
+              updatedObjective.monthPointerValue[
+                `monthPointer_${monthDateSet}`
+              ] = objective[`month_${i}`] || 0;
+
               if (
                 monthDateSet === currentMonth &&
                 monthDate.getFullYear() === currentYear
@@ -322,6 +350,16 @@ module.exports = (router) => {
             ) {
               const quarterDate = new Date(objective[`quarter_${i}_date`]);
               const quarterDateSet = quarterDate.getMonth();
+
+              // monthPointer = quarterDateSet;
+              // monthPointerValue = objective[`quarter_${i}`] || 0;
+
+              updatedObjective.monthPointer = quarterDateSet;
+
+              updatedObjective.monthPointerValue[
+                `monthPointer_${quarterDateSet}`
+              ] = objective[`quarter_${i}`] || 0;
+
               if (quarterDateSet >= 0 && quarterDateSet <= 2) {
                 quarter = 0;
               } else if (quarterDateSet >= 3 && quarterDateSet <= 5) {
@@ -368,6 +406,15 @@ module.exports = (router) => {
               );
               const semiAnnualDateSet = semiAnnualDate.getMonth();
 
+              monthPointer = semiAnnualDateSet;
+              monthPointerValue = objective[`semi_annual_${i}`] || 0;
+
+              updatedObjective.monthPointer = semiAnnualDateSet;
+
+              updatedObjective.monthPointerValue[
+                `monthPointer_${semiAnnualDateSet}`
+              ] = objective[`semi_annual_${i}`] || 0;
+
               if (semiAnnualDateSet >= 0 && semiAnnualDateSet <= 5) {
                 goalsemiannualposition = 0;
               } else {
@@ -381,11 +428,6 @@ module.exports = (router) => {
               } else {
                 currentsemianualposition = 1;
               }
-
-              console.log({ goalsemiannualposition });
-              console.log({ currentsemianualposition });
-              console.log({ currentYear });
-              console.log({ ownDateYear: semiAnnualDate.getFullYear() });
 
               if (
                 goalsemiannualposition === currentsemianualposition &&
@@ -417,6 +459,16 @@ module.exports = (router) => {
               objective[`yearly_${i}_date`]
             ) {
               const yearlyDate = new Date(objective[`yearly_${i}_date`]);
+
+              let montpointer = yearlyDate.getMonth();
+              // monthPointerValue = objective[`yearly_${i}`] || 0;
+
+              updatedObjective.monthPointer = montpointer;
+
+              updatedObjective.monthPointerValue[
+                `monthPointer_${montpointer}`
+              ] = objective[`yearly_${i}`] || 0;
+
               if (yearlyDate.getFullYear() === currentYear) {
                 // actual += objective[`yearly_0`] || 0;
                 totalCumulativeAchive += objective[`yearly_${i}`] || 0;
@@ -434,7 +486,8 @@ module.exports = (router) => {
       updatedObjective.completionPercentage = target
         ? Math.round((total / target) * 100)
         : 0;
-
+      // updatedObjective.monthPointer = monthPointer;
+      // updatedObjective.monthPointerValue = monthPointerValue;
       updatedObjective.GOAL = totalCumulativeAchive;
       updatedObjective.ACTUAL = totalCumulativeAchiveGoal;
       updatedObjective.GOALSET = totalGoalsSet;

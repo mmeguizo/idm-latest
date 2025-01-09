@@ -48,7 +48,7 @@ export class GoalComponent implements OnInit, OnDestroy {
     parentAddnewFile: any;
     parentViewFiles: { viewFiles: any; data: any };
     parentViewFileHistory: { viewFilesHistory: any; data: any };
-
+    parentPrintQom: any = {};
     //print file
     parentPrintFile: any = {};
 
@@ -90,6 +90,17 @@ export class GoalComponent implements OnInit, OnDestroy {
         this.parentEditGoal = {
             editGoal: event.editGoal,
             goal: event.goal,
+        };
+    }
+
+    receivedPrintQOMObjectiveTableEvent(event: any) {
+        console.log({ receivedPrintQOMObjectiveTableEvent: event });
+
+        const { header, data, printQOMObjectiveTable } = event;
+        this.parentPrintQom = {
+            printQOMObjectiveTable: printQOMObjectiveTable,
+            data: data,
+            header: header,
         };
     }
 

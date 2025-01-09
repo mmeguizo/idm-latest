@@ -22,6 +22,14 @@ import { ObjectiveService } from 'src/app/demo/service/objective.service';
 import { GoallistService } from 'src/app/demo/service/goallists.service';
 import { FileService } from 'src/app/demo/service/file.service';
 import { ChangeDetectorRef } from '@angular/core';
+import {
+    clearDynamicControls,
+    addMonthlyControls,
+    addQuarterlyControls,
+    addSemiAnnualControls,
+    addYearlyControls,
+} from 'src/app/utlis/general-utils';
+
 @Component({
     selector: 'app-edit-objective',
     templateUrl: './edit-objective.component.html',
@@ -146,14 +154,43 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
             code: event?.value?.name || event,
         };
         // Clear existing dynamic controls
-        await this.clearDynamicControls();
+        // await this.clearDynamicControls();
+        await clearDynamicControls(
+            this.editObjectiveGoalform,
+            this.months,
+            this.quarters,
+            this.semi_annual,
+            this.yearly
+        );
 
-        if (frequency === 'yearly') {
-            await this.addMonthlyControls(await data);
+        if (frequency === 'monthly') {
+            // await this.addMonthlyControls(await data);
+            await addMonthlyControls(
+                this.editObjectiveGoalform,
+                this.months,
+                await data
+            );
         } else if (frequency === 'quarterly') {
-            await this.addQuarterlyControls(await data);
+            // await this.addQuarterlyControls(await data);
+            await addQuarterlyControls(
+                this.editObjectiveGoalform,
+                this.quarters,
+                await data
+            );
         } else if (frequency === 'semi_annual') {
-            await this.addSemiAnnualControls(await data);
+            // await this.addSemiAnnualControls(await data);
+            await addSemiAnnualControls(
+                this.editObjectiveGoalform,
+                this.semi_annual,
+                await data
+            );
+        } else {
+            // await this.addYearlyControls(await data);
+            await addYearlyControls(
+                this.editObjectiveGoalform,
+                this.yearly,
+                await data
+            );
         }
     }
 
@@ -173,90 +210,6 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
                     this.cdr.detectChanges();
                 }, 300);
             });
-    }
-
-    async clearDynamicControls() {
-        // Clear monthly controls
-        this.months.forEach((_, i) => {
-            if (this.editObjectiveGoalform.contains(`month_${i}`)) {
-                this.editObjectiveGoalform.removeControl(`month_${i}`);
-            }
-        });
-
-        this.quarters.forEach((_, i) => {
-            if (this.editObjectiveGoalform.contains(`quarter_${i}`)) {
-                this.editObjectiveGoalform.removeControl(`quarter_${i}`);
-            }
-        });
-
-        // Clear semi-annual controls
-        this.semi_annual.forEach((_, i) => {
-            if (this.editObjectiveGoalform.contains(`semi_annual_${i}`)) {
-                this.editObjectiveGoalform.removeControl(`semi_annual_${i}`);
-            }
-        });
-    }
-
-    async addMonthlyControls(data?: any) {
-        this.months.forEach((_, i) => {
-            this.editObjectiveGoalform.removeControl(`month_${i}`);
-            this.editObjectiveGoalform.removeControl(`file_month_${i}`);
-
-            const monthValue = data ? data[`month_${i}`] || 0 : 0;
-            const fileMonthValue = data[`file_month_${i}`]
-                ? '💾 File Added...'
-                : '';
-            this.editObjectiveGoalform.addControl(
-                `month_${i}`,
-                new FormControl(monthValue, Validators.min(0))
-            );
-            this.editObjectiveGoalform.addControl(
-                `file_month_${i}`,
-                new FormControl(fileMonthValue)
-            );
-        });
-    }
-
-    async addQuarterlyControls(data?: any) {
-        // Add controls for quarters 0 to 3
-        for (let quarter = 0; quarter <= 3; quarter++) {
-            this.editObjectiveGoalform.removeControl(`quarter_${quarter}`);
-            this.editObjectiveGoalform.removeControl(`file_quarter_${quarter}`);
-
-            const quarterValue = data ? data[`quarter_${quarter}`] || 0 : 0;
-            const fileQuarterValue = data[`file_quarter_${quarter}`]
-                ? '💾 File Added...'
-                : '';
-            this.editObjectiveGoalform.addControl(
-                `quarter_${quarter}`,
-                new FormControl(quarterValue, Validators.min(0))
-            );
-            this.editObjectiveGoalform.addControl(
-                `file_quarter_${quarter}`,
-                new FormControl(fileQuarterValue)
-            );
-        }
-    }
-
-    async addSemiAnnualControls(data?: any) {
-        this.semi_annual.forEach((_, i) => {
-            // Clear the previous values first
-            this.editObjectiveGoalform.removeControl(`semi_annual_${i}`);
-            this.editObjectiveGoalform.removeControl(`file_semi_annual_${i}`);
-
-            const monthValue = data ? data[`semi_annual_${i}`] || 0 : 0;
-            const fileSemiAnnualValue = data[`file_semi_annual_${i}`]
-                ? '💾 File Added...'
-                : '';
-            this.editObjectiveGoalform.addControl(
-                `semi_annual_${i}`,
-                new FormControl(monthValue, Validators.min(0))
-            );
-            this.editObjectiveGoalform.addControl(
-                `file_semi_annual_${i}`,
-                new FormControl(fileSemiAnnualValue)
-            );
-        });
     }
 
     createeditObjectiveGoalform() {
@@ -291,7 +244,7 @@ export class EditObjectiveComponent implements OnInit, OnDestroy {
         const currentDate = new Date().toISOString().split('T')[0];
 
         for (const key in form.value) {
-            if (form.value[key] !== '' && form.value[key] !== 0) {
+            if (form.value[key] !== '') {
                 data[key] = form.value[key];
 
                 if (

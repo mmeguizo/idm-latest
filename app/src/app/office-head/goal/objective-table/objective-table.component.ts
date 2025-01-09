@@ -164,7 +164,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
                 .fetch('get', 'objectives', `getAllByIdObjectives/${id}`)
                 .pipe(takeUntil(this.objectiveTableSubscription))
                 .subscribe(async (data: any) => {
-                    console.log('data', data.Objectives);
+                    console.log('getAllByIdObjectives', data);
                     this.objectiveDatas = await data.Objectives;
                     this.changeDetectorRef.markForCheck();
                     this.loading = false;

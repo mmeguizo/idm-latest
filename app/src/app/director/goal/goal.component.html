@@ -32,6 +32,7 @@
     (viewFilesHistoryEvent)="receivedViewFilesHistoryButtonClick($event)"
     (printObjectiveTableEvent)="receivedPrintObjectiveTableEvent($event)"
     (remarksEvent)="receivedRemarksEvent($event)"
+    (printQOMObjectiveTableEvent)="receivedPrintQOMObjectiveTableEvent($event)"
 >
 </app-objective-table>
 <app-add-objective
@@ -59,7 +60,7 @@
 </app-view-file-history>
 <app-print-objective-table [printFile]="parentPrintFile">
 </app-print-objective-table>
-
+<app-print-qom [printQOMFile]="parentPrintQom"></app-print-qom>
 <app-remarks
     [remarksFromGoalParent]="parentRemarks"
     (childRemarksEvent)="receivedRemarksEvent($event)"

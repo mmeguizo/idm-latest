@@ -68,6 +68,23 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
     yearly: string[] = [];
     targetValSwitch: boolean = false;
     typeOfComputationValSwitch: boolean = false;
+    targetValPercentSwitch: Boolean = false;
+    targetValCountSwitch: Boolean = false;
+    typeOfComputationValCumulativeSwitch: Boolean = false;
+    typeOfComputationValNonCumulativeSwitch: Boolean = false;
+
+    selectedTargetType: any;
+
+    targetTypes: any[] = [
+        { name: 'percent', code: 'percent' },
+        { name: 'count', code: 'count' },
+    ];
+
+    typeOfComputations: any[] = [
+        { name: 'cumulative', code: 'cumulative' },
+        { name: 'non-cumulative', code: 'non-cumulative' },
+    ];
+
     constructor(
         private formBuilder: FormBuilder,
         private messageService: MessageService,
@@ -100,6 +117,9 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
 
         // Initialize yearly array
         this.yearly = ['yearly'];
+
+        this.targetValCountSwitch = true;
+        this.typeOfComputationValNonCumulativeSwitch = true;
     }
 
     ngOnInit() {
@@ -116,6 +136,13 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             { name: 'biannually', code: 'Biannually' },
         ];
         // Disable the strategic_objective form control
+
+        this.addObjectiveGoalform
+            .get('target_type')
+            .setValue(this.targetTypes[1].name);
+        this.addObjectiveGoalform
+            .get('type_of_computation')
+            .setValue(this.typeOfComputations[1].name);
     }
 
     ngOnDestroy(): void {
@@ -294,7 +321,8 @@ export class AddObjectiveComponent implements OnInit, OnDestroy {
             data_source: ['', [Validators.required]],
             remarks: ['', [Validators.required]],
             budget: ['', [Validators.required]],
-
+            target_type: ['', [Validators.required]],
+            type_of_computation: ['', [Validators.required]],
             // Add form controls for monthly and quarterly timetable values
             month_0: [0],
             month_1: [0],

@@ -32,6 +32,7 @@
     (viewFilesHistoryEvent)="receivedViewFilesHistoryButtonClick($event)"
     (printObjectiveTableEvent)="receivedPrintObjectiveTableEvent($event)"
     (remarksEvent)="receivedRemarksEvent($event)"
+    (printQOMObjectiveTableEvent)="receivedPrintQOMObjectiveTableEvent($event)"
 >
 </app-objective-table>
 <app-add-objective
@@ -56,6 +57,7 @@
     [getObjective]="parentEditObjective"
     (childUpdateObjective)="receivedUpdateObjective($event)"
 >
+    <app-print-qom [printQOMFile]="parentPrintQom"></app-print-qom>
 </app-edit-objective>
 <app-print-objective-table [printFile]="parentPrintFile">
 </app-print-objective-table>

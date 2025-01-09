@@ -219,135 +219,23 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             });
     }
 
-    // async clearDynamicControls() {
-    //     // Clear monthly controls
-    //     this.months.forEach((_, i) => {
-    //         if (this.editObjectiveGoalform.contains(`month_${i}`)) {
-    //             this.editObjectiveGoalform.removeControl(`month_${i}`);
-    //         }
-    //     });
-
-    //     // clear yearly controls
-    //     this.yearly.forEach((_, i) => {
-    //         if (this.editObjectiveGoalform.contains(`yearly_${i}`)) {
-    //             this.editObjectiveGoalform.removeControl(`yearly_${i}`);
-    //         }
-    //     });
-
-    //     // Clear quarterly controls
-
-    //     this.quarters.forEach((_, i) => {
-    //         if (this.editObjectiveGoalform.contains(`quarter_${i}`)) {
-    //             this.editObjectiveGoalform.removeControl(`quarter_${i}`);
-    //         }
-    //     });
-
-    //     // Clear semi-annual controls
-    //     this.semi_annual.forEach((_, i) => {
-    //         if (this.editObjectiveGoalform.contains(`semi_annual_${i}`)) {
-    //             this.editObjectiveGoalform.removeControl(`semi_annual_${i}`);
-    //         }
-    //     });
-    // }
-
-    // async addYearlyControls(data?: any) {
-    //     this.yearly.forEach((_, i) => {
-    //         this.editObjectiveGoalform.removeControl(`yearly_${i}`);
-    //         this.editObjectiveGoalform.removeControl(`file_yearly_${i}`);
-
-    //         const yearlyValue = data ? data[`yearly_${i}`] || 0 : 0;
-    //         const fileYearlyValue = data[`file_yearly_${i}`]
-    //             ? '💾 File Added...'
-    //             : '';
-    //         this.editObjectiveGoalform.addControl(
-    //             `yearly_${i}`,
-    //             new FormControl(yearlyValue, Validators.min(0))
-    //         );
-    //         this.editObjectiveGoalform.addControl(
-    //             `file_yearly_${i}`,
-    //             new FormControl(fileYearlyValue)
-    //         );
-    //     });
-    // }
-    // async addMonthlyControls(data?: any) {
-    //     this.months.forEach((_, i) => {
-    //         this.editObjectiveGoalform.removeControl(`month_${i}`);
-    //         this.editObjectiveGoalform.removeControl(`file_month_${i}`);
-
-    //         const monthValue = data ? data[`month_${i}`] || 0 : 0;
-    //         const fileMonthValue = data[`file_month_${i}`]
-    //             ? '💾 File Added...'
-    //             : '';
-    //         this.editObjectiveGoalform.addControl(
-    //             `month_${i}`,
-    //             new FormControl(monthValue, Validators.min(0))
-    //         );
-    //         this.editObjectiveGoalform.addControl(
-    //             `file_month_${i}`,
-    //             new FormControl(fileMonthValue)
-    //         );
-    //     });
-    // }
-
-    // async addQuarterlyControls(data?: any) {
-    //     // Add controls for quarters 0 to 3
-    //     for (let quarter = 0; quarter <= 3; quarter++) {
-    //         this.editObjectiveGoalform.removeControl(`quarter_${quarter}`);
-    //         this.editObjectiveGoalform.removeControl(`file_quarter_${quarter}`);
-
-    //         const quarterValue = data ? data[`quarter_${quarter}`] || 0 : 0;
-    //         const fileQuarterValue = data[`file_quarter_${quarter}`]
-    //             ? '💾 File Added...'
-    //             : '';
-    //         this.editObjectiveGoalform.addControl(
-    //             `quarter_${quarter}`,
-    //             new FormControl(quarterValue, Validators.min(0))
-    //         );
-    //         this.editObjectiveGoalform.addControl(
-    //             `file_quarter_${quarter}`,
-    //             new FormControl(fileQuarterValue)
-    //         );
-    //     }
-    // }
-
-    // async addSemiAnnualControls(data?: any) {
-    //     this.semi_annual.forEach((_, i) => {
-    //         // Clear the previous values first
-    //         this.editObjectiveGoalform.removeControl(`semi_annual_${i}`);
-    //         this.editObjectiveGoalform.removeControl(`file_semi_annual_${i}`);
-
-    //         const monthValue = data ? data[`semi_annual_${i}`] || 0 : 0;
-    //         const fileSemiAnnualValue = data[`file_semi_annual_${i}`]
-    //             ? '💾 File Added...'
-    //             : '';
-    //         this.editObjectiveGoalform.addControl(
-    //             `semi_annual_${i}`,
-    //             new FormControl(monthValue, Validators.min(0))
-    //         );
-    //         this.editObjectiveGoalform.addControl(
-    //             `file_semi_annual_${i}`,
-    //             new FormControl(fileSemiAnnualValue)
-    //         );
-    //     });
-    // }
-
     createeditObjectiveGoalform() {
         this.editObjectiveGoalform = this.formBuilder.group({
             // department: ['', [Validators.required]],
-            userId: ['', [Validators.required]],
-            goalId: ['', [Validators.required]],
-            functional_objective: ['', [Validators.required]],
-            performance_indicator: ['', [Validators.required]],
-            target: ['', [Validators.required]],
-            formula: ['', [Validators.required]],
-            programs: ['', [Validators.required]],
-            responsible_persons: ['', [Validators.required]],
-            clients: ['', [Validators.required]],
-            timetable: ['', [Validators.required]],
+            // userId: ['', [Validators.required]],
+            // goalId: ['', [Validators.required]],
+            // functional_objective: ['', [Validators.required]],
+            // performance_indicator: ['', [Validators.required]],
+            // target: ['', [Validators.required]],
+            // formula: ['', [Validators.required]],
+            // programs: ['', [Validators.required]],
+            // responsible_persons: ['', [Validators.required]],
+            // clients: ['', [Validators.required]],
+            // timetable: ['', [Validators.required]],
             frequency_monitoring: ['', [Validators.required]],
-            data_source: ['', [Validators.required]],
-            remarks: ['', [Validators.required]],
-            budget: ['', [Validators.required]],
+            // data_source: ['', [Validators.required]],
+            // remarks: ['', [Validators.required]],
+            // budget: ['', [Validators.required]],
         });
     }
     clearEditObjectiveGoalDialogCardDatas() {
@@ -359,17 +247,58 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
     updateSubObjectiveGoalDialogExec(form: any) {
         form.value.id = this.tobeUpdatedSubGoal;
         form.value.goalId = this.goal_ObjectId;
-        const currentDate = new Date().toISOString();
-        const formValue = form.value;
-        // const data: any = {};
+        let data = {};
+        const currentDate = new Date().toISOString().split('T')[0];
 
-        const data = populateAndUpdateData(
-            formValue,
-            this.originalDataToCompare,
-            currentDate
-        );
+        console.log('form.value', form.value);
+
+        for (const key in form.value) {
+            // if (form.value[key] !== '' && form.value[key] !== 0) {
+            if (form.value[key] !== '') {
+                data[key] = form.value[key];
+
+                if (
+                    key.includes('file') &&
+                    key.includes(form.value.frequency_monitoring)
+                ) {
+                    data[key] = '💾 File Added...';
+                    if (!key.includes(form.value.frequency_monitoring)) {
+                        delete data[key];
+                    }
+                }
+
+                if (
+                    form.value.frequency_monitoring === 'monthly' &&
+                    key.startsWith('month_')
+                ) {
+                    const index = key.split('_')[1];
+                    data[`month_${index}_date`] = currentDate;
+                } else if (
+                    form.value.frequency_monitoring === 'quarterly' &&
+                    key.startsWith('quarter_')
+                ) {
+                    const index = key.split('_')[1];
+                    data[`quarter_${index}_date`] = currentDate;
+                } else if (
+                    form.value.frequency_monitoring === 'semi_annual' &&
+                    key.startsWith('semi_annual_')
+                ) {
+                    const index = key.split('_')[2];
+                    data[`semi_annual_${index}_date`] = currentDate;
+                } else if (
+                    form.value.frequency_monitoring === 'yearly' &&
+                    key.startsWith('yearly_')
+                ) {
+                    const index = key.split('_')[1];
+                    data[`yearly_${index}_date`] = currentDate;
+                }
+            }
+        }
+
+        console.log('updateSubObjectiveGoalDialogExec', data);
         this.obj
             .fetch('put', 'objectives', 'updateObjectives', data)
+            .pipe(takeUntil(this.updateObjectiveSubscription))
             .subscribe((data: any) => {
                 if (data.success) {
                     this.editObjectiveGoalDialogCard = false;
@@ -436,22 +365,3 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
         }
     }
 }
-
-/*
-
-
-        console.log('=====before cleardynamic controls =====');
-        console.log({ editObjectiveGoalform: this.editObjectiveGoalform });
-        console.log({ months: this.months });
-        console.log({ yearly: this.yearly });
-        console.log({ quarters: this.quarters });
-        console.log({ semi_annual: this.semi_annual });
-        console.log('==============');
-
-        console.log('=====after cleardynamic controls =====');
-        console.log({ editObjectiveGoalform: this.editObjectiveGoalform });
-        console.log({ months: this.months });
-        console.log({ yearly: this.yearly });
-        console.log({ quarters: this.quarters });
-        console.log({ semi_annual: this.semi_annual });
-*/

@@ -29,6 +29,17 @@ export class PrintObjectiveTableComponent implements OnInit {
     officeValue: string = '';
     subOnjectiveHeaderData: string = '';
 
+    preparedByValue: string = '';
+    preparedByofficeValue: string = '';
+    counterCheckedValue: string = '';
+    counterCheckedofficeValue: string = '';
+    verifiedByValue: string = '';
+    verifiedByofficeValue: string = '';
+
+    subObjectiveHeaders: string = '';
+    reviewedByValue: any;
+    reviewedByofficeValue: any;
+
     constructor(private authService: AuthService) {} // Inject AuthService if needed
 
     ngOnInit() {
@@ -49,7 +60,7 @@ export class PrintObjectiveTableComponent implements OnInit {
     }
 
     printPdf() {
-        this.isPrintableVisible = true;
+        // this.isPrintableVisible = true;
         let print, win;
         print = document.getElementById('print').innerHTML;
         win = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
@@ -215,7 +226,7 @@ export class PrintObjectiveTableComponent implements OnInit {
               padding: 0;
               & > div {
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(4, 1fr);
                 & > div {
                   &:not(:last-child) {
                     border-right: 1px solid;
@@ -266,7 +277,7 @@ export class PrintObjectiveTableComponent implements OnInit {
                 <table>
                   <thead>
                     <tr>
-                      <th class="p-0" rowspan="4" colspan="9">
+                      <th class="p-0" rowspan="4" colspan="10">
                         <table class="nested-table">
                           <tr>
                             <td rowspan="4" class="logo">
@@ -308,49 +319,61 @@ export class PrintObjectiveTableComponent implements OnInit {
                        this.subOnjectiveHeaderData?.toUpperCase() ||
                        this.printingOfficeName?.toUpperCase()
                    }</th>
-                      <th colspan="4">QUALITY OBJECTIVES AND ACTION PLAN</th>
-                      <th class="text-align-end" colspan="1">CY</th>
-                    </tr>
-                    <tr>
-                      <th class="border-x-0" colspan="10"></th>
-                    </tr>
-                    <tr>
-                      <th class="border-x-0" colspan="10"></th>
-                    </tr>
-                  </thead>
-                  <body onload="window.print();window.close()">${print}</body>
-                  <tfoot>
-                    <tr>
-                      <td colspan="10">
-                        <div>
-                          <div>
-                            <div>Prepared by:</div>
-                            <div>${this.nameValue.toLocaleUpperCase()}</div>
-                            <div>${this.officeValue.toLocaleUpperCase()}</div>
-                          </div>
-                          <div>
-                            <div>Reviewed and verified by:</div>
-                            <div>YRIKA MARIE R. DUSARAN, PhDTM</div>
-                            <div>Director for Quality Management</div>
-                          </div>
-                          <div>
-                            <div>Approved by:</div>
-                            <div>ROSALINDA S. TUVILLA</div>
-                            <div>Vice President for Administrator and Finance</div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </body>
-          </html>
-              `);
+                   <th colspan="5">QUALITY OBJECTIVES AND ACTION PLAN</th>
+                   <th class="text-align-end" colspan="1">CY</th>
+                 </tr>
+                 <tr>
+                   <th class="border-x-0" colspan="11"></th>
+                 </tr>
+                 <tr>
+                   <th class="border-x-0" colspan="11"></th>
+                 </tr>
+               </thead>
+               <body onload="window.print();window.close()">${print}</body>
+               <tfoot>
+                 <tr>
+                   <td colspan="11">
+                 <div>
+                   <div>
+                     <div>Prepared by:</div>
+                     <div>${this.preparedByValue.toLocaleUpperCase()}</div>
+                     <div>${this.preparedByofficeValue.toLocaleUpperCase()}</div>
+                   </div>
+                   <div>
+                     <div>Counter Checked by:</div>
+                     <div>${this.counterCheckedValue.toLocaleUpperCase()}</div>
+                     <div>${this.counterCheckedofficeValue.toLocaleUpperCase()}</div>
+                   </div>
+                   <div>
+                     <div>Reviewed by:</div>
+                     <div>${this.reviewedByValue.toLocaleUpperCase()}</div>
+                     <div>${this.reviewedByofficeValue.toLocaleUpperCase()}</div>
+                   </div>
+                   <div>
+                     <div>Approved by:</div>
+                     <div>${this.verifiedByValue.toLocaleUpperCase()}</div>
+                     <div>${this.verifiedByofficeValue.toLocaleUpperCase()}</div>
+                   </div>
+                 </div>
+                   </td>
+                 </tr>
+               </tfoot>
+             </table>
+               </div>
+             </body>
+           </html>
+               `);
+        this.isPrintableVisible = true;
         win.document.close();
         this.isPrintableVisible = false;
         this.printingOfficeName = '';
-        this.nameValue = '';
-        this.officeValue = '';
+        this.preparedByValue = '';
+        this.preparedByofficeValue = '';
+        this.counterCheckedValue = '';
+        this.counterCheckedofficeValue = '';
+        this.verifiedByValue = '';
+        this.verifiedByofficeValue = '';
+        this.reviewedByValue = '';
+        this.reviewedByofficeValue = '';
     }
 }

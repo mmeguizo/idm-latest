@@ -53,7 +53,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     @Output() viewFilesHistoryEvent = new EventEmitter<any>();
     @Output() printObjectiveTableEvent = new EventEmitter<any>();
     @Output() remarksEvent = new EventEmitter<any>();
-
+    @Output() printQOMObjectiveTableEvent = new EventEmitter<any>();
     subGoalObjective: boolean = false;
     loading: boolean = false;
     USERID: string;
@@ -71,6 +71,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     // childAddObjectiveEvent: any;
     parentPrintFileQom: any = {};
     printingOfficeName: any;
+    currentDate = new Date();
     constructor(
         private objective: ObjectiveService,
         private messageService: MessageService,
@@ -267,16 +268,13 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
         });
     }
 
-    printDocumentQOM() {
-        //   this.printingHead = true;
-        this.parentPrintFileQom = {
-            printFile: true,
-            objectData: this.objectiveDatas,
-            printingHead: true,
-            subObjectiveHeaders: this.subObjectiveHeaders,
-            subOnjectiveHeaderData: this.subOnjectiveHeaderData?.department,
-            printingOfficeName: this.printingOfficeName,
-        };
+    printDocumentQOM(header: string, data: any): void {
+        console.log('printDocumentQOM');
+        this.printQOMObjectiveTableEvent.emit({
+            printQOMObjectiveTable: true,
+            data: data,
+            header: header,
+        });
     }
 
     formatText(text: string) {
