@@ -23,6 +23,7 @@ import {
     abbreviateNumber,
     abbreviatePercentage,
 } from 'src/app/utlis/general-utils';
+import { customTitleCase } from 'src/app/utlis/custom-title-case';
 
 @Component({
     selector: 'app-admin-dashboard',
@@ -317,7 +318,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 )
                 .pipe(takeUntil(this.getDashboardSubscription))
                 .subscribe((data: any) => {
-                    console.log(data);
                     let { objectivesData } = data.data;
                     this.objectivesSideData = objectivesData;
                     this.pieDataBool =
@@ -443,6 +443,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const textColor = documentStyle.getPropertyValue('--text-color');
 
         const labels = data.map((goal: any) => goal.department);
+
         const labelsWithDepartment = data.flatMap(
             (goal: any) =>
                 goal.objectivesDetails?.map(
@@ -521,10 +522,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 tooltip: {
                     callbacks: {
                         label: (context: any) => {
+                            console.log({ context: context.label });
                             const label =
                                 context.label
                                     .split(' ')
-                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .map((word: string) =>
+                                        customTitleCase(word)
+                                    )
                                     .join('') || '';
                             const value = context.raw;
                             return `${label}: ${value}`;
@@ -652,7 +656,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             const label =
                                 context.label
                                     .split(' ')
-                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .map((word: string) =>
+                                        customTitleCase(word)
+                                    )
                                     .join('') || '';
                             const value = context.raw;
                             return `${label}: ${value}`;
@@ -703,7 +709,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             const label =
                                 context.label
                                     .split(' ')
-                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .map((word: string) =>
+                                        customTitleCase(word)
+                                    )
                                     .join('') || '';
                             const value = context.raw;
                             return `${label}: ${value}%`;

@@ -17,63 +17,10 @@
             }
         </div>
     </div>
-    <!-- <div class="col-12 lg:col-6 xl:col-3">
-        <p-card header="Goal Summary">
-            <div class="align-items-center">
-                <p-progressBar
-                    [value]="(objectiveBudget / goalForTables) * 100"
-                    [showValue]="false"
-                ></p-progressBar>
-                <p
-                    class="text-center text-base"
-                    style="
-                        font-family: 'Figtree', 'Roboto', 'Noto Sans Hebrew',
-                            'Noto Kufi Arabic', 'Noto Sans JP', sans-serif;
-                    "
-                >
-                    {{ goalForTables | peso }}
-                </p>
-                <p class="text-xs font-medium">Goals :{{ goalCount }}</p>
-                <p class="text-xs font-light">
-                    Remaining Budget:
-                    {{ goalForTables - objectiveBudget | peso }}
-                </p>
-            </div>
-        </p-card>
-    </div>
-    <div class="col-12 lg:col-6 xl:col-3">
-        <p-card header="To Do card"> </p-card>
-    </div>
-    <div class="col-12 lg:col-6 xl:col-3">
-        <p-card header="To Do card"> </p-card>
-    </div>
-    <div class="col-12 lg:col-6 xl:col-3">
-        <p-card header="To Do card"> </p-card>
-    </div> -->
     <div class="col-12">
         <div class="card">
             <p-card header="Goal Summary">
                 <div class="align-items-center">
-                    <!-- <p-progressBar
-                        [value]="(objectiveBudget / goalForTables) * 100"
-                        [showValue]="false"
-                        styleClass="mb-2"
-                    ></p-progressBar> -->
-                    <!-- <p
-                        class="text-center text-base"
-                        style="
-                            font-family: 'Figtree', 'Roboto', 'Noto Sans Hebrew',
-                                'Noto Kufi Arabic', 'Noto Sans JP', sans-serif;
-                        "
-                    >
-                        {{ goalForTables | peso }}
-                    </p>
-
-                    <p class="text-xs font-medium">Goals :{{ goalCount }}</p>
-                    <p class="text-xs font-light">
-                        Remaining Budget:
-                        {{ goalForTables - objectiveBudget | peso }}
-                    </p> -->
                     <span class="block text-base font-bold mb-1">{{
                         officeListCombine | titlecase
                     }}</span>
@@ -250,7 +197,7 @@
                         <td colspan="4" class="text-right">Totals</td>
                         <td>{{ totalBudget | currency : "PHP" }}</td>
                         <td>{{ usedBudget | currency : "PHP" }}</td>
-                        <td>{{ remainingTotal | currency : "PHP" }}</td>
+                        <td></td>
                         <td colspan="5" class="text-right"></td>
                     </tr>
                 </ng-template>

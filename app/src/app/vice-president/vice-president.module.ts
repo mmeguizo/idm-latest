@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 // import { CommonModule } from '@angular/common';
 // import { FormsModule } from '@angular/forms';
 // import { ChartModule } from 'primeng/chart';
@@ -32,10 +32,15 @@ import { ViewFilesComponent } from './goal/view-files/view-files.component';
 import { ViewFileHistoryComponent } from './goal/view-file-history/view-file-history.component';
 import { PrintObjectiveTableComponent } from './goal/print-objective-table/print-objective-table.component';
 import { RemarksComponent } from './goal/remarks/remarks.component';
-import { PrintQomComponent } from './goal/print-qom/print-qom.component';
+import { PrintingQomComponent } from './goal/printing-qom/printing-qom.component';
 
 @NgModule({
-    imports: [VicePresidentRoutingModule, SharedModule, DeleteFilesComponent],
+    imports: [
+        VicePresidentRoutingModule,
+        SharedModule,
+        DeleteFilesComponent,
+        PrintingQomComponent,
+    ],
     declarations: [
         EditGoalComponent,
         // DashboardComponent,
@@ -53,8 +58,9 @@ import { PrintQomComponent } from './goal/print-qom/print-qom.component';
         ViewFileHistoryComponent,
         PrintObjectiveTableComponent,
         RemarksComponent,
-        PrintQomComponent,
+        // PrintingQomComponent,
     ],
     providers: [FileUpload],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class VicePresidentModule {}

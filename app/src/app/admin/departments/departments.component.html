@@ -175,6 +175,7 @@
     [header]="!updatingDept ? 'Add Department' : 'Update '"
     [(visible)]="cardCrudDialog"
     [style]="{ width: '25rem' }"
+    (onHide)="cardCrudDialog = false; departmentName = ''; department_head = ''"
 >
     <div class="flex align-items-center gap-3 mb-5">
         <input
@@ -186,11 +187,27 @@
             placeholder="Department Name"
         />
     </div>
+    <div class="flex-auto align-items-center gap-3 mb-5">
+        <p-dropdown
+            class="w-full flex flex-column"
+            [(ngModel)]="department_head"
+            [options]="allUsers"
+            optionLabel="name"
+            [filter]="true"
+            filterBy="name"
+            [showClear]="true"
+            placeholder="Select a User"
+        />
+    </div>
     <div class="flex justify-content-end gap-2">
         <p-button
             label="Cancel"
             severity="secondary"
-            (click)="cardCrudDialog = false"
+            (click)="
+                cardCrudDialog = false;
+                departmentName = '';
+                department_head = ''
+            "
         />
         <p-button
             label="Save"

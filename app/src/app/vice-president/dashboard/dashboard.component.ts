@@ -36,6 +36,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { IdepartmentDropdown } from 'src/app/interface/department.interface';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { abbreviateNumber } from 'src/app/utlis/general-utils';
+import { customTitleCase } from 'src/app/utlis/custom-title-case';
 
 @Component({
     selector: 'app-dashboard',
@@ -563,7 +564,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             const label =
                                 context.label
                                     .split(' ')
-                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .map((word: string) =>
+                                        customTitleCase(word)
+                                    )
                                     .join('') || '';
                             const value = context.raw;
                             return `${label}: ${value}`;
@@ -633,7 +636,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             const label =
                                 context.label
                                     .split(' ')
-                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .map((word: string) =>
+                                        customTitleCase(word)
+                                    )
                                     .join('') || '';
                             const value = context.raw;
                             return `${label}: ${value}`;
@@ -684,7 +689,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             const label =
                                 context.label
                                     .split(' ')
-                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .map((word: string) =>
+                                        customTitleCase(word)
+                                    )
                                     .join('') || '';
                             const value = context.raw;
                             return `${label}: ${value}`;
@@ -735,7 +742,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                             const label =
                                 context.label
                                     .split(' ')
-                                    .map((word) => word.charAt(0).toUpperCase())
+                                    .map((word: string) =>
+                                        customTitleCase(word)
+                                    )
                                     .join('') || '';
                             const value = context.raw;
                             return `${label}: ${value}%`;

@@ -10,6 +10,7 @@ import { Table } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DepartmentService } from 'src/app/demo/service/department.service';
+import { UserService } from 'src/app/demo/service/user.service';
 
 @Component({
     selector: 'app-departments',
@@ -21,11 +22,13 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
     @ViewChild('filter') filter!: ElementRef;
 
     depts: any[] = [];
+    allUsers: any[] = [];
     cols!: any;
     loading = true;
     changeStatusCard: boolean = false;
     cardCrudDialog: boolean = false;
     departmentName: string = '';
+    department_head: any;
     updatingDept: boolean;
     updateDepartmentId: any;
 
@@ -33,11 +36,13 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
         private messageService: MessageService,
         public formBuilder: FormBuilder,
         public department: DepartmentService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        public user: UserService
     ) {}
 
     ngOnInit() {
         this.getDepartments();
+        this.getAllUsers();
 
         this.cols = [
             { field: 'department', header: 'Department' },
@@ -51,12 +56,23 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
         this.getdepartmenttSubscription.unsubscribe();
     }
 
+    async getAllUsers() {
+        this.user
+            .fetch('get', 'users', 'getAllUsers')
+            .pipe(takeUntil(this.getdepartmenttSubscription))
+            .subscribe((data: any) => {
+                this.allUsers = data.data[0] || [];
+                console.log(this.allUsers);
+            });
+    }
+
     getDepartments() {
         this.department
             .getRoute('get', 'department', 'getAllDepartment')
             .pipe(takeUntil(this.getdepartmenttSubscription))
             .subscribe((data: any) => {
                 this.depts = data.departments;
+                console.log({ getDepartments: this.depts });
                 this.loading = false;
             });
     }
@@ -67,10 +83,25 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
     }
 
     updateDept(dept: any) {
+        console.log({ updateDept: dept });
+
         this.departmentName = dept.department;
         this.updateDepartmentId = dept.id;
         this.updatingDept = true;
         this.cardCrudDialog = true;
+
+        // this.department_head = this.allUsers.filter(
+        //     (user) => user.code === dept.user_id
+        // )[0].name;
+
+        // console.log(this.department_head);
+
+        const matchedUser = this.allUsers.find(
+            (user) => user.code === dept.user_id
+        );
+        if (matchedUser) {
+            this.department_head = matchedUser;
+        }
     }
 
     updateDepartmentExec() {
@@ -83,10 +114,20 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
         }
         this.loading = true;
 
+        console.log({
+            updateDepartmentExec: 'updateDepartmentExec',
+            id: this.updateDepartmentId,
+            department: this.departmentName,
+            department_head: this.department_head?.name,
+            user_id: this.department_head?.code,
+        });
+
         this.department
             .getRoute('put', 'department', 'updateDepartment', {
                 id: this.updateDepartmentId,
                 department: this.departmentName,
+                department_head: this.department_head?.name,
+                user_id: this.department_head?.code,
             })
             .pipe(takeUntil(this.getdepartmenttSubscription))
             .subscribe((data: any) => {
@@ -193,11 +234,21 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
                 detail: 'Please provide Department Name',
             });
         }
+        if (this.department_head == '') {
+            return this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Please provide Department head',
+            });
+        }
         this.loading = true;
 
         this.department
             .getRoute('post', 'department', 'addDepartment', {
-                department: this.departmentName,
+                department: {
+                    departmentName: this.departmentName,
+                    department_head: this.department_head,
+                },
             })
             .pipe(takeUntil(this.getdepartmenttSubscription))
             .subscribe((data: any) => {

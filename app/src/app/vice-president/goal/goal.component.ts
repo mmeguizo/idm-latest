@@ -10,6 +10,7 @@ import {
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { GoalService } from 'src/app/demo/service/goal.service';
 import { Subject, pipe, takeUntil } from 'rxjs';
+
 @Component({
     selector: 'app-goal',
     templateUrl: './goal.component.html',
@@ -95,10 +96,9 @@ export class GoalComponent implements OnInit, OnDestroy {
 
     receivedPrintQOMObjectiveTableEvent(event: any) {
         console.log({ receivedPrintQOMObjectiveTableEvent: event });
-
-        const { header, data, printQOMObjectiveTable } = event;
+        const { header, data, printObjectiveTable } = event;
         this.parentPrintQom = {
-            printQOMObjectiveTable: printQOMObjectiveTable,
+            printObjectiveTable: printObjectiveTable,
             data: data,
             header: header,
         };
@@ -201,11 +201,12 @@ export class GoalComponent implements OnInit, OnDestroy {
     }
 
     receivedPrintObjectiveTableEvent(event: any) {
-        const { header, data, printObjectiveTable } = event;
+        const { header, data, printObjectiveTable, QOM } = event;
         this.parentPrintFile = {
             printObjectiveTable: printObjectiveTable,
             data: data,
             header: header,
+            QOM: QOM,
         };
     }
 

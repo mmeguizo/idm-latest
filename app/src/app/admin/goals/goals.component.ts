@@ -273,7 +273,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
                 takeUntil(this.getGoalSubscription),
                 tap((data: any) => {
                     this.goals = data.goals;
-                    console.log(data.goals);
                     this.loading = false;
                 }),
                 catchError((error) => {

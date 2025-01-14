@@ -157,6 +157,9 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             name: event?.value?.name || event,
             code: event?.value?.name || event,
         };
+
+        console.log({ frequency, data });
+
         // console.log({
         //     editObjectiveGoalform: this.editObjectiveGoalform.value,
         // });
@@ -182,7 +185,11 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             );
             // await this.addMonthlyControls(await data);
         } else if (frequency === 'quarterly') {
-            await addQuarterlyControls(this.editObjectiveGoalform, await data);
+            await addQuarterlyControls(
+                this.editObjectiveGoalform,
+                this.quarters,
+                await data
+            );
             // await this.addQuarterlyControls(await data);
         } else if (frequency === 'semi_annual') {
             await addSemiAnnualControls(
@@ -206,6 +213,7 @@ export class UpdateObjectiveComponent implements OnInit, OnDestroy {
             .fetch('get', 'objectives', `getObjectiveById/${id}`)
             .pipe(takeUntil(this.updateObjectiveSubscription))
             .subscribe((data: any) => {
+                console.log('getObjectiveById', data);
                 this.objectiveDatas = data.data;
                 this.onFrequencyChange(frequency_monitoring, data.data);
                 this.editObjectiveGoalform

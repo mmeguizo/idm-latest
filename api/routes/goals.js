@@ -1691,7 +1691,7 @@ module.exports = (router) => {
       const department = await Departments.findOne({
         // department: { $regex: officeName, $options: "i" },
         department: officeName,
-      });
+      }).select({ id: 1 });
       // }).select({ id: 1, firstname: 1, lastname: 1, role: 1 });
 
       console.log("department", department);
@@ -1702,26 +1702,31 @@ module.exports = (router) => {
 
       console.log("UsersData", UsersData);
 
-      if (UsersData?.role === "vice-president") {
-        const results = await Users.find({
-          vice_president_id: UsersData.id,
-        }).select({ id: true, firstname: true, lastname: true });
-        queryIds = results.map((e) => e.id);
-        queryIds.push(UsersData.id || "");
-      } else if (UsersData?.role === "director") {
-        const results = await Users.find({
-          director_id: UsersData.id,
-        }).select({ id: true, firstname: true, lastname: true });
-        queryIds = results.map((e) => e.id);
-        queryIds.push(UsersData.id || "");
-      } else {
-        if (UsersData) {
-          queryIds.push(UsersData.id || "");
+      if (Array.isArray(UsersData)) {
+        for (const user of UsersData) {
+          if (user.role === "vice-president") {
+            const results = await Users.find({
+              vice_president_id: user.id,
+            }).select({ id: 1 });
+            queryIds.push(...results.map((e) => e.id), user.id);
+          } else if (user.role === "director") {
+            const results = await Users.find({
+              director_id: user.id,
+            }).select({ id: 1 });
+            queryIds.push(...results.map((e) => e.id), user.id);
+          } else if (user.role === "office-head") {
+            const results = await Users.find({
+              office_head_id: user.id,
+            }).select({ id: 1 });
+            queryIds.push(...results.map((e) => e.id), user.id);
+          }
         }
       }
+      queryIds = [...new Set(queryIds)]; // Remove duplicates
+
       matchQuery.createdBy = { $in: queryIds };
 
-      if (queryIds.length > 0) {
+      if (queryIds.length === 0) {
         matchQuery = {
           deleted: false,
         };
@@ -1913,6 +1918,7 @@ module.exports = (router) => {
           } else {
             res.json({
               success: true,
+              GOAL: Goals,
               goals: await CalculateBudgetAndCompletion(Goals),
               office_dropdown: await getBarChartsData(Goals),
             }); // Return success and blogs array

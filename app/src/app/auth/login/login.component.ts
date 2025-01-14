@@ -33,7 +33,22 @@ export class LoginComponent implements OnDestroy {
         private msg: MessageService
     ) {}
 
+    onKeydown(event: KeyboardEvent) {
+        if (event.key === 'Enter') {
+            this.onLoginSubmit();
+        }
+    }
+
     onLoginSubmit() {
+        if (!this.email || !this.password) {
+            this.msg.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Email or Password cannot be blank',
+            });
+            return;
+        }
+
         this.auth
             .getRoute('post', 'authentication', 'login', {
                 email: this.email,

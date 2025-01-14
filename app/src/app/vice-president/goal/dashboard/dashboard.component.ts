@@ -54,7 +54,8 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .getProductsWithOrdersSmall()
             .then((data) => (this.products = data));
         this.USERID = this.auth.getTokenUserID();
-        this.getAllObjectivesForTable();
+        this.getAllObjectivesForTableInit();
+        // this.getAllObjectivesForTable();
         this.getGoals();
         this.getObjectiveViewPieChart();
         this.getAllObjectives();
@@ -78,11 +79,16 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     onChangeOffice(event: any = '') {
         //reset the goals
         this.goals = [];
-        this.getAllObjectivesForTable(event.value.name);
+
+        if (event?.value?.name) {
+            this.getAllObjectivesForTable(event?.value?.name);
+        } else {
+            this.getAllObjectivesForTableInit();
+        }
     }
     onClearOffice() {
         this.goals = [];
-        this.getAllObjectivesForTable();
+        this.getAllObjectivesForTableInit();
     }
 
     getGoals() {
@@ -113,7 +119,34 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
             .fetch(
                 'get',
                 'vice_president_query',
-                `getAllObjectivesWithObjectivesForVicePresident/${this.USERID}/${office}`
+                `getAllObjectivesWithObjectivesForVicePresident/${office}`
+            )
+            .pipe(takeUntil(this.dashboardSubscription))
+            .subscribe((data: any) => {
+                this.goals = data.goals || [];
+                this.allObjectiveBudget = this.goals
+                    .map((o: any) =>
+                        o.objectivesDetails
+                            .map((o: any) => o.budget)
+                            .reduce((a: any, b: any) => a + b, 0)
+                    )
+                    .reduce((a: any, b: any) => a + b, 0);
+
+                this.calculateBudget(this.goals);
+                this.calculateUsed(this.goals);
+                this.calculateRemaining(this.goals);
+                this.officeList = data.office_dropdown || [];
+                this.officeListCombine = this.officeList
+                    .map((office: any) => office.name)
+                    .join(', ');
+            });
+    }
+    getAllObjectivesForTableInit() {
+        this.obj
+            .fetch(
+                'get',
+                'vice_president_query',
+                `getAllObjectivesWithObjectivesForVicePresidentInit/${this.USERID}`
             )
             .pipe(takeUntil(this.dashboardSubscription))
             .subscribe((data: any) => {

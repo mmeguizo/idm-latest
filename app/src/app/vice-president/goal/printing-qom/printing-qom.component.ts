@@ -1,22 +1,49 @@
+// import { Component } from '@angular/core';
+
+// @Component({
+//   selector: 'app-printing-qom',
+// //   standalone: true,
+// //   imports: [],
+//   templateUrl: './printing-qom.component.html',
+//   styleUrl: './printing-qom.component.scss'
+// })
+// export class PrintingQomComponent {
+
+// }
+
 import {
     Component,
     Input,
     ElementRef,
     OnInit,
     ViewChild,
+    AfterViewInit,
     SimpleChanges,
 } from '@angular/core';
 import { AuthService } from 'src/app/demo/service/auth.service'; // Import AuthService if needed
 import { formatDate } from 'src/app/utlis/general-utils';
+import { DialogModule } from 'primeng/dialog';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+
+import { CommonModule } from '@angular/common';
+import { InputTextModule } from 'primeng/inputtext';
+
 formatDate;
 @Component({
-    selector: 'app-print-qom',
-    //   standalone: true,
-    //   imports: [],
-    templateUrl: './print-qom.component.html',
-    styleUrl: './print-qom.component.scss',
+    selector: 'app-printing-qom',
+    standalone: true,
+    imports: [
+        DialogModule,
+        FormsModule,
+        ButtonModule,
+        CommonModule,
+        InputTextModule,
+    ],
+    templateUrl: './printing-qom.component.html',
+    styleUrl: './printing-qom.component.scss',
 })
-export class PrintQomComponent implements OnInit {
+export class PrintingQomComponent implements OnInit, AfterViewInit {
     @ViewChild('printTable') printTableElement: ElementRef;
     // @Input() objectiveDatas: any[] = [];
     @Input() printingOfficeName: string = '';
@@ -28,7 +55,7 @@ export class PrintQomComponent implements OnInit {
     imageSrcOptimized: string; // To store the image source
     imageSrcLogo: string; // To store the image source
     isPrintableVisible: boolean = false;
-    printingHead: boolean = false;
+    printingHead: boolean;
     objectiveDatas: any;
     nameValue: string = '';
     officeValue: string = '';
@@ -53,19 +80,29 @@ export class PrintQomComponent implements OnInit {
         const { data, header, printQOMObjectiveTable } =
             changes['printQOMFile']?.currentValue;
 
-        console.log({ QOMPRINTINGtest: changes['printQOMFile']?.currentValue });
+        console.log({
+            QOMPRINTINGtester: changes['printQOMFile']?.currentValue,
+        });
 
         this.objectiveDatas = data;
         this.subOnjectiveHeaderData = header;
         this.printingHead = printQOMObjectiveTable;
     }
 
-    ngOnInit() {
+    ngAfterViewInit() {
         this.imageSrc = this.authService.domain + '/images/logo.png'; // Get the image source
         this.imageSrcOptimized =
             this.authService.domain + '/images/chmsu-logo-optimized.png'; // Get the image source
         this.imageSrcLogo = this.authService.domain + '/images/chmsu-logo.png'; // Get the image source
         this.formattedDate = formatDate(this.date);
+    }
+
+    ngOnInit() {
+        // this.imageSrc = this.authService.domain + '/images/logo.png'; // Get the image source
+        // this.imageSrcOptimized =
+        //     this.authService.domain + '/images/chmsu-logo-optimized.png'; // Get the image source
+        // this.imageSrcLogo = this.authService.domain + '/images/chmsu-logo.png'; // Get the image source
+        // this.formattedDate = formatDate(this.date);
     }
 
     getFrequencyKeys(frequency_monitoring: string) {

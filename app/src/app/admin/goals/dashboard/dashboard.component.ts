@@ -113,6 +113,8 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
         //     });
     }
     getAllObjectivesForTable(office?: any) {
+        this.goals = [];
+
         this.obj
             .fetch('get', 'goals', `getAllObjectivesWithObjectives/${office}`)
             .pipe(takeUntil(this.dashboardSubscription))
@@ -207,14 +209,6 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
                         documentStyle.getPropertyValue('--blue-500'),
                     borderWidth: 1,
                 },
-                // {
-                //     type: 'bar',
-                //     label: 'Used Budget',
-                //     data: dataGoalObjective,
-                //     backgroundColor:
-                //         documentStyle.getPropertyValue('--yellow-500'),
-                //     borderWidth: 1,
-                // },
             ],
         };
 
@@ -280,7 +274,7 @@ export class GoalDashboardComponent implements OnInit, OnDestroy {
     onChangeOffice(event: any = '') {
         //reset the goals
         this.goals = [];
-        this.getAllObjectivesForTable(event.value.name);
+        this.getAllObjectivesForTable(event?.value?.name);
     }
 
     onClearOffice() {

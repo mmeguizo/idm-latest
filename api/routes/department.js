@@ -71,8 +71,15 @@ module.exports = (router) => {
 
   router.get("/getAllDepartment", (req, res) => {
     Department.find(
-      {},
-      { id: 1, department: 1, status: 1, deleted: 1 },
+      { deleted: false },
+      {
+        id: 1,
+        department: 1,
+        status: 1,
+        deleted: 1,
+        department_head: 1,
+        user_id: 1,
+      },
       (err, department) => {
         if (err) {
           res.json({ success: false, message: err });
@@ -129,6 +136,9 @@ module.exports = (router) => {
 
   router.post("/addDepartment", (req, res) => {
     const { department } = req.body;
+
+    console.log(department);
+
     if (!department) {
       return res.json({
         success: false,
@@ -138,8 +148,21 @@ module.exports = (router) => {
 
     const departmentData = {
       id: uuidv4(),
-      department: req.body.department.toLowerCase(),
+      department: department.departmentName.toLowerCase(),
+      department_head: department.department_head.name.toLowerCase(),
+      user_id: department.department_head.code.toLowerCase(),
     };
+
+    const existingDepartment = Department.findOne({
+      department: departmentData.department,
+    });
+
+    if (existingDepartment) {
+      return res.json({
+        success: false,
+        message: "Department Name already exists",
+      });
+    }
 
     Department.create(departmentData)
       .then((data) =>
@@ -371,12 +394,11 @@ module.exports = (router) => {
     "/updateDepartment",
 
     async (req, res) => {
-      let { id, department } = req.body;
+      let { id, ...department } = req.body;
 
-      let departmentData = {
-        department: department,
-      };
+      console.log(department);
 
+      let departmentData = department;
       Department.findOneAndUpdate(
         { id: id },
         departmentData,

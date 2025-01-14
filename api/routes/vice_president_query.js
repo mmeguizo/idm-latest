@@ -35,6 +35,7 @@ const { first } = require("rxjs");
 const Goals = require("../models/goals");
 const Users = require("../models/user");
 const File = require("../models/fileupload");
+const Departments = require("../models/department");
 
 module.exports = (router) => {
   router.get("/getGoalsForDashboardVicePresident/:id", async (req, res) => {
@@ -749,59 +750,63 @@ module.exports = (router) => {
   );
 
   router.get(
-    "/getAllObjectivesWithObjectivesForVicePresident/:id/:officeName",
+    "/getAllObjectivesWithObjectivesForVicePresident/:office",
     async (req, res) => {
-      let queryIds = [];
+      const officeName = req.params.office.toLowerCase();
       let matchQuery = {
         deleted: false,
       };
 
-      const VPId = req.params.id;
-      const usersUnderThisVicePresident = await Users.find({
-        vice_president_id: VPId,
-      }).select({ id: true, firstname: true, lastname: true });
-      // Extract the array of user ids
-      const userIds = usersUnderThisVicePresident.map((user) => user.id);
-      //add own id
-      queryIds = userIds;
-      queryIds.push(VPId);
-
-      matchQuery.createdBy = { $in: queryIds };
-      const officeName = req.params.officeName.toLowerCase();
+      console.log("officegetAllObjectivesWithObjectives", officeName);
+      let queryIds = [];
       if (officeName && officeName !== "undefined") {
-        delete matchQuery.createdBy;
-
-        // console.log(officeName);
-        const department = await Users.findOne({
+        const department = await Departments.findOne({
           // department: { $regex: officeName, $options: "i" },
           department: officeName,
-        }).select({ id: 1, firstname: 1, lastname: 1, role: 1 });
+        });
+        // }).select({ id: 1, firstname: 1, lastname: 1, role: 1 });
 
-        if (department?.role === "director") {
-          // add own ids
-          const results = await Users.find({
-            director_id: department.id,
-          }).select({ id: true, firstname: true, lastname: true });
-          queryIds = results.map((e) => e.id);
-          queryIds.push(department.id);
-        } else if (department?.role === "office-head") {
-          queryIds = [];
-          delete matchQuery.createdBy;
-          queryIds.push(department.id);
+        console.log("department", department);
+
+        const UsersData = await Users.find({
+          department_id: department.id,
+        });
+
+        console.log("UsersData", UsersData);
+
+        if (Array.isArray(UsersData)) {
+          for (const user of UsersData) {
+            if (user.role === "vice-president") {
+              const results = await Users.find({
+                vice_president_id: user.id,
+              }).select({ id: 1 });
+              queryIds.push(...results.map((e) => e.id), user.id);
+            } else if (user.role === "director") {
+              const results = await Users.find({
+                director_id: user.id,
+              }).select({ id: 1 });
+              queryIds.push(...results.map((e) => e.id), user.id);
+            } else if (user.role === "office-head") {
+              const results = await Users.find({
+                office_head_id: user.id,
+              }).select({ id: 1 });
+              queryIds.push(...results.map((e) => e.id), user.id);
+            }
+          }
         }
+        queryIds = [...new Set(queryIds)]; // Remove duplicates
+
         matchQuery.createdBy = { $in: queryIds };
+
+        if (queryIds.length === 0) {
+          matchQuery = {
+            deleted: false,
+          };
+        }
+
+        console.log("queryIds", queryIds);
+        console.log("matchQuery", matchQuery);
       }
-
-      // // const usersUnderThisOffice = await Users.find({
-      // //   $or: [{ vice_president_id: officeId }, { director_id: officeId }],
-      // // }).select({ id: true, firstname: true, lastname: true });
-      // const usersUnderThisOffice = await Users.find({
-      //   $or: [{ vice_president_id: officeId }, { director_id: officeId }],
-      // }).select({ id: 1, firstname: 1, lastname: 1 });
-
-      // Extract the array of user ids
-      // const userIds = usersUnderThisOffice.map((user) => user.id);
-      // queryIds.push(userIds);
 
       Goals.aggregate(
         [
@@ -974,6 +979,7 @@ module.exports = (router) => {
             } else {
               res.json({
                 success: true,
+                GOAL: Goals,
                 goals: await CalculateBudgetAndCompletion(Goals),
                 office_dropdown: await getBarChartsData(Goals),
               }); // Return success and blogs array
@@ -983,6 +989,482 @@ module.exports = (router) => {
       ).sort({ _id: -1 });
     }
   );
+
+  router.get(
+    "/getAllObjectivesWithObjectivesForVicePresidentInit/:id",
+    async (req, res) => {
+      const id = req.params.id.toLowerCase();
+      let matchQuery = {
+        deleted: false,
+      };
+
+      let queryIds = [];
+      if (id && id !== "undefined") {
+        const UsersData = await Users.find({
+          id: id,
+        });
+
+        console.log("UsersData", UsersData);
+
+        if (Array.isArray(UsersData)) {
+          for (const user of UsersData) {
+            if (user.role === "vice-president") {
+              const results = await Users.find({
+                vice_president_id: user.id,
+              }).select({ id: 1 });
+              queryIds.push(...results.map((e) => e.id), user.id);
+            } else if (user.role === "director") {
+              const results = await Users.find({
+                director_id: user.id,
+              }).select({ id: 1 });
+              queryIds.push(...results.map((e) => e.id), user.id);
+            } else if (user.role === "office-head") {
+              const results = await Users.find({
+                office_head_id: user.id,
+              }).select({ id: 1 });
+              queryIds.push(...results.map((e) => e.id), user.id);
+            }
+          }
+        }
+        queryIds = [...new Set(queryIds)]; // Remove duplicates
+
+        matchQuery.createdBy = { $in: queryIds };
+
+        if (queryIds.length === 0) {
+          matchQuery = {
+            deleted: false,
+          };
+        }
+
+        console.log(
+          "queryIdsgetAllObjectivesWithObjectivesForVicePresidentInit",
+          queryIds
+        );
+        console.log(
+          "matchQuerygetAllObjectivesWithObjectivesForVicePresidentInit",
+          matchQuery
+        );
+      }
+
+      Goals.aggregate(
+        [
+          {
+            $match: matchQuery,
+          },
+          {
+            $lookup: {
+              from: "objectives",
+              let: { objectiveIds: { $ifNull: ["$objectives", []] } },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $in: ["$id", { $ifNull: ["$$objectiveIds", []] }] },
+                        { $eq: ["$deleted", false] },
+                      ],
+                    },
+                  },
+                },
+              ],
+              as: "objectivesDetails",
+            },
+          },
+          {
+            $lookup: {
+              as: "users",
+              from: "users",
+              foreignField: "id",
+              localField: "createdBy",
+            },
+          },
+          { $unwind: { path: "$users" } },
+          {
+            $addFields: {
+              objectivesDetails: {
+                $cond: {
+                  if: { $eq: ["$objectivesDetails", []] },
+                  then: null,
+                  else: "$objectivesDetails",
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              id: 1,
+              goals: 1,
+              budget: 1,
+              department: 1,
+              campus: 1,
+              createdBy: 1,
+              deleted: 1,
+              date_added: 1,
+              createdAt: 1,
+              goallistsId: 1,
+              __v: 1,
+              updatedAt: 1,
+              complete: 1,
+              "users.id": 1,
+              "users.username": 1,
+              "users.firstname": 1,
+              "users.lastname": 1,
+              "users.role": 1,
+              "users.email": 1,
+              "users.profile_pic": 1,
+              "users.department": 1,
+              objectivesDetails: {
+                $map: {
+                  input: { $ifNull: ["$objectivesDetails", []] },
+                  as: "od",
+                  in: {
+                    id: "$$od.id",
+                    functional_objective: "$$od.functional_objective",
+                    performance_indicator: "$$od.performance_indicator",
+                    target: "$$od.target",
+                    formula: "$$od.formula",
+                    programs: "$$od.programs",
+                    responsible_persons: "$$od.responsible_persons",
+                    clients: "$$od.clients",
+                    remarks: "$$od.remarks",
+                    month_0: "$$od.month_0",
+                    month_1: "$$od.month_1",
+                    month_2: "$$od.month_2",
+                    month_3: "$$od.month_3",
+                    month_4: "$$od.month_4",
+                    month_5: "$$od.month_5",
+                    month_6: "$$od.month_6",
+                    month_7: "$$od.month_7",
+                    month_8: "$$od.month_8",
+                    month_9: "$$od.month_9",
+                    month_10: "$$od.month_10",
+                    month_11: "$$od.month_11",
+                    file_month_0: "$$od.file_month_0",
+                    file_month_1: "$$od.file_month_1",
+                    file_month_2: "$$od.file_month_2",
+                    file_month_3: "$$od.file_month_3",
+                    file_month_4: "$$od.file_month_4",
+                    file_month_5: "$$od.file_month_5",
+                    file_month_6: "$$od.file_month_6",
+                    file_month_7: "$$od.file_month_7",
+                    file_month_8: "$$od.file_month_8",
+                    file_month_9: "$$od.file_month_9",
+                    file_month_10: "$$od.file_month_10",
+                    file_month_11: "$$od.file_month_11",
+                    goal_month_0: "$$od.goal_month_0",
+                    goal_month_1: "$$od.goal_month_1",
+                    goal_month_2: "$$od.goal_month_2",
+                    goal_month_3: "$$od.goal_month_3",
+                    goal_month_4: "$$od.goal_month_4",
+                    goal_month_5: "$$od.goal_month_5",
+                    goal_month_6: "$$od.goal_month_6",
+                    goal_month_7: "$$od.goal_month_7",
+                    goal_month_8: "$$od.goal_month_8",
+                    goal_month_9: "$$od.goal_month_9",
+                    goal_month_10: "$$od.goal_month_10",
+                    goal_month_11: "$$od.goal_month_11",
+                    quarter_1: "$$od.quarter_1",
+                    quarter_2: "$$od.quarter_2",
+                    quarter_3: "$$od.quarter_3",
+                    quarter_0: "$$od.quarter_0",
+                    file_quarter_1: "$$od.file_quarter_1",
+                    file_quarter_2: "$$od.file_quarter_2",
+                    file_quarter_3: "$$od.file_quarter_3",
+                    file_quarter_0: "$$od.file_quarter_0",
+                    goal_quarter_1: "$$od.goal_quarter_1",
+                    goal_quarter_2: "$$od.goal_quarter_2",
+                    goal_quarter_3: "$$od.goal_quarter_3",
+                    goal_quarter_0: "$$od.goal_quarter_0",
+                    semi_annual_0: "$$od.semi_annual_0",
+                    semi_annual_1: "$$od.semi_annual_1",
+                    semi_annual_2: "$$od.semi_annual_2",
+                    file_semi_annual_0: "$$od.file_semi_annual_0",
+                    file_semi_annual_1: "$$od.file_semi_annual_1",
+                    file_semi_annual_2: "$$od.file_semi_annual_2",
+                    goal_semi_annual_0: "$$od.goal_semi_annual_0",
+                    goal_semi_annual_1: "$$od.goal_semi_annual_1",
+                    goal_semi_annual_2: "$$od.goal_semi_annual_2",
+                    frequency_monitoring: "$$od.frequency_monitoring",
+                    timetable: "$$od.timetable",
+                    complete: "$$od.complete",
+                    data_source: "$$od.data_source",
+                    budget: "$$od.budget",
+                    date_added: "$$od.date_added",
+                    createdBy: "$$od.createdBy",
+                    updateby: "$$od.updateby",
+                    updateDate: "$$od.updateDate",
+                    createdAt: "$$od.createdAt",
+                    deleted: "$$od.deleted",
+                  },
+                },
+              },
+            },
+          },
+        ],
+        { allowDiskUse: true },
+        async (err, Goals) => {
+          // Check if error was found or not
+          if (err) {
+            res.json({ success: false, message: err });
+          } else {
+            if (!Goals || Goals.length === 0) {
+              res.json({
+                success: false,
+                message: "No Goals found.",
+                Goals: [],
+              }); // Return error of no blogs found
+            } else {
+              res.json({
+                success: true,
+                GOAL: Goals,
+                goals: await CalculateBudgetAndCompletion(Goals),
+                office_dropdown: await getBarChartsData(Goals),
+              }); // Return success and blogs array
+            }
+          }
+        }
+      ).sort({ _id: -1 });
+    }
+  );
+
+  // router.get(
+  //   "/getAllObjectivesWithObjectivesForVicePresident/:id/:officeName",
+  //   async (req, res) => {
+  //     let queryIds = [];
+  //     let matchQuery = {
+  //       deleted: false,
+  //     };
+
+  //     const VPId = req.params.id;
+  //     const usersUnderThisVicePresident = await Users.find({
+  //       vice_president_id: VPId,
+  //     }).select({ id: true, firstname: true, lastname: true });
+  //     // Extract the array of user ids
+  //     const userIds = usersUnderThisVicePresident.map((user) => user.id);
+  //     //add own id
+  //     queryIds = userIds;
+  //     queryIds.push(VPId);
+
+  //     matchQuery.createdBy = { $in: queryIds };
+  //     const officeName = req.params.officeName.toLowerCase();
+  //     if (officeName && officeName !== "undefined") {
+  //       delete matchQuery.createdBy;
+
+  //       // console.log(officeName);
+  //       const department = await Users.findOne({
+  //         // department: { $regex: officeName, $options: "i" },
+  //         department: officeName,
+  //       }).select({ id: 1, firstname: 1, lastname: 1, role: 1 });
+
+  //       if (department?.role === "director") {
+  //         // add own ids
+  //         const results = await Users.find({
+  //           director_id: department.id,
+  //         }).select({ id: true, firstname: true, lastname: true });
+  //         queryIds = results.map((e) => e.id);
+  //         queryIds.push(department.id);
+  //       } else if (department?.role === "office-head") {
+  //         queryIds = [];
+  //         delete matchQuery.createdBy;
+  //         queryIds.push(department.id);
+  //       }
+  //       matchQuery.createdBy = { $in: queryIds };
+  //     }
+
+  //     console.log({ created: matchQuery.createdAt, queryIds, department });
+
+  //     // // const usersUnderThisOffice = await Users.find({
+  //     // //   $or: [{ vice_president_id: officeId }, { director_id: officeId }],
+  //     // // }).select({ id: true, firstname: true, lastname: true });
+  //     // const usersUnderThisOffice = await Users.find({
+  //     //   $or: [{ vice_president_id: officeId }, { director_id: officeId }],
+  //     // }).select({ id: 1, firstname: 1, lastname: 1 });
+
+  //     // Extract the array of user ids
+  //     // const userIds = usersUnderThisOffice.map((user) => user.id);
+  //     // queryIds.push(userIds);
+
+  //     Goals.aggregate(
+  //       [
+  //         {
+  //           $match: matchQuery,
+  //         },
+  //         {
+  //           $lookup: {
+  //             from: "objectives",
+  //             let: { objectiveIds: { $ifNull: ["$objectives", []] } },
+  //             pipeline: [
+  //               {
+  //                 $match: {
+  //                   $expr: {
+  //                     $and: [
+  //                       { $in: ["$id", { $ifNull: ["$$objectiveIds", []] }] },
+  //                       { $eq: ["$deleted", false] },
+  //                     ],
+  //                   },
+  //                 },
+  //               },
+  //             ],
+  //             as: "objectivesDetails",
+  //           },
+  //         },
+  //         {
+  //           $lookup: {
+  //             as: "users",
+  //             from: "users",
+  //             foreignField: "id",
+  //             localField: "createdBy",
+  //           },
+  //         },
+  //         { $unwind: { path: "$users" } },
+  //         {
+  //           $addFields: {
+  //             objectivesDetails: {
+  //               $cond: {
+  //                 if: { $eq: ["$objectivesDetails", []] },
+  //                 then: null,
+  //                 else: "$objectivesDetails",
+  //               },
+  //             },
+  //           },
+  //         },
+  //         {
+  //           $project: {
+  //             _id: 1,
+  //             id: 1,
+  //             goals: 1,
+  //             budget: 1,
+  //             department: 1,
+  //             campus: 1,
+  //             createdBy: 1,
+  //             deleted: 1,
+  //             date_added: 1,
+  //             createdAt: 1,
+  //             goallistsId: 1,
+  //             __v: 1,
+  //             updatedAt: 1,
+  //             complete: 1,
+  //             "users.id": 1,
+  //             "users.username": 1,
+  //             "users.firstname": 1,
+  //             "users.lastname": 1,
+  //             "users.role": 1,
+  //             "users.email": 1,
+  //             "users.profile_pic": 1,
+  //             "users.department": 1,
+  //             objectivesDetails: {
+  //               $map: {
+  //                 input: { $ifNull: ["$objectivesDetails", []] },
+  //                 as: "od",
+  //                 in: {
+  //                   id: "$$od.id",
+  //                   functional_objective: "$$od.functional_objective",
+  //                   performance_indicator: "$$od.performance_indicator",
+  //                   target: "$$od.target",
+  //                   formula: "$$od.formula",
+  //                   programs: "$$od.programs",
+  //                   responsible_persons: "$$od.responsible_persons",
+  //                   clients: "$$od.clients",
+  //                   remarks: "$$od.remarks",
+  //                   month_0: "$$od.month_0",
+  //                   month_1: "$$od.month_1",
+  //                   month_2: "$$od.month_2",
+  //                   month_3: "$$od.month_3",
+  //                   month_4: "$$od.month_4",
+  //                   month_5: "$$od.month_5",
+  //                   month_6: "$$od.month_6",
+  //                   month_7: "$$od.month_7",
+  //                   month_8: "$$od.month_8",
+  //                   month_9: "$$od.month_9",
+  //                   month_10: "$$od.month_10",
+  //                   month_11: "$$od.month_11",
+  //                   file_month_0: "$$od.file_month_0",
+  //                   file_month_1: "$$od.file_month_1",
+  //                   file_month_2: "$$od.file_month_2",
+  //                   file_month_3: "$$od.file_month_3",
+  //                   file_month_4: "$$od.file_month_4",
+  //                   file_month_5: "$$od.file_month_5",
+  //                   file_month_6: "$$od.file_month_6",
+  //                   file_month_7: "$$od.file_month_7",
+  //                   file_month_8: "$$od.file_month_8",
+  //                   file_month_9: "$$od.file_month_9",
+  //                   file_month_10: "$$od.file_month_10",
+  //                   file_month_11: "$$od.file_month_11",
+  //                   goal_month_0: "$$od.goal_month_0",
+  //                   goal_month_1: "$$od.goal_month_1",
+  //                   goal_month_2: "$$od.goal_month_2",
+  //                   goal_month_3: "$$od.goal_month_3",
+  //                   goal_month_4: "$$od.goal_month_4",
+  //                   goal_month_5: "$$od.goal_month_5",
+  //                   goal_month_6: "$$od.goal_month_6",
+  //                   goal_month_7: "$$od.goal_month_7",
+  //                   goal_month_8: "$$od.goal_month_8",
+  //                   goal_month_9: "$$od.goal_month_9",
+  //                   goal_month_10: "$$od.goal_month_10",
+  //                   goal_month_11: "$$od.goal_month_11",
+  //                   quarter_1: "$$od.quarter_1",
+  //                   quarter_2: "$$od.quarter_2",
+  //                   quarter_3: "$$od.quarter_3",
+  //                   quarter_0: "$$od.quarter_0",
+  //                   file_quarter_1: "$$od.file_quarter_1",
+  //                   file_quarter_2: "$$od.file_quarter_2",
+  //                   file_quarter_3: "$$od.file_quarter_3",
+  //                   file_quarter_0: "$$od.file_quarter_0",
+  //                   goal_quarter_1: "$$od.goal_quarter_1",
+  //                   goal_quarter_2: "$$od.goal_quarter_2",
+  //                   goal_quarter_3: "$$od.goal_quarter_3",
+  //                   goal_quarter_0: "$$od.goal_quarter_0",
+  //                   semi_annual_0: "$$od.semi_annual_0",
+  //                   semi_annual_1: "$$od.semi_annual_1",
+  //                   semi_annual_2: "$$od.semi_annual_2",
+  //                   file_semi_annual_0: "$$od.file_semi_annual_0",
+  //                   file_semi_annual_1: "$$od.file_semi_annual_1",
+  //                   file_semi_annual_2: "$$od.file_semi_annual_2",
+  //                   goal_semi_annual_0: "$$od.goal_semi_annual_0",
+  //                   goal_semi_annual_1: "$$od.goal_semi_annual_1",
+  //                   goal_semi_annual_2: "$$od.goal_semi_annual_2",
+  //                   frequency_monitoring: "$$od.frequency_monitoring",
+  //                   timetable: "$$od.timetable",
+  //                   complete: "$$od.complete",
+  //                   data_source: "$$od.data_source",
+  //                   budget: "$$od.budget",
+  //                   date_added: "$$od.date_added",
+  //                   createdBy: "$$od.createdBy",
+  //                   updateby: "$$od.updateby",
+  //                   updateDate: "$$od.updateDate",
+  //                   createdAt: "$$od.createdAt",
+  //                   deleted: "$$od.deleted",
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //       ],
+  //       { allowDiskUse: true },
+  //       async (err, Goals) => {
+  //         // Check if error was found or not
+  //         if (err) {
+  //           res.json({ success: false, message: err });
+  //         } else {
+  //           if (!Goals || Goals.length === 0) {
+  //             res.json({
+  //               success: false,
+  //               message: "No Goals found.",
+  //               Goals: [],
+  //             }); // Return error of no blogs found
+  //           } else {
+  //             res.json({
+  //               success: true,
+  //               goals: await CalculateBudgetAndCompletion(Goals),
+  //               office_dropdown: await getBarChartsData(Goals),
+  //             }); // Return success and blogs array
+  //           }
+  //         }
+  //       }
+  //     ).sort({ _id: -1 });
+  //   }
+  // );
 
   async function getBarChartsData(data) {
     let goalDropdown = [];

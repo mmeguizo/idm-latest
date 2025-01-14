@@ -303,6 +303,18 @@ module.exports = (router) => {
         for (let i = 0; i < 12; i++) {
           total += objective[`month_${i}`] || 0;
 
+          if (
+            objective.type_of_computation === "non-cumulative" &&
+            objective[`month_${i}_date`] &&
+            objective[`month_${i}`] !== 0
+          ) {
+            const monthDate = new Date(objective[`month_${i}_date`]);
+            const monthDateSet = monthDate.getMonth();
+            updatedObjective.monthPointer = monthDateSet;
+            updatedObjective.monthPointerValue[`monthPointer_${monthDateSet}`] =
+              objective[`month_${i}`] || 0;
+          }
+
           if (objective.type_of_computation === "cumulative") {
             if (
               objective[`goal_month_${i}`] &&
@@ -313,8 +325,12 @@ module.exports = (router) => {
 
             if (
               objective.type_of_computation === "cumulative" &&
-              objective[`month_${i}_date`]
+              objective[`month_${i}_date`] &&
+              objective[`month_${i}`] !== 0
             ) {
+              let goalmonthposition = 0;
+              let currentmonthposition = 0;
+
               const monthDate = new Date(objective[`month_${i}_date`]);
               const monthDateSet = monthDate.getMonth();
               updatedObjective.monthPointer = monthDateSet;
@@ -322,8 +338,66 @@ module.exports = (router) => {
                 `monthPointer_${monthDateSet}`
               ] = objective[`month_${i}`] || 0;
 
+              if (monthDateSet === currentMonth) {
+                goalmonthposition = 0;
+              } else if (monthDateSet === currentMonth - 1) {
+                goalmonthposition = 1;
+              } else if (monthDateSet === currentMonth - 2) {
+                goalmonthposition = 2;
+              } else if (monthDateSet === currentMonth - 3) {
+                goalmonthposition = 3;
+              } else if (monthDateSet === currentMonth - 4) {
+                goalmonthposition = 4;
+              } else if (monthDateSet === currentMonth - 5) {
+                goalmonthposition = 5;
+              } else if (monthDateSet === currentMonth - 6) {
+                goalmonthposition = 6;
+              } else if (monthDateSet === currentMonth - 7) {
+                goalmonthposition = 7;
+              } else if (monthDateSet === currentMonth - 8) {
+                goalmonthposition = 8;
+              } else if (monthDateSet === currentMonth - 9) {
+                goalmonthposition = 9;
+              } else if (monthDateSet === currentMonth - 10) {
+                goalmonthposition = 10;
+              } else if (monthDateSet === currentMonth - 11) {
+                goalmonthposition = 11;
+              } else if (monthDateSet === currentMonth - 12) {
+                goalmonthposition = 12;
+              }
+
+              let currentMonthDateSet = currentDate.getMonth();
+
+              if (currentMonthDateSet === currentMonth) {
+                currentmonthposition = 0;
+              } else if (currentMonthDateSet === currentMonth - 1) {
+                currentmonthposition = 1;
+              } else if (currentMonthDateSet === currentMonth - 2) {
+                currentmonthposition = 2;
+              } else if (currentMonthDateSet === currentMonth - 3) {
+                currentmonthposition = 3;
+              } else if (currentMonthDateSet === currentMonth - 4) {
+                currentmonthposition = 4;
+              } else if (currentMonthDateSet === currentMonth - 5) {
+                currentmonthposition = 5;
+              } else if (currentMonthDateSet === currentMonth - 6) {
+                currentmonthposition = 6;
+              } else if (currentMonthDateSet === currentMonth - 7) {
+                currentmonthposition = 7;
+              } else if (currentMonthDateSet === currentMonth - 8) {
+                currentmonthposition = 8;
+              } else if (currentMonthDateSet === currentMonth - 9) {
+                currentmonthposition = 9;
+              } else if (currentMonthDateSet === currentMonth - 10) {
+                currentmonthposition = 10;
+              } else if (currentMonthDateSet === currentMonth - 11) {
+                currentmonthposition = 11;
+              } else if (currentMonthDateSet === currentMonth - 12) {
+                currentmonthposition = 12;
+              }
+
               if (
-                monthDateSet === currentMonth &&
+                goalmonthposition === currentMonthDateSet &&
                 monthDate.getFullYear() === currentYear
               ) {
                 totalCumulativeAchive += objective[`month_${i}`] || 0;
@@ -336,6 +410,24 @@ module.exports = (router) => {
         for (let i = 0; i < 4; i++) {
           total += objective[`quarter_${i}`] || 0;
 
+          if (
+            objective.type_of_computation === "non-cumulative" &&
+            objective[`quarter_${i}_date`] &&
+            objective[`quarter_${i}`] !== 0
+          ) {
+            const quarterDate = new Date(objective[`quarter_${i}_date`]);
+            const quarterDateSet = quarterDate.getMonth();
+
+            // monthPointer = quarterDateSet;
+            // monthPointerValue = objective[`quarter_${i}`] || 0;
+
+            updatedObjective.monthPointer = quarterDateSet;
+
+            updatedObjective.monthPointerValue[
+              `monthPointer_${quarterDateSet}`
+            ] = objective[`quarter_${i}`] || 0;
+          }
+
           if (objective.type_of_computation === "cumulative") {
             if (
               objective[`goal_quarter_${i}`] &&
@@ -346,8 +438,11 @@ module.exports = (router) => {
 
             if (
               objective.type_of_computation === "cumulative" &&
-              objective[`quarter_${i}_date`]
+              objective[`quarter_${i}_date`] &&
+              objective[`quarter_${i}`] !== 0
             ) {
+              let goalquarterposition = 0;
+              let currentquarterposition = 0;
               const quarterDate = new Date(objective[`quarter_${i}_date`]);
               const quarterDateSet = quarterDate.getMonth();
 
@@ -361,16 +456,29 @@ module.exports = (router) => {
               ] = objective[`quarter_${i}`] || 0;
 
               if (quarterDateSet >= 0 && quarterDateSet <= 2) {
-                quarter = 0;
+                goalquarterposition = 0;
               } else if (quarterDateSet >= 3 && quarterDateSet <= 5) {
-                quarter = 1;
+                goalquarterposition = 1;
               } else if (quarterDateSet >= 6 && quarterDateSet <= 8) {
                 quarter = 2;
               } else if (quarterDateSet >= 9 && quarterDateSet <= 11) {
-                quarter = 3;
+                goalquarterposition = 3;
               }
+
+              const currentYearDateSet = currentDate.getMonth();
+
+              if (currentYearDateSet >= 0 && currentYearDateSet <= 2) {
+                currentquarterposition = 0;
+              } else if (currentYearDateSet >= 3 && currentYearDateSet <= 5) {
+                currentquarterposition = 1;
+              } else if (currentYearDateSet >= 6 && currentYearDateSet <= 8) {
+                currentquarterposition = 2;
+              } else if (currentYearDateSet >= 9 && currentYearDateSet <= 11) {
+                currentquarterposition = 3;
+              }
+
               if (
-                quarterDateSet === currentQuarter &&
+                goalquarterposition === currentquarterposition &&
                 quarterDate.getFullYear() === currentYear
               ) {
                 // actual += objective[`quarter_${i}`] || 0;
@@ -384,6 +492,24 @@ module.exports = (router) => {
       } else if (objective.frequency_monitoring === "semi_annual") {
         for (let i = 0; i < 2; i++) {
           total += objective[`semi_annual_${i}`] || 0;
+
+          if (
+            objective.type_of_computation === "non-cumulative" &&
+            objective[`semi_annual_${i}_date`] &&
+            objective[`semi_annual_${i}`] !== 0
+          ) {
+            const semiAnnualDate = new Date(objective[`semi_annual_${i}_date`]);
+            const semiAnnualDateSet = semiAnnualDate.getMonth();
+
+            monthPointer = semiAnnualDateSet;
+            monthPointerValue = objective[`semi_annual_${i}`] || 0;
+
+            updatedObjective.monthPointer = semiAnnualDateSet;
+
+            updatedObjective.monthPointerValue[
+              `monthPointer_${semiAnnualDateSet}`
+            ] = objective[`semi_annual_${i}`] || 0;
+          }
 
           if (objective.type_of_computation === "cumulative") {
             if (
@@ -437,7 +563,6 @@ module.exports = (router) => {
                 totalCumulativeAchive += objective[`semi_annual_${i}`] || 0;
                 totalCumulativeAchiveGoal +=
                   objective[`goal_semi_annual_${i}`] || 0;
-                console.log({ totalCumulativeAchiveGoal });
               }
             }
           }
@@ -445,6 +570,22 @@ module.exports = (router) => {
       } else if (objective.frequency_monitoring === "yearly") {
         for (let i = 0; i < 1; i++) {
           total += objective[`yearly_${i}`] || 0;
+
+          if (
+            objective.type_of_computation === "non-cumulative" &&
+            objective[`yearly_${i}_date`] &&
+            objective[`yearly_${i}`] !== 0
+          ) {
+            const yearlyDate = new Date(objective[`yearly_${i}_date`]);
+
+            let montpointer = yearlyDate.getMonth();
+            // monthPointerValue = objective[`yearly_${i}`] || 0;
+
+            updatedObjective.monthPointer = montpointer;
+
+            updatedObjective.monthPointerValue[`monthPointer_${montpointer}`] =
+              objective[`yearly_${i}`] || 0;
+          }
 
           if (objective.type_of_computation === "cumulative") {
             if (
@@ -458,6 +599,9 @@ module.exports = (router) => {
               objective.type_of_computation === "cumulative" &&
               objective[`yearly_${i}_date`]
             ) {
+              let goalyearposition = 0;
+              let currentyearposition = 0;
+
               const yearlyDate = new Date(objective[`yearly_${i}_date`]);
 
               let montpointer = yearlyDate.getMonth();

@@ -39,6 +39,39 @@ module.exports = (router) => {
       return res.status(500).json({ success: false, message: error });
     }
   });
+  router.get("/getAllUsers", async (req, res) => {
+    let data = [];
+    try {
+      let vicePresident = await User.find({
+        deleted: false,
+      });
+
+      if (vicePresident.length > 0) {
+        data.push(
+          vicePresident.map((e) => {
+            return {
+              department: e.department.replace(/\b\w/g, (char) =>
+                char.toUpperCase()
+              ),
+              code: e.department,
+              code: e.id,
+              firstname: e.firstname,
+              lastname: e.lastname,
+              name:
+                e.firstname.replace(/\b\w/g, (char) => char.toUpperCase()) +
+                " " +
+                e.lastname.replace(/\b\w/g, (char) => char.toUpperCase()),
+              _id: e._id,
+            };
+          })
+        );
+      }
+      return res.status(200).json({ success: true, data: data });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error });
+    }
+  });
+
   router.get("/getAllDirector", async (req, res) => {
     let data = [];
     try {

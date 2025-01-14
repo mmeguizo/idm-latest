@@ -261,7 +261,6 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
 
     printDocumentQOM(header: string, data: any): void {
         console.log('printDocumentQOM');
-
         this.printQOMObjectiveTableEvent.emit({
             printQOMObjectiveTable: true,
             data: data,

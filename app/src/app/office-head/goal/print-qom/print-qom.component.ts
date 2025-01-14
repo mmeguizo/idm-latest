@@ -53,7 +53,9 @@ export class PrintQomComponent implements OnInit {
         const { data, header, printQOMObjectiveTable } =
             changes['printQOMFile']?.currentValue;
 
-        console.log({ QOMPRINTINGtest: changes['printQOMFile']?.currentValue });
+        console.log({
+            QOMPRINTINGtester: changes['printQOMFile']?.currentValue,
+        });
 
         this.objectiveDatas = data;
         this.subOnjectiveHeaderData = header;
