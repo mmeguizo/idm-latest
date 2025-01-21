@@ -13,4 +13,4 @@ module.exports = {
     useNewUrlParser: true,
   },
 };
-//mongodb+srv://markmeguizo:4ir5N9_csnLYViL@chmsu-web-apps.28chvga.mongodb.net/?retryWrites=true&w=majority&appName=chmsu-web-apps
+
