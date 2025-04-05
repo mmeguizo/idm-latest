@@ -85,6 +85,7 @@ export class AppConfigComponent {
     }
 
     changeTheme(theme: string, colorScheme: string) {
+        console.log('changeTheme', theme, colorScheme);
         this.theme = theme;
         this.colorScheme = colorScheme;
     }

@@ -137,7 +137,24 @@ module.exports = (router) => {
     }
   });
 
-  router.get("/getAllUsers", (req, res) => {
+  // router.get("/getAllUsers", (req, res) => {
+  //   User.find(
+  //     { deleted: false },
+  //     { id: 1, email: 1, username: 1, department: 1, role: 1, status: 1 },
+  //     (err, users) => {
+  //       if (err) {
+  //         res.json({ success: false, message: err });
+  //       } else {
+  //         if (!users) {
+  //           res.json({ success: false, message: "No User found." });
+  //         } else {
+  //           res.json({ success: true, users: users });
+  //         }
+  //       }
+  //     }
+  //   ).sort({ _id: -1 });
+  // });
+  router.get("/getAllUsersAdminDepartments", (req, res) => {
     User.find(
       { deleted: false },
       { id: 1, email: 1, username: 1, department: 1, role: 1, status: 1 },

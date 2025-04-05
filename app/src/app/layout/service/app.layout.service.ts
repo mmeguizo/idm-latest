@@ -54,6 +54,7 @@ export class LayoutService {
     constructor() {
         effect(() => {
             const config = this.config();
+            console.log('Effect triggered with config:', config);
             if (this.updateStyle(config)) {
                 this.changeTheme();
             }
@@ -63,6 +64,7 @@ export class LayoutService {
     }
 
     updateStyle(config: AppConfig) {
+        console.log('Comparing styles:', config, this._config);
         return (
             config.theme !== this._config.theme ||
             config.colorScheme !== this._config.colorScheme
@@ -132,7 +134,7 @@ export class LayoutService {
                     : el
             )
             .join('/');
-
+            console.log('New href:', newHref);
         this.replaceThemeLink(newHref);
     }
     replaceThemeLink(href: string) {
