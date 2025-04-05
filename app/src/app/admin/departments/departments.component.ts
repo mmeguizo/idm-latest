@@ -66,7 +66,7 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
             });
     }
 
-    getDepartments() {
+    getDepartments() { 
         this.department
             .getRoute('get', 'department', 'getAllDepartment')
             .pipe(takeUntil(this.getdepartmenttSubscription))
