@@ -150,7 +150,19 @@
                 <ng-template pTemplate="body" let-user>
                     <tr>
                         <td>
-                            {{ user.username | titlecase }}
+                            <!-- {{ user.username | titlecase }} -->
+                              <!-- {{this.auth.domain + '/images/' + user.profile_pic || 'no-photo.png'}} -->
+                                <p-chip
+                                label="{{
+                                    user.firstname ? (user.firstname | titlecase)  : ('no firstname' | titlecase )
+                                }}"
+                                [image]="
+                                    user.profile_pic ? (this.auth.domain + '/images/' + user.profile_pic) : (this.auth.domain + '/images/no-photo.png')
+                                "
+                                styleClass="m-1"
+                            ></p-chip>
+                            <!-- {{ user.profile_pic ? (this.auth.domain + '/images/' + user.profile_pic) : 'no-photo.png' }}
+ -->
                         </td>
                         <td>
                             {{ user.email }}

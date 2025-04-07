@@ -13,6 +13,23 @@
         />
         <span class="text-xl">Institutional Dashboard Monitoring</span>
     </a>
+       
+
+    <!-- <i
+    class="notification-bell notification-badge pi pi-bell mr-4 p-text-secondary"
+    pBadge
+    style="font-size: 2rem"
+    value="2"
+></i> -->
+
+<i
+  class="notification-bell notification-badge pi pi-bell mr-4 p-text-secondary cursor-pointer"
+  pBadge
+  [attr.value]="notificationCount"
+  style="font-size: 2rem"
+  [ngClass]="{ 'animate-bell': notificationCount > 0 }"
+  value="{{ notificationCount }}"
+></i>
 
     <button
         #topbarmenubutton
