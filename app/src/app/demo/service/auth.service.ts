@@ -14,7 +14,6 @@ import { jwtDecode } from 'jwt-decode';
 import { UserToken } from '../api/user-token';
 import { catchError } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
-
 @Injectable({
     providedIn: 'root',
 })
@@ -131,9 +130,30 @@ export class AuthService {
             })
         );
     }
-    logout() {
+    logout(username: string = "", userId: string = "") {
+        
+
+
+        this.http.post(this.domain + '/authentication/logoutEvent', {
+            event: 'LOGOUT',
+            username: username || this.user.username,
+            userId: userId || this.user.id,
+            // timestamp: new Date().toISOString()
+            timestamp: new Date().toLocaleString('en-US', {
+                timeZone: 'Asia/Manila',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            })
+        }).subscribe({
+            error: (error) => console.error('Error logging logout event:', error)
+        });
         this.authToken = null;
         this.user = null;
+
         // this.fulluserloggedData = null;
         localStorage.clear();
         this.router.navigate(['login']);

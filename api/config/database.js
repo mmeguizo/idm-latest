@@ -8,9 +8,9 @@ const hash = crypto.createHmac("sha256", secret).update("akeem").digest("hex");
 module.exports = {
   uri: process.env.DB_URL,
   secret: hash,
-  options: {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  },
+  // options: {
+  //   useUnifiedTopology: true,
+  //   useNewUrlParser: true,
+  // },
 };
 

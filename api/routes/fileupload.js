@@ -195,15 +195,18 @@ module.exports = (router) => {
 
       try {
         let savePromises = uploadedFiles.map((file) => {
-          return new Promise((resolve, reject) => {
-            file.save((err, data) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(data);
-              }
-            });
-          });
+          // return new Promise((resolve, reject) => {
+          //   file.save((err, data) => {
+          //     if (err) {
+          //       reject(err);
+          //     } else {
+          //       resolve(data);
+          //     }
+          //   });
+          // });
+          return file.save()
+          .then(data => data)
+          .catch(err => Promise.reject(err));
         });
 
         const data = await Promise.all(savePromises);
@@ -439,40 +442,77 @@ module.exports = (router) => {
     // );
   });
 
-  router.put("/deleteFileObjective", (req, res) => {
+  router.put("/deleteFileObjective", async (req, res) => {
     let file = req.body.source;
     let id = req.body.id;
     let fs = require("fs");
 
-    File.findOne(
-      {
-        id: id,
-      },
-      (err) => {
-        if (err) throw err;
-        File.findOneAndUpdate(
-          { id: id },
-          { status: false },
-          { upsert: true, select: "-__v" },
-          (err, response) => {
-            if (err) return res.json({ success: false, message: err.message });
-            if (response) {
-              res.json({
-                success: true,
-                message: "File Deleted",
-                data: response,
-              });
-            } else {
-              res.json({
-                success: false,
-                message: "Error Occured",
-              });
-            }
-          }
-        ).sort({ date_added: 1 });
+    // File.findOne(
+    //   {
+    //     id: id,
+    //   },
+    //   (err) => {
+    //     if (err) throw err;
+    //     File.findOneAndUpdate(
+    //       { id: id },
+    //       { status: false },
+    //       { upsert: true, select: "-__v" },
+    //       (err, response) => {
+    //         if (err) return res.json({ success: false, message: err.message });
+    //         if (response) {
+    //           res.json({
+    //             success: true,
+    //             message: "File Deleted",
+    //             data: response,
+    //           });
+    //         } else {
+    //           res.json({
+    //             success: false,
+    //             message: "Error Occured",
+    //           });
+    //         }
+    //       }
+    //     ).sort({ date_added: 1 });
+    //   }
+    // );
+    try {
+      const fileExists = await File.findOne({ id: id });
+      if (!fileExists) {
+        return res.json({
+          success: false,
+          message: "File not found"
+        });
       }
-    );
 
+      const response = await File.findOneAndUpdate(
+        { id: id },
+        { status: false },
+        { 
+          new: true,
+          upsert: true,
+          select: "-__v",
+          sort: { date_added: 1 }
+        }
+      );
+
+      if (response) {
+        res.json({
+          success: true,
+          message: "File Deleted",
+          data: response
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "Error Occurred"
+        });
+      }
+    } catch (err) {
+      res.json({
+        success: false,
+        message: err.message
+      });
+    }
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
     let body = JSON.stringify(req.body);

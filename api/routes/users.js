@@ -104,38 +104,38 @@ module.exports = (router) => {
     }
   });
 
-  router.get("/getAllUsersForDashboard", async (req, res) => {
-    let data = [];
-    try {
-      let adminCount = await User.countDocuments({
-        deleted: false,
-        role: "admin",
-      });
-      let vicePresidentCount = await User.countDocuments({
-        deleted: false,
-        role: "vice-president",
-      });
-      let directorCount = await User.countDocuments({
-        deleted: false,
-        role: "director",
-      });
-      let officeHeadCount = await User.countDocuments({
-        deleted: false,
-        role: "office-head",
-      });
-      let documentCount = await User.countDocuments({ deleted: false });
-      data.push({
-        admin: adminCount,
-        vice_president: vicePresidentCount,
-        director: directorCount,
-        office_head: officeHeadCount,
-        document: documentCount,
-      });
-      res.json({ success: true, data: data });
-    } catch (error) {
-      res.json({ success: false, message: error });
-    }
-  });
+  // router.get("/getAllUsersForDashboard", async (req, res) => {
+  //   let data = [];
+  //   try {
+  //     let adminCount = await User.countDocuments({
+  //       deleted: false,
+  //       role: "admin",
+  //     });
+  //     let vicePresidentCount = await User.countDocuments({
+  //       deleted: false,
+  //       role: "vice-president",
+  //     });
+  //     let directorCount = await User.countDocuments({
+  //       deleted: false,
+  //       role: "director",
+  //     });
+  //     let officeHeadCount = await User.countDocuments({
+  //       deleted: false,
+  //       role: "office-head",
+  //     });
+  //     let documentCount = await User.countDocuments({ deleted: false });
+  //     data.push({
+  //       admin: adminCount,
+  //       vice_president: vicePresidentCount,
+  //       director: directorCount,
+  //       office_head: officeHeadCount,
+  //       document: documentCount,
+  //     });
+  //     res.json({ success: true, data: data });
+  //   } catch (error) {
+  //     res.json({ success: false, message: error });
+  //   }
+  // });
 
   // router.get("/getAllUsers", (req, res) => {
   //   User.find(
@@ -154,62 +154,135 @@ module.exports = (router) => {
   //     }
   //   ).sort({ _id: -1 });
   // });
-  router.get("/getAllUsersAdminDepartments", (req, res) => {
-    User.find(
-      { deleted: false },
-      { id: 1, email: 1, username: 1, department: 1, role: 1, status: 1 },
-      (err, users) => {
-        if (err) {
-          res.json({ success: false, message: err });
-        } else {
-          if (!users) {
-            res.json({ success: false, message: "No User found." });
-          } else {
-            res.json({ success: true, users: users });
-          }
-        }
+  // router.get("/getAllUsersAdminDepartments", (req, res) => {
+  //   User.find(
+  //     { deleted: false },
+  //     { id: 1, email: 1, username: 1, department: 1, role: 1, status: 1 },
+  //     (err, users) => {
+  //       if (err) {
+  //         res.json({ success: false, message: err });
+  //       } else {
+  //         if (!users) {
+  //           res.json({ success: false, message: "No User found." });
+  //         } else {
+  //           res.json({ success: true, users: users });
+  //         }
+  //       }
+  //     }
+  //   ).sort({ _id: -1 });
+  // });
+  router.get("/getAllUsersForDashboard", async (req, res) => {
+    try {
+      const [
+        adminCount,
+        vicePresidentCount,
+        directorCount,
+        officeHeadCount,
+        documentCount
+      ] = await Promise.all([
+        User.countDocuments({ deleted: false, role: "admin" }).exec(),
+        User.countDocuments({ deleted: false, role: "vice-president" }).exec(),
+        User.countDocuments({ deleted: false, role: "director" }).exec(),
+        User.countDocuments({ deleted: false, role: "office-head" }).exec(),
+        User.countDocuments({ deleted: false }).exec()
+      ]);
+
+      const data = [{
+        admin: adminCount,
+        vice_president: vicePresidentCount,
+        director: directorCount,
+        office_head: officeHeadCount,
+        document: documentCount,
+      }];
+
+      res.json({ success: true, data });
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        message: error.message || 'An error occurred while fetching user counts' 
+      });
+    }
+  });
+  router.get("/getAllUsersAdminDepartments", async (req, res) => {
+    try {
+      const users = await User.find(
+        { deleted: false },
+        { id: 1, email: 1, username: 1, department: 1, role: 1, status: 1 }
+      ).sort({ _id: -1 });
+
+      if (!users) {
+        return res.json({ success: false, message: "No User found." });
       }
-    ).sort({ _id: -1 });
+      res.json({ success: true, users: users });
+    } catch (err) {
+      res.json({ success: false, message: err });
+    }
   });
 
-  router.get("/getAllUsersExceptLoggedIn/:id", (req, res) => {
-    User.find(
-      { id: { $ne: req.params.id }, deleted: false },
-      // {
-      //   id: 1,
-      //   email: 1,
-      //   username: 1,
-      //   department: 1,
-      //   role: 1,
-      //   status: 1,
-      //   campus: 1,
-      // },
-      (err, users) => {
-        if (err) {
-          res.json({ success: false, message: err });
-        } else {
-          if (!users) {
-            res.json({ success: false, message: "No User found." });
-          } else {
-            res.json({ success: true, users: users });
-          }
-        }
+  // router.get("/getAllUsersExceptLoggedIn/:id", (req, res) => {
+  //   User.find(
+  //     { id: { $ne: req.params.id }, deleted: false },
+  //     // {
+  //     //   id: 1,
+  //     //   email: 1,
+  //     //   username: 1,
+  //     //   department: 1,
+  //     //   role: 1,
+  //     //   status: 1,
+  //     //   campus: 1,
+  //     // },
+  //     (err, users) => {
+  //       if (err) {
+  //         res.json({ success: false, message: err });
+  //       } else {
+  //         if (!users) {
+  //           res.json({ success: false, message: "No User found." });
+  //         } else {
+  //           res.json({ success: true, users: users });
+  //         }
+  //       }
+  //     }
+  //   ).sort({ _id: -1 });
+  // });
+  router.get("/getAllUsersExceptLoggedIn/:id", async (req, res) => {
+    try {
+      const users = await User.find(
+        { id: { $ne: req.params.id }, deleted: false }
+      ).sort({ _id: -1 });
+
+      if (!users) {
+        return res.json({ success: false, message: "No User found." });
       }
-    ).sort({ _id: -1 });
+      res.json({ success: true, users: users });
+    } catch (err) {
+      res.json({ success: false, message: err });
+    }
   });
 
-  router.post("/findById", (req, res) => {
-    User.findOne({ id: req.body.id }, function (err, user) {
-      if (err) {
-        res.json({ success: false, message: err });
-      } else {
-        if (!user) {
-          res.json({ success: false, message: "No User found." });
-        } else {
-          res.json({ success: true, user: user });
-        }
+
+  // router.post("/findById", (req, res) => {
+  //   User.findOne({ id: req.body.id }, function (err, user) {
+  //     if (err) {
+  //       res.json({ success: false, message: err });
+  //     } else {
+  //       if (!user) {
+  //         res.json({ success: false, message: "No User found." });
+  //       } else {
+  //         res.json({ success: true, user: user });
+  //       }
+  //     }
+  //   });
+  // });
+  router.post("/findById", async (req, res) => {
+    try {
+      const user = await User.findOne({ id: req.body.id });
+      if (!user) {
+        return res.json({ success: false, message: "No User found." });
       }
-    });
+      res.json({ success: true, user: user });
+    } catch (err) {
+      res.json({ success: false, message: err });
+    }
   });
 
   router.post("/addUser", (req, res) => {
@@ -309,61 +382,102 @@ module.exports = (router) => {
       });
   });
 
-  router.put("/deleteUser", (req, res) => {
-    let data = req.body;
+  // router.put("/deleteUser", (req, res) => {
+  //   let data = req.body;
 
-    User.deleteOne(
-      {
-        id: data.id,
-      },
-      (err, user) => {
-        if (err) {
-          res.json({ success: false, message: "Could not Delete User" + err });
-        } else {
-          res.json({
-            success: true,
-            message: " Successfully Deleted the User",
-            data: user,
-          });
-          // globalconnetion.emitter('user')
-        }
-      }
-    );
+  //   User.deleteOne(
+  //     {
+  //       id: data.id,
+  //     },
+  //     (err, user) => {
+  //       if (err) {
+  //         res.json({ success: false, message: "Could not Delete User" + err });
+  //       } else {
+  //         res.json({
+  //           success: true,
+  //           message: " Successfully Deleted the User",
+  //           data: user,
+  //         });
+  //         // globalconnetion.emitter('user')
+  //       }
+  //     }
+  //   );
+  // });
+
+  router.put("/deleteUser", async (req, res) => {
+    try {
+      const user = await User.deleteOne({ id: req.body.id });
+      res.json({
+        success: true,
+        message: "Successfully Deleted the User",
+        data: user,
+      });
+    } catch (err) {
+      res.json({ success: false, message: "Could not Delete User" + err });
+    }
   });
 
-  router.put("/setInactiveUser", (req, res) => {
-    let data = req.body;
+  // router.put("/setInactiveUser", (req, res) => {
+  //   let data = req.body;
 
-    User.findOne(
-      {
-        id: data.id,
-      },
-      (err, user) => {
-        if (err) throw err;
-        User.findOneAndUpdate(
-          { id: data.id },
-          {
-            deleted: true,
-            status: user.status === "active" ? "inactive" : "inactive",
-          },
-          { upsert: true },
-          (err, response) => {
-            if (err) return res.json({ success: false, message: err.message });
-            if (response) {
-              res.json({
-                success: true,
-                message: " Successfully Delete User",
-                data: user,
-              });
-            } else {
-              res.json({ success: false, message: "Could Delete User" + err });
-            }
-          }
-        );
+  //   User.findOne(
+  //     {
+  //       id: data.id,
+  //     },
+  //     (err, user) => {
+  //       if (err) throw err;
+  //       User.findOneAndUpdate(
+  //         { id: data.id },
+  //         {
+  //           deleted: true,
+  //           status: user.status === "active" ? "inactive" : "inactive",
+  //         },
+  //         { upsert: true },
+  //         (err, response) => {
+  //           if (err) return res.json({ success: false, message: err.message });
+  //           if (response) {
+  //             res.json({
+  //               success: true,
+  //               message: " Successfully Delete User",
+  //               data: user,
+  //             });
+  //           } else {
+  //             res.json({ success: false, message: "Could Delete User" + err });
+  //           }
+  //         }
+  //       );
+  //     }
+  //   );
+  // });
+  router.put("/setInactiveUser", async (req, res) => {
+    try {
+      const user = await User.findOne({ id: req.body.id });
+      if (!user) {
+        return res.json({ success: false, message: "User not found" });
       }
-    );
-  });
 
+      const response = await User.findOneAndUpdate(
+        { id: req.body.id },
+        {
+          deleted: true,
+          status: user.status === "active" ? "inactive" : "inactive",
+        },
+        { upsert: true, new: true }
+      );
+
+      if (!response) {
+        return res.json({ success: false, message: "Could not update user" });
+      }
+
+      res.json({
+        success: true,
+        message: "Successfully Delete User",
+        data: user,
+      });
+    } catch (err) {
+      res.json({ success: false, message: err.message });
+    }
+  });
   router.put("/changeUserStatus", (req, res) => {
     let { id } = req.body;
     User.findOne(
@@ -621,37 +735,68 @@ module.exports = (router) => {
     }
   });
 
-  router.get("/profile/:id", (req, res) => {
-    User.findOne({ id: req.params.id })
-      .select("firstname lastname username email profile_pic")
-      .exec((err, user) => {
-        if (err) {
-          res.json({ success: false, message: err.message });
-        } else {
-          if (!user) {
-            res.json({ success: false, message: "User not found" });
-          } else {
-            res.json({ success: true, user: user });
-          }
-        }
-      });
-  });
+  // router.get("/profile/:id", (req, res) => {
+  //   User.findOne({ id: req.params.id })
+  //     .select("firstname lastname username email profile_pic")
+  //     .exec((err, user) => {
+  //       if (err) {
+  //         res.json({ success: false, message: err.message });
+  //       } else {
+  //         if (!user) {
+  //           res.json({ success: false, message: "User not found" });
+  //         } else {
+  //           res.json({ success: true, user: user });
+  //         }
+  //       }
+  //     });
+  // });
 
-  router.get("/UserProfilePic/:id", (req, res) => {
-    User.findOne({ profile_pic: req.params.id })
-      .select("profile_pic")
-      .exec((err, user) => {
-        if (err) {
-          res.json({ success: false, message: err.message });
-        } else {
-          if (!user) {
-            res.json({ success: false, message: "UserPic not found" });
-          } else {
-            res.json({ success: true, picture: user });
-          }
-        }
-      });
-  });
+  router.get("/profile/:id", async (req, res) => {
+    try {
+      const user = await User.findOne({ id: req.params.id })
+        .select("firstname lastname username email profile_pic")
+        .lean()
+        .exec();
 
+      if (!user) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+      
+      return res.status(200).json({ success: true, user });
+    } catch (err) {
+      return res.status(500).json({ 
+        success: false, 
+        message: err.message || 'An error occurred while fetching user profile'
+      });
+    }
+  });
+  // router.get("/UserProfilePic/:id", (req, res) => {
+  //   User.findOne({ profile_pic: req.params.id })
+  //     .select("profile_pic")
+  //     .exec((err, user) => {
+  //       if (err) {
+  //         res.json({ success: false, message: err.message });
+  //       } else {
+  //         if (!user) {
+  //           res.json({ success: false, message: "UserPic not found" });
+  //         } else {
+  //           res.json({ success: true, picture: user });
+  //         }
+  //       }
+  //     });
+  // });
+  router.get("/UserProfilePic/:id", async (req, res) => {
+    try {
+      const user = await User.findOne({ profile_pic: req.params.id })
+        .select("profile_pic");
+
+      if (!user) {
+        return res.json({ success: false, message: "UserPic not found" });
+      }
+      res.json({ success: true, picture: user });
+    } catch (err) {
+      res.json({ success: false, message: err.message });
+    }
+  });
   return router;
 };

@@ -57,6 +57,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
 
     subGoalObjective: boolean = false;
     loading: boolean = false;
+    isAdmin: boolean = false;
     USERID: string;
     subOnjectiveHeaderData: any;
     getObjectiveTableTrigger: any;
@@ -86,6 +87,7 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.loading = true;
         this.USERID = this.auth.getTokenUserID();
+        this.isAdmin = this.auth.getUserRole() === 'admin';
     }
 
     ngOnDestroy() {
@@ -166,6 +168,11 @@ export class ObjectiveTableComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.objectiveTableSubscription))
                 .subscribe(async (data: any) => {
                     this.objectiveDatas = await data.Objectives;
+                    console.log('objectiveDatas', this.objectiveDatas);
+                    console.log({
+                        isAdmin : this.isAdmin,
+                        "this.USERID" : this.objectiveDatas[0].createdBy,
+                    })
                     this.changeDetectorRef.markForCheck();
                     this.loading = false;
                 });

@@ -112,6 +112,7 @@ export class AppTopBarComponent implements OnInit {
     userData: any;
     public form: any;
     id: string;
+    logoutUsername : string;
     elEventListenerActive: boolean;
     items!: MenuItem[];
     Listitems!: MenuItem[];
@@ -154,6 +155,7 @@ export class AppTopBarComponent implements OnInit {
 
     ngOnInit() {
         this.id = this.auth.getTokenUserID() || '';
+        this.logoutUsername = this.auth.getTokenUsername() || '';
         this.Listitems = [
             {
                 // icon: 'pi pi-fw pi-cog',
@@ -197,7 +199,7 @@ export class AppTopBarComponent implements OnInit {
     }
 
     kickout() {
-        this.auth.logout();
+        this.auth.logout(this.id, this.logoutUsername);
     }
 
     getUserData() {
@@ -224,7 +226,7 @@ export class AppTopBarComponent implements OnInit {
             message: 'Are you sure that you want to logout?',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.auth.logout();
+                this.auth.logout(this.logoutUsername,this.id );
             },
             reject: () => {
                 this.messageService.add({

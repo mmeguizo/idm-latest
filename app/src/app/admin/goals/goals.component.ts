@@ -60,6 +60,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     currentDate = Date.now();
     //variables used in the component
     userID: string;
+    isAdmin : boolean;
     updateGoalID: string;
     subObjectiveGoalID: string;
     subObjectiveHeaders: string;
@@ -161,6 +162,14 @@ export class GoalsComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.getAllObjectivesWithObjectives();
         this.getAllDept();
+
+        //get admin rol
+        this.auth.getUserRole() === 'admin'
+            ? (this.isAdmin = true)
+            : (this.isAdmin = false);
+
+            console.log(this.USERID);
+            console.log(this.auth.getUserRole());
 
         this.dropdwonSelection = [
             { name: 'daily', code: 'Daily' },

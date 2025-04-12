@@ -69,33 +69,78 @@ module.exports = (router) => {
     }
   );
 
-  router.get("/getAllDepartment", (req, res) => {
-    Department.find(
-      { deleted: false },
-      {
-        id: 1,
-        department: 1,
-        status: 1,
-        deleted: 1,
-        department_head: 1,
-        user_id: 1,
-      },
-      (err, department) => {
-        if (err) {
-          res.json({ success: false, message: err });
-        } else {
-          if (!department || department.length === 0) {
-            res.json({
-              success: false,
-              message: "No Department found.",
-              department: [],
-            });
-          } else {
-            res.json({ success: true, departments: department });
-          }
+  // router.get("/getAllDepartment", (req, res) => {
+  //   Department.find(
+  //     { deleted: false },
+  //     {
+  //       id: 1,
+  //       department: 1,
+  //       status: 1,
+  //       deleted: 1,
+  //       department_head: 1,
+  //       user_id: 1,
+  //     },
+  //     (err, department) => {
+  //       if (err) {
+  //         res.json({ success: false, message: err });
+  //       } else {
+  //         if (!department || department.length === 0) {
+  //           res.json({
+  //             success: false,
+  //             message: "No Department found.",
+  //             department: [],
+  //           });
+  //         } else {
+  //           res.json({ success: true, departments: department });
+  //         }
+  //       }
+  //     }
+  //   ).sort({ _id: -1 });
+
+  //   let params = JSON.stringify(req.params);
+  //   let query = JSON.stringify(req.query);
+  //   let body = JSON.stringify(req.body);
+  //   // logger.info(
+  //   //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+  //   //     req.statusCode
+  //   //   }|${req.socket.remoteAddress}|${Date.now()}`
+  //   // );
+  // });
+  router.get("/getAllDepartment", async (req, res) => {
+    try {
+      const departments = await Department.find(
+        { deleted: false },
+        {
+          id: 1,
+          department: 1,
+          status: 1,
+          deleted: 1,
+          department_head: 1,
+          user_id: 1,
         }
+      )
+        .sort({ _id: -1 })
+        .lean()
+        .exec();
+
+      if (!departments || departments.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No Department found.",
+          department: [],
+        });
       }
-    ).sort({ _id: -1 });
+
+      return res.status(200).json({ 
+        success: true, 
+        departments 
+      });
+    } catch (err) {
+      return res.status(500).json({ 
+        success: false, 
+        message: err.message || 'An error occurred while fetching departments'
+      });
+    }
 
     let params = JSON.stringify(req.params);
     let query = JSON.stringify(req.query);
@@ -106,7 +151,6 @@ module.exports = (router) => {
     //   }|${req.socket.remoteAddress}|${Date.now()}`
     // );
   });
-
   router.post("/findDepartmentById", (req, res) => {
     Department.findOne(
       { id: req.body.id },
@@ -345,51 +389,116 @@ module.exports = (router) => {
     // );
   });
 
-  router.put(
-    "/changeDepartmentStatus",
+  // router.put(
+  //   "/changeDepartmentStatus",
 
-    (req, res) => {
-      let data = req.body;
-      Department.findOne(
-        {
-          id: data.id,
-        },
-        (err, department) => {
-          if (err) throw err;
-          Department.findOneAndUpdate(
-            { id: data.id },
-            { status: department.status === "active" ? "inactive" : "active" },
-            { upsert: true, select: "-__v" },
-            (err, response) => {
-              if (err)
-                return res.json({ success: false, message: err.message });
-              if (!response) {
-                res.json({
-                  success: false,
-                  message: " Something wrong setting Status" + err,
-                });
-              } else {
-                res.json({
-                  success: true,
-                  message: " Successfully set Status",
-                  data: response,
-                });
-              }
-            }
-          );
+  //   (req, res) => {
+  //     let data = req.body;
+  //     Department.findOne(
+  //       {
+  //         id: data.id,
+  //       },
+  //       (err, department) => {
+  //         if (err) throw err;
+  //         Department.findOneAndUpdate(
+  //           { id: data.id },
+  //           { status: department.status === "active" ? "inactive" : "active" },
+  //           { upsert: true, select: "-__v" },
+  //           (err, response) => {
+  //             if (err)
+  //               return res.json({ success: false, message: err.message });
+  //             if (!response) {
+  //               res.json({
+  //                 success: false,
+  //                 message: " Something wrong setting Status" + err,
+  //               });
+  //             } else {
+  //               res.json({
+  //                 success: true,
+  //                 message: " Successfully set Status",
+  //                 data: response,
+  //               });
+  //             }
+  //           }
+  //         );
+  //       }
+  //     );
+  //     let params = JSON.stringify(req.params);
+  //     let query = JSON.stringify(req.query);
+  //     let body = JSON.stringify(req.body);
+  //     // logger.info(
+  //     //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
+  //     //     req.statusCode
+  //     //   }|${req.socket.remoteAddress}|${Date.now()}`
+  //     // );
+  //   }
+  // );
+  router.put("/changeDepartmentStatus", async (req, res) => {
+    try {
+      const data = req.body;
+      const department = await Department.findOne({ id: data.id });
+      
+      if (!department) {
+        return res.json({
+          success: false,
+          message: "Department not found"
+        });
+      }
+
+      const response = await Department.findOneAndUpdate(
+        { id: data.id },
+        { status: department.status === "active" ? "inactive" : "active" },
+        { 
+          new: true,
+          upsert: true,
+          select: "-__v",
+          runValidators: true 
         }
       );
+
+      if (!response) {
+        return res.json({
+          success: false,
+          message: "Something wrong setting Status"
+        });
+      }
+
       let params = JSON.stringify(req.params);
       let query = JSON.stringify(req.query);
       let body = JSON.stringify(req.body);
-      // logger.info(
-      //   ` ${req.method}|${params}|${query}|${req.originalUrl}|${body}|${
-      //     req.statusCode
-      //   }|${req.socket.remoteAddress}|${Date.now()}`
-      // );
-    }
-  );
+      
+      logger.info('API Request', {
+        method: req.method,
+        endpoint: req.originalUrl,
+        params: JSON.parse(params),
+        query: JSON.parse(query),
+        requestBody: JSON.parse(body),
+        statusCode: res.statusCode,
+        ipAddress: req.socket.remoteAddress,
+        timestamp: new Date().toLocaleString('en-US', {
+          timeZone: 'Asia/Manila',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        })
+      });
 
+      return res.json({
+        success: true,
+        message: "Successfully set Status",
+        data: response
+      });
+
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: err.message || "Error updating department status"
+      });
+    }
+  });
   router.put(
     "/updateDepartment",
 

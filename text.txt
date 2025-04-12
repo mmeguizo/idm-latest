@@ -1,0 +1,1 @@
+update to use mongoose 8 and dont omit anything on the code so i can comment the old and replace the new query 

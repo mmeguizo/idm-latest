@@ -209,52 +209,95 @@ module.exports = (router) => {
     );
   });
 
+  // router.get("/getAllByIdObjectives/:id", async (req, res) => {
+  //   try {
+  //     await Objectives.aggregate(
+  //       [
+  //         {
+  //           $match: {
+  //             goalId: req.params.id,
+  //             deleted: false,
+  //           },
+  //         },
+  //         {
+  //           $lookup: {
+  //             as: "remarks",
+  //             from: "remarks",
+  //             foreignField: "objectiveId",
+  //             localField: "id",
+  //           },
+  //         },
+  //       ],
+  //       async (error, results) => {
+  //         if (error) {
+  //           console.log({ ERR: error });
+  //           return res
+  //             .status(500)
+  //             .json({ success: false, message: error.message });
+  //         }
+  //         if (!results || results.length === 0) {
+  //           return res.json({
+  //             success: false,
+  //             message: "No Objectives found.",
+  //             Objectives: [],
+  //           });
+  //         }
+  //         if (results) {
+  //           return res.status(200).json({
+  //             success: true,
+  //             Objectives: await calculatePercentage(results),
+  //           });
+  //         }
+  //       }
+  //     );
+  //   } catch (err) {
+  //     return res.status(500).json({ success: false, message: err.message });
+  //   }
+  // });
   router.get("/getAllByIdObjectives/:id", async (req, res) => {
     try {
-      await Objectives.aggregate(
-        [
-          {
-            $match: {
-              goalId: req.params.id,
-              deleted: false,
-            },
+      const results = await Objectives.aggregate([
+        {
+          $match: {
+            goalId: req.params.id,
+            deleted: false,
           },
-          {
-            $lookup: {
-              as: "remarks",
-              from: "remarks",
-              foreignField: "objectiveId",
-              localField: "id",
-            },
+        },
+        {
+          $lookup: {
+            as: "remarks",
+            from: "remarks",
+            foreignField: "objectiveId",
+            localField: "id",
           },
-        ],
-        async (error, results) => {
-          if (error) {
-            console.log({ ERR: error });
-            return res
-              .status(500)
-              .json({ success: false, message: error.message });
-          }
-          if (!results || results.length === 0) {
-            return res.json({
-              success: false,
-              message: "No Objectives found.",
-              Objectives: [],
-            });
-          }
-          if (results) {
-            return res.status(200).json({
-              success: true,
-              Objectives: await calculatePercentage(results),
-            });
-          }
-        }
-      );
-    } catch (err) {
-      return res.status(500).json({ success: false, message: err.message });
+        },
+      ])
+        .sort({ _id: -1 })
+        .exec();
+
+      if (!results || results.length === 0) {
+        return res.status(200).json({
+          success: false,
+          message: "No Objectives found.",
+          Objectives: [],
+        });
+      }
+
+      const calculatedResults = await calculatePercentage(results);
+
+      return res.status(200).json({
+        success: true,
+        Objectives: calculatedResults,
+      });
+
+    } catch (error) {
+      console.error("Error in getAllByIdObjectives:", error);
+      return res.status(500).json({ 
+        success: false, 
+        message: error.message || "An error occurred while fetching objectives"
+      });
     }
   });
-
   router.get("/getObjectiveById/:id", async (req, res) => {
     try {
       const objective = await Objectives.findOne({ id: req.params.id });
@@ -688,7 +731,6 @@ module.exports = (router) => {
     let goalObjectiveNumber = [];
 
     try {
-      console.log(objectivesData);
 
       const checkTargetVsGoal = await checkedGoalVStarget(objectivesData);
 
@@ -1062,26 +1104,55 @@ module.exports = (router) => {
     }
   );
 
-  router.get("/getAllByIdObjectives/:id/:userId", (req, res) => {
-    Objectives.find(
-      { deleted: false, goalId: req.params.id, createdBy: req.params.userId },
-      (err, Objectives) => {
-        if (err) {
-          return res.status(500).json({ success: false, message: err });
-        }
+  // router.get("/getAllByIdObjectives/:id/:userId", (req, res) => {
+  //   Objectives.find(
+  //     { deleted: false, goalId: req.params.id, createdBy: req.params.userId },
+  //     (err, Objectives) => {
+  //       if (err) {
+  //         return res.status(500).json({ success: false, message: err });
+  //       }
 
-        if (!Objectives || Objectives.length === 0) {
-          return res.json({
-            success: false,
-            message: "No Objectives found.",
-            Objectives: [],
-          });
-        }
-        return res.status(200).json({ success: true, Objectives });
+  //       if (!Objectives || Objectives.length === 0) {
+  //         return res.json({
+  //           success: false,
+  //           message: "No Objectives found.",
+  //           Objectives: [],
+  //         });
+  //       }
+  //       return res.status(200).json({ success: true, Objectives });
+  //     }
+  //   ).sort({ _id: -1 });
+  // });
+  router.get("/getAllByIdObjectives/:id/:userId", async (req, res) => {
+    try {
+      const objectives = await Objectives.find({
+        deleted: false,
+        goalId: req.params.id,
+        createdBy: req.params.userId
+      })
+        .sort({ _id: -1 })
+        .lean()
+        .exec();
+
+      if (!objectives || objectives.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No Objectives found.",
+          Objectives: [],
+        });
       }
-    ).sort({ _id: -1 });
-  });
 
+      return res.status(200).json({
+        success: true,
+        Objectives: objectives
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || "An error occurred while fetching objectives"
+      });
+    }
+  });
   router.get(
     "/getAllByIdObjectivesWithGoalsAndUsers/:id",
 
@@ -1296,7 +1367,7 @@ module.exports = (router) => {
           strategic_objective: 1,
         });
 
-        console.log({ objectivesData: objectivesData._doc });
+        // console.log({ objectivesData: objectivesData._doc });
 
         // let completionPercentage =
         //   objectivesCount > 0

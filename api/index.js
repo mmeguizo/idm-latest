@@ -28,20 +28,35 @@ const office_head_query_query = require("./routes/office_head_query")(router);
 const remarks = require("./routes/remark")(router);
 const { logMiddleware } = require("./middleware/logger");
 
+// mongoose.Promise = global.Promise;
+// mongoose.set("strictQuery", false);
+// mongoose.connect(config.uri, config.options, (err) => {
+//   if (err) {
+//     console.log("cant connect to database " + process.env.DB_NAME);
+//   } else {
+//     console.log("connected to the database " + process.env.DB_NAME);
+//     console.log("running on " + process.env.NODE_ENV + " mode");
+//     console.log("on port " + PORT);
+//   }
+// });
+
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", false);
-mongoose.connect(config.uri, config.options, (err) => {
-  if (err) {
-    console.log("cant connect to database " + process.env.DB_NAME);
-  } else {
+
+mongoose.connect(config.uri, config.options)
+  .then(() => {
     console.log("connected to the database " + process.env.DB_NAME);
     console.log("running on " + process.env.NODE_ENV + " mode");
     console.log("on port " + PORT);
-  }
-});
+  })
+  .catch((err) => {
+    console.log("cant connect to database " + process.env.DB_NAME);
+    console.error(err);
+  });
+
 
 app.use(cors());
-// app.use(logMiddleware);
+
 
 //CORS middleware
 var allowCrossDomain = function (req, res, next) {
@@ -56,7 +71,7 @@ app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ limit: "20mb", extended: false }));
 
 app.use(allowCrossDomain);
-
+app.use(logMiddleware);
 //for deployment on hosting and build
 // app.use(express.static(__dirname + "/dist/"));
 app.use("/images", express.static(path.join(__dirname, "./images")));

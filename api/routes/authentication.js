@@ -142,6 +142,22 @@ module.exports = (router) => {
               req.statusCode
             }|${req.socket.remoteAddress}|${Date.now()}`
           );
+          logger.info('User logged in', {
+            event: 'LOGIN',
+            username: newUser.username,
+            userId: newUser.id,
+            timestamp: new Date().toLocaleString('en-US', {
+              timeZone: 'Asia/Manila',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+            })
+          });
+          //add here logs same as logoutevent
+
           res.json({
             success: true,
             message: "Password is Correct",
@@ -162,7 +178,11 @@ module.exports = (router) => {
         });
       });
   });
-
+  router.post('/logoutEvent', (req, res) => {
+    const { event, username, userId, timestamp } = req.body;
+    logger.info('User logged out', { event, username, userId, timestamp });
+    res.status(200).json({ success: true });
+});
   /*
 o = {a: 5, b: 6, c: 7}
 Object.fromEntries(Object.entries(o).filter(e => e[0] != 'b'))

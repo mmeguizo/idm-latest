@@ -12,6 +12,7 @@ const logs = new Schema(
     duration: {},
     date: {},
     statusCode: {},
+    timestamp: {},
     ip: {},
     user: {},
     deleted: { type: Boolean, default: false },
