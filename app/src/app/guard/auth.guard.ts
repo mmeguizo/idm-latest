@@ -18,15 +18,14 @@ export class AuthGuard implements CanActivate {
             const isExpired = exp < currentTime;
             if (isExpired) {
                 // Handle expired token (e.g., refresh token, redirect to login)
-                this.message.add({
-                    severity: 'danger  ',
-                    summary: 'Oops',
-                    detail: 'Token is expired! Logging out...',
-                });
-
                 setTimeout(() => {
+                    this.message.add({
+                        severity: 'error',
+                        summary: 'Oops',
+                        detail: 'Token is expired! Logging out...',
+                    });
                     this.authService.logout();
-                }, 1000);
+                }, 0);
                 return false;
             }
             return true;

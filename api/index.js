@@ -26,7 +26,7 @@ const director_query = require("./routes/director_query")(router);
 const vice_president_query = require("./routes/vice_president_query")(router);
 const office_head_query_query = require("./routes/office_head_query")(router);
 const remarks = require("./routes/remark")(router);
-// const { logMiddleware } = require("./middleware/logger");
+const { logMiddleware } = require("./middleware/logger");
 
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", false);

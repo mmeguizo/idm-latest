@@ -1,1 +1,0 @@
-mongodump --host localhost --port 27017 --db idm --out ./db-backup

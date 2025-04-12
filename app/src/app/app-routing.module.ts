@@ -4,7 +4,9 @@ import { NgModule } from '@angular/core';
 import { AppLayoutComponent } from './layout/app.layout.component';
 import { AuthGuard } from './guard/auth.guard';
 import { NotfoundComponent } from './notfound/notfound.component';
+import { RootRedirectGuard } from './guard/root-redirect';
 // import { DashboardModule } from './demo/components/dashboard/dashboard.module';
+
 @NgModule({
     imports: [
         RouterModule.forRoot(
@@ -41,6 +43,13 @@ import { NotfoundComponent } from './notfound/notfound.component';
                                 import(
                                     './demo/components/documentation/documentation.module'
                                 ).then((m) => m.DocumentationModule),
+                        },
+                        {
+                            path: 'auth',
+                            loadChildren: () =>
+                                import(
+                                    './demo/components/auth/auth.module'
+                                ).then((m) => m.AuthModule),
                         },
                         {
                             path: 'blocks',
@@ -143,8 +152,10 @@ import { NotfoundComponent } from './notfound/notfound.component';
                 { path: 'notfound', component: NotfoundComponent },
                 {
                     path: '',
-                    redirectTo: 'login',
-                    pathMatch: 'full',
+                    // redirectTo: 'login',
+                    canActivate: [RootRedirectGuard],
+                    // pathMatch: 'full',
+                    component: NotfoundComponent,
                 },
                 { path: '**', redirectTo: 'notfound' },
             ],
