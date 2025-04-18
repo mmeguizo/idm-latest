@@ -85,9 +85,30 @@ position: relative;
     padding: 0rem !important;
 }
 
+@keyframes wiggle {
+         0% { transform: rotate(0deg); }
+         15% { transform: rotate(-15deg); }
+         30% { transform: rotate(10deg); }
+         45% { transform: rotate(-10deg); }
+         60% { transform: rotate(6deg); }
+         75% { transform: rotate(-4deg); }
+         100% { transform: rotate(0deg); }
+       }
+       
+       .animate-bell {
+         animation: wiggle 1s ease-in-out infinite;
+         transform-origin: top center;
+       }
+       /* 🔍 On hover: stop animation and slightly scale */
+ .animate-bell:hover {
+   animation: none;
+   transform: scale(1.2); /* make it slightly bigger */
+ }
+
     `,
 })
 export class AppTopBarComponent implements OnInit {
+    notificationCount: number = 0;
     private getSubscription = new Subject<void>();
     userData: any;
     public form: any;
@@ -128,6 +149,7 @@ export class AppTopBarComponent implements OnInit {
     ) {
         this.name = this.auth.getTokenUsername() || '';
         this.profile_pic = this.auth.getUserProfilePic() || 'no-photo.png';
+        this.notificationCount = 2;
     }
 
     ngOnInit() {

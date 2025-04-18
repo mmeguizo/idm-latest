@@ -1,6 +1,9 @@
 <div class="layout-topbar">
-
-    <button #menubutton class="p-link layout-topbar-button mr-2" (click)="layoutService.onMenuToggle()">
+    <button
+        #menubutton
+        class="p-link layout-topbar-button mr-2"
+        (click)="layoutService.onMenuToggle()"
+    >
         <i class="pi pi-bars"></i>
     </button>
 
@@ -21,6 +24,15 @@
     >
         <i class="pi pi-ellipsis-v"></i>
     </button>
+
+    <i
+        class="notification-bell notification-badge pi pi-bell mr-4 p-text-secondary cursor-pointer"
+        pBadge
+        [attr.value]="notificationCount"
+        style="font-size: 2rem"
+        [ngClass]="{ 'animate-bell': notificationCount > 0 }"
+        value="{{ notificationCount }}"
+    ></i>
 
     <div
         #topbarmenu

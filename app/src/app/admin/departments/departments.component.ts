@@ -58,7 +58,7 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
 
     async getAllUsers() {
         this.user
-            .fetch('get', 'users', 'getAllUsers')
+            .fetch('get', 'users', 'getAllUsersAdminDepartments')
             .pipe(takeUntil(this.getdepartmenttSubscription))
             .subscribe((data: any) => {
                 this.allUsers = data.data[0] || [];
