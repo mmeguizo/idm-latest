@@ -34,4 +34,17 @@ export class ProductService {
             .then(res => res.data as Product[])
             .then(data => data);
     }
+
+    getProductsSmallTest() {
+        return this.http.get<any>('assets/demo/data/products-small.json')
+            .toPromise()
+            .then(res => {
+                console.log('Response:', res); // Debugging
+                return res.data as Product[];
+            })
+            .catch(err => {
+                console.error('Error fetching products:', err); // Debugging
+                return [];
+            });
+    }
 }

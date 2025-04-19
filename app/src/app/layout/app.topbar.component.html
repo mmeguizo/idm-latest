@@ -32,7 +32,57 @@
         style="font-size: 2rem"
         [ngClass]="{ 'animate-bell': notificationCount > 0 }"
         value="{{ notificationCount }}"
-    ></i>
+        (click)="op2.toggle($event)"
+    >
+    </i>
+    <p-overlayPanel #op2 [showCloseIcon]="true" [style]="{ width: '450px' }">
+        <ng-template pTemplate>
+            <p-table
+                [value]="products"
+                selectionMode="single"
+                [(selection)]="selectedProduct"
+                [paginator]="true"
+                [rows]="5"
+                (onRowSelect)="op2.hide()"
+                responsiveLayout="scroll"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th
+                            style="min-width: 12rem"
+                            pSortableColumn="name"
+                        >
+                            Name<p-sortIcon
+                                field="name"
+                            ></p-sortIcon>
+                        </th>
+                        <th
+                            style="min-width: 8rem"
+                            pSortableColumn="price"
+                        >
+                            Price
+                            <p-sortIcon
+                                field="price"
+                            ></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template
+                    pTemplate="body"
+                    let-rowData
+                    let-product
+                >
+                    <tr [pSelectableRow]="rowData">
+                        <td>{{ product.name }}</td>
+                        <td>
+                            {{ formatCurrency(product.price) }}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </ng-template>
+  
+    </p-overlayPanel>
 
     <div
         #topbarmenu

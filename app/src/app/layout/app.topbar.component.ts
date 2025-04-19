@@ -9,6 +9,11 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { UserService } from '../demo/service/user.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { ProductService } from 'src/app/demo/service/product.service';
+import { Product } from 'src/app/demo/api/product';
+import { ChangeDetectorRef } from '@angular/core';
+import { Table } from 'primeng/table';
+
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
@@ -108,6 +113,7 @@ position: relative;
     `,
 })
 export class AppTopBarComponent implements OnInit {
+    users: any[] = [];
     notificationCount: number = 0;
     private getSubscription = new Subject<void>();
     userData: any;
@@ -136,7 +142,14 @@ export class AppTopBarComponent implements OnInit {
 
     passwordNotMatch: boolean = true;
 
+    products:any;
+    // products: Product[] = [];
+    selectedProduct: Product = {};
+    loading = true;
+    private getUserSubscription = new Subject<void>();
+
     constructor(
+        private productService: ProductService,
         public layoutService: LayoutService,
         public auth: AuthService,
         private confirmationService: ConfirmationService,
@@ -145,7 +158,8 @@ export class AppTopBarComponent implements OnInit {
         private sanitizer: DomSanitizer,
         public file: FileService,
         public user: UserService,
-        public formBuilder: FormBuilder
+        public formBuilder: FormBuilder,
+        private cdr: ChangeDetectorRef
     ) {
         this.name = this.auth.getTokenUsername() || '';
         this.profile_pic = this.auth.getUserProfilePic() || 'no-photo.png';
@@ -153,6 +167,13 @@ export class AppTopBarComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.productService.getProductsSmallTest().then((products) => {
+            this.products = products;
+            console.log(this.products);
+        });
+
+     
+
         this.id = this.auth.getTokenUserID() || '';
         this.Listitems = [
             {
@@ -182,8 +203,36 @@ export class AppTopBarComponent implements OnInit {
             this.auth.domain + '/images/' + this.profile_pic || 'no-photo.png'
         );
         this.createForm();
+
+        this.getAllusers();
     }
 
+    getAllusers() {
+        this.loading = true;
+        this.user
+            .fetch(
+                'get',
+                'users',
+                `getAllUsersExceptLoggedIn/${this.auth.getTokenUserID()}`
+            )
+            .pipe(takeUntil(this.getUserSubscription))
+            .subscribe((data: any) => {
+                console.log({ getAllusers: data });
+                this.users = data.users;
+                this.cdr.detectChanges();
+                this.loading = false;
+            });
+    }
+
+    formatCurrency(value: number) {
+        return value.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'PHP',
+        });
+    }
+
+
+    
     createForm() {
         this.form = this.formBuilder.group({
             firstname: ['', [Validators.required, Validators.required]],

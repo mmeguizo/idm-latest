@@ -26,6 +26,8 @@ import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { UpdateProfileComponent } from './profile.component';
 import { PasswordModule } from 'primeng/password';
 import { MenubarModule } from 'primeng/menubar';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
     declarations: [
@@ -59,8 +61,10 @@ import { MenubarModule } from 'primeng/menubar';
         DynamicDialogModule,
         PasswordModule,
         MenubarModule,
+        OverlayPanelModule,
+        TableModule
     ],
-    exports: [AppLayoutComponent],
+    exports: [AppLayoutComponent,],
     providers: [DialogService],
 })
 export class AppLayoutModule {}
