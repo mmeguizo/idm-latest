@@ -30,10 +30,12 @@
         pBadge
         [attr.value]="notificationCount"
         style="font-size: 2rem"
-        [ngClass]="{ 'animate-bell': notificationCount > 0 }"
+       
+        [ngClass]="{ 'animate-bell': notificationCount > 0 && !bellClicked, 'clicked': bellClicked }"
         value="{{ notificationCount }}"
-        (click)="op2.toggle($event)"
+        (click)="op2.toggle($event);onBellClick($event)"
     >
+    <!--  [ngClass]="{ 'animate-bell': notificationCount > 0 }" -->
     </i>
     <p-overlayPanel #op2 [showCloseIcon]="true" [style]="{ width: '450px' }">
         <ng-template pTemplate>

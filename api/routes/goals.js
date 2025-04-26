@@ -8,6 +8,7 @@ const userHistory = require("../models/userhistories");
 const goals = require("../models/goals");
 const Users = require("../models/user");
 const Departments = require("../models/department");
+const Notifications = require("../models/notifications");
 // const { query, log } = require("winston");
 
 module.exports = (router) => {
@@ -1349,13 +1350,22 @@ module.exports = (router) => {
     Goals.create(goalsDataRequest)
       .then((data) => {
         userHistory.create({
-          userId: createdBy,
+          userId: req.decoded.id,
           activityType: "PUT",
           activityDetails: {
             url: "goals/addGoals",
             data: goalsDataRequest,
             action: "Added Goals",
           },
+        });
+
+        // add to the notifications
+        Notifications.create({
+          userId: req.decoded.id,
+          message: `New goal added: ${data.goals}`,
+          type: "goal_added",
+          createdAt: new Date(),
+          metadata: data,
         });
 
         res.json({
@@ -1385,6 +1395,11 @@ module.exports = (router) => {
   });
 
   router.put("/deleteGoals", (req, res) => {
+
+    // const token = req.header('Authorization')?.split(' ')[1];
+    const decoded = req.decoded.id
+    console.log(decoded)
+
     let data = req.body;
     let ObjectivesArray = [];
 
@@ -1408,6 +1423,16 @@ module.exports = (router) => {
               return res.json({ success: false, message: err.message });
             }
 
+              // add to the notifications
+                      Notifications.create({
+                        userId: req.decoded.id,
+                        title: "Goals Deleted",
+                        message: `deleted a : ${GoalsFindRes[0].goals}`,
+                        type: "goal_deleted",
+                        createdAt: new Date(),
+                        metadata : GoalsFindRes
+                      });
+
             if (response.modifiedCount > 0) {
               Objectives.updateMany(
                 {
@@ -1421,7 +1446,9 @@ module.exports = (router) => {
                   if (err) {
                     return res.json({ success: false, message: err.message });
                   }
+
                   if (response.acknowledged) {
+                 
                     res.json({
                       success: true,
                       message: "Successfully Delete Goals",
@@ -1458,6 +1485,16 @@ module.exports = (router) => {
           (err, response) => {
             if (err) return res.json({ success: false, message: err.message });
             if (response) {
+
+              Notifications.create({
+                userId: req.decoded.id,
+                message: `deleted a : ${Goals.goals}`,
+                type: "goal_deleted",
+                createdAt: new Date(),
+                metadata : Goals
+              });
+
+
               res.json({
                 success: true,
                 message: " Successfully Delete Goals",
@@ -1485,6 +1522,15 @@ module.exports = (router) => {
       (err, response) => {
         if (err) return res.json({ success: false, message: err.message });
         if (response) {
+
+          Notifications.create({
+            userId: req.decoded.id,
+            message: `updated a : ${Goals.goals}`,
+            type: "goal_updated",
+            createdAt: new Date(),
+            metadata : Goals
+          });
+
           res.json({
             success: true,
             message: "Goals Information has been updated!",

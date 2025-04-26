@@ -36,6 +36,7 @@ const Goals = require("../models/goals");
 const Users = require("../models/user");
 const File = require("../models/fileupload");
 const Departments = require("../models/department");
+const Notifications = require("../models/notifications");
 
 module.exports = (router) => {
   router.get("/getGoalsForDashboardVicePresident/:id", async (req, res) => {
@@ -1520,13 +1521,22 @@ module.exports = (router) => {
       Goals.create(goalsDataRequest)
         .then((data) => {
           userHistory.create({
-            userId: createdBy,
+            userId: req.decoded.id,
             activityType: "PUT",
             activityDetails: {
               url: "goals/addGoals",
               data: goalsDataRequest,
               action: "Added Goals",
             },
+          });
+
+          // add to the notifications
+          Notifications.create({
+            userId: req.decoded.id,
+            message: `New goal added: ${goals}`,
+            type: "goal_added",
+            createdAt: new Date(),
+            metadata : goalsDataRequest
           });
 
           res.json({

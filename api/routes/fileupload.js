@@ -12,6 +12,7 @@ let md5 = require("md5");
 const Logs = require("../models/logs");
 const User = require("../models/user");
 const Objectives = require("../models/objective");
+const Notifications = require("../models/notifications");
 module.exports = (router) => {
   router.post(
     "/addMultipleFiles/:user_id/:objective_id/:uploadObjectiveFilemonth",
@@ -71,6 +72,14 @@ module.exports = (router) => {
                 if (err) {
                   reject(err);
                 } else {
+                  Notifications.create({
+                    userId: req.decoded.id,
+                    message: `New goal added: ${goals}`,
+                    type: "goal_added",
+                    createdAt: new Date(),
+                    metadata: goalsDataRequest,
+                  });
+
                   resolve(data);
                 }
               });
@@ -80,6 +89,16 @@ module.exports = (router) => {
           Promise.all(savePromises)
             .then((data) => {
               const fileNames = data.map((file) => file.source);
+
+              // Add notification
+              Notifications.create({
+                userId: req.decoded.id,
+                message: `Successfully uploaded ${fileNames.length} file(s)`,
+                type: "file_upload",
+                createdAt: new Date(),
+                metadata: { files: fileNames },
+              });
+
               res.json({
                 success: true,
                 message: "Files uploaded successfully!",
@@ -209,6 +228,19 @@ module.exports = (router) => {
         const data = await Promise.all(savePromises);
         console.log("Files Saving success....:");
         const fileNames = data.map((file) => file.source);
+
+        // Add notification
+        await Notifications.create({
+          userId: req.decoded.id,
+          message: `Successfully uploaded ${fileNames.length} file(s) to objective`,
+          type: "objective_file_upload",
+          createdAt: new Date(),
+          metadata: {
+            files: fileNames,
+            objectiveId: objectiveId,
+            frequencyFileName: frequencyFileName,
+          },
+        });
         res.json({
           success: true,
           message: "Files uploaded successfully!",
@@ -272,8 +304,27 @@ module.exports = (router) => {
           filetype: file.mimetype.substring(0, file.mimetype.indexOf("/")),
         });
         uploadData.save((err, data) => {
-          console.log(err);
-          console.log(data);
+          if (err) {
+            res.json({
+              success: false,
+              message: "Error, could not save avatar : " + err,
+            });
+          } else {
+            // Add notification
+            Notifications.create({
+              userId: req.decoded.id,
+              message: "Profile avatar updated successfully",
+              type: "avatar_update",
+              createdAt: new Date(),
+              metadata: { avatarFile: data.source }
+            });
+        
+            res.json({
+              success: true,
+              message: "Avatar uploaded successfully ",
+              data: data,
+            });
+          }
         });
       });
     });
@@ -367,6 +418,15 @@ module.exports = (router) => {
                     message: "Error, could not save avatar : " + err,
                   });
                 } else {
+
+                  Notifications.create({
+                    userId: req.decoded.id,
+                    message: "Profile avatar updated successfully",
+                    type: "avatar_update",
+                    createdAt: new Date(),
+                    metadata: { avatarFile: data.source }
+                  });
+
                   res.json({
                     success: true,
                     message: "Avatar uploaded successfully ",
@@ -420,6 +480,17 @@ module.exports = (router) => {
             if (err) {
               return res.json({ success: false, message: err.message });
             } else {
+
+              Notifications.create({
+                userId:req.decoded.id,
+                message: "File deleted successfully",
+                type: "file_delete",
+                createdAt: new Date(),
+                metadata: { 
+                  fileId: id,
+                  fileName: file 
+                }
+              });
               return res.json({
                 success: true,
                 message: "The file has been remove.",
@@ -457,6 +528,18 @@ module.exports = (router) => {
           (err, response) => {
             if (err) return res.json({ success: false, message: err.message });
             if (response) {
+
+               Notifications.create({
+                userId:  req.decoded.id,
+                message: "Objective file deleted successfully",
+                type: "objective_file_delete",
+                createdAt: new Date(),
+                metadata: { 
+                  fileId: id,
+                  fileName: file 
+                }
+              });
+
               res.json({
                 success: true,
                 message: "File Deleted",

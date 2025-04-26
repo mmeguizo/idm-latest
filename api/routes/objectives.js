@@ -6,6 +6,7 @@ const Files = require("../models/fileupload");
 // const { logger } = require("../middleware/logger");
 const objective = require("../models/objective");
 // const { log } = require("winston");
+const Notifications = require("../models/notifications");
 
 module.exports = (router) => {
   const formatCurrency = (amount) => {
@@ -192,6 +193,19 @@ module.exports = (router) => {
           (err, response) => {
             if (err) return res.json({ success: false, message: err.message });
             if (response) {
+              // Add notification
+              Notifications.create({
+                userId: req.decoded.id,
+                message: `Objective ${
+                  newStatus ? "completed" : "uncompleted"
+                }: ${ObjectivesResults.functional_objective}`,
+                type: newStatus
+                  ? "objective_completed"
+                  : "objective_uncompleted",
+                createdAt: new Date(),
+                metadata: response,
+              });
+
               res.json({
                 success: true,
                 message: " Successfully Changed",
@@ -745,6 +759,14 @@ module.exports = (router) => {
             },
           }
         );
+
+        await Notifications.create({
+          userId: req.decoded.id,
+          message: `New objective added: ${results.functional_objective}`,
+          type: "objective_added",
+          createdAt: new Date(),
+          metadata: results,
+        });
       }
 
       res.status(201).json({ success: true, data: newObjective });
@@ -839,6 +861,14 @@ module.exports = (router) => {
           .catch((err) => {
             console.error("Error finding goals:", err);
           });
+
+        await Notifications.create({
+          userId: req.decoded.id,
+          message: `Objective deactivated: ${objective.functional_objective}`,
+          type: "objective_deactivated",
+          createdAt: new Date(),
+          metadata: updatedObjective,
+        });
       } else {
         return res.json({
           success: false,
@@ -962,6 +992,16 @@ module.exports = (router) => {
           message: "Objective not found",
         });
       }
+
+      await Notifications.create({
+        userId: req.decoded.id,
+        message: `Objective updated: ${
+          updateData.functional_objective || "Objective"
+        }`,
+        type: "objective_updated",
+        createdAt: new Date(),
+        metadata: { id, ...updateData },
+      });
 
       res.json({
         success: true,

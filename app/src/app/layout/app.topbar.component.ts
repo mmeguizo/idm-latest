@@ -104,6 +104,10 @@ position: relative;
          animation: wiggle 1s ease-in-out infinite;
          transform-origin: top center;
        }
+
+       .animate-bell.clicked {
+    animation: none; /* Stop the animation */
+}
        /* 🔍 On hover: stop animation and slightly scale */
  .animate-bell:hover {
    animation: none;
@@ -128,6 +132,10 @@ export class AppTopBarComponent implements OnInit {
     username!: string;
     confirmPassword!: string;
     public profile_pic: string;
+
+
+    bellClicked = false;
+
     @ViewChild('menubutton') menuButton!: ElementRef;
 
     @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
@@ -142,7 +150,7 @@ export class AppTopBarComponent implements OnInit {
 
     passwordNotMatch: boolean = true;
 
-    products:any;
+    products: any;
     // products: Product[] = [];
     selectedProduct: Product = {};
     loading = true;
@@ -171,8 +179,6 @@ export class AppTopBarComponent implements OnInit {
             this.products = products;
             console.log(this.products);
         });
-
-     
 
         this.id = this.auth.getTokenUserID() || '';
         this.Listitems = [
@@ -207,6 +213,15 @@ export class AppTopBarComponent implements OnInit {
         this.getAllusers();
     }
 
+    onBellClick(event: Event) {
+        this.bellClicked = true; // Stop the animation
+        // Optionally, toggle the overlay panel
+        const overlayPanel = (event.target as any).closest('p-overlayPanel');
+        if (overlayPanel) {
+            overlayPanel.toggle(event);
+        }
+    }
+
     getAllusers() {
         this.loading = true;
         this.user
@@ -231,8 +246,6 @@ export class AppTopBarComponent implements OnInit {
         });
     }
 
-
-    
     createForm() {
         this.form = this.formBuilder.group({
             firstname: ['', [Validators.required, Validators.required]],
