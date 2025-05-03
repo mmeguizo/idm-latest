@@ -92,3 +92,29 @@ export class FormatFrequencyPipe implements PipeTransform {
         }
     }
 }
+@Pipe({
+    name: 'abbreviateDepartment',
+})
+export class AbbreviateDepartmentPipe implements PipeTransform {
+    // Words to exclude from abbreviation
+    private excludeWords: string[] = ['and', 'for', 'the', 'of', 'in', 'to', 'a', 'an', 'with', 'by'];
+
+    transform(department: string): string {
+        if (!department) {
+            return '';
+        }
+
+        // Split into words
+        const words = department.split(' ');
+
+        // Filter out excluded words
+        const filteredWords = words.filter(word => 
+            !this.excludeWords.includes(word.toLowerCase())
+        );
+
+        // Get first letter of each remaining word and uppercase it
+        return filteredWords
+            .map(word => word.charAt(0).toUpperCase())
+            .join('');
+    }
+}

@@ -72,6 +72,7 @@ import {
     CompletedObjectivesPipe,
     IncompleteObjectivesPipe,
     FormatFrequencyPipe,
+  
 } from '../utlis/general.pipes';
 Chart.register(ChartDataLabels);
 
@@ -96,6 +97,7 @@ const pipes = [
     CompletedObjectivesPipe,
     IncompleteObjectivesPipe,
     FormatFrequencyPipe,
+    
 ];
 
 @NgModule({

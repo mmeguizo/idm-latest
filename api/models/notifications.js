@@ -26,6 +26,23 @@ const NotificationSchema = new mongoose.Schema({
         type: Object,
         default: {},
     },
+}, {
+    toJSON: {
+        virtuals: true,
+    },
+    toObject: {
+        virtuals: true,
+    },
+});
+
+NotificationSchema.virtual('user', {
+    ref: 'User',
+    localField: 'userId',
+    foreignField: 'id',
+    justOne: true,
+    options: {
+        select: 'username department role',
+    },
 });
 
 module.exports = mongoose.model('Notification', NotificationSchema);

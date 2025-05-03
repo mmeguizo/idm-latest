@@ -26,6 +26,7 @@ const director_query = require("./routes/director_query")(router);
 const vice_president_query = require("./routes/vice_president_query")(router);
 const office_head_query_query = require("./routes/office_head_query")(router);
 const remarks = require("./routes/remark")(router);
+const notifications = require("./routes/notification")(router);
 // const { logMiddleware } = require("./middleware/logger");
 
 mongoose.Promise = global.Promise;
@@ -78,6 +79,7 @@ app.use("/director_query", director_query);
 app.use("/office_head_query", office_head_query_query);
 app.use("/vice_president_query", vice_president_query);
 app.use("/remark", remarks);
+app.use("/notification", notifications);
 app.use(
   "/profile_pic",
   express.static(path.join(__dirname, "../uploads/images"))

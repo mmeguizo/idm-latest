@@ -39,6 +39,8 @@ import { BranchService } from './demo/service/branch.service';
 import { MarkdownModule } from 'ngx-markdown';
 import { GoallistService } from './demo/service/goallists.service';
 import { BaseService } from './demo/service/base.service';
+import { NotificationService } from './demo/service/notification.service';
+
 
 export function tokenGetter() {
     return localStorage.getItem('access_token');
@@ -92,6 +94,7 @@ export function tokenGetter() {
         BranchService,
         AiService,
         GoallistService,
+        NotificationService,
         BaseService,
     ],
 

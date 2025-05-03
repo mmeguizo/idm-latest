@@ -28,6 +28,7 @@ import { PasswordModule } from 'primeng/password';
 import { MenubarModule } from 'primeng/menubar';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { TableModule } from 'primeng/table';
+import { AbbreviateDepartmentPipe } from '../utlis/general.pipes';
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { TableModule } from 'primeng/table';
         AppSidebarComponent,
         AppLayoutComponent,
         UpdateProfileComponent,
+        AbbreviateDepartmentPipe,
     ],
     imports: [
         BrowserModule,
@@ -64,7 +66,7 @@ import { TableModule } from 'primeng/table';
         OverlayPanelModule,
         TableModule
     ],
-    exports: [AppLayoutComponent,],
+    exports: [AppLayoutComponent, AbbreviateDepartmentPipe],
     providers: [DialogService],
 })
 export class AppLayoutModule {}

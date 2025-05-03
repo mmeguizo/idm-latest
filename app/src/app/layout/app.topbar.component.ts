@@ -13,6 +13,7 @@ import { ProductService } from 'src/app/demo/service/product.service';
 import { Product } from 'src/app/demo/api/product';
 import { ChangeDetectorRef } from '@angular/core';
 import { Table } from 'primeng/table';
+import { NotificationService } from '../demo/service/notification.service';
 
 @Component({
     selector: 'app-topbar',
@@ -119,6 +120,7 @@ position: relative;
 export class AppTopBarComponent implements OnInit {
     users: any[] = [];
     notificationCount: number = 0;
+    notifications: any[] = [];
     private getSubscription = new Subject<void>();
     userData: any;
     public form: any;
@@ -132,7 +134,6 @@ export class AppTopBarComponent implements OnInit {
     username!: string;
     confirmPassword!: string;
     public profile_pic: string;
-
 
     bellClicked = false;
 
@@ -156,6 +157,9 @@ export class AppTopBarComponent implements OnInit {
     loading = true;
     private getUserSubscription = new Subject<void>();
 
+    notificationDialogVisible: boolean = false;
+    selectedNotification: any;
+
     constructor(
         private productService: ProductService,
         public layoutService: LayoutService,
@@ -167,7 +171,8 @@ export class AppTopBarComponent implements OnInit {
         public file: FileService,
         public user: UserService,
         public formBuilder: FormBuilder,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private notif: NotificationService
     ) {
         this.name = this.auth.getTokenUsername() || '';
         this.profile_pic = this.auth.getUserProfilePic() || 'no-photo.png';
@@ -211,6 +216,8 @@ export class AppTopBarComponent implements OnInit {
         this.createForm();
 
         this.getAllusers();
+
+        this.getNotificationsByRole();
     }
 
     onBellClick(event: Event) {
@@ -220,6 +227,19 @@ export class AppTopBarComponent implements OnInit {
         if (overlayPanel) {
             overlayPanel.toggle(event);
         }
+    }
+
+    getNotificationsByRole() {
+        this.loading = true;
+        this.notif
+            .fetch('get', 'notification', 'getNotificationsByRole')
+            .subscribe((data: any) => {
+                console.log({ getNotificationsByRole: data });
+                this.loading = false;
+                this.notifications = data.notifications;
+                this.notificationCount = data.notifications.length;
+                this.cdr.detectChanges();
+            });
     }
 
     getAllusers() {
@@ -386,5 +406,34 @@ export class AppTopBarComponent implements OnInit {
             el.addEventListener('change', handler);
             this.elEventListenerActive = true;
         }
+    }
+
+    onNotificationClick(notification: any) {
+        this.selectedNotification = notification;
+        this.notificationDialogVisible = true;
+
+        if (!notification.isRead) {
+            this.notif
+                .fetch(
+                    'put',
+                    'notification',
+                    `updateNotification/${notification._id}`
+                )
+                .subscribe(() => {
+                    notification.isRead = true;
+                    this.notificationCount--;
+                    // this.notifications = [
+                    //     ...this.notifications.filter(n => !n.isRead),
+                    //     ...this.notifications.filter(n => n.isRead)
+                    // ];
+                    this.getNotificationsByRole();
+                    this.cdr.detectChanges();
+                });
+        }
+    }
+
+    onDialogClose() {
+        this.getNotificationsByRole();
+        this.notificationDialogVisible = false;
     }
 }
