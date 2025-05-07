@@ -169,11 +169,11 @@ module.exports = (router) => {
             },
           },
         },
-        {
-          $project: {
-            userDetails: 0, // Exclude the userDetails field from the final output
-          },
-        },
+        // {
+        //   $project: {
+        //     userDetails: 0, // Exclude the userDetails field from the final output
+        //   },
+        // },
       ]).sort({ createdAt: -1, isRead: -1 });
 
       res.status(200).json({ success: true, notifications });
