@@ -58,12 +58,14 @@
             >
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="min-width: 12rem">Name</th>
-                        <th style="min-width: 20rem">Message</th>
                         <th style="min-width: 8rem">Department</th>
+                        <th style="min-width: 12rem">From</th>
+                        <th style="min-width: 20rem">Message</th>
+                        <th style="min-width: 20rem">To</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-notification>
+                    @if(role === 'admin'){
                     <tr
                         [ngClass]="{
                             'bg-green-100': !notification.isRead,
@@ -72,15 +74,38 @@
                         (click)="onNotificationClick(notification)"
                         style="cursor: pointer"
                     >
-                        <td>{{ notification.user.name }}</td>
-                        <td>{{ notification.message }}</td>
                         <td>
                             {{
-                                notification.user.department
+                                notification.from.department
                                     | abbreviateDepartment
                             }}
                         </td>
+                        <td>{{ notification.from.username }}</td>
+                        <td>{{ notification.metadata.remarks }}</td>
+                        <td>{{ notification.to.username }}</td>
                     </tr>
+
+                    } @else if (id !== notification.userId) {
+                    <tr
+                        [ngClass]="{
+                            'bg-green-100': !notification.isRead,
+                            'bg-blue-100': notification.isRead
+                        }"
+                        (click)="onNotificationClick(notification)"
+                        style="cursor: pointer"
+                    >
+                        <td>
+                            {{
+                                notification.from.department
+                                    | abbreviateDepartment
+                            }}
+                        </td>
+                        <td>{{ notification.from.username }}</td>
+                        <td>{{ notification.metadata.remarks }}</td>
+                        <td>{{ notification.to.username }}</td>
+                    </tr>
+
+                    }
                 </ng-template>
             </p-table>
         </ng-template>

@@ -1,6 +1,7 @@
 require("dotenv").config();
 const Remarks = require("../models/remarks");
 const Notifications = require("../models/notifications");
+const Objectives = require("../models/objective");
 
 const chatHistories = new Map();
 module.exports = (router) => {
@@ -48,11 +49,13 @@ module.exports = (router) => {
     try {
       const newRemark = new Remarks(req.body);
       const savedRemark = await newRemark.save();
+      const objective = await Objectives.find({ id : savedRemark.objectiveId});
       await Notifications.create({
         userId: req.decoded.id,
         message: `New remark added to objective`,
         type: "remark_added",
         createdAt: new Date(),
+        reciepient: objective[0].userId,
         metadata: savedRemark
       });
       res.status(201).json(savedRemark);

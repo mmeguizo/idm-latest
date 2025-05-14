@@ -90,31 +90,45 @@ module.exports = (router) => {
           {
             $lookup: {
               from: "users",
+              localField: "reciepient",
+              foreignField: "id",
+              as: "to",
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
               localField: "userId",
               foreignField: "id",
-              as: "userDetails",
+              as: "from",
             },
           },
           {
             $unwind: {
-              path: "$userDetails",
+              path: "$to",
               preserveNullAndEmptyArrays: true,
             },
           },
           {
-            $addFields: {
-              user: {
-                name: "$userDetails.username",
-                department: "$userDetails.department",
-                role: "$userDetails.role",
-              },
+            $unwind: {
+              path: "$from",
+              preserveNullAndEmptyArrays: true,
             },
           },
-          {
-            $project: {
-              userDetails: 0, // Exclude the userDetails field from the final output
-            },
-          },
+          // {
+          //   $addFields: {
+          //     user: {
+          //       name: "$userDetails.username",
+          //       department: "$userDetails.department",
+          //       role: "$userDetails.role",
+          //     },
+          //   },
+          // },
+          // {
+          //   $project: {
+          //     // userDetails: 0, // Exclude the userDetails field from the final output
+          //   },
+          // },
         ]).sort({ createdAt: -1 });
 
         return res.status(200).json({ success: true, notifications });
@@ -136,45 +150,122 @@ module.exports = (router) => {
         return res.status(400).json({ success: false, message: "Invalid role" });
       }
 
+      // Different matching conditions based on role
+      let matchCondition;
+      
+      if (role === "office-head") {
+        // Office heads only see notifications where they are directly involved
+        matchCondition = {
+          $and: [
+            {
+              $or: [
+                // Notifications where they are the direct recipient
+                { reciepient: id },
+                // Notifications they created
+                { userId: id }
+              ]
+            },
+            {
+              $or: [
+                { isRead: false },
+                { isRead: true, createdAt: { $gte: oneWeekAgo } }
+              ]
+            }
+          ]
+        };
+      } else {
+        // VPs and Directors see notifications for themselves and their subordinates
+        matchCondition = {
+          $and: [
+            {
+              $or: [
+                // Notifications where the user is the creator
+                { userId: id },
+                // Notifications where the user is the recipient
+                { reciepient: id },
+                // Notifications created by users under this person's supervision
+                { userId: { $in: userIds } },
+                // Notifications where users under supervision are recipients
+                { reciepient: { $in: userIds } }
+              ]
+            },
+            {
+              $or: [
+                { isRead: false },
+                { isRead: true, createdAt: { $gte: oneWeekAgo } }
+              ]
+            }
+          ]
+        };
+      }
       const notifications = await Notification.aggregate([
         {
-          $match: {
-            userId: { $in: userIds },
-            $or: [
-              { isRead: false },
-              { isRead: true, createdAt: { $gte: oneWeekAgo } },
-            ],
-          },
+          $match: matchCondition
         },
         {
           $lookup: {
             from: "users",
             localField: "userId",
             foreignField: "id",
-            as: "userDetails",
+            as: "from",
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "reciepient",
+            foreignField: "id",
+            as: "to",
           },
         },
         {
           $unwind: {
-            path: "$userDetails",
+            path: "$to",
             preserveNullAndEmptyArrays: true,
           },
         },
         {
-          $addFields: {
-            user: {
-              name: "$userDetails.username",
-              department: "$userDetails.department",
-              role: "$userDetails.role",
-            },
+          $unwind: {
+            path: "$from",
+            preserveNullAndEmptyArrays: true,
           },
         },
         // {
-        //   $project: {
-        //     userDetails: 0, // Exclude the userDetails field from the final output
+        //   $addFields: {
+        //     from: {
+        //       name: "$from.username",
+        //       department: "$from.department",
+        //       role: "$from.role",
+        //       profile_pic: "$from.profile_pic"
+        //     },
+        //     to: {
+        //       $cond: {
+        //         if: { $gt: [{ $size: "$to" }, 0] },
+        //         then: {
+        //           name: { $arrayElemAt: ["$to.username", 0] },
+        //           department: { $arrayElemAt: ["$to.department", 0] },
+        //           role: { $arrayElemAt: ["$to.role", 0] },
+        //           profile_pic: { $arrayElemAt: ["$to.profile_pic", 0] }
+        //         },
+        //         else: null
+        //       }
+        //     }
         //   },
         // },
-      ]).sort({ createdAt: -1, isRead: -1 });
+        // {
+        //   $project: {
+        //     _id: 1,
+        //     userId: 1,
+        //     message: 1,
+        //     type: 1,
+        //     isRead: 1,
+        //     createdAt: 1,
+        //     metadata: 1,
+        //     from: 1,
+        //     to: 1
+        //   },
+        // },
+      ]).sort({ createdAt: -1, isRead: 1 });
 
       res.status(200).json({ success: true, notifications });
     } catch (error) {

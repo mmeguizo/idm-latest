@@ -159,6 +159,7 @@ export class AppTopBarComponent implements OnInit {
 
     notificationDialogVisible: boolean = false;
     selectedNotification: any;
+    role: any;
 
     constructor(
         private productService: ProductService,
@@ -186,6 +187,7 @@ export class AppTopBarComponent implements OnInit {
         });
 
         this.id = this.auth.getTokenUserID() || '';
+        this.role = this.auth.getUserRole() || '';
         this.Listitems = [
             {
                 // icon: 'pi pi-fw pi-cog',
