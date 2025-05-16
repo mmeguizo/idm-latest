@@ -81,10 +81,7 @@ module.exports = (router) => {
         const notifications = await Notification.aggregate([
           {
             $match: {
-              $or: [
-                { isRead: false },
-                { isRead: true, createdAt: { $gte: oneWeekAgo } },
-              ],
+              // Remove the date restriction to get all notifications
             },
           },
           {
@@ -156,45 +153,25 @@ module.exports = (router) => {
       if (role === "office-head") {
         // Office heads only see notifications where they are directly involved
         matchCondition = {
-          $and: [
-            {
-              $or: [
-                // Notifications where they are the direct recipient
-                { reciepient: id },
-                // Notifications they created
-                { userId: id }
-              ]
-            },
-            {
-              $or: [
-                { isRead: false },
-                { isRead: true, createdAt: { $gte: oneWeekAgo } }
-              ]
-            }
+          $or: [
+            // Notifications where they are the direct recipient
+            { reciepient: id },
+            // Notifications they created
+            { userId: id }
           ]
         };
       } else {
         // VPs and Directors see notifications for themselves and their subordinates
         matchCondition = {
-          $and: [
-            {
-              $or: [
-                // Notifications where the user is the creator
-                { userId: id },
-                // Notifications where the user is the recipient
-                { reciepient: id },
-                // Notifications created by users under this person's supervision
-                { userId: { $in: userIds } },
-                // Notifications where users under supervision are recipients
-                { reciepient: { $in: userIds } }
-              ]
-            },
-            {
-              $or: [
-                { isRead: false },
-                { isRead: true, createdAt: { $gte: oneWeekAgo } }
-              ]
-            }
+          $or: [
+            // Notifications where the user is the creator
+            { userId: id },
+            // Notifications where the user is the recipient
+            { reciepient: id },
+            // Notifications created by users under this person's supervision
+            { userId: { $in: userIds } },
+            // Notifications where users under supervision are recipients
+            { reciepient: { $in: userIds } }
           ]
         };
       }

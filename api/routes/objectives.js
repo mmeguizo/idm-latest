@@ -194,17 +194,17 @@ module.exports = (router) => {
             if (err) return res.json({ success: false, message: err.message });
             if (response) {
               // Add notification
-              Notifications.create({
-                userId: req.decoded.id,
-                message: `Objective ${
-                  newStatus ? "completed" : "uncompleted"
-                }: ${ObjectivesResults.functional_objective}`,
-                type: newStatus
-                  ? "objective_completed"
-                  : "objective_uncompleted",
-                createdAt: new Date(),
-                metadata: response,
-              });
+              // Notifications.create({
+              //   userId: req.decoded.id,
+              //   message: `Objective ${
+              //     newStatus ? "completed" : "uncompleted"
+              //   }: ${ObjectivesResults.functional_objective}`,
+              //   type: newStatus
+              //     ? "objective_completed"
+              //     : "objective_uncompleted",
+              //   createdAt: new Date(),
+              //   metadata: response,
+              // });
 
               res.json({
                 success: true,
@@ -760,13 +760,13 @@ module.exports = (router) => {
           }
         );
 
-        await Notifications.create({
-          userId: req.decoded.id,
-          message: `New objective added: ${results.functional_objective}`,
-          type: "objective_added",
-          createdAt: new Date(),
-          metadata: results,
-        });
+        // await Notifications.create({
+        //   userId: req.decoded.id,
+        //   message: `New objective added: ${results.functional_objective}`,
+        //   type: "objective_added",
+        //   createdAt: new Date(),
+        //   metadata: results,
+        // });
       }
 
       res.status(201).json({ success: true, data: newObjective });
@@ -862,13 +862,13 @@ module.exports = (router) => {
             console.error("Error finding goals:", err);
           });
 
-        await Notifications.create({
-          userId: req.decoded.id,
-          message: `Objective deactivated: ${objective.functional_objective}`,
-          type: "objective_deactivated",
-          createdAt: new Date(),
-          metadata: updatedObjective,
-        });
+        // await Notifications.create({
+        //   userId: req.decoded.id,
+        //   message: `Objective deactivated: ${objective.functional_objective}`,
+        //   type: "objective_deactivated",
+        //   createdAt: new Date(),
+        //   metadata: updatedObjective,
+        // });
       } else {
         return res.json({
           success: false,
@@ -993,15 +993,15 @@ module.exports = (router) => {
         });
       }
 
-      await Notifications.create({
-        userId: req.decoded.id,
-        message: `Objective updated: ${
-          updateData.functional_objective || "Objective"
-        }`,
-        type: "objective_updated",
-        createdAt: new Date(),
-        metadata: { id, ...updateData },
-      });
+      // await Notifications.create({
+      //   userId: req.decoded.id,
+      //   message: `Objective updated: ${
+      //     updateData.functional_objective || "Objective"
+      //   }`,
+      //   type: "objective_updated",
+      //   createdAt: new Date(),
+      //   metadata: { id, ...updateData },
+      // });
 
       res.json({
         success: true,

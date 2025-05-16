@@ -29,6 +29,14 @@ const NotificationSchema = new mongoose.Schema({
         type: Object,
         default: {},
     },
+    goalDetails: {
+        type: Object,
+        default: {}, 
+    },
+    objectiveDetails : {
+        type: Object,
+        default: {},
+    }
 }, {
     toJSON: {
         virtuals: true,

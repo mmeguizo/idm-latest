@@ -180,68 +180,107 @@ export class AppTopBarComponent implements OnInit {
         this.notificationCount = 2;
     }
 
-    ngOnInit() {
-        this.productService.getProductsSmallTest().then((products) => {
-            this.products = products;
-            console.log(this.products);
-        });
-
-        this.id = this.auth.getTokenUserID() || '';
-        this.role = this.auth.getUserRole() || '';
-        this.Listitems = [
-            {
-                // icon: 'pi pi-fw pi-cog',
-                items: [
-                    {
-                        label: 'Update',
-                        icon: 'pi pi-user-edit',
-                        command: () => {
-                            this.visible = true;
-                        },
-                    },
-                    {
-                        label: 'Logout',
-                        icon: 'pi pi-fw pi-sign-in',
-                        command: () => {
-                            this.logout = true;
-                        },
-                    },
-                ],
-            },
-            // { separator: true },
-        ];
-
-        this.getUserData();
-        this.dangerousUrl = this.sanitizer.bypassSecurityTrustUrl(
-            this.auth.domain + '/images/' + this.profile_pic || 'no-photo.png'
-        );
-        this.createForm();
-
-        this.getAllusers();
-
-        this.getNotificationsByRole();
-    }
-
-    onBellClick(event: Event) {
-        this.bellClicked = true; // Stop the animation
-        // Optionally, toggle the overlay panel
-        const overlayPanel = (event.target as any).closest('p-overlayPanel');
-        if (overlayPanel) {
-            overlayPanel.toggle(event);
-        }
-    }
-
-    getNotificationsByRole() {
-        this.loading = true;
-        this.notif
-            .fetch('get', 'notification', 'getNotificationsByRole')
-            .subscribe((data: any) => {
-                console.log({ getNotificationsByRole: data });
-                this.loading = false;
-                this.notifications = data.notifications;
-                this.notificationCount = data.notifications.length;
-                this.cdr.detectChanges();
+    private pollingInterval: any;
+        overlayOpen: boolean = false;
+    
+        ngOnInit() {
+            this.productService.getProductsSmallTest().then((products) => {
+                this.products = products;
+                console.log(this.products);
             });
+    
+            this.id = this.auth.getTokenUserID() || '';
+            this.role = this.auth.getUserRole() || '';
+            this.Listitems = [
+                {
+                    // icon: 'pi pi-fw pi-cog',
+                    items: [
+                        {
+                            label: 'Update',
+                            icon: 'pi pi-user-edit',
+                            command: () => {
+                                this.visible = true;
+                            },
+                        },
+                        {
+                            label: 'Logout',
+                            icon: 'pi pi-fw pi-sign-in',
+                            command: () => {
+                                this.logout = true;
+                            },
+                        },
+                    ],
+                },
+                // { separator: true },
+            ];
+    
+            this.getUserData();
+            this.dangerousUrl = this.sanitizer.bypassSecurityTrustUrl(
+                this.auth.domain + '/images/' + this.profile_pic || 'no-photo.png'
+            );
+            this.createForm();
+    
+            this.getAllusers();
+    
+            this.getNotificationsByRole();
+            
+            // Start polling for notifications every 2 minutes
+            this.startNotificationPolling();
+        }
+    
+        ngOnDestroy() {
+            // Clear polling interval when component is destroyed
+            this.stopNotificationPolling();
+            this.getSubscription.next();
+            this.getSubscription.complete();
+            this.getUserSubscription.next();
+            this.getUserSubscription.complete();
+        }
+    
+        startNotificationPolling() {
+            // Set up polling every 2 minutes (120000 ms)
+            this.pollingInterval = setInterval(() => {
+                // Only fetch if overlay is not open
+                if (!this.overlayOpen) {
+                    this.getNotificationsByRole();
+                }
+            }, 120000);
+        }
+    
+        stopNotificationPolling() {
+            if (this.pollingInterval) {
+                clearInterval(this.pollingInterval);
+            }
+        }
+    
+        onBellClick(event: Event) {
+            this.bellClicked = true; // Stop the animation
+            // Set overlay as open
+            this.overlayOpen = true;
+            // Refetch notifications first, then toggle the panel
+            this.getNotificationsByRole();
+            
+            event.stopPropagation(); // Prevent event bubbling
+        }
+    
+        // Add method to handle overlay closing
+        onOverlayHide() {
+            this.overlayOpen = false;
+        }
+    
+        getNotificationsByRole() {
+            console.log('getNotificationsByRole');
+            this.loading = true;
+            this.notif
+                .fetch('get', 'notification', 'getNotificationsByRole')
+                .subscribe((data: any) => {
+                    console.log({ getNotificationsByRole: data });
+                    this.loading = false;
+                    this.notifications = data.notifications;
+                    // Count only unread notifications
+                    this.notificationCount = data.notifications.filter(notification => !notification.isRead).length;
+                    this.cdr.detectChanges();
+                });
     }
 
     getAllusers() {
@@ -413,24 +452,27 @@ export class AppTopBarComponent implements OnInit {
     onNotificationClick(notification: any) {
         this.selectedNotification = notification;
         this.notificationDialogVisible = true;
+        console.log(notification);
 
-        if (!notification.isRead) {
-            this.notif
-                .fetch(
-                    'put',
-                    'notification',
-                    `updateNotification/${notification._id}`
-                )
-                .subscribe(() => {
-                    notification.isRead = true;
-                    this.notificationCount--;
-                    // this.notifications = [
-                    //     ...this.notifications.filter(n => !n.isRead),
-                    //     ...this.notifications.filter(n => n.isRead)
-                    // ];
-                    this.getNotificationsByRole();
-                    this.cdr.detectChanges();
-                });
+        if( this.id === notification.reciepient){
+            if (!notification.isRead) {
+                this.notif
+                    .fetch(
+                        'put',
+                        'notification',
+                        `updateNotification/${notification._id}`
+                    )
+                    .subscribe(() => {
+                        notification.isRead = true;
+                        this.notificationCount--;
+                        // this.notifications = [
+                        //     ...this.notifications.filter(n => !n.isRead),
+                        //     ...this.notifications.filter(n => n.isRead)
+                        // ];
+                        this.getNotificationsByRole();
+                        this.cdr.detectChanges();
+                    });
+            }
         }
     }
 

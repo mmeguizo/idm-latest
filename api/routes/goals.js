@@ -1360,13 +1360,13 @@ module.exports = (router) => {
         });
 
         // add to the notifications
-        Notifications.create({
-          userId: req.decoded.id,
-          message: `New goal added: ${data.goals}`,
-          type: "goal_added",
-          createdAt: new Date(),
-          metadata: data,
-        });
+        // Notifications.create({
+        //   userId: req.decoded.id,
+        //   message: `New goal added: ${data.goals}`,
+        //   type: "goal_added",
+        //   createdAt: new Date(),
+        //   metadata: data,
+        // });
 
         res.json({
           success: true,
@@ -1424,14 +1424,14 @@ module.exports = (router) => {
             }
 
               // add to the notifications
-                      Notifications.create({
-                        userId: req.decoded.id,
-                        title: "Goals Deleted",
-                        message: `deleted a : ${GoalsFindRes[0].goals}`,
-                        type: "goal_deleted",
-                        createdAt: new Date(),
-                        metadata : GoalsFindRes
-                      });
+                      // Notifications.create({
+                      //   userId: req.decoded.id,
+                      //   title: "Goals Deleted",
+                      //   message: `deleted a : ${GoalsFindRes[0].goals}`,
+                      //   type: "goal_deleted",
+                      //   createdAt: new Date(),
+                      //   metadata : GoalsFindRes
+                      // });
 
             if (response.modifiedCount > 0) {
               Objectives.updateMany(
@@ -1486,13 +1486,13 @@ module.exports = (router) => {
             if (err) return res.json({ success: false, message: err.message });
             if (response) {
 
-              Notifications.create({
-                userId: req.decoded.id,
-                message: `deleted a : ${Goals.goals}`,
-                type: "goal_deleted",
-                createdAt: new Date(),
-                metadata : Goals
-              });
+              // Notifications.create({
+              //   userId: req.decoded.id,
+              //   message: `deleted a : ${Goals.goals}`,
+              //   type: "goal_deleted",
+              //   createdAt: new Date(),
+              //   metadata : Goals
+              // });
 
 
               res.json({
@@ -1523,13 +1523,13 @@ module.exports = (router) => {
         if (err) return res.json({ success: false, message: err.message });
         if (response) {
 
-          Notifications.create({
-            userId: req.decoded.id,
-            message: `updated a : ${Goals.goals}`,
-            type: "goal_updated",
-            createdAt: new Date(),
-            metadata : Goals
-          });
+          // Notifications.create({
+          //   userId: req.decoded.id,
+          //   message: `updated a : ${Goals.goals}`,
+          //   type: "goal_updated",
+          //   createdAt: new Date(),
+          //   metadata : Goals
+          // });
 
           res.json({
             success: true,

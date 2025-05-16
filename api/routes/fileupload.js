@@ -72,13 +72,13 @@ module.exports = (router) => {
                 if (err) {
                   reject(err);
                 } else {
-                  Notifications.create({
-                    userId: req.decoded.id,
-                    message: `New goal added: ${goals}`,
-                    type: "goal_added",
-                    createdAt: new Date(),
-                    metadata: goalsDataRequest,
-                  });
+                  // Notifications.create({
+                  //   userId: req.decoded.id,
+                  //   message: `New goal added: ${goals}`,
+                  //   type: "goal_added",
+                  //   createdAt: new Date(),
+                  //   metadata: goalsDataRequest,
+                  // });
 
                   resolve(data);
                 }
@@ -91,13 +91,13 @@ module.exports = (router) => {
               const fileNames = data.map((file) => file.source);
 
               // Add notification
-              Notifications.create({
-                userId: req.decoded.id,
-                message: `Successfully uploaded ${fileNames.length} file(s)`,
-                type: "file_upload",
-                createdAt: new Date(),
-                metadata: { files: fileNames },
-              });
+              // Notifications.create({
+              //   userId: req.decoded.id,
+              //   message: `Successfully uploaded ${fileNames.length} file(s)`,
+              //   type: "file_upload",
+              //   createdAt: new Date(),
+              //   metadata: { files: fileNames },
+              // });
 
               res.json({
                 success: true,
@@ -230,17 +230,17 @@ module.exports = (router) => {
         const fileNames = data.map((file) => file.source);
 
         // Add notification
-        await Notifications.create({
-          userId: req.decoded.id,
-          message: `Successfully uploaded ${fileNames.length} file(s) to objective`,
-          type: "objective_file_upload",
-          createdAt: new Date(),
-          metadata: {
-            files: fileNames,
-            objectiveId: objectiveId,
-            frequencyFileName: frequencyFileName,
-          },
-        });
+        // await Notifications.create({
+        //   userId: req.decoded.id,
+        //   message: `Successfully uploaded ${fileNames.length} file(s) to objective`,
+        //   type: "objective_file_upload",
+        //   createdAt: new Date(),
+        //   metadata: {
+        //     files: fileNames,
+        //     objectiveId: objectiveId,
+        //     frequencyFileName: frequencyFileName,
+        //   },
+        // });
         res.json({
           success: true,
           message: "Files uploaded successfully!",
@@ -311,13 +311,13 @@ module.exports = (router) => {
             });
           } else {
             // Add notification
-            Notifications.create({
-              userId: req.decoded.id,
-              message: "Profile avatar updated successfully",
-              type: "avatar_update",
-              createdAt: new Date(),
-              metadata: { avatarFile: data.source }
-            });
+            // Notifications.create({
+            //   userId: req.decoded.id,
+            //   message: "Profile avatar updated successfully",
+            //   type: "avatar_update",
+            //   createdAt: new Date(),
+            //   metadata: { avatarFile: data.source }
+            // });
         
             res.json({
               success: true,
@@ -419,13 +419,13 @@ module.exports = (router) => {
                   });
                 } else {
 
-                  Notifications.create({
-                    userId: req.decoded.id,
-                    message: "Profile avatar updated successfully",
-                    type: "avatar_update",
-                    createdAt: new Date(),
-                    metadata: { avatarFile: data.source }
-                  });
+                  // Notifications.create({
+                  //   userId: req.decoded.id,
+                  //   message: "Profile avatar updated successfully",
+                  //   type: "avatar_update",
+                  //   createdAt: new Date(),
+                  //   metadata: { avatarFile: data.source }
+                  // });
 
                   res.json({
                     success: true,
@@ -481,16 +481,16 @@ module.exports = (router) => {
               return res.json({ success: false, message: err.message });
             } else {
 
-              Notifications.create({
-                userId:req.decoded.id,
-                message: "File deleted successfully",
-                type: "file_delete",
-                createdAt: new Date(),
-                metadata: { 
-                  fileId: id,
-                  fileName: file 
-                }
-              });
+              // Notifications.create({
+              //   userId:req.decoded.id,
+              //   message: "File deleted successfully",
+              //   type: "file_delete",
+              //   createdAt: new Date(),
+              //   metadata: { 
+              //     fileId: id,
+              //     fileName: file 
+              //   }
+              // });
               return res.json({
                 success: true,
                 message: "The file has been remove.",
@@ -529,16 +529,16 @@ module.exports = (router) => {
             if (err) return res.json({ success: false, message: err.message });
             if (response) {
 
-               Notifications.create({
-                userId:  req.decoded.id,
-                message: "Objective file deleted successfully",
-                type: "objective_file_delete",
-                createdAt: new Date(),
-                metadata: { 
-                  fileId: id,
-                  fileName: file 
-                }
-              });
+              //  Notifications.create({
+              //   userId:  req.decoded.id,
+              //   message: "Objective file deleted successfully",
+              //   type: "objective_file_delete",
+              //   createdAt: new Date(),
+              //   metadata: { 
+              //     fileId: id,
+              //     fileName: file 
+              //   }
+              // });
 
               res.json({
                 success: true,

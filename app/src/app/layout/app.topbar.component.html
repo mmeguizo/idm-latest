@@ -35,7 +35,7 @@
             clicked: bellClicked
         }"
         value="{{ notificationCount }}"
-        (click)="op2.toggle($event); onBellClick($event)"
+        (click)="onBellClick($event); op2.toggle($event)"
     >
         <!--  [ngClass]="{ 'animate-bell': notificationCount > 0 }" -->
     </i>
@@ -45,6 +45,7 @@
         [showCloseIcon]="true"
         [dismissable]="false"
         [style]="{ width: '450px' }"
+        (onHide)="onOverlayHide()"
     >
         <ng-template pTemplate>
             <p-table
@@ -58,10 +59,13 @@
             >
                 <ng-template pTemplate="header">
                     <tr>
+                        <th style="min-width: 8rem">Goal</th>
+                        <th style="min-width: 8rem">Objective</th>
                         <th style="min-width: 8rem">Department</th>
-                        <th style="min-width: 12rem">From</th>
-                        <th style="min-width: 20rem">Message</th>
-                        <th style="min-width: 20rem">To</th>
+                        <th style="min-width: 8rem">From</th>
+                        <th style="min-width: 10rem">Message</th>
+                        <th style="min-width: 8rem">To</th>
+                        <th style="min-width: 5rem">Read</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-notification>
@@ -74,6 +78,9 @@
                         (click)="onNotificationClick(notification)"
                         style="cursor: pointer"
                     >
+                    <td>{{ notification.goalDetails.goals }}</td>
+                    <td>{{ notification.objectiveDetails.strategic_objective }}</td>
+
                         <td>
                             {{
                                 notification.from.department
@@ -83,6 +90,7 @@
                         <td>{{ notification.from.username }}</td>
                         <td>{{ notification.metadata.remarks }}</td>
                         <td>{{ notification.to.username }}</td>
+                        <td>{{ notification.isRead ? 'Yes' : 'No' }}</td>
                     </tr>
 
                     } @else if (id !== notification.userId) {
@@ -94,6 +102,8 @@
                         (click)="onNotificationClick(notification)"
                         style="cursor: pointer"
                     >
+                    <td>{{ notification.goalDetails.goals }}</td>
+                    <td>{{ notification.objectiveDetails.strategic_objective }}</td>
                         <td>
                             {{
                                 notification.from.department
@@ -103,6 +113,7 @@
                         <td>{{ notification.from.username }}</td>
                         <td>{{ notification.metadata.remarks }}</td>
                         <td>{{ notification.to.username }}</td>
+                        <td>{{ notification.isRead ? 'Yes' : 'No' }}</td>
                     </tr>
 
                     }
@@ -311,7 +322,7 @@
     (onHide)="onDialogClose()"
 >
     <p>{{ selectedNotification?.message }}</p>
-    <p><strong>From:</strong> {{ selectedNotification?.user?.name }}</p>
+    <p><strong>From:</strong> {{ selectedNotification?.from?.firstname }}</p>
     <ng-template pTemplate="footer">
         <button
             pButton
