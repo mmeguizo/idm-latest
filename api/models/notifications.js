@@ -36,6 +36,10 @@ const NotificationSchema = new mongoose.Schema({
     objectiveDetails : {
         type: Object,
         default: {},
+    },
+    userDetails : {
+         type: Object,
+        default: {},
     }
 }, {
     toJSON: {

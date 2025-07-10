@@ -253,6 +253,10 @@ module.exports = (router) => {
       });
     }
 
+    if (role === "president") {
+      role = "admin";
+    }
+
     const userData = {
       id: uuidv4(),
       firstname: req.body.firstname.toLowerCase(),
@@ -471,6 +475,11 @@ module.exports = (router) => {
         const hashedPassword = await hash.encryptPassword(data.password);
         saveData.password = hashedPassword;
       }
+      if (req.body.role === "president") {
+        req.body.role = "admin";
+      }
+
+      let requestBody = { role, ...restData } = req.body
 
       const response = await User.findOneAndUpdate(
         { id: data.id },
@@ -518,6 +527,10 @@ module.exports = (router) => {
         }
         const hashedPassword = await hash.encryptPassword(data.password);
         data.password = hashedPassword;
+      }
+      
+      if(req.body.role === 'president'){
+        req.body.role = 'admin'
       }
 
       const response = await User.findOneAndUpdate(

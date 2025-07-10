@@ -175,6 +175,7 @@ module.exports = (router) => {
           ]
         };
       }
+      console.log(matchCondition, id, userIds)
       const notifications = await Notification.aggregate([
         {
           $match: matchCondition

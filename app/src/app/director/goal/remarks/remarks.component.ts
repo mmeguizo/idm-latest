@@ -70,7 +70,11 @@ export class RemarksComponent implements OnInit, OnDestroy {
         this.showEditorDialogCard = false;
         if (this.text) {
             const plainText = this.text.replace(/<\/?[^>]+(>|$)/g, '');
-
+            console.log('sending from director', {
+                remarks: plainText,
+                objectiveId: this.objectiveId,
+                userId: this.USERID,
+            });
             this.baseService
                 .getRoutePublic('post', 'remark', 'remarks', {
                     remarks: plainText,

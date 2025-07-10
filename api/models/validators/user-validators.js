@@ -3,7 +3,7 @@ let emailLengthChecker = (email) => {
   if (!email) {
     return false;
   } else {
-    if (email.length < 5 || email.length > 30) {
+    if (email.length < 5 || email.length > 100) {
       return false;
     } else {
       return true;

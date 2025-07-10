@@ -2,12 +2,12 @@
   "name": "chmsu-idm",
   "version": "1.0.0",
   "description": "Master App Template for future project releases",
-  "main": "index.js",
-  "bin": "index.js",
+  "main": "app.js",
+  "bin": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "nodemon": "nodemon index.js",
+    "start": "node app.js",
+    "nodemon": "nodemon app.js",
     "build": "pkg . --out-path dist"
   },
   "repository": {
@@ -49,7 +49,7 @@
     "nodemon": "^3.1.0"
   },
   "pkg": {
-    "scripts": "index.js",
+    "scripts": "app.js",
     "targets": [
       "node14-linux-x64",
       "node14-macos-x64",

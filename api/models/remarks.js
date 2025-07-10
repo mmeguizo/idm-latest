@@ -7,6 +7,7 @@ const remarks = new Schema(
     userId: String,
     objectiveId: String,
     deleted: { type: Boolean, default: false },
+    // parentRemarkId: { type: String, default: null }, // Add this field
   },
   {
     timestamps: true,
