@@ -96,3 +96,10 @@ app.get("*", (req, res) => {
 const servers = app.listen(PORT, () => {
   console.log("Connected on port " + PORT);
 });
+
+setInterval(() => {
+  const m = process.memoryUsage();
+  const heapUsedMB = (m.heapUsed / 1024 / 1024).toFixed(2);
+  const heapTotalMB = (m.heapTotal / 1024 / 1024).toFixed(2);
+  console.log(`DIAG MEM heapUsed=${heapUsedMB}MB heapTotal=${heapTotalMB}MB rss=${(m.rss/1024/1024).toFixed(2)}MB uptime=${process.uptime().toFixed(0)}s`);
+}, 5 * 60 * 1000);

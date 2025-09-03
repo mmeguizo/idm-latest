@@ -182,6 +182,10 @@ export class AppTopBarComponent implements OnInit {
 
     private pollingInterval: any;
     overlayOpen: boolean = false;
+    // listeners refs so we can remove them
+    private visibilityHandler = () => { if (document.visibilityState === 'visible') this.getNotificationCount(); };
+    private focusHandler = () => this.getNotificationCount();
+    private storageHandler = (ev: StorageEvent) => { if (ev.key && ev.key.toLowerCase().includes('token')) this.getNotificationCount(); };
 
     ngOnInit() {
         this.productService.getProductsSmallTest().then((products) => {
@@ -224,40 +228,47 @@ export class AppTopBarComponent implements OnInit {
 
         this.getNotificationsByRole();
 
-        // Start polling for notifications every 2 minutes
-        this.startNotificationPolling();
+        // initial lightweight check
+        this.getNotificationCount();
+
+        // event-driven updates: only poll when user is likely to see results
+        document.addEventListener('visibilitychange', this.visibilityHandler);
+        window.addEventListener('focus', this.focusHandler);
+        window.addEventListener('storage', this.storageHandler);
     }
 
     ngOnDestroy() {
-        // Clear polling interval when component is destroyed
-        this.stopNotificationPolling();
+        // remove event listeners when component is destroyed
+        document.removeEventListener('visibilitychange', this.visibilityHandler);
+        window.removeEventListener('focus', this.focusHandler);
+        window.removeEventListener('storage', this.storageHandler);
         this.getSubscription.next();
         this.getSubscription.complete();
         this.getUserSubscription.next();
         this.getUserSubscription.complete();
     }
 
-    startNotificationPolling() {
-        // Set up polling every 2 minutes (120000 ms)
-        this.pollingInterval = setInterval(() => {
-            // Only fetch if overlay is not open
-            if (!this.overlayOpen) {
-                this.getNotificationsByRole();
-            }
-        }, 120000);
-    }
-
-    stopNotificationPolling() {
-        if (this.pollingInterval) {
-            clearInterval(this.pollingInterval);
-        }
+    // Lightweight: fetch only counts / minimal info to update badge
+    getNotificationCount() {
+        // avoid fetching while the overlay/details panel is open
+        if (this.overlayOpen) return;
+        this.notif.fetch('get', 'notification', 'getNotificationsByRole')
+            .subscribe((data: any) => {
+                const list = data && data.notifications ? data.notifications : [];
+                this.notificationCount = list.filter(
+                    (notification: any) => !notification.isRead && notification.userId !== this.id
+                ).length;
+                this.cdr.detectChanges();
+            }, (err) => {
+                // ignore errors for background count checks
+            });
     }
 
     onBellClick(event: Event) {
         this.bellClicked = true; // Stop the animation
         // Set overlay as open
         this.overlayOpen = true;
-        // Refetch notifications first, then toggle the panel
+        // fetch full notifications when user explicitly opens the bell
         this.getNotificationsByRole();
 
         event.stopPropagation(); // Prevent event bubbling
